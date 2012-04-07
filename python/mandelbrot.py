@@ -1,0 +1,1 @@
+print("\n".join(["".join(["#mandelbrot"[abs(reduce(lambda z,c:z*z+c,[.04*j-2+(i/32.0-1)*1j]*99))<2]for j in range(64)])for i in range(64)]))

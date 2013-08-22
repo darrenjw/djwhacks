@@ -3,19 +3,19 @@ Gibbs.scala
 My Gibbs sampling test code, in scala
 Requires ParallelCOLT
 
-scalac GibbsSc.scala
-time scala GibbsSc > data.tab
+scalac Gibbs.scala
+time scala Gibbs > data.tab
 
 */
 
 
-object GibbsSc {
+object Gibbs {
  
     import cern.jet.random.tdouble.engine.DoubleMersenneTwister
     import cern.jet.random.tdouble.Normal
     import cern.jet.random.tdouble.Gamma
-    import Math.sqrt
     import java.util.Date
+    import scala.math.sqrt
  
     def main(args: Array[String]) {
         val N=50000

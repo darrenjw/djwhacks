@@ -1,0 +1,22 @@
+Git reminders
+-------------
+
+git config --global user.name "Firstname Lastname"
+git config --global user.email foo@bar.com
+
+git clone git@github.com:darrenjw/djwhacks.git   (checkout into current dir)
+
+git pull       (update)
+git add file.c (add a file to the repo)
+git commit -a  (commit locally)
+git push       (push local commits back to github)
+
+
+
+
+
+
+
+% eof
+
+

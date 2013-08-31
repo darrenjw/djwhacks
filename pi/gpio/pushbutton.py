@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import RPi.GPIO as GPIO
+GPIO.setmode(GPIO.BOARD)
 
 GPIO.setup(11, GPIO.IN)
 GPIO.setup(12, GPIO.OUT)

@@ -1,0 +1,13 @@
+
+For the Maplin robot arm, follow instructions from:
+
+
+http://darrenjw2.wordpress.com/2013/01/05/controlling-a-usb-robotic-arm-with-a-raspberr/
+
+
+In particular, note that the version of python-usb in the raspbian repo is not new enough.
+
+
+DJW
+
+

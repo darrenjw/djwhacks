@@ -1,0 +1,16 @@
+#!/bin/sh
+# sayIP
+# figure out the IP address and speak it
+
+echo "Starting script sayIP "
+sleep 5
+public=`curl ifconfig.me`
+private=`hostname -I`
+string="public address is $public and private address is $private"
+echo $string | espeak -s 120 -v en-uk
+sleep 2
+echo $string | espeak -s 120 -v en-uk
+
+# eof
+
+

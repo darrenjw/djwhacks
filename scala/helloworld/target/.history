@@ -1,0 +1,10 @@
+compile
+run
+clean
+run
+clean
+compile
+clean
+run
+test
+clean

@@ -18,16 +18,15 @@ object Gibbs2 {
     def main(args: Array[String]) {
         val N=50000
         val thin=1000
-        val rngEngine=new DoubleMersenneTwister(new Date)
-        val rngN=new Normal(0.0,1.0,rngEngine)
-        val rngG=new Gamma(1.0,1.0,rngEngine)
+        val rngN=new Gaussian(0.0,1.0)
+        val rngG=new Gamma(1.0,1.0)
         var x=0.0
         var y=0.0
         println("Iter x y")
         for (i <- 0 until N) {
             for (j <- 0 until thin) {
-                x=rngG.nextDouble(3.0,y*y+4)
-                y=rngN.nextDouble(1.0/(x+1),1.0/sqrt(2*x+2))
+                x=rngG.draw(3.0,y*y+4)
+                y=rngN.draw(1.0/(x+1),1.0/sqrt(2*x+2))
             }
             println(i+" "+x+" "+y)
         }

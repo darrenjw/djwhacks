@@ -37,9 +37,7 @@ chain=function(target,tune=0.1,init=1)
 
 # global settings
 temps=2^(0:3)
-#iters=1e5
-iters=1e6
-
+iters=1e5
 
 mat=sapply(lapply(temps,curried),chain)
 colnames(mat)=paste("gamma=",temps,sep="")
@@ -81,7 +79,7 @@ chains=function(pot=U, tune=0.1, init=1)
     swap=sample(1:length(temps),2)
     logA=pot(temps[swap[1]],x[swap[1]])+pot(temps[swap[2]],x[swap[2]])-
             pot(temps[swap[1]],x[swap[2]])-pot(temps[swap[2]],x[swap[1]])
-    if (runif(1)<logA)
+    if (log(runif(1))<logA)
       x[swap]=rev(x[swap])
     # end of the coupling update
     xmat[i,]=x

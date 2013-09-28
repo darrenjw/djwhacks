@@ -1,21 +1,27 @@
 # temper.R
 # functions for messing around with tempering MCMC
 
-makeU=function(gamma=1)
+U=function(gam,x)
 {
-  function(x) gamma*(x*x-1)*(x*x-1)
+  gam*(x*x-1)*(x*x-1)
 }
 
-U=makeU(4)
+curried=function(gam)
+{
+  #gam
+  message(paste("Returning a function for gamma =",gam))
+  function(x) U(gam,x)
+}
+U4=curried(4)
 
 op=par(mfrow=c(2,1))
-curve(U(x),-2,2,main="Potential function, U(x)")
-curve(exp(-U(x)),-2,2,main="Unnormalised density function, exp(-U(x))")
+curve(U4(x),-2,2,main="Potential function, U(x)")
+curve(exp(-U4(x)),-2,2,main="Unnormalised density function, exp(-U(x))")
 par(op)
 
 # First look at some independent chains
 
-chain=function(target=U,iters=10000,tune=0.1,init=1)
+chain=function(target,tune=0.1,init=1)
 {
   x=init
   xvec=numeric(iters)
@@ -26,55 +32,66 @@ chain=function(target=U,iters=10000,tune=0.1,init=1)
       x=can
     xvec[i]=x
   }
-  ts(xvec,start=1)
+  xvec
 }
 
-numChains=5
-op=par(mfrow=c(numChains,2))
-for (i in 1:numChains) {
-  mychain=chain(makeU(i))
-  plot(mychain)
-  hist(mychain,50)
-}
+# global settings
+temps=2^(0:3)
+#iters=1e5
+iters=1e6
 
-# Next, let's do 5 chains at once...
 
-chains=function(uncurried=function(gamma,x) makeU(gamma)(x),iters=10000,tune=0.1,init=1)
+mat=sapply(lapply(temps,curried),chain)
+colnames(mat)=paste("gamma=",temps,sep="")
+
+require(smfsb)
+mcmcSummary(mat,rows=length(temps))
+
+#stop("STOP!")
+
+# Next, let's generate 5 chains at once...
+chains=function(pot=U, tune=0.1, init=1)
 {
-  x=rep(init,numChains)
-  xmat=matrix(0,iters,numChains)
+  x=rep(init,length(temps))
+  xmat=matrix(0,iters,length(temps))
   for (i in 1:iters) {
-    can=x+rnorm(numChains,0,tune)
-    logA=unlist(Map(uncurried,1:numChains,x))-unlist(Map(uncurried,1:numChains,can))
-    accept=(log(runif(numChains))<logA)
+    can=x+rnorm(length(temps),0,tune)
+    logA=unlist(Map(pot,temps,x))-unlist(Map(pot,temps,can))
+    accept=(log(runif(length(temps)))<logA)
     x[accept]=can[accept]
     xmat[i,]=x
   }
+  colnames(xmat)=paste("gamma=",temps,sep="")
   xmat
 }
 
-#require(smfsb)
-#mcmcSummary(chains())
-mat=chains()
-op=par(mfrow=c(numChains,2))
-for (i in 1:numChains) {
-  plot(ts(mat[,i],start=1))
-  hist(mat[,i],50)
-}
+mcmcSummary(chains(),rows=length(temps))
 
 # Next let's couple the chains...
+chains=function(pot=U, tune=0.1, init=1)
+{
+  x=rep(init,length(temps))
+  xmat=matrix(0,iters,length(temps))
+  for (i in 1:iters) {
+    can=x+rnorm(length(temps),0,tune)
+    logA=unlist(Map(pot,temps,x))-unlist(Map(pot,temps,can))
+    accept=(log(runif(length(temps)))<logA)
+    x[accept]=can[accept]
+    # now the coupling update
+    swap=sample(1:length(temps),2)
+    logA=pot(temps[swap[1]],x[swap[1]])+pot(temps[swap[2]],x[swap[2]])-
+            pot(temps[swap[1]],x[swap[2]])-pot(temps[swap[2]],x[swap[1]])
+    if (runif(1)<logA)
+      x[swap]=rev(x[swap])
+    # end of the coupling update
+    xmat[i,]=x
+  }
+  colnames(xmat)=paste("gamma=",temps,sep="")
+  xmat
+}
 
-
-
-
-
-
-
-
-
-
+mcmcSummary(chains(),rows=length(temps))
 
 
 # eof
-
 

@@ -19,8 +19,11 @@ curve(U4(x),-2,2,main="Potential function, U(x)")
 curve(exp(-U4(x)),-2,2,main="Unnormalised density function, exp(-U(x))")
 par(op)
 
-# First look at some independent chains
+# global settings
+temps=2^(0:3)
+iters=1e5
 
+# First look at some independent chains
 chain=function(target,tune=0.1,init=1)
 {
   x=init
@@ -35,17 +38,11 @@ chain=function(target,tune=0.1,init=1)
   xvec
 }
 
-# global settings
-temps=2^(0:3)
-iters=1e5
-
 mat=sapply(lapply(temps,curried),chain)
 colnames(mat)=paste("gamma=",temps,sep="")
 
 require(smfsb)
 mcmcSummary(mat,rows=length(temps))
-
-#stop("STOP!")
 
 # Next, let's generate 5 chains at once...
 chains=function(pot=U, tune=0.1, init=1)
@@ -89,7 +86,6 @@ chains=function(pot=U, tune=0.1, init=1)
 }
 
 mcmcSummary(chains(),rows=length(temps))
-
 
 # eof
 

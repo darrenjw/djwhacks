@@ -24,6 +24,7 @@
     deletekeywords={url,codes, t, Call, formula,Q, R, on,by,hat,is,
 col, set},
     sensitive=true,
+    breaklines=true,
     morecomment=[l]{\#},
     morestring=[b]",
     morestring=[b]',
@@ -83,12 +84,12 @@ Source code (R and \LaTeX\ of these slides):\\
 
 \frame{
 \frametitle{Sampling a double-well potential}
- The simplest version of this assumes a potential function of the form
+ The simplest version assumes a potential function of the form
 \[U(x) = \gamma (x^2-1)^2\]
 for some given potential barrier height $\gamma$. The potential function $U(x)$ corresponds to the probability density function
 \[\pi(x) \propto \exp\{-U(x)\}.\]
 Think of potentials as being a (negative) log-density scale. On this scale, high potential barrier heights correspond to regions of very low probability density.
-Anyway, the point is that we have defined a multi-modal density, and that a Metropolis-Hastings algorithm initialised in one of the modes will have a hard time jumping to the other mode, and the difficulty of this jump will increase as we increase the value of $\gamma$.
+The point is that we have defined a multi-modal density, and that a Metropolis-Hastings algorithm initialised in one of the modes will have a hard time jumping to the other mode, and the difficulty of this jump will increase as we increase the value of $\gamma$.
 }
 
 \frame{
@@ -141,7 +142,7 @@ To keep things simple, let's just suppose that we have two (independent, paralle
 \frametitle{Acceptance ratio}
 As it is clearly a symmetric proposal it will drop out of the M-H ratio. Our acceptance probability is therefore $\min\{1,A\}$, where
 \[\displaystyle A = \frac{\pi(x^\star,y^\star)}{\pi(x,y)} = \frac{\pi(y,x)}{\pi(x,y)} = \frac{f(y)g(x)}{f(x)g(y)}.\]
-So, if we use this acceptance probability whenever we propose a swap of the states between two chains, then we will preserve the joint target, and hence the marginal targets and asymptotic independence of the target. However, the chains themselves will no longer be independent of one another. They will be coupled - Metropolis coupled.
+So, if we use this acceptance probability whenever we propose a swap of the states between two chains, then we will preserve the joint target, and hence the marginal targets and asymptotic independence of the target. However, the chains themselves will no longer be independent of one another. They will be coupled --- \alert{Metropolis coupled}.
 }
 
 \begin{frame}[fragile]
@@ -176,7 +177,7 @@ We see immediately from the plots that whilst the individual target distribution
 
 \frame{
 \frametitle{Parallel implementation}
-It should be clear that there are opportunities for parallelising the above algorithm to make effective use of modern multi-core hardware. An approach using \alert{\href{http://en.wikipedia.org/wiki/Openmp}{OpenMP}} with C++ is discussed in \alert{\href{http://www.lindonslog.com/programming/openmp/parallel-tempering-algorithm-c/}{this blog post}}. Also note that if the state space of the chains is large, it can be much more efficient to swap temperatures between the chains rather than states - so long as you are careful about keeping track of stuff - this is explored in detail in Altekar et al ('04).
+It should be clear that there are opportunities for parallelising the above algorithm to make effective use of modern multi-core hardware. An approach using \alert{\href{http://en.wikipedia.org/wiki/Openmp}{OpenMP}} with C++ is discussed in \alert{\href{http://www.lindonslog.com/programming/openmp/parallel-tempering-algorithm-c/}{this blog post}}. Also note that if the state space of the chains is large, it can be much more efficient to swap temperatures between the chains rather than states - so long as you are careful about keeping track of stuff - this is explored in detail in \alert{Altekar et al ('04)}.
 }
 
 \section{Marginal likelihood from tempered Bayesian posteriors}
@@ -246,7 +247,7 @@ and this will be a consistent estimator of the true evidence under fairly mild r
 \frametitle{Bridge sampling}
 Unfortunately, in practice it is likely to be a very poor estimator if the posterior and prior are not very similar. Now, we could also use Bayes theorem to re-write the integral as an expectation with respect to the posterior, so we could then use samples from the posterior to estimate the evidence. This leads to the \alert{harmonic mean estimator} of the evidence, which has been described as \alert{\href{http://radfordneal.wordpress.com/2008/08/17/the-harmonic-mean-of-the-likelihood-worst-monte-carlo-method-ever/}{the worst Monte Carlo method ever}}! 
 
-Now it turns out that there are \emph{many} different ways one can construct estimators of the evidence using samples from the prior and the posterior, some of which are considerably better than the two I've outlined. This is the subject of the \alert{bridge sampling} paper of Meng and Wong. However, the reality is that no method will work well if the prior and posterior are very different.
+Now it turns out that there are \emph{many} different ways one can construct estimators of the evidence using samples from the prior and the posterior, some of which are considerably better than the two I've outlined. This is the subject of the \alert{bridge sampling} paper of \alert{Meng and Wong ('96)}. However, the reality is that no method will work well if the prior and posterior are very different.
 }
 
 \frame{
@@ -293,7 +294,7 @@ So, an alternative approach to computing the evidence is to use the samples to a
 
 \frame{
 \frametitle{Example: double well potential}
-We can illustrate these ideas using the simple double potential well example from earlier. Now that example doesn't really correspond to a Bayesian posterior, and is tempered directly, rather than as a power posterior, but essentially the same ideas follow for general parallel tempered distributions. In general, we can use the sample to estimate the ratio of the last and first normalising constants, $z_N/z_0$. 
+We can illustrate these ideas using the simple double potential well example from earlier. That example doesn't really correspond to a Bayesian posterior, and is tempered directly, rather than as a power posterior, but essentially the same ideas follow for general parallel tempered distributions. In general, we can use the sample to estimate the ratio of the last and first normalising constants, $z_N/z_0$. 
 
 As before, we expand as a telescopic product, where the $i$th term is now
 \[
@@ -314,6 +315,7 @@ mat=exp(mat)
 logEvidence=sum(log(colMeans(mat)))
 message(paste("The log evidence is",logEvidence))
 \end{lstlisting}
+It works! The correct answer is approximately -1.12.
 \end{frame}
 
 \section{References}
@@ -328,7 +330,7 @@ message(paste("The log evidence is",logEvidence))
 \item Meng, Xiao-Li, and Wing Hung Wong. "\alert{Simulating ratios of normalizing constants via a simple identity: a theoretical exploration}." Statistica Sinica 6.4 (1996): 831-860.
 \item Gelman, Andrew, and Xiao-Li Meng. "\alert{\href{http://www.jstor.org/stable/2676756}{Simulating normalizing constants: From importance sampling to bridge sampling to path sampling}}." Statistical Science (1998): 163-185.
 \item Friel, Nial, and Anthony N. Pettitt. "\alert{\href{http://dx.doi.org/10.1111/j.1467-9868.2007.00650.x}{Marginal likelihood estimation via power posteriors}}." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 70.3 (2008): 589-607.
-\item Friel, Nial, and Jason Wyse. "\alert{\href{http://dx.doi.org/10.1111/j.1467-9574.2011.00515.x}{Estimating the evidence–a review}}." Statistica Neerlandica 66.3 (2012): 288-308.
+\item Friel, Nial, and Jason Wyse. "\alert{\href{http://dx.doi.org/10.1111/j.1467-9574.2011.00515.x}{Estimating the evidence --- a review}}." Statistica Neerlandica 66.3 (2012): 288-308.
 
 \end{itemize}}
 }

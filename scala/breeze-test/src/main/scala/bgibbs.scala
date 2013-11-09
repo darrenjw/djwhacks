@@ -13,7 +13,7 @@ object BreezeGibbs {
     class State(val x: Double,val y: Double)
 
     def nextIter(s: State): State = {
-         val newX=Gamma(3.0,(s.y)*(s.y)+4.0).draw()
+         val newX=Gamma(3.0,1.0/((s.y)*(s.y)+4.0)).draw()
          new State(newX,Gaussian(1.0/(newX+1),1.0/sqrt(2*newX+2)).draw())
     }
 

@@ -27,3 +27,8 @@ To use the linear algebra stuff, need to start sbt with:
 
 sbt -J"-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.NativeRefBLAS"
 
+
+To work in the ScalaIDE (Eclipse), first make sure that the "sbteclipse" plugin for sbt is installed (config file in ~/.sbt), and then use the "eclipse" sbt target to produce an eclipse project folder so that the project can be imported into Eclipse as an existing project with all the dependencies set up correctly...
+
+
+

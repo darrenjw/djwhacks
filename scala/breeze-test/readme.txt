@@ -21,3 +21,9 @@ sbt
 compile
 package
 to get the new snapshot jar
+
+
+To use the linear algebra stuff, need to start sbt with:
+
+sbt -J"-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.NativeRefBLAS"
+

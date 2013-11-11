@@ -3,9 +3,9 @@ name := "breeze-test"
 version := "0.1"
 
 libraryDependencies  ++= Seq(
-            // other dependencies here
+            "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
+            "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
             "org.scalanlp" % "breeze_2.10" % "0.5.2",
-            // in a different repository now (github.com/scalanlp/breeze-viz)
             "org.scalanlp" % "breeze-viz_2.10" % "0.5.2"
 )
 

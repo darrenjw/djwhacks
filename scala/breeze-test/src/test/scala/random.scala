@@ -12,11 +12,16 @@ import org.scalatest.junit._
 import org.scalatest.prop._
 import org.junit.runner.RunWith
 
-@RunWith(classOf[JUnitRunner])
-class MyTestSuite extends FunSuite {
+import breeze.stats.distributions._
 
-  test("1+2=3") {
-    assert(1 + 2 === 3)
+@RunWith(classOf[JUnitRunner])
+class MyRandomSuite extends FunSuite {
+
+  test("Poisson sample") {
+    val poi = new Poisson(3.0)
+    val s = poi.sample(10)
+    assert(s.length === 10)
+    assert(s(1) >= 0)
   }
 
 }

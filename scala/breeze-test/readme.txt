@@ -26,7 +26,18 @@ to get the new snapshot jar
 
 To use the linear algebra stuff, need to start sbt with:
 
-sbt -J"-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.NativeRefBLAS"
+sbt -J"-Dcom.github.fommil.netlib.BLAS=com.github.fommiletlib.NativeRefBLAS -Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.NativeRefLAPACK"
+
+"That's probably a bug against netlib-java. Can you take a look at the 
+readme here: https://github.com/fommil/netlib-java and see if any of 
+the suggestions work? One that should almost certainly work is to 
+specify 
+-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.F2jBLAS 
+-Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.F2jLAPACK 
+-Dcom.github.fommil.netlib.ARPACK=com.github.fommil.netlib.F2jARPACK 
+as JVM parameters "
+
+Things will be slower, but they'll work. 
 
 
 To work in the ScalaIDE (Eclipse), first make sure that the "sbteclipse" plugin for sbt is installed (config file in ~/.sbt), and then use the "eclipse" sbt target to produce an eclipse project folder so that the project can be imported into Eclipse as an existing project with all the dependencies set up correctly...

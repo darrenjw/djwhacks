@@ -27,7 +27,7 @@ object bayeskitTest {;import org.scalaide.worksheet.runtime.library.WorksheetSup
   val b = List("a", "b", "c");System.out.println("""b  : List[String] = """ + $show(b ));$skip(18); 
   val c = a zip b;System.out.println("""c  : List[(Int, String)] = """ + $show(c ));$skip(74); 
 
-  val state = stepLV(new State(100, 50), 0, 10, Vector(1.0, 0.005, 0.6));System.out.println("""state  : bayeskit.bayeskit.State = """ + $show(state ));$skip(105); 
+  val state = stepLV(new State(100, 50), 0, 10, Vector(1.0, 0.005, 0.6));System.out.println("""state  : <error> = """ + $show(state ));$skip(105); 
 
   def fun(a: Int): (Int => Int) = {
     val c = a + 1

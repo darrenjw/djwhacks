@@ -2,7 +2,7 @@
 monte-carlo4.scala
 
 scalac monte-carlo4.scala
-time scala MonteCarlo
+time scala MonteCarlo 4
 
 */
 

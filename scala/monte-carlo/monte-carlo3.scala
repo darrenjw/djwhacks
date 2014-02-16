@@ -1,7 +1,7 @@
 /*
-monte-carlo2.scala
+monte-carlo3.scala
 
-scalac monte-carlo2.scala
+scalac monte-carlo3.scala
 time scala MonteCarlo
 
 */

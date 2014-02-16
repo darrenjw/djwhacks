@@ -24,7 +24,7 @@ object MonteCarlo {
 
   def main(args: Array[String]) = {
     println("Hello")
-    val iters=1000000000
+    val iters=100000000
     val result=sum(iters,0.0)
     println(result/iters)
     println("Goodbye")

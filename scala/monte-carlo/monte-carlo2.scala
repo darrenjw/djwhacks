@@ -25,7 +25,7 @@ object MonteCarlo {
   def main(args: Array[String]) = {
     println("Hello")
     val N=4
-    val iters=100000000
+    val iters=1000000000
     val its=iters/N
     val sums=(1 to N).toList map {x => sum(its,0.0)}
     val result=sums.reduce(_+_)

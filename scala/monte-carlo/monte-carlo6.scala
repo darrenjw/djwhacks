@@ -13,7 +13,7 @@ object MonteCarlo {
 
   def main(args: Array[String]) = {
     println("Hello")
-    val iters=1000000
+    val iters=1000000000
     val sums=(1 to iters).toList.par map {x => ThreadLocalRandom.current().nextDouble()} map {x => exp(-x*x)}
     val result=sums.reduce(_+_)
     println(result/iters)

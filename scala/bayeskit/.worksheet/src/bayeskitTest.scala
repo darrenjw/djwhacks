@@ -3,20 +3,23 @@ object bayeskitTest {;import org.scalaide.worksheet.runtime.library.WorksheetSup
 
   import bayeskit.bayeskit._
 
+  import breeze.stats.distributions._
+  import bayeskit.sim._
+  import bayeskit.lvsim.stepLV
+  import bayeskit.pfilter._
+
   import org.apache.commons.math3.distribution._
-  
-  import breeze.stats.distributions._;$skip(160); val res$0 = 
+
+  import breeze.stats.distributions._;$skip(278); val res$0 = 
   // import breeze.linalg._
-  
+
   1 + 2;System.out.println("""res0: Int(3) = """ + $show(res$0));$skip(10); val res$1 = 
 
-  0 to 9;System.out.println("""res1: scala.collection.immutable.Range.Inclusive = """ + $show(res$1));$skip(152); val res$2 = 
+  0 to 9;System.out.println("""res1: scala.collection.immutable.Range.Inclusive = """ + $show(res$1));$skip(145); val res$2 = 
   //linspace(1.0,10.0,20)
-  
- 
+
   //val cat=new EnumeratedIntegerDistribution((0 to 9).toArray, linspace(0.0,1.0,10).toArray)
   //cat.sample
-  
 
   1 + 1;System.out.println("""res2: Int(2) = """ + $show(res$2));$skip(20); 
   val h = (1, 2, 3);System.out.println("""h  : (Int, Int, Int) = """ + $show(h ));$skip(7); val res$3 = 
@@ -25,9 +28,9 @@ object bayeskitTest {;import org.scalaide.worksheet.runtime.library.WorksheetSup
   (1, "b");System.out.println("""res4: (Int, String) = """ + $show(res$4));$skip(24); 
   val a = List(1, 2, 3);System.out.println("""a  : List[Int] = """ + $show(a ));$skip(30); 
   val b = List("a", "b", "c");System.out.println("""b  : List[String] = """ + $show(b ));$skip(18); 
-  val c = a zip b;System.out.println("""c  : List[(Int, String)] = """ + $show(c ));$skip(74); 
+  val c = a zip b;System.out.println("""c  : List[(Int, String)] = """ + $show(c ));$skip(71); 
 
-  val state = stepLV(new State(100, 50), 0, 10, Vector(1.0, 0.005, 0.6));System.out.println("""state  : <error> = """ + $show(state ));$skip(105); 
+  val state = stepLV(Vector(100, 50), 0, 10, Vector(1.0, 0.005, 0.6));System.out.println("""state  : bayeskit.sim.State = """ + $show(state ));$skip(105); 
 
   def fun(a: Int): (Int => Int) = {
     val c = a + 1
@@ -45,12 +48,24 @@ object bayeskitTest {;import org.scalaide.worksheet.runtime.library.WorksheetSup
     (l.tail zip l) map { x => x._1 - x._2 }
   };System.out.println("""diff: (l: List[Int])List[Int]""");$skip(35); val res$7 = 
 
-  diff(List(1, 2, 3, 4, 6, 7, 9));System.out.println("""res7: List[Int] = """ + $show(res$7));$skip(27); val res$8 = 
+  diff(List(1, 2, 3, 4, 6, 7, 9));System.out.println("""res7: List[Int] = """ + $show(res$7));$skip(28); val res$8 = 
 
-  Vector[Double](1.0,2.0);System.out.println("""res8: scala.collection.immutable.Vector[Double] = """ + $show(res$8))}
-  
+  Vector[Double](1.0, 2.0);System.out.println("""res8: scala.collection.immutable.Vector[Double] = """ + $show(res$8));$skip(235); 
 
+  def simPrior(n: Int, t: Time, th: Parameter): Vector[State] = {
+    val prey = new Poisson(100.0).sample(n).toVector
+    val predator = new Poisson(50.0).sample(n).toVector
+    prey.zip(predator) map { x => Vector(x._1, x._2) }
+  };System.out.println("""simPrior: (n: Int, t: bayeskit.sim.Time, th: bayeskit.sim.Parameter)Vector[bayeskit.sim.State]""");$skip(109); 
+  def obsLik(s: State, o: Observation, th: Parameter): Double = {
+    new Gaussian(s(0), 10.0).pdf(o(0))
+  };System.out.println("""obsLik: (s: bayeskit.sim.State, o: bayeskit.sim.Observation, th: bayeskit.sim.Parameter)Double""");$skip(82); 
+  val truth = simTs(Vector(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6));System.out.println("""truth  : bayeskit.sim.StateTS = """ + $show(truth ));$skip(65); 
+  val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) };System.out.println("""data  : List[(bayeskit.sim.Time, scala.collection.immutable.Vector[Double])] = """ + $show(data ));$skip(63); 
+  val mll = pfMLLik(1000, simPrior, 0.0, stepLV, obsLik, data);System.out.println("""mll  : bayeskit.sim.Parameter => Double = """ + $show(mll ));$skip(47); 
+  val mllSample = mll(Vector(1.0, 0.005, 0.6));System.out.println("""mllSample  : Double = """ + $show(mllSample ));$skip(68); 
 
-
+  val pmll = pfMLLikPar(1000, simPrior, 0.0, stepLV, obsLik, data);System.out.println("""pmll  : bayeskit.sim.Parameter => Double = """ + $show(pmll ));$skip(48); 
+  val pmllSample = mll(Vector(1.0, 0.005, 0.6));System.out.println("""pmllSample  : Double = """ + $show(pmllSample ))}
 
 }

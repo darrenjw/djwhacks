@@ -61,11 +61,20 @@ object bayeskitTest {;import org.scalaide.worksheet.runtime.library.WorksheetSup
     new Gaussian(s(0), 10.0).pdf(o(0))
   };System.out.println("""obsLik: (s: bayeskit.sim.State, o: bayeskit.sim.Observation, th: bayeskit.sim.Parameter)Double""");$skip(82); 
   val truth = simTs(Vector(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6));System.out.println("""truth  : bayeskit.sim.StateTS = """ + $show(truth ));$skip(65); 
-  val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) };System.out.println("""data  : List[(bayeskit.sim.Time, scala.collection.immutable.Vector[Double])] = """ + $show(data ));$skip(63); 
-  val mll = pfMLLik(1000, simPrior, 0.0, stepLV, obsLik, data);System.out.println("""mll  : bayeskit.sim.Parameter => Double = """ + $show(mll ));$skip(47); 
-  val mllSample = mll(Vector(1.0, 0.005, 0.6));System.out.println("""mllSample  : Double = """ + $show(mllSample ));$skip(68); 
+  val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) };System.out.println("""data  : List[(bayeskit.sim.Time, scala.collection.immutable.Vector[Double])] = """ + $show(data ));$skip(62); 
+  val mll = pfMLLik(100, simPrior, 0.0, stepLV, obsLik, data);System.out.println("""mll  : bayeskit.sim.Parameter => Double = """ + $show(mll ));$skip(47); 
+  val mllSample = mll(Vector(1.0, 0.005, 0.6));System.out.println("""mllSample  : Double = """ + $show(mllSample ));$skip(67); 
 
-  val pmll = pfMLLikPar(1000, simPrior, 0.0, stepLV, obsLik, data);System.out.println("""pmll  : bayeskit.sim.Parameter => Double = """ + $show(pmll ));$skip(48); 
-  val pmllSample = mll(Vector(1.0, 0.005, 0.6));System.out.println("""pmllSample  : Double = """ + $show(pmllSample ))}
+  val pmll = pfMLLikPar(100, simPrior, 0.0, stepLV, obsLik, data);System.out.println("""pmll  : bayeskit.sim.Parameter => Double = """ + $show(pmll ));$skip(49); 
+  val pmllSample = pmll(Vector(1.0, 0.005, 0.6));System.out.println("""pmllSample  : Double = """ + $show(pmllSample ));$skip(32); val res$9 = 
+
+  mll(Vector(1.0, 0.005, 0.6));System.out.println("""res9: Double = """ + $show(res$9));$skip(31); val res$10 = 
+  mll(Vector(1.0, 0.005, 0.6));System.out.println("""res10: Double = """ + $show(res$10));$skip(31); val res$11 = 
+  mll(Vector(1.0, 0.005, 0.6));System.out.println("""res11: Double = """ + $show(res$11));$skip(33); val res$12 = 
+
+  pmll(Vector(1.0, 0.005, 0.6));System.out.println("""res12: Double = """ + $show(res$12));$skip(32); val res$13 = 
+  pmll(Vector(1.0, 0.005, 0.6));System.out.println("""res13: Double = """ + $show(res$13));$skip(32); val res$14 = 
+  pmll(Vector(1.0, 0.005, 0.6));System.out.println("""res14: Double = """ + $show(res$14))}
+
 
 }

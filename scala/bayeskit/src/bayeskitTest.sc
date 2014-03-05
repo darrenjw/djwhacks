@@ -32,7 +32,7 @@ object bayeskitTest {
   val c = a zip b                                 //> c  : List[(Int, String)] = List((1,a), (2,b), (3,c))
 
   val state = stepLV(Vector(100, 50), 0, 10, Vector(1.0, 0.005, 0.6))
-                                                  //> state  : bayeskit.sim.State = Vector(48, 18)
+                                                  //> state  : bayeskit.sim.State = Vector(195, 37)
 
   def fun(a: Int): (Int => Int) = {
     val c = a + 1
@@ -65,25 +65,34 @@ object bayeskitTest {
   }                                               //> obsLik: (s: bayeskit.sim.State, o: bayeskit.sim.Observation, th: bayeskit.s
                                                   //| im.Parameter)Double
   val truth = simTs(Vector(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
-                                                  //> truth  : bayeskit.sim.StateTS = List((0.0,Vector(100, 50)), (2.0,Vector(391
-                                                  //| , 128)), (4.0,Vector(50, 557)), (6.0,Vector(13, 218)), (8.0,Vector(28, 70))
-                                                  //| , (10.0,Vector(173, 35)), (12.0,Vector(394, 336)), (14.0,Vector(22, 359)), 
-                                                  //| (16.0,Vector(12, 128)), (18.0,Vector(57, 41)), (20.0,Vector(280, 56)), (22.
-                                                  //| 0,Vector(179, 518)), (24.0,Vector(9, 284)), (26.0,Vector(8, 105)), (28.0,Ve
-                                                  //| ctor(75, 47)), (30.0,Vector(364, 111)))
+                                                  //> truth  : bayeskit.sim.StateTS = List((0.0,Vector(100, 50)), (2.0,Vector(345
+                                                  //| , 170)), (4.0,Vector(53, 458)), (6.0,Vector(13, 188)), (8.0,Vector(34, 80))
+                                                  //| , (10.0,Vector(138, 41)), (12.0,Vector(446, 197)), (14.0,Vector(19, 444)), 
+                                                  //| (16.0,Vector(19, 143)), (18.0,Vector(47, 78)), (20.0,Vector(124, 56)), (22.
+                                                  //| 0,Vector(436, 206)), (24.0,Vector(37, 436)), (26.0,Vector(10, 142)), (28.0,
+                                                  //| Vector(74, 54)), (30.0,Vector(292, 102)))
   val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) }
                                                   //> data  : List[(bayeskit.sim.Time, scala.collection.immutable.Vector[Double])
-                                                  //| ] = List((0.0,Vector(100.0)), (2.0,Vector(391.0)), (4.0,Vector(50.0)), (6.0
-                                                  //| ,Vector(13.0)), (8.0,Vector(28.0)), (10.0,Vector(173.0)), (12.0,Vector(394.
-                                                  //| 0)), (14.0,Vector(22.0)), (16.0,Vector(12.0)), (18.0,Vector(57.0)), (20.0,V
-                                                  //| ector(280.0)), (22.0,Vector(179.0)), (24.0,Vector(9.0)), (26.0,Vector(8.0))
-                                                  //| , (28.0,Vector(75.0)), (30.0,Vector(364.0)))
-  val mll = pfMLLik(1000, simPrior, 0.0, stepLV, obsLik, data)
+                                                  //| ] = List((0.0,Vector(100.0)), (2.0,Vector(345.0)), (4.0,Vector(53.0)), (6.0
+                                                  //| ,Vector(13.0)), (8.0,Vector(34.0)), (10.0,Vector(138.0)), (12.0,Vector(446.
+                                                  //| 0)), (14.0,Vector(19.0)), (16.0,Vector(19.0)), (18.0,Vector(47.0)), (20.0,V
+                                                  //| ector(124.0)), (22.0,Vector(436.0)), (24.0,Vector(37.0)), (26.0,Vector(10.0
+                                                  //| )), (28.0,Vector(74.0)), (30.0,Vector(292.0)))
+  val mll = pfMLLik(100, simPrior, 0.0, stepLV, obsLik, data)
                                                   //> mll  : bayeskit.sim.Parameter => Double = <function1>
-  val mllSample = mll(Vector(1.0, 0.005, 0.6))    //> mllSample  : Double = -69.8812752856767
+  val mllSample = mll(Vector(1.0, 0.005, 0.6))    //> mllSample  : Double = -71.55464196945677
 
-  val pmll = pfMLLikPar(1000, simPrior, 0.0, stepLV, obsLik, data)
+  val pmll = pfMLLikPar(100, simPrior, 0.0, stepLV, obsLik, data)
                                                   //> pmll  : bayeskit.sim.Parameter => Double = <function1>
-  val pmllSample = mll(Vector(1.0, 0.005, 0.6))   //> pmllSample  : Double = -70.1485876011123
+  val pmllSample = pmll(Vector(1.0, 0.005, 0.6))  //> pmllSample  : Double = -71.72485285926913
+
+  mll(Vector(1.0, 0.005, 0.6))                    //> res9: Double = -76.31621121468643
+  mll(Vector(1.0, 0.005, 0.6))                    //> res10: Double = -73.29298988791122
+  mll(Vector(1.0, 0.005, 0.6))                    //> res11: Double = -74.3797292752627
+
+  pmll(Vector(1.0, 0.005, 0.6))                   //> res12: Double = -72.01833043205912
+  pmll(Vector(1.0, 0.005, 0.6))                   //> res13: Double = -72.71116297951957
+  pmll(Vector(1.0, 0.005, 0.6))                   //> res14: Double = -73.32492526941836
+
 
 }

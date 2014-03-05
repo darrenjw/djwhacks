@@ -2,6 +2,8 @@ name := "breeze-test"
 
 version := "0.1"
 
+scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
+
 libraryDependencies  ++= Seq(
             "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
             "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",

@@ -15,9 +15,9 @@ object pfilter {
   // R-like "sample" function, using Apache Commons Math
   // Note that the sampling here is WITH replacement, which is not the R default
   def sample(n: Int, prob: Array[Double]): Vector[Int] = {
-    val inds = (0 to (prob.length - 1)) toArray
+    val inds = (0 to (prob.length - 1)).toArray
     val cat = new EnumeratedIntegerDistribution(inds, prob)
-    inds map { x => cat.sample } toVector
+    (inds map { x => cat.sample }).toVector
   }
 
   def mean(vec: Vector[Double]): Double = {
@@ -49,11 +49,11 @@ object pfilter {
       pf(0, x0, t0, deltas, obs)
     }
   }
-  
-    def pmean(vec: ParVector[Double]): Double = {
+
+  def mean(vec: ParVector[Double]): Double = {
     vec.sum / vec.length
   }
-  
+
   def pfMLLikPar(
     n: Int,
     simx0: (Int, Time, Parameter) => Vector[State],
@@ -73,12 +73,11 @@ object pfilter {
             val w = xp map { dataLik(_, head, th) }
             val rows = sample(n, w.toArray).toVector.par
             val xpp = rows map { xp(_) }
-            pf(ll + math.log(pmean(w)), xpp, t + deltas.head, deltas.tail, tail)
+            pf(ll + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
           }
         }
       pf(0, x0, t0, deltas, obs)
     }
   }
-  
-  
+
 }

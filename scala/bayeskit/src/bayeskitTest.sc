@@ -7,6 +7,7 @@ object bayeskitTest {
   import bayeskit.sim._
   import bayeskit.lvsim.stepLV
   import bayeskit.pfilter._
+  import bayeskit.pmmh._
 
   import org.apache.commons.math3.distribution._
 
@@ -32,7 +33,7 @@ object bayeskitTest {
   val c = a zip b                                 //> c  : List[(Int, String)] = List((1,a), (2,b), (3,c))
 
   val state = stepLV(Vector(100, 50), 0, 10, Vector(1.0, 0.005, 0.6))
-                                                  //> state  : bayeskit.sim.State = Vector(195, 37)
+                                                  //> state  : bayeskit.sim.State = Vector(38, 23)
 
   def fun(a: Int): (Int => Int) = {
     val c = a + 1
@@ -65,34 +66,88 @@ object bayeskitTest {
   }                                               //> obsLik: (s: bayeskit.sim.State, o: bayeskit.sim.Observation, th: bayeskit.s
                                                   //| im.Parameter)Double
   val truth = simTs(Vector(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
-                                                  //> truth  : bayeskit.sim.StateTS = List((0.0,Vector(100, 50)), (2.0,Vector(345
-                                                  //| , 170)), (4.0,Vector(53, 458)), (6.0,Vector(13, 188)), (8.0,Vector(34, 80))
-                                                  //| , (10.0,Vector(138, 41)), (12.0,Vector(446, 197)), (14.0,Vector(19, 444)), 
-                                                  //| (16.0,Vector(19, 143)), (18.0,Vector(47, 78)), (20.0,Vector(124, 56)), (22.
-                                                  //| 0,Vector(436, 206)), (24.0,Vector(37, 436)), (26.0,Vector(10, 142)), (28.0,
-                                                  //| Vector(74, 54)), (30.0,Vector(292, 102)))
+                                                  //> truth  : bayeskit.sim.StateTS = List((0.0,Vector(100, 50)), (2.0,Vector(346
+                                                  //| , 159)), (4.0,Vector(56, 460)), (6.0,Vector(7, 176)), (8.0,Vector(2, 64)), 
+                                                  //| (10.0,Vector(3, 24)), (12.0,Vector(14, 6)), (14.0,Vector(99, 2)), (16.0,Vec
+                                                  //| tor(712, 33)), (18.0,Vector(6, 851)), (20.0,Vector(0, 245)), (22.0,Vector(0
+                                                  //| , 87)), (24.0,Vector(0, 21)), (26.0,Vector(0, 5)), (28.0,Vector(0, 0)), (30
+                                                  //| .0,Vector(0, 0)))
   val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) }
                                                   //> data  : List[(bayeskit.sim.Time, scala.collection.immutable.Vector[Double])
-                                                  //| ] = List((0.0,Vector(100.0)), (2.0,Vector(345.0)), (4.0,Vector(53.0)), (6.0
-                                                  //| ,Vector(13.0)), (8.0,Vector(34.0)), (10.0,Vector(138.0)), (12.0,Vector(446.
-                                                  //| 0)), (14.0,Vector(19.0)), (16.0,Vector(19.0)), (18.0,Vector(47.0)), (20.0,V
-                                                  //| ector(124.0)), (22.0,Vector(436.0)), (24.0,Vector(37.0)), (26.0,Vector(10.0
-                                                  //| )), (28.0,Vector(74.0)), (30.0,Vector(292.0)))
+                                                  //| ] = List((0.0,Vector(100.0)), (2.0,Vector(346.0)), (4.0,Vector(56.0)), (6.0
+                                                  //| ,Vector(7.0)), (8.0,Vector(2.0)), (10.0,Vector(3.0)), (12.0,Vector(14.0)), 
+                                                  //| (14.0,Vector(99.0)), (16.0,Vector(712.0)), (18.0,Vector(6.0)), (20.0,Vector
+                                                  //| (0.0)), (22.0,Vector(0.0)), (24.0,Vector(0.0)), (26.0,Vector(0.0)), (28.0,V
+                                                  //| ector(0.0)), (30.0,Vector(0.0)))
   val mll = pfMLLik(100, simPrior, 0.0, stepLV, obsLik, data)
                                                   //> mll  : bayeskit.sim.Parameter => Double = <function1>
-  val mllSample = mll(Vector(1.0, 0.005, 0.6))    //> mllSample  : Double = -71.55464196945677
+  val mllSample = mll(Vector(1.0, 0.005, 0.6))    //> mllSample  : Double = -67.28810506848146
 
   val pmll = pfMLLikPar(100, simPrior, 0.0, stepLV, obsLik, data)
                                                   //> pmll  : bayeskit.sim.Parameter => Double = <function1>
-  val pmllSample = pmll(Vector(1.0, 0.005, 0.6))  //> pmllSample  : Double = -71.72485285926913
+  val pmllSample = pmll(Vector(1.0, 0.005, 0.6))  //> pmllSample  : Double = -66.88768979497242
 
-  mll(Vector(1.0, 0.005, 0.6))                    //> res9: Double = -76.31621121468643
-  mll(Vector(1.0, 0.005, 0.6))                    //> res10: Double = -73.29298988791122
-  mll(Vector(1.0, 0.005, 0.6))                    //> res11: Double = -74.3797292752627
+  mll(Vector(1.0, 0.005, 0.6))                    //> res9: Double = -64.1019962028424
+  mll(Vector(1.0, 0.005, 0.6))                    //> res10: Double = -64.2440812783
+  mll(Vector(1.0, 0.005, 0.6))                    //> res11: Double = -66.75247119628489
 
-  pmll(Vector(1.0, 0.005, 0.6))                   //> res12: Double = -72.01833043205912
-  pmll(Vector(1.0, 0.005, 0.6))                   //> res13: Double = -72.71116297951957
-  pmll(Vector(1.0, 0.005, 0.6))                   //> res14: Double = -73.32492526941836
+  pmll(Vector(1.0, 0.005, 0.6))                   //> res12: Double = -65.20228013516781
+  pmll(Vector(1.0, 0.005, 0.6))                   //> res13: Double = -71.45802206085168
+  pmll(Vector(1.0, 0.005, 0.6))                   //> res14: Double = -65.51876458664515
 
-
+  Vector(1,2,3).map{_*2}                          //> res15: scala.collection.immutable.Vector[Int] = Vector(2, 4, 6)
+  val pmmhOutput=runPmmh(100,Vector(1.0, 0.005, 0.6),mll)
+                                                  //> 100
+                                                  //| Accept
+                                                  //| 99
+                                                  //| Accept
+                                                  //| 98
+                                                  //| Accept
+                                                  //| 97
+                                                  //| Reject
+                                                  //| 96
+                                                  //| Accept
+                                                  //| 95
+                                                  //| Accept
+                                                  //| 94
+                                                  //| Reject
+                                                  //| 93
+                                                  //| Reject
+                                                  //| 92
+                                                  //| Reject
+                                                  //| 91
+                                                  //| Accept
+                                                  //| 90
+                                                  //| Accept
+                                                  //| 89
+                                                  //| Accept
+                                                  //| 88
+                                                  //| Accept
+                                                  //| 87
+                                                  //| Accept
+                                                  //| 86
+                                                  //| Reject
+                                                  //| 85
+                                                  //| Accept
+                                                  //| 84
+                                                  //| Accept
+                                                  //| 83
+                                                  //| Reject
+                                                  //| 82
+                                                  //| org.apache.commons.math3.exception.MathArithmeticException: array sums to z
+                                                  //| ero
+                                                  //| 	at org.apache.commons.math3.util.MathArrays.normalizeArray(MathArrays.ja
+                                                  //| va:1296)
+                                                  //| 	at org.apache.commons.math3.distribution.EnumeratedDistribution.<init>(E
+                                                  //| numeratedDistribution.java:126)
+                                                  //| 	at org.apache.commons.math3.distribution.EnumeratedIntegerDistribution.<
+                                                  //| init>(EnumeratedIntegerDistribution.java:100)
+                                                  //| 	at org.apache.commons.math3.distribution.EnumeratedIntegerDistribution.<
+                                                  //| init>(EnumeratedIntegerDistribution.java:68)
+                                                  //| 	at bayeskit.pfilter$.sample(pfilter.scala:19)
+                                                  //| 	at bayeskit.pfi
+                                                  //| Output exceeds cutoff limit.
+  
+  
+  
 }

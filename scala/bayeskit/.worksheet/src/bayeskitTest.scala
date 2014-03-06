@@ -7,10 +7,11 @@ object bayeskitTest {;import org.scalaide.worksheet.runtime.library.WorksheetSup
   import bayeskit.sim._
   import bayeskit.lvsim.stepLV
   import bayeskit.pfilter._
+  import bayeskit.pmmh._
 
   import org.apache.commons.math3.distribution._
 
-  import breeze.stats.distributions._;$skip(278); val res$0 = 
+  import breeze.stats.distributions._;$skip(303); val res$0 = 
   // import breeze.linalg._
 
   1 + 2;System.out.println("""res0: Int(3) = """ + $show(res$0));$skip(10); val res$1 = 
@@ -74,7 +75,11 @@ object bayeskitTest {;import org.scalaide.worksheet.runtime.library.WorksheetSup
 
   pmll(Vector(1.0, 0.005, 0.6));System.out.println("""res12: Double = """ + $show(res$12));$skip(32); val res$13 = 
   pmll(Vector(1.0, 0.005, 0.6));System.out.println("""res13: Double = """ + $show(res$13));$skip(32); val res$14 = 
-  pmll(Vector(1.0, 0.005, 0.6));System.out.println("""res14: Double = """ + $show(res$14))}
+  pmll(Vector(1.0, 0.005, 0.6));System.out.println("""res14: Double = """ + $show(res$14));$skip(26); val res$15 = 
 
-
+  Vector(1,2,3).map{_*2};System.out.println("""res15: scala.collection.immutable.Vector[Int] = """ + $show(res$15));$skip(58); 
+  val pmmhOutput=runPmmh(100,Vector(1.0, 0.005, 0.6),mll);System.out.println("""pmmhOutput  : List[bayeskit.sim.Parameter] = """ + $show(pmmhOutput ))}
+  
+  
+  
 }

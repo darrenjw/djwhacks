@@ -19,6 +19,19 @@ circle(40,20,40,10,block.DIRT)
 cylinder(40,20,40,5,20,block.COBBLESTONE)
 
 
+
+# basic house
+rectFill(-56,6,-90,21,21,block.WOOD)
+rectFill(-56,12,-90,21,21,block.WOOD)
+rectFill(-56,18,-90,21,21,block.WOOD)
+pyramid(-56,18,-90,21,block.WOOD_PLANKS)
+box(-56,5,-90,21,21,13,block.BRICK_BLOCK)
+box(-56,5,-90,11,11,13,block.BRICK_BLOCK)
+box(-46,5,-80,11,11,13,block.BRICK_BLOCK)
+# end of basic house
+
+
+
 # eof
 
 

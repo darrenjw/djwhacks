@@ -17,6 +17,16 @@ def rect(sx,sy,sz,lx,lz,b):
   line(sx,sy,sz+lz-1,1,0,0,lx,b)
   line(sx+lx-1,sy,sz,0,0,1,lz,b)
 
+def rectFill(sx,sy,sz,lx,lz,b):
+  if (lz>0):
+    line(sx,sy,sz,1,0,0,lx,b)
+    rectFill(sx,sy,sz+1,lx,lz-1,b)
+
+def box(sx,sy,sz,lx,lz,h,b):
+  if (h>0):
+    rect(sx,sy,sz,lx,lz,b)
+    box(sx,sy+1,sz,lx,lz,h-1,b)
+
 def square(sx,sy,sz,l,b):
   rect(sx,sy,sz,l,l,b)
 

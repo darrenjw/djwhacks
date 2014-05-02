@@ -44,7 +44,25 @@ class Canvas extends Panel {
   g.drawLine(0,200,100,300)
   g.drawLine(300,300,300,300)
   g.setColor(Color.red)
-  sier(250,0,0,400,500,400,g)
+  sier(250,0,200,200,300,200,g)
+  g.setColor(Color.green)
+  tree(250.0,450.0,150.0,-Pi/2,g)
+ }
+
+
+ def tree(x: Double,y: Double,l: Double,a: Double,g: Graphics2D): Unit = {
+  println(x,y,l,a)
+  if (l>2.0) {
+   val x1=x+l*cos(a)
+   val y1=y+l*sin(a)
+   g.drawLine(x.toInt,y.toInt,x1.toInt,y1.toInt)
+   val l1=0.6*l
+   tree(x1,y1,l1,a+Pi/6,g)
+   val x3=0.3*x+0.7*x1
+   val y3=0.3*y+0.7*y1
+   val l3=0.7*l
+   tree(x3,y3,l3,a-Pi/4,g)
+  }
  }
 
  def sier(x1: Int,y1: Int,x2: Int,y2: Int,x3: Int,y3: Int,g: Graphics2D): Unit = {

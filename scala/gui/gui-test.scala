@@ -2,6 +2,7 @@ import scala.swing._
 import scala.swing.event._
 import java.awt.{Graphics2D,Color}
 import scala.math._
+import scala.util.Random
 
 object MySwingApp extends SimpleSwingApplication {
 
@@ -46,22 +47,24 @@ class Canvas extends Panel {
   g.setColor(Color.red)
   sier(250,0,200,200,300,200,g)
   g.setColor(Color.green)
-  tree(250.0,450.0,150.0,-Pi/2,g)
+  val r=Random
+  tree(250.0,450.0,150.0,-Pi/2,r,g)
  }
 
 
- def tree(x: Double,y: Double,l: Double,a: Double,g: Graphics2D): Unit = {
-  println(x,y,l,a)
+ def tree(x: Double,y: Double,l: Double,a: Double,r: Random,g: Graphics2D): Unit = {
+  // println(x,y,l,a)
   if (l>2.0) {
-   val x1=x+l*cos(a)
-   val y1=y+l*sin(a)
+   val a1=a+0.3*(r.nextDouble-0.5)
+   val x1=x+l*cos(a1)
+   val y1=y+l*sin(a1)
    g.drawLine(x.toInt,y.toInt,x1.toInt,y1.toInt)
-   val l1=0.6*l
-   tree(x1,y1,l1,a+Pi/6,g)
-   val x3=0.3*x+0.7*x1
-   val y3=0.3*y+0.7*y1
-   val l3=0.7*l
-   tree(x3,y3,l3,a-Pi/4,g)
+   val l1=(0.6+0.2*(r.nextDouble-0.5))*l
+   tree(x1,y1,l1,a1+Pi/6,r,g)
+   val x2=0.3*x+0.7*x1
+   val y2=0.3*y+0.7*y1
+   val l2=(0.7+0.2*(r.nextDouble-0.5))*l
+   tree(x2,y2,l2,a1-Pi/4,r,g)
   }
  }
 

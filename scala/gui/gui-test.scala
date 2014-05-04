@@ -29,6 +29,7 @@ object MySwingApp extends SimpleSwingApplication {
    case ButtonClicked(b) =>
     nClicks+=1
     label.text="Number of clicks: "+nClicks
+    panel.repaint()
   }
  }
 
@@ -44,6 +45,12 @@ class Canvas extends Panel {
   g.fillOval(0,0,100,100)
   g.drawLine(0,200,100,300)
   g.drawLine(300,300,300,300)
+  // g.plotPoint(400,300)
+  g.drawRect(100,0,20,20)
+  g.fillRect(100,50,20,20)
+  g.setFont(new Font("Ariel",java.awt.Font.ITALIC,24))
+  g.drawString("Hello",100,100)
+  g.fillPolygon(Array(300,350,400),Array(50,0,50),3)
   g.setColor(Color.red)
   sier(250,0,200,200,300,200,g)
   g.setColor(Color.green)

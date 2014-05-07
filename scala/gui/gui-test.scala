@@ -1,6 +1,6 @@
 import scala.swing._
 import scala.swing.event._
-import java.awt.{Graphics2D,Color}
+import java.awt.{Graphics2D,Color,BasicStroke}
 import scala.math._
 import scala.util.Random
 
@@ -65,6 +65,7 @@ class Canvas extends Panel {
    val a1=a+0.3*(r.nextDouble-0.5)
    val x1=x+l*cos(a1)
    val y1=y+l*sin(a1)
+   g.setStroke(new BasicStroke((l/10).toInt))
    g.drawLine(x.toInt,y.toInt,x1.toInt,y1.toInt)
    val l1=(0.6+0.2*(r.nextDouble-0.5))*l
    tree(x1,y1,l1,a1+Pi/6,r,g)

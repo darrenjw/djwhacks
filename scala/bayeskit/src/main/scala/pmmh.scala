@@ -31,8 +31,9 @@ object pmmh {
     @tailrec
     def pmmhAcc(itsLeft: Int, currentState: Parameter, currentMll: Double, currentPath: List[State], allIts: List[Parameter]): List[Parameter] = {
       System.err.print(itsLeft.toString+" ")
-      s.write(currentState.mkString(","))
-      s.write(currentPath.mkString(",")+"\n")
+      s.write(currentState.mkString(",")+",")
+      s.write((currentPath map {_(0)}).mkString(",")+",")
+      s.write((currentPath map {_(1)}).mkString(",")+"\n")
       if (itsLeft == 0) allIts else {
         val prop = currentState map { _ * exp(Gaussian(0, 0.01).draw) }
         val (propMll,propPath) = mll(prop)

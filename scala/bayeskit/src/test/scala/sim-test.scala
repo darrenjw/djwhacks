@@ -18,6 +18,7 @@ import sim._
 import lvsim.stepLV
 import pfilter._
 import pmmh._
+import java.io._
 
 @RunWith(classOf[JUnitRunner])
 class MyTestSuite extends FunSuite {
@@ -82,7 +83,7 @@ class MyTestSuite extends FunSuite {
     val truth = simTs(Vector(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
     val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) }
     val mll = pfMLLik(100, simPrior, 0.0, stepLV, obsLik, data)
-    val pmmhOutput=runPmmh(10,Vector(1.0, 0.005, 0.6),mll)
+    val pmmhOutput=runPmmh(new OutputStreamWriter(System.out),10,Vector(1.0, 0.005, 0.6),mll)
     assert(pmmhOutput.length==10)
   }
 

@@ -7,11 +7,13 @@ object pmmh {
   import scala.math.log
   import breeze.stats.distributions._
   import sim._
+  import java.io._
 
-  def runPmmh(iters: Int, initialState: Parameter, mll: Parameter => Double): List[Parameter] = {
+  def runPmmh(s: Writer, iters: Int, initialState: Parameter, mll: Parameter => Double): List[Parameter] = {
     @tailrec
     def pmmhAcc(itsLeft: Int, currentState: Parameter, currentMll: Double, allIts: List[Parameter]): List[Parameter] = {
-      println(itsLeft.toString+" "+currentState)
+      System.err.print(itsLeft.toString+" ")
+      s.write(currentState.mkString(",")+"\n")
       if (itsLeft == 0) allIts else {
         val prop = currentState map { _ * exp(Gaussian(0, 0.01).draw) }
         val propMll = mll(prop)

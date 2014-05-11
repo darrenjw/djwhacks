@@ -7,8 +7,10 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 libraryDependencies  ++= Seq(
             "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
             "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
-            "org.scalanlp" % "breeze_2.10" % "0.5.2",
-            "org.scalanlp" % "breeze-viz_2.10" % "0.5.2"
+            //"org.scalanlp" % "breeze_2.10" % "0.5.2",
+            //"org.scalanlp" % "breeze-viz_2.10" % "0.5.2"
+            "org.scalanlp" % "breeze_2.10" % "0.7",
+            "org.scalanlp" % "breeze-natives_2.10" % "0.7"
 )
 
 resolvers ++= Seq(

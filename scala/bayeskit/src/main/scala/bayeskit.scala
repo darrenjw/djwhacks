@@ -31,7 +31,7 @@ object bayeskit {
     val s=new PrintWriter(new File("mcmc-out.csv" ))
     //val s=new OutputStreamWriter(System.out)
     s.write("th1,th2,th3\n")
-    val pmmhOutput=runPmmh(s,100000,Vector(1.0, 0.005, 0.6),mll)
+    val pmmhOutput=runPmmh(s,1000,Vector(1.0, 0.005, 0.6),mll)
     s.close
     println("goodbye")
   }

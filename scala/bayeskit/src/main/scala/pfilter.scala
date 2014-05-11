@@ -41,12 +41,40 @@ object pfilter {
           case head :: tail => {
             val xp = x map { stepFun(_, t, deltas.head, th) }
             val w = xp map { dataLik(_, head, th) }
+            // add a bomb check
             val rows = sample(n, w.toArray)
             val xpp = rows map { xp(_) }
             pf(ll + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
           }
         }
       pf(0, x0, t0, deltas, obs)
+    }
+  }
+
+  def pfProp(
+    n: Int,
+    simx0: (Int, Time, Parameter) => Vector[State],
+    t0: Double,
+    stepFun: (State, Time, Time, Parameter) => State,
+    dataLik: (State, Observation, Parameter) => Double,
+    data: ObservationTS): (Parameter => (Double,List[State])) = {
+    val (times, obs) = data.unzip
+    val deltas = diff(t0 :: times)
+    (th: Parameter) => {
+      val x0 = simx0(n, t0, th)
+      @tailrec def pf(ll: Double, x: Vector[List[State]], t: Time, deltas: List[Time], obs: List[Observation]): (Double,List[State]) =
+        obs match {
+          case Nil => (ll,x(0).reverse)
+          case head :: tail => {
+            val xp = x map { l => stepFun(l.head, t, deltas.head, th)::l }
+            val w = xp map { l => dataLik(l.head, head, th) }
+            // add a bomb check
+            val rows = sample(n, w.toArray)
+            val xpp = rows map { xp(_) }
+            pf(ll + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
+          }
+        }
+      pf(0, x0 map {_::Nil}, t0, deltas, obs)
     }
   }
 
@@ -71,6 +99,7 @@ object pfilter {
           case head :: tail => {
             val xp = x map { stepFun(_, t, deltas.head, th) }
             val w = xp map { dataLik(_, head, th) }
+            // add a bomb check
             val rows = sample(n, w.toArray).toVector.par
             val xpp = rows map { xp(_) }
             pf(ll + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)

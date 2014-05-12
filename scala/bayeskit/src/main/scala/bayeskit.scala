@@ -35,7 +35,7 @@ object bayeskit {
     s.write(((0 to 16) map {"x"+_}).mkString(",")+",")
     s.write(((0 to 16) map {"y"+_}).mkString(",")+"\n")
     //val pmmhOutput=runPmmh(s,1000,Vector(1.0, 0.005, 0.6),mll)
-    val pmmhOutput=runPmmhPath(s,100,Vector(1.0, 0.005, 0.6),mll)
+    val pmmhOutput=runPmmhPath(s,100000,Vector(1.0, 0.005, 0.6),mll)
     s.close
     println("goodbye")
   }

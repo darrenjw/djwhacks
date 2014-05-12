@@ -44,7 +44,7 @@ object pmmh {
         }
       }
     }
-    pmmhAcc(iters, initialState, (-1e99).toDouble, Nil, Nil).reverse
+    pmmhAcc(iters, initialState, (-1e99).toDouble, mll(initialState)._2, Nil).reverse
   }
 
 }

@@ -51,7 +51,7 @@ class MyTestSuite extends FunSuite {
     val truth = simTs(Vector(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
     val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) }
     val mll = pfMLLik(100, simPrior, 0.0, stepLV, obsLik, data)
-    val mllSample = mll(Vector(1.0, 0.005, 0.6))
+    val mllSample = mll(Vector(1.0, 0.005, 0.6)).getOrElse(-1e99)
     assert(mllSample <= 0.0)
   }
 
@@ -67,7 +67,7 @@ class MyTestSuite extends FunSuite {
     val truth = simTs(Vector(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
     val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) }
     val mll = pfMLLikPar(100, simPrior, 0.0, stepLV, obsLik, data)
-    val mllSample = mll(Vector(1.0, 0.005, 0.6))
+    val mllSample = mll(Vector(1.0, 0.005, 0.6)).getOrElse(-1e99)
     assert(mllSample <= 0.0)
   }
 

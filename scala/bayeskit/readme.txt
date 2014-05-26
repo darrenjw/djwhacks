@@ -13,7 +13,6 @@ Copyright (C) 2014, Darren Wilkinson, http://tinyurl.com/darrenjw
 
 TODO
 ----
-Particle filters should return Option.
 Test path sampling code properly.
 Parallel path sampling code.
 Try unwrapping code from objects.

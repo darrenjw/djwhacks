@@ -119,4 +119,35 @@ object pfilter {
     }
   }
 
+  def pfPropPar(
+    n: Int,
+    simx0: (Int, Time, Parameter) => Vector[State],
+    t0: Double,
+    stepFun: (State, Time, Time, Parameter) => State,
+    dataLik: (State, Observation, Parameter) => Double,
+    data: ObservationTS): (Parameter => Option[(Double, List[State])]) = {
+    val (times, obs) = data.unzip
+    val deltas = diff(t0 :: times)
+    (th: Parameter) => {
+      val x0 = simx0(n, t0, th).par
+      @tailrec def pf(ll: Double, x: ParVector[List[State]], t: Time, deltas: List[Time], obs: List[Observation]): Option[(Double, List[State])] =
+        obs match {
+          case Nil => Some((ll, x(0).reverse))
+          case head :: tail => {
+            val xp = x map { l => stepFun(l.head, t, deltas.head, th) :: l }
+            val w = xp map { l => dataLik(l.head, head, th) }
+            if (w.sum < 1.0e-90) {
+              System.err.print("\nParticle filter bombed with parameter " + th + "\n")
+              None
+            } else {
+              val rows = sample(n, w.toArray).toVector.par
+              val xpp = rows map { xp(_) }
+              pf(ll + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
+            }
+          }
+        }
+      pf(0, x0 map { _ :: Nil }, t0, deltas, obs)
+    }
+  }
+
 }

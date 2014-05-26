@@ -26,7 +26,7 @@ object bayeskit {
     }
     val truth = simTs(Vector(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
     val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) }
-    val mll = pfProp(100, simPrior, 0.0, stepLV, obsLik, data)
+    val mll = pfPropPar(100, simPrior, 0.0, stepLV, obsLik, data)
     val s=new PrintWriter(new File("mcmc-out.csv" ))
     //val s=new OutputStreamWriter(System.out)
     s.write("th1,th2,th3,")

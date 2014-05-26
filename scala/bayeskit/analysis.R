@@ -7,7 +7,8 @@
 
 require(smfsb)
 
-tab=read.csv("mcmc-out.csv",colClass="numeric")
+#tab=read.csv("mcmc-out.csv",colClass="numeric")
+tab=read.csv("snapshot.csv",colClass="numeric")
 mcmcSummary(tab[,1:8])
 
 x=tab[,4:20]

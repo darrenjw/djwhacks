@@ -1,6 +1,8 @@
 object bayeskitTest {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(65); 
   println("Welcome to the Scala worksheet")
 
+  // shift control b to re evaluate the sheet
+
   import bayeskit.bayeskit._
 
   import breeze.stats.distributions._
@@ -11,7 +13,7 @@ object bayeskitTest {;import org.scalaide.worksheet.runtime.library.WorksheetSup
 
   import org.apache.commons.math3.distribution._
 
-  import breeze.stats.distributions._;$skip(303); val res$0 = 
+  import breeze.stats.distributions._;$skip(350); val res$0 = 
   // import breeze.linalg._
 
   1 + 2;System.out.println("""res0: Int(3) = """ + $show(res$0));$skip(10); val res$1 = 
@@ -63,23 +65,30 @@ object bayeskitTest {;import org.scalaide.worksheet.runtime.library.WorksheetSup
   };System.out.println("""obsLik: (s: bayeskit.sim.State, o: bayeskit.sim.Observation, th: bayeskit.sim.Parameter)Double""");$skip(82); 
   val truth = simTs(Vector(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6));System.out.println("""truth  : bayeskit.sim.StateTS = """ + $show(truth ));$skip(65); 
   val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) };System.out.println("""data  : List[(bayeskit.sim.Time, scala.collection.immutable.Vector[Double])] = """ + $show(data ));$skip(62); 
-  val mll = pfMLLik(100, simPrior, 0.0, stepLV, obsLik, data);System.out.println("""mll  : bayeskit.sim.Parameter => Double = """ + $show(mll ));$skip(47); 
-  val mllSample = mll(Vector(1.0, 0.005, 0.6));System.out.println("""mllSample  : Double = """ + $show(mllSample ));$skip(67); 
+  val mll = pfMLLik(100, simPrior, 0.0, stepLV, obsLik, data);System.out.println("""mll  : bayeskit.sim.Parameter => Option[Double] = """ + $show(mll ));$skip(47); 
+  val mllSample = mll(Vector(1.0, 0.005, 0.6));System.out.println("""mllSample  : Option[Double] = """ + $show(mllSample ));$skip(67); 
 
-  val pmll = pfMLLikPar(100, simPrior, 0.0, stepLV, obsLik, data);System.out.println("""pmll  : bayeskit.sim.Parameter => Double = """ + $show(pmll ));$skip(49); 
-  val pmllSample = pmll(Vector(1.0, 0.005, 0.6));System.out.println("""pmllSample  : Double = """ + $show(pmllSample ));$skip(32); val res$9 = 
+  val pmll = pfMLLikPar(100, simPrior, 0.0, stepLV, obsLik, data);System.out.println("""pmll  : bayeskit.sim.Parameter => Option[Double] = """ + $show(pmll ));$skip(49); 
+  val pmllSample = pmll(Vector(1.0, 0.005, 0.6));System.out.println("""pmllSample  : Option[Double] = """ + $show(pmllSample ));$skip(32); val res$9 = 
 
-  mll(Vector(1.0, 0.005, 0.6));System.out.println("""res9: Double = """ + $show(res$9));$skip(31); val res$10 = 
-  mll(Vector(1.0, 0.005, 0.6));System.out.println("""res10: Double = """ + $show(res$10));$skip(31); val res$11 = 
-  mll(Vector(1.0, 0.005, 0.6));System.out.println("""res11: Double = """ + $show(res$11));$skip(33); val res$12 = 
+  mll(Vector(1.0, 0.005, 0.6));System.out.println("""res9: Option[Double] = """ + $show(res$9));$skip(31); val res$10 = 
+  mll(Vector(1.0, 0.005, 0.6));System.out.println("""res10: Option[Double] = """ + $show(res$10));$skip(31); val res$11 = 
+  mll(Vector(1.0, 0.005, 0.6));System.out.println("""res11: Option[Double] = """ + $show(res$11));$skip(33); val res$12 = 
 
-  pmll(Vector(1.0, 0.005, 0.6));System.out.println("""res12: Double = """ + $show(res$12));$skip(32); val res$13 = 
-  pmll(Vector(1.0, 0.005, 0.6));System.out.println("""res13: Double = """ + $show(res$13));$skip(32); val res$14 = 
-  pmll(Vector(1.0, 0.005, 0.6));System.out.println("""res14: Double = """ + $show(res$14));$skip(26); val res$15 = 
+  pmll(Vector(1.0, 0.005, 0.6));System.out.println("""res12: Option[Double] = """ + $show(res$12));$skip(32); val res$13 = 
+  pmll(Vector(1.0, 0.005, 0.6));System.out.println("""res13: Option[Double] = """ + $show(res$13));$skip(32); val res$14 = 
+  pmll(Vector(1.0, 0.005, 0.6));System.out.println("""res14: Option[Double] = """ + $show(res$14));$skip(26); val res$15 = 
 
-  Vector(1,2,3).map{_*2};System.out.println("""res15: scala.collection.immutable.Vector[Int] = """ + $show(res$15));$skip(58); 
-  val pmmhOutput=runPmmh(100,Vector(1.0, 0.005, 0.6),mll);System.out.println("""pmmhOutput  : List[bayeskit.sim.Parameter] = """ + $show(pmmhOutput ))}
-  
+  Vector(1,2,3).map{_*2}
+
+ // read a data file
+ import scala.io.Source;System.out.println("""res15: scala.collection.immutable.Vector[Int] = """ + $show(res$15));$skip(78); val res$16 = 
+ System.getProperty("user.dir");System.out.println("""res16: String = """ + $show(res$16));$skip(48); val res$17 = 
+
+ Source.fromFile("LVpreyNoise10.txt").getLines;System.out.println("""res17: Iterator[String] = """ + $show(res$17));$skip(14); val res$18 = 
+ 
+ 
+  0 to 30;System.out.println("""res18: scala.collection.immutable.Range.Inclusive = """ + $show(res$18))}
   
   
 }

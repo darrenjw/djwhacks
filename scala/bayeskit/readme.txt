@@ -16,7 +16,7 @@ TODO
 Reading LV data from file.
 Try unwrapping code from objects.
 Investigate better/alternative "sample" functions - sorting weights - Walker's alias method, etc.
-More numerically stable filtering using log-weights?
+More numerically stable filtering using log-weights? log-sum-exp trick...
 Simulating arbitrary SPN models.
 Parsing SBML models into SPN simulators.
 Hook to Java-based SBML simulator.

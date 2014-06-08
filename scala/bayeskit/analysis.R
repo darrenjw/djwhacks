@@ -7,8 +7,13 @@
 
 require(smfsb)
 
-#tab=read.csv("mcmc-out.csv",colClass="numeric")
-tab=read.csv("snapshot.csv",colClass="numeric")
+args <- commandArgs(trailingOnly = TRUE)
+filename=args[1]
+if (is.na(filename))
+  filename="mcmc-out.csv"
+print(filename)
+
+tab=read.csv(filename,colClass="numeric")
 mcmcSummary(tab[,1:8])
 
 x=tab[,4:20]

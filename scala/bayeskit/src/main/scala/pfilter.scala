@@ -39,7 +39,7 @@ object pfilter {
         obs match {
           case Nil => Some(ll)
           case head :: tail => {
-            val xp = x map { stepFun(_, t, deltas.head, th) }
+            val xp = if (deltas.head==0) x else (x map { stepFun(_, t, deltas.head, th) })
             val w = xp map { dataLik(_, head, th) }
             if (w.sum < 1.0e-90) {
               System.err.print("\nParticle filter bombed with parameter " + th + "\n")
@@ -69,7 +69,7 @@ object pfilter {
         obs match {
           case Nil => Some((ll, x(0).reverse))
           case head :: tail => {
-            val xp = x map { l => stepFun(l.head, t, deltas.head, th) :: l }
+            val xp = if (deltas.head==0) x else (x map { l => stepFun(l.head, t, deltas.head, th) :: l })
             val w = xp map { l => dataLik(l.head, head, th) }
             if (w.sum < 1.0e-90) {
               System.err.print("\nParticle filter bombed with parameter " + th + "\n")
@@ -104,7 +104,7 @@ object pfilter {
         obs match {
           case Nil => Some(ll)
           case head :: tail => {
-            val xp = x map { stepFun(_, t, deltas.head, th) }
+            val xp = if (deltas.head==0) x else  (x map { stepFun(_, t, deltas.head, th) })
             val w = xp map { dataLik(_, head, th) }
             if (w.sum < 1.0e-90) {
               System.err.print("\nParticle filter bombed with parameter " + th + "\n")
@@ -134,7 +134,7 @@ object pfilter {
         obs match {
           case Nil => Some((ll, x(0).reverse))
           case head :: tail => {
-            val xp = x map { l => stepFun(l.head, t, deltas.head, th) :: l }
+            val xp = if (deltas.head==0) x else (x map { l => stepFun(l.head, t, deltas.head, th) :: l })
             val w = xp map { l => dataLik(l.head, head, th) }
             if (w.sum < 1.0e-90) {
               System.err.print("\nParticle filter bombed with parameter " + th + "\n")

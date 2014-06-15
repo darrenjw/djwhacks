@@ -1,29 +1,27 @@
 package bayeskit
 
+
 object pfilter {
 
   import scala.annotation.tailrec
   import sim._
-  import scala.collection.parallel.immutable.ParVector
-
+  import scala.collection.parallel.immutable.{ParSeq,ParVector}
+  import breeze.linalg.DenseVector
+  import breeze.stats.distributions.Multinomial
+  
   // R-like "diff" function
   def diff(l: List[Double]): List[Double] = {
     (l.tail zip l) map { x => x._1 - x._2 }
   }
-
-  import org.apache.commons.math3.distribution.EnumeratedIntegerDistribution
-  // R-like "sample" function, using Apache Commons Math
-  // Note that the sampling here is WITH replacement, which is not the R default
-  def sample(n: Int, prob: Array[Double]): Vector[Int] = {
-    val inds = (0 to (prob.length - 1)).toArray
-    val cat = new EnumeratedIntegerDistribution(inds, prob)
-    (inds map { x => cat.sample }).toVector
+  
+  def sample(n: Int, prob: DenseVector[Double]): Vector[Int] = {
+    Multinomial(prob).sample(n).toVector
   }
-
-  def mean(vec: Vector[Double]): Double = {
-    vec.sum / vec.length
+  
+  def mean[A](it:Iterable[A])(implicit n:Numeric[A]): Double = {
+    it.map(n.toDouble).sum / it.size
   }
-
+  
   def pfMLLik(
     n: Int,
     simx0: (Int, Time, Parameter) => Vector[State],
@@ -45,7 +43,7 @@ object pfilter {
               System.err.print("\nParticle filter bombed with parameter " + th + "\n")
               None
             }
-            val rows = sample(n, w.toArray)
+            val rows = sample(n, DenseVector(w.toArray))
             val xpp = rows map { xp(_) }
             pf(ll + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
           }
@@ -75,7 +73,7 @@ object pfilter {
               System.err.print("\nParticle filter bombed with parameter " + th + "\n")
               None
             } else {
-              val rows = sample(n, w.toArray)
+              val rows = sample(n, DenseVector(w.toArray))
               val xpp = rows map { xp(_) }
               pf(ll + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
             }
@@ -85,9 +83,10 @@ object pfilter {
     }
   }
 
-  def mean(vec: ParVector[Double]): Double = {
-    vec.sum / vec.length
+  def mean[A](it:ParSeq[A])(implicit n:Numeric[A]): Double = {
+    it.map(n.toDouble).sum / it.size
   }
+
 
   def pfMLLikPar(
     n: Int,
@@ -110,7 +109,7 @@ object pfilter {
               System.err.print("\nParticle filter bombed with parameter " + th + "\n")
               None
             }
-            val rows = sample(n, w.toArray).toVector.par
+            val rows = sample(n, DenseVector(w.toArray)).par
             val xpp = rows map { xp(_) }
             pf(ll + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
           }
@@ -140,7 +139,7 @@ object pfilter {
               System.err.print("\nParticle filter bombed with parameter " + th + "\n")
               None
             } else {
-              val rows = sample(n, w.toArray).toVector.par
+              val rows = sample(n, DenseVector(w.toArray)).par
               val xpp = rows map { xp(_) }
               pf(ll + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
             }

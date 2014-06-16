@@ -1,6 +1,6 @@
 name := "bayeskit"
 
-version := "0.1"
+version := "0.2"
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 

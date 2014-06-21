@@ -28,8 +28,7 @@ object bayeskit {
     val s = new PrintWriter(new File("mcmc-out.csv"))
     // val s=new OutputStreamWriter(System.out)
     s.write("th1,th2,th3,")
-    s.write(((0 to 30 by 2) map { "x" + _ }).mkString(",") + ",")
-    s.write(((0 to 30 by 2) map { "y" + _ }).mkString(",") + "\n")
+    s.write(((0 to 30 by 2) map { n => "x" + n +",y"+ n }).mkString(",") + "\n")
     val pmmhOutput = runPmmhPath(s, its, Vector(1.0, 0.005, 0.6), mll)
     s.close
     println("Done.")

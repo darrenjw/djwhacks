@@ -32,8 +32,7 @@ object pmmh {
     def pmmhAcc(itsLeft: Int, currentState: Parameter, currentMll: Double, currentPath: List[State], allIts: List[Parameter]): List[Parameter] = {
       System.err.print(itsLeft.toString+" ")
       s.write(currentState.mkString(",")+",")
-      //s.write((currentPath map {_(0)}).mkString(",")+",")
-      //s.write((currentPath map {_(1)}).mkString(",")+"\n")
+      s.write((currentPath map {_.toString}).mkString(",")+"\n")
       if (itsLeft == 0) allIts else {
         val prop = currentState map { _ * exp(Gaussian(0, 0.01).draw) }
         val (propMll,propPath) = mll(prop).getOrElse((-1e99,Nil)) // not nice - use pattern matching or flatmap?

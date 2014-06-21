@@ -16,8 +16,8 @@ print(filename)
 tab=read.csv(filename,colClass="numeric")
 mcmcSummary(tab[,1:8])
 
-x=tab[,4:19]
-y=tab[,20:35]
+x=tab[,seq(4,34,by=2)]
+y=tab[,seq(5,35,by=2)]
 grid=seq(0,30,by=2)
 
 xLower=apply(x,2,quantile,0.005)

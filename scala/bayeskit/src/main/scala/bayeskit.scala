@@ -14,13 +14,13 @@ object bayeskit {
     println("Starting...")
     val its=if (args.length==0) 10 else args(0).toInt
     println("Running for "+its+" iters:")
-    def simPrior(n: Int, t: Time, th: Parameter): Vector[State] = {
+    def simPrior(n: Int, t: Time, th: Parameter): Vector[LvState] = {
       val prey = new Poisson(50.0).sample(n).toVector
       val predator = new Poisson(100.0).sample(n).toVector
-      prey.zip(predator) map { x => Vector(x._1, x._2) }
+      prey.zip(predator) map { x => LvState(x._1, x._2) }
     }
-    def obsLik(s: State, o: Observation, th: Parameter): Double = {
-      new Gaussian(s(0), 10.0).pdf(o(0))
+    def obsLik(s: LvState, o: Observation, th: Parameter): Double = {
+      new Gaussian(s.prey, 10.0).pdf(o(0))
     }
     val rawData = Source.fromFile("LVpreyNoise10.txt").getLines
     val data = ((0 to 30 by 2).toList zip rawData.toList) map { x => (x._1.toDouble, Vector(x._2.toDouble)) }

@@ -1,5 +1,9 @@
 package bayeskit
 
+trait State {
+  def toString: String
+}
+
 object sim {
 
   import scala.annotation.tailrec
@@ -8,7 +12,6 @@ object sim {
 
   type Time = Double
 
-  type State = Vector[Int]
   type StateTS = List[(Time, State)]
 
   type Parameter = Vector[Double]
@@ -18,18 +21,18 @@ object sim {
 
   // simulation utilities
 
-  def simTs(
-    x0: State,
+  def simTs[S <: State](
+    x0: S,
     t0: Time,
     tt: Time,
     dt: Time,
-    stepFun: (State, Time, Time, Parameter) => State,
-    th: Parameter): StateTS = {
-    @tailrec def simTsList(list: List[(Time, State)],
+    stepFun: (S, Time, Time, Parameter) => S,
+    th: Parameter): List[(Time,S)] = {
+    @tailrec def simTsList(list: List[(Time, S)],
       tt: Time,
       dt: Time,
-      stepFun: (State, Time, Time, Parameter) => State,
-      th: Parameter): List[(Time, State)] = {
+      stepFun: (S, Time, Time, Parameter) => S,
+      th: Parameter): List[(Time, S)] = {
       val (t0, x0) = list.head
       if (t0 >= tt) list else {
         val t1 = t0 + dt

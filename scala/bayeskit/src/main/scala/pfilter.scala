@@ -22,18 +22,18 @@ object pfilter {
     it.map(n.toDouble).sum / it.size
   }
   
-  def pfMLLik(
+  def pfMLLik[S <: State](
     n: Int,
-    simx0: (Int, Time, Parameter) => Vector[State],
+    simx0: (Int, Time, Parameter) => Vector[S],
     t0: Double,
-    stepFun: (State, Time, Time, Parameter) => State,
-    dataLik: (State, Observation, Parameter) => Double,
+    stepFun: (S, Time, Time, Parameter) => S,
+    dataLik: (S, Observation, Parameter) => Double,
     data: ObservationTS): (Parameter => Option[Double]) = {
     val (times, obs) = data.unzip
     val deltas = diff(t0 :: times)
     (th: Parameter) => {
       val x0 = simx0(n, t0, th)
-      @tailrec def pf(ll: Double, x: Vector[State], t: Time, deltas: List[Time], obs: List[Observation]): Option[Double] =
+      @tailrec def pf(ll: Double, x: Vector[S], t: Time, deltas: List[Time], obs: List[Observation]): Option[Double] =
         obs match {
           case Nil => Some(ll)
           case head :: tail => {
@@ -52,18 +52,18 @@ object pfilter {
     }
   }
 
-  def pfProp(
+  def pfProp[S <: State](
     n: Int,
-    simx0: (Int, Time, Parameter) => Vector[State],
+    simx0: (Int, Time, Parameter) => Vector[S],
     t0: Double,
-    stepFun: (State, Time, Time, Parameter) => State,
-    dataLik: (State, Observation, Parameter) => Double,
-    data: ObservationTS): (Parameter => Option[(Double, List[State])]) = {
+    stepFun: (S, Time, Time, Parameter) => S,
+    dataLik: (S, Observation, Parameter) => Double,
+    data: ObservationTS): (Parameter => Option[(Double, List[S])]) = {
     val (times, obs) = data.unzip
     val deltas = diff(t0 :: times)
     (th: Parameter) => {
       val x0 = simx0(n, t0, th)
-      @tailrec def pf(ll: Double, x: Vector[List[State]], t: Time, deltas: List[Time], obs: List[Observation]): Option[(Double, List[State])] =
+      @tailrec def pf(ll: Double, x: Vector[List[S]], t: Time, deltas: List[Time], obs: List[Observation]): Option[(Double, List[S])] =
         obs match {
           case Nil => Some((ll, x(0).reverse))
           case head :: tail => {
@@ -88,18 +88,18 @@ object pfilter {
   }
 
 
-  def pfMLLikPar(
+  def pfMLLikPar[S <: State](
     n: Int,
-    simx0: (Int, Time, Parameter) => Vector[State],
+    simx0: (Int, Time, Parameter) => Vector[S],
     t0: Double,
-    stepFun: (State, Time, Time, Parameter) => State,
-    dataLik: (State, Observation, Parameter) => Double,
+    stepFun: (S, Time, Time, Parameter) => S,
+    dataLik: (S, Observation, Parameter) => Double,
     data: ObservationTS): (Parameter => Option[Double]) = {
     val (times, obs) = data.unzip
     val deltas = diff(t0 :: times)
     (th: Parameter) => {
       val x0 = simx0(n, t0, th).par
-      @tailrec def pf(ll: Double, x: ParVector[State], t: Time, deltas: List[Time], obs: List[Observation]): Option[Double] =
+      @tailrec def pf(ll: Double, x: ParVector[S], t: Time, deltas: List[Time], obs: List[Observation]): Option[Double] =
         obs match {
           case Nil => Some(ll)
           case head :: tail => {
@@ -118,18 +118,18 @@ object pfilter {
     }
   }
 
-  def pfPropPar(
+  def pfPropPar[S <: State](
     n: Int,
-    simx0: (Int, Time, Parameter) => Vector[State],
+    simx0: (Int, Time, Parameter) => Vector[S],
     t0: Double,
-    stepFun: (State, Time, Time, Parameter) => State,
-    dataLik: (State, Observation, Parameter) => Double,
-    data: ObservationTS): (Parameter => Option[(Double, List[State])]) = {
+    stepFun: (S, Time, Time, Parameter) => S,
+    dataLik: (S, Observation, Parameter) => Double,
+    data: ObservationTS): (Parameter => Option[(Double, List[S])]) = {
     val (times, obs) = data.unzip
     val deltas = diff(t0 :: times)
     (th: Parameter) => {
       val x0 = simx0(n, t0, th).par
-      @tailrec def pf(ll: Double, x: ParVector[List[State]], t: Time, deltas: List[Time], obs: List[Observation]): Option[(Double, List[State])] =
+      @tailrec def pf(ll: Double, x: ParVector[List[S]], t: Time, deltas: List[Time], obs: List[Observation]): Option[(Double, List[S])] =
         obs match {
           case Nil => Some((ll, x(0).reverse))
           case head :: tail => {

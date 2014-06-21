@@ -28,76 +28,76 @@ class MyTestSuite extends FunSuite {
   }
 
   test("stepLV") {
-    val newState = stepLV(Vector(100, 50), 0, 10, Vector(1.0, 0.005, 0.6))
-    assert((newState(0) >= 0) & (newState(1) >= 0))
+    val newState = stepLV(LvState(100, 50), 0, 10, Vector(1.0, 0.005, 0.6))
+    assert((newState.prey >= 0) & (newState.pred >= 0))
   }
 
   test("simTs") {
-    val ts = simTs(Vector(100, 50), 0, 100, 0.1, stepLV, Vector(1.0, 0.005, 0.6))
+    val ts = simTs(LvState(100, 50), 0, 100, 0.1, stepLV, Vector(1.0, 0.005, 0.6))
     assert(ts.length >= 1000)
     assert(ts(0)._1 === 0.0)
-    assert(ts(0)._2.length === 2)
+    assert(ts(0)._2.toString.length > 0)
   }
 
   test("pfMLLik") {
-    def simPrior(n: Int, t: Time, th: Parameter): Vector[State] = {
+    def simPrior(n: Int, t: Time, th: Parameter): Vector[LvState] = {
       val prey = new Poisson(100.0).sample(n).toVector
       val predator = new Poisson(50.0).sample(n).toVector
-      prey.zip(predator) map { x => Vector(x._1, x._2) }
+      prey.zip(predator) map { x => LvState(x._1, x._2) }
     }
-    def obsLik(s: State, o: Observation, th: Parameter): Double = {
-      new Gaussian(s(0), 10.0).pdf(o(0))
+    def obsLik(s: LvState, o: Observation, th: Parameter): Double = {
+      new Gaussian(s.prey, 10.0).pdf(o(0))
     }
-    val truth = simTs(Vector(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
-    val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) }
+    val truth = simTs(LvState(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
+    val data = truth map { x => (x._1, Vector(x._2.prey.toDouble)) }
     val mll = pfMLLik(100, simPrior, 0.0, stepLV, obsLik, data)
     val mllSample = mll(Vector(1.0, 0.005, 0.6)).getOrElse(-1e99)
     assert(mllSample <= 0.0)
   }
 
   test("pfMLLikPar") {
-    def simPrior(n: Int, t: Time, th: Parameter): Vector[State] = {
+    def simPrior(n: Int, t: Time, th: Parameter): Vector[LvState] = {
       val prey = new Poisson(100.0).sample(n).toVector
       val predator = new Poisson(50.0).sample(n).toVector
-      prey.zip(predator) map { x => Vector(x._1, x._2) }
+      prey.zip(predator) map { x => LvState(x._1, x._2) }
     }
-    def obsLik(s: State, o: Observation, th: Parameter): Double = {
-      new Gaussian(s(0), 10.0).pdf(o(0))
+    def obsLik(s: LvState, o: Observation, th: Parameter): Double = {
+      new Gaussian(s.prey, 10.0).pdf(o(0))
     }
-    val truth = simTs(Vector(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
-    val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) }
+    val truth = simTs(LvState(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
+    val data = truth map { x => (x._1, Vector(x._2.prey.toDouble)) }
     val mll = pfMLLikPar(100, simPrior, 0.0, stepLV, obsLik, data)
     val mllSample = mll(Vector(1.0, 0.005, 0.6)).getOrElse(-1e99)
     assert(mllSample <= 0.0)
   }
 
   test("pmmh") {
-    def simPrior(n: Int, t: Time, th: Parameter): Vector[State] = {
+    def simPrior(n: Int, t: Time, th: Parameter): Vector[LvState] = {
       val prey = new Poisson(100.0).sample(n).toVector
       val predator = new Poisson(50.0).sample(n).toVector
-      prey.zip(predator) map { x => Vector(x._1, x._2) }
+      prey.zip(predator) map { x => LvState(x._1, x._2) }
     }
-    def obsLik(s: State, o: Observation, th: Parameter): Double = {
-      new Gaussian(s(0), 10.0).pdf(o(0))
+    def obsLik(s: LvState, o: Observation, th: Parameter): Double = {
+      new Gaussian(s.prey, 10.0).pdf(o(0))
     }
-    val truth = simTs(Vector(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
-    val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) }
+    val truth = simTs(LvState(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
+    val data = truth map { x => (x._1, Vector(x._2.prey.toDouble)) }
     val mll = pfMLLik(100, simPrior, 0.0, stepLV, obsLik, data)
     val pmmhOutput=runPmmh(new OutputStreamWriter(System.out),10,Vector(1.0, 0.005, 0.6),mll)
     assert(pmmhOutput.length==10)
   }
 
     test("pmmh-path") {
-    def simPrior(n: Int, t: Time, th: Parameter): Vector[State] = {
+    def simPrior(n: Int, t: Time, th: Parameter): Vector[LvState] = {
       val prey = new Poisson(100.0).sample(n).toVector
       val predator = new Poisson(50.0).sample(n).toVector
-      prey.zip(predator) map { x => Vector(x._1, x._2) }
+      prey.zip(predator) map { x => LvState(x._1, x._2) }
     }
-    def obsLik(s: State, o: Observation, th: Parameter): Double = {
-      new Gaussian(s(0), 10.0).pdf(o(0))
+    def obsLik(s: LvState, o: Observation, th: Parameter): Double = {
+      new Gaussian(s.prey, 10.0).pdf(o(0))
     }
-    val truth = simTs(Vector(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
-    val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) }
+    val truth = simTs(LvState(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
+    val data = truth map { x => (x._1, Vector(x._2.prey.toDouble)) }
     val mll = pfProp(100, simPrior, 0.0, stepLV, obsLik, data)
     val pmmhOutput=runPmmhPath(new OutputStreamWriter(System.out),10,Vector(1.0, 0.005, 0.6),mll)
     assert(pmmhOutput.length==10)

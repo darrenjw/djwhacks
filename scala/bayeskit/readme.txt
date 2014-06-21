@@ -13,10 +13,11 @@ Copyright (C) 2014, Darren Wilkinson, http://tinyurl.com/darrenjw
 
 TODO
 ----
+Refactor state to be an opaque trait.
 Investigate better/alternative "sample" functions - sorting weights - Walker's alias method, etc.
 More numerically stable filtering using log-weights? log-sum-exp trick...
 Simulating arbitrary SPN models.
-Diffusion approximations
+Diffusion approximations.
 Parsing SBML models into SPN simulators.
 Hook to Java-based SBML simulator.
 

@@ -1,5 +1,5 @@
 object bayeskitTest {
-  println("Welcome to the Scala worksheet")
+  println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   // shift control b to re evaluate the sheet
 
@@ -16,79 +16,47 @@ object bayeskitTest {
   import breeze.stats.distributions._
   // import breeze.linalg._
 
-  1 + 2
+  1 + 2                                           //> res0: Int(3) = 3
 
-  0 to 9
+  0 to 9                                          //> res1: scala.collection.immutable.Range.Inclusive = Range(0, 1, 2, 3, 4, 5, 6
+                                                  //| , 7, 8, 9)
   //linspace(1.0,10.0,20)
 
   //val cat=new EnumeratedIntegerDistribution((0 to 9).toArray, linspace(0.0,1.0,10).toArray)
   //cat.sample
 
-  1 + 1
-  val h = (1, 2, 3)
-  h._1
+  1 + 1                                           //> res2: Int(2) = 2
+  val h = (1, 2, 3)                               //> h  : (Int, Int, Int) = (1,2,3)
+  h._1                                            //> res3: Int = 1
 
-  (1, "b")
-  val a = List(1, 2, 3)
-  val b = List("a", "b", "c")
-  val c = a zip b
+  (1, "b")                                        //> res4: (Int, String) = (1,b)
+  val a = List(1, 2, 3)                           //> a  : List[Int] = List(1, 2, 3)
+  val b = List("a", "b", "c")                     //> b  : List[String] = List(a, b, c)
+  val c = a zip b                                 //> c  : List[(Int, String)] = List((1,a), (2,b), (3,c))
 
-  val state = stepLV(Vector(100, 50), 0, 10, Vector(1.0, 0.005, 0.6))
+  Vector(1, 2, 3).map { _ * 2 }                   //> res5: scala.collection.immutable.Vector[Int] = Vector(2, 4, 6)
 
-  def fun(a: Int): (Int => Int) = {
-    val c = a + 1
-    (b: Int) =>
-      {
-        c + b
-      }
-  }
+  // read a data file
+  import scala.io.Source
+  System.getProperty("user.dir")                  //> res6: String = /home/ndjw1/Applications/eclipse
 
-  fun(1)(2)
+  Source.fromFile("LVpreyNoise10.txt").getLines   //> java.io.FileNotFoundException: LVpreyNoise10.txt (No such file or directory)
+                                                  //| 
+                                                  //| 	at java.io.FileInputStream.open(Native Method)
+                                                  //| 	at java.io.FileInputStream.<init>(FileInputStream.java:146)
+                                                  //| 	at scala.io.Source$.fromFile(Source.scala:90)
+                                                  //| 	at scala.io.Source$.fromFile(Source.scala:75)
+                                                  //| 	at scala.io.Source$.fromFile(Source.scala:53)
+                                                  //| 	at bayeskitTest$$anonfun$main$1.apply$mcV$sp(bayeskitTest.scala:42)
+                                                  //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$$anonfun$$exe
+                                                  //| cute$1.apply$mcV$sp(WorksheetSupport.scala:76)
+                                                  //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.redirected(W
+                                                  //| orksheetSupport.scala:65)
+                                                  //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.$execute(Wor
+                                                  //| ksheetSupport.scala:75)
+                                                  //| 	at bayeskitTest$.main(bayeskitTest.scala:1)
+                                                  //| 	at bayeskitTest.main(bayeskitTest.scala)
 
-  List(1, 2, 3) zip List(2, 3)
-
-  def diff(l: List[Int]): List[Int] = {
-    (l.tail zip l) map { x => x._1 - x._2 }
-  }
-
-  diff(List(1, 2, 3, 4, 6, 7, 9))
-
-  Vector[Double](1.0, 2.0)
-
-  def simPrior(n: Int, t: Time, th: Parameter): Vector[State] = {
-    val prey = new Poisson(100.0).sample(n).toVector
-    val predator = new Poisson(50.0).sample(n).toVector
-    prey.zip(predator) map { x => Vector(x._1, x._2) }
-  }
-  def obsLik(s: State, o: Observation, th: Parameter): Double = {
-    new Gaussian(s(0), 10.0).pdf(o(0))
-  }
-  val truth = simTs(Vector(100, 50), 0, 30, 2.0, stepLV, Vector(1.0, 0.005, 0.6))
-  val data = truth map { x => (x._1, Vector(x._2(0).toDouble)) }
-  val mll = pfMLLik(100, simPrior, 0.0, stepLV, obsLik, data)
-  val mllSample = mll(Vector(1.0, 0.005, 0.6))
-
-  val pmll = pfMLLikPar(100, simPrior, 0.0, stepLV, obsLik, data)
-  val pmllSample = pmll(Vector(1.0, 0.005, 0.6))
-
-  mll(Vector(1.0, 0.005, 0.6))
-  mll(Vector(1.0, 0.005, 0.6))
-  mll(Vector(1.0, 0.005, 0.6))
-
-  pmll(Vector(1.0, 0.005, 0.6))
-  pmll(Vector(1.0, 0.005, 0.6))
-  pmll(Vector(1.0, 0.005, 0.6))
-
-  Vector(1,2,3).map{_*2}
-
- // read a data file
- import scala.io.Source
- System.getProperty("user.dir")
-
- Source.fromFile("LVpreyNoise10.txt").getLines
- 
- 
   0 to 30
-  
-  
+
 }

@@ -4,35 +4,33 @@ trait State {
   def toString: String
 }
 
+trait Parameter {
+  def toString: String
+}
+
 object sim {
 
   import scala.annotation.tailrec
 
   // First declare the basic types
-
   type Time = Double
-
-  type StateTS = List[(Time, State)]
-
-  type Parameter = Vector[Double]
-
   type Observation = Vector[Double]
   type ObservationTS = List[(Time, Observation)]
 
   // simulation utilities
 
-  def simTs[S <: State](
+  def simTs[S <: State, P <: Parameter](
     x0: S,
     t0: Time,
     tt: Time,
     dt: Time,
-    stepFun: (S, Time, Time, Parameter) => S,
-    th: Parameter): List[(Time,S)] = {
+    stepFun: (S, Time, Time, P) => S,
+    th: P): List[(Time, S)] = {
     @tailrec def simTsList(list: List[(Time, S)],
       tt: Time,
       dt: Time,
-      stepFun: (S, Time, Time, Parameter) => S,
-      th: Parameter): List[(Time, S)] = {
+      stepFun: (S, Time, Time, P) => S,
+      th: P): List[(Time, S)] = {
       val (t0, x0) = list.head
       if (t0 >= tt) list else {
         val t1 = t0 + dt

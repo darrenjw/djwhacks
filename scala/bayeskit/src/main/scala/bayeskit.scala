@@ -3,7 +3,7 @@ package bayeskit
 object bayeskit {
 
   import sim._
-  import lvsim.stepLV
+  import lvsim._
   import breeze.stats.distributions._
   import pmmh._
   import pfilter._
@@ -29,7 +29,7 @@ object bayeskit {
     // val s=new OutputStreamWriter(System.out)
     s.write("th1,th2,th3,")
     s.write(((0 to 30 by 2) map { n => "x" + n +",y"+ n }).mkString(",") + "\n")
-    val pmmhOutput = runPmmhPath(s, its, Vector(1.0, 0.005, 0.6), mll)
+    val pmmhOutput = runPmmhPath(s, its, LvParameter(1.0, 0.005, 0.6), mll,peturb)
     s.close
     println("Done.")
   }

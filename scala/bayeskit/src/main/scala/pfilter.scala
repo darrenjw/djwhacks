@@ -1,43 +1,42 @@
 package bayeskit
 
-
 object pfilter {
 
   import scala.annotation.tailrec
   import sim._
-  import scala.collection.parallel.immutable.{ParSeq,ParVector}
+  import scala.collection.parallel.immutable.{ ParSeq, ParVector }
   import breeze.linalg.DenseVector
   import breeze.stats.distributions.Multinomial
-  
+
   // R-like "diff" function
   def diff(l: List[Double]): List[Double] = {
     (l.tail zip l) map { x => x._1 - x._2 }
   }
-  
+
   def sample(n: Int, prob: DenseVector[Double]): Vector[Int] = {
     Multinomial(prob).sample(n).toVector
   }
-  
-  def mean[A](it:Iterable[A])(implicit n:Numeric[A]): Double = {
+
+  def mean[A](it: Iterable[A])(implicit n: Numeric[A]): Double = {
     it.map(n.toDouble).sum / it.size
   }
-  
-  def pfMLLik[S <: State](
+
+  def pfMLLik[S <: State, P <: Parameter](
     n: Int,
-    simx0: (Int, Time, Parameter) => Vector[S],
+    simx0: (Int, Time, P) => Vector[S],
     t0: Double,
-    stepFun: (S, Time, Time, Parameter) => S,
-    dataLik: (S, Observation, Parameter) => Double,
-    data: ObservationTS): (Parameter => Option[Double]) = {
+    stepFun: (S, Time, Time, P) => S,
+    dataLik: (S, Observation, P) => Double,
+    data: ObservationTS): (P => Option[Double]) = {
     val (times, obs) = data.unzip
     val deltas = diff(t0 :: times)
-    (th: Parameter) => {
+    (th: P) => {
       val x0 = simx0(n, t0, th)
       @tailrec def pf(ll: Double, x: Vector[S], t: Time, deltas: List[Time], obs: List[Observation]): Option[Double] =
         obs match {
           case Nil => Some(ll)
           case head :: tail => {
-            val xp = if (deltas.head==0) x else (x map { stepFun(_, t, deltas.head, th) })
+            val xp = if (deltas.head == 0) x else (x map { stepFun(_, t, deltas.head, th) })
             val w = xp map { dataLik(_, head, th) }
             if (w.sum < 1.0e-90) {
               System.err.print("\nParticle filter bombed with parameter " + th + "\n")
@@ -52,22 +51,22 @@ object pfilter {
     }
   }
 
-  def pfProp[S <: State](
+  def pfProp[S <: State, P <: Parameter](
     n: Int,
-    simx0: (Int, Time, Parameter) => Vector[S],
+    simx0: (Int, Time, P) => Vector[S],
     t0: Double,
-    stepFun: (S, Time, Time, Parameter) => S,
-    dataLik: (S, Observation, Parameter) => Double,
-    data: ObservationTS): (Parameter => Option[(Double, List[S])]) = {
+    stepFun: (S, Time, Time, P) => S,
+    dataLik: (S, Observation, P) => Double,
+    data: ObservationTS): (P => Option[(Double, List[S])]) = {
     val (times, obs) = data.unzip
     val deltas = diff(t0 :: times)
-    (th: Parameter) => {
+    (th: P) => {
       val x0 = simx0(n, t0, th)
       @tailrec def pf(ll: Double, x: Vector[List[S]], t: Time, deltas: List[Time], obs: List[Observation]): Option[(Double, List[S])] =
         obs match {
           case Nil => Some((ll, x(0).reverse))
           case head :: tail => {
-            val xp = if (deltas.head==0) x else (x map { l => stepFun(l.head, t, deltas.head, th) :: l })
+            val xp = if (deltas.head == 0) x else (x map { l => stepFun(l.head, t, deltas.head, th) :: l })
             val w = xp map { l => dataLik(l.head, head, th) }
             if (w.sum < 1.0e-90) {
               System.err.print("\nParticle filter bombed with parameter " + th + "\n")
@@ -83,27 +82,26 @@ object pfilter {
     }
   }
 
-  def mean[A](it:ParSeq[A])(implicit n:Numeric[A]): Double = {
+  def mean[A](it: ParSeq[A])(implicit n: Numeric[A]): Double = {
     it.map(n.toDouble).sum / it.size
   }
 
-
-  def pfMLLikPar[S <: State](
+  def pfMLLikPar[S <: State, P <: Parameter](
     n: Int,
-    simx0: (Int, Time, Parameter) => Vector[S],
+    simx0: (Int, Time, P) => Vector[S],
     t0: Double,
-    stepFun: (S, Time, Time, Parameter) => S,
-    dataLik: (S, Observation, Parameter) => Double,
-    data: ObservationTS): (Parameter => Option[Double]) = {
+    stepFun: (S, Time, Time, P) => S,
+    dataLik: (S, Observation, P) => Double,
+    data: ObservationTS): (P => Option[Double]) = {
     val (times, obs) = data.unzip
     val deltas = diff(t0 :: times)
-    (th: Parameter) => {
+    (th: P) => {
       val x0 = simx0(n, t0, th).par
       @tailrec def pf(ll: Double, x: ParVector[S], t: Time, deltas: List[Time], obs: List[Observation]): Option[Double] =
         obs match {
           case Nil => Some(ll)
           case head :: tail => {
-            val xp = if (deltas.head==0) x else  (x map { stepFun(_, t, deltas.head, th) })
+            val xp = if (deltas.head == 0) x else (x map { stepFun(_, t, deltas.head, th) })
             val w = xp map { dataLik(_, head, th) }
             if (w.sum < 1.0e-90) {
               System.err.print("\nParticle filter bombed with parameter " + th + "\n")
@@ -118,22 +116,22 @@ object pfilter {
     }
   }
 
-  def pfPropPar[S <: State](
+  def pfPropPar[S <: State, P <: Parameter](
     n: Int,
-    simx0: (Int, Time, Parameter) => Vector[S],
+    simx0: (Int, Time, P) => Vector[S],
     t0: Double,
-    stepFun: (S, Time, Time, Parameter) => S,
-    dataLik: (S, Observation, Parameter) => Double,
-    data: ObservationTS): (Parameter => Option[(Double, List[S])]) = {
+    stepFun: (S, Time, Time, P) => S,
+    dataLik: (S, Observation, P) => Double,
+    data: ObservationTS): (P => Option[(Double, List[S])]) = {
     val (times, obs) = data.unzip
     val deltas = diff(t0 :: times)
-    (th: Parameter) => {
+    (th: P) => {
       val x0 = simx0(n, t0, th).par
       @tailrec def pf(ll: Double, x: ParVector[List[S]], t: Time, deltas: List[Time], obs: List[Observation]): Option[(Double, List[S])] =
         obs match {
           case Nil => Some((ll, x(0).reverse))
           case head :: tail => {
-            val xp = if (deltas.head==0) x else (x map { l => stepFun(l.head, t, deltas.head, th) :: l })
+            val xp = if (deltas.head == 0) x else (x map { l => stepFun(l.head, t, deltas.head, th) :: l })
             val w = xp map { l => dataLik(l.head, head, th) }
             if (w.sum < 1.0e-90) {
               System.err.print("\nParticle filter bombed with parameter " + th + "\n")
@@ -150,3 +148,4 @@ object pfilter {
   }
 
 }
+

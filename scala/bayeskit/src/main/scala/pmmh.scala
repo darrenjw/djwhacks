@@ -9,13 +9,13 @@ object pmmh {
   import sim._
   import java.io._
 
-  def runPmmh(s: Writer, iters: Int, initialState: Parameter, mll: Parameter => Option[Double]): List[Parameter] = {
+  def runPmmh[P <: Parameter](s: Writer, iters: Int, initialState: P, mll: P => Option[Double], peturb: P => P): List[P] = {
     @tailrec
-    def pmmhAcc(itsLeft: Int, currentState: Parameter, currentMll: Double, allIts: List[Parameter]): List[Parameter] = {
-      System.err.print(itsLeft.toString+" ")
-      s.write(currentState.mkString(",")+"\n")
+    def pmmhAcc(itsLeft: Int, currentState: P, currentMll: Double, allIts: List[P]): List[P] = {
+      System.err.print(itsLeft.toString + " ")
+      s.write(currentState.toString + "\n")
       if (itsLeft == 0) allIts else {
-        val prop = currentState map { _ * exp(Gaussian(0, 0.01).draw) }
+        val prop = peturb(currentState)
         val propMll = mll(prop).getOrElse(-1e99) // not nice - use pattern matching or flatmap?
         if (log(Uniform(0, 1).draw) < propMll - currentMll) {
           pmmhAcc(itsLeft - 1, prop, propMll, prop :: allIts)
@@ -27,15 +27,15 @@ object pmmh {
     pmmhAcc(iters, initialState, (-1e99).toDouble, Nil).reverse
   }
 
-  def runPmmhPath(s: Writer, iters: Int, initialState: Parameter, mll: Parameter => Option[(Double,List[State])]): List[Parameter] = {
+  def runPmmhPath[P <: Parameter](s: Writer, iters: Int, initialState: P, mll: P => Option[(Double, List[State])], peturb: P => P): List[P] = {
     @tailrec
-    def pmmhAcc(itsLeft: Int, currentState: Parameter, currentMll: Double, currentPath: List[State], allIts: List[Parameter]): List[Parameter] = {
-      System.err.print(itsLeft.toString+" ")
-      s.write(currentState.mkString(",")+",")
-      s.write((currentPath map {_.toString}).mkString(",")+"\n")
+    def pmmhAcc(itsLeft: Int, currentState: P, currentMll: Double, currentPath: List[State], allIts: List[P]): List[P] = {
+      System.err.print(itsLeft.toString + " ")
+      s.write(currentState.toString + ",")
+      s.write((currentPath map { _.toString }).mkString(",") + "\n")
       if (itsLeft == 0) allIts else {
-        val prop = currentState map { _ * exp(Gaussian(0, 0.01).draw) }
-        val (propMll,propPath) = mll(prop).getOrElse((-1e99,Nil)) // not nice - use pattern matching or flatmap?
+        val prop = peturb(currentState)
+        val (propMll, propPath) = mll(prop).getOrElse((-1e99, Nil)) // not nice - use pattern matching or flatmap?
         if (log(Uniform(0, 1).draw) < propMll - currentMll) {
           pmmhAcc(itsLeft - 1, prop, propMll, propPath, prop :: allIts)
         } else {
@@ -43,7 +43,7 @@ object pmmh {
         }
       }
     }
-    pmmhAcc(iters, initialState, (-1e99).toDouble, mll(initialState).getOrElse((-1e99,Nil))._2, Nil).reverse // this could fail on 1st iter!!!
+    pmmhAcc(iters, initialState, (-1e99).toDouble, mll(initialState).getOrElse((-1e99, Nil))._2, Nil).reverse // this could fail on 1st iter!!!
   }
 
 }

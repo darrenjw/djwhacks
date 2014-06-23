@@ -19,11 +19,11 @@ object bayeskit {
       val predator = new Poisson(100.0).sample(n).toVector
       prey.zip(predator) map { x => LvState(x._1, x._2) }
     }
-    def obsLik(s: LvState, o: Observation, th: Parameter): Double = {
-      new Gaussian(s.prey, 10.0).pdf(o(0))
+    def obsLik(s: LvState, o: LvObservation, th: Parameter): Double = {
+      new Gaussian(s.prey, 10.0).pdf(o.obs)
     }
     val rawData = Source.fromFile("LVpreyNoise10.txt").getLines
-    val data = ((0 to 30 by 2).toList zip rawData.toList) map { x => (x._1.toDouble, Vector(x._2.toDouble)) }
+    val data = ((0 to 30 by 2).toList zip rawData.toList) map { x => (x._1.toDouble, LvObservation(x._2.toDouble)) }
     val mll = pfPropPar(100, simPrior, 0.0, stepLV, obsLik, data)
     val s = new PrintWriter(new File("mcmc-out.csv"))
     // val s=new OutputStreamWriter(System.out)

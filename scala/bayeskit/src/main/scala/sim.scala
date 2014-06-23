@@ -8,14 +8,16 @@ trait Parameter {
   def toString: String
 }
 
+trait Observation
+
+
 object sim {
 
   import scala.annotation.tailrec
 
   // First declare the basic types
-  type Time = Double
-  type Observation = Vector[Double]
-  type ObservationTS = List[(Time, Observation)]
+  type Time = Double // Double or Float?
+  type TS[O] = List[(Time,O)]
 
   // simulation utilities
 

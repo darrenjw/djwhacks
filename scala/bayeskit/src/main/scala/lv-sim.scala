@@ -22,6 +22,13 @@ object LvParameter {
   def apply(th0: Double, th1: Double, th2: Double) = new LvParameter(th0, th1, th2)
 }
 
+class LvObservation(obsx: Double) extends Observation {
+  val obs = obsx
+}
+object LvObservation {
+  def apply(obs: Double) = new LvObservation(obs)
+}
+
 object lvsim {
 
   import breeze.stats.distributions._

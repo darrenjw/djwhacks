@@ -1,0 +1,19 @@
+  import breeze.io.CSVReader
+  import java.io.FileReader
+console
+eclipse
+run
+eclipse
+run
+eclipse
+console
+run
+import breeze.stats.regression._
+console
+eclipse
+run
+eclipse
+run
+eclipse
+compile
+run

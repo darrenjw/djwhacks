@@ -38,25 +38,12 @@ object bayeskitTest {
 
   // read a data file
   import scala.io.Source
-  System.getProperty("user.dir")                  //> res6: String = /home/ndjw1/Applications/eclipse
+  System.getProperty("user.dir")                  //> res6: String = /home/ndjw1/src/git/djwhacks/scala/bayeskit
 
-  Source.fromFile("LVpreyNoise10.txt").getLines   //> java.io.FileNotFoundException: LVpreyNoise10.txt (No such file or directory)
-                                                  //| 
-                                                  //| 	at java.io.FileInputStream.open(Native Method)
-                                                  //| 	at java.io.FileInputStream.<init>(FileInputStream.java:146)
-                                                  //| 	at scala.io.Source$.fromFile(Source.scala:90)
-                                                  //| 	at scala.io.Source$.fromFile(Source.scala:75)
-                                                  //| 	at scala.io.Source$.fromFile(Source.scala:53)
-                                                  //| 	at bayeskitTest$$anonfun$main$1.apply$mcV$sp(bayeskitTest.scala:42)
-                                                  //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$$anonfun$$exe
-                                                  //| cute$1.apply$mcV$sp(WorksheetSupport.scala:76)
-                                                  //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.redirected(W
-                                                  //| orksheetSupport.scala:65)
-                                                  //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.$execute(Wor
-                                                  //| ksheetSupport.scala:75)
-                                                  //| 	at bayeskitTest$.main(bayeskitTest.scala:1)
-                                                  //| 	at bayeskitTest.main(bayeskitTest.scala)
+  Source.fromFile("LVpreyNoise10.txt").getLines   //> res7: Iterator[String] = non-empty iterator
 
-  0 to 30
+  0 to 30                                         //> res8: scala.collection.immutable.Range.Inclusive = Range(0, 1, 2, 3, 4, 5, 6
+                                                  //| , 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 2
+                                                  //| 6, 27, 28, 29, 30)
 
 }

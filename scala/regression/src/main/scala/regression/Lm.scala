@@ -5,6 +5,13 @@ import breeze.stats.regression._
 
 class Lm(X: DenseMatrix[Double], y: DenseVector[Double]) {
 
+  val qr=thinQR(X)
+  val q=qr._1
+  val r=qr._2
+  val qty=q.t*y
+  val predict=q*qty
+  
+  
   val ls = leastSquares(X, y)
   val beta = ls.coefficients
 
@@ -20,6 +27,8 @@ class Lm(X: DenseMatrix[Double], y: DenseVector[Double]) {
     (_Q(::, 0 until p), _R(0 until p, ::))
   }
 
+  
+  
 }
 
 object Lm {

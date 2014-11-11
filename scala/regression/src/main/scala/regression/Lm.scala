@@ -1,4 +1,4 @@
-package statslang
+package regression
 
 import breeze.linalg.{ DenseMatrix, DenseVector }
 import com.github.fommil.netlib.BLAS.{ getInstance => blas }

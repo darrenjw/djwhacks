@@ -1,5 +1,5 @@
 
-package statslang
+package regression
 
 object Regression {
 
@@ -40,14 +40,10 @@ object Regression {
   }
 
   def modelMatrix(cols: List[Series[Int, Double]]): DenseMatrix[Double] = {
-    //println("h1")
     val X = DenseMatrix.zeros[Double](cols(0).length, cols.length + 1)
-    //println("h2")
     X(::, 0) := DenseVector.ones[Double](cols(0).length)
-    //println("h3")
     for (i <- 1 to cols.length)
       X(::, i) := DenseVector(cols(i - 1).values.contents)
-    //println("h4")
     X
   }
 

@@ -9,6 +9,7 @@ libraryDependencies  ++= Seq(
             "org.scalatest" %% "scalatest" % "2.1.7" % "test",
             "org.scalanlp" %% "breeze" % "0.10",
             "org.scalanlp" %% "breeze-natives" % "0.10",
+            "org.scalanlp" %% "breeze-viz" % "0.8", 
             "org.scala-saddle" %% "saddle-core" % "1.3.+"
 )
 

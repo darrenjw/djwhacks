@@ -33,8 +33,8 @@ object ScratchTestSheet {
                                                   //| 
 
   val dm = frame2mat(frame.mapValues(CsvParser.parseDouble))
-                                                  //> Nov 13, 2014 10:51:30 AM com.github.fommil.jni.JniLoader liberalLoad
-                                                  //| INFO: successfully loaded /tmp/jniloader7536542356624575954netlib-native_sys
+                                                  //> Nov 13, 2014 11:17:43 AM com.github.fommil.jni.JniLoader liberalLoad
+                                                  //| INFO: successfully loaded /tmp/jniloader3537099287367040850netlib-native_sys
                                                   //| tem-linux-x86_64.so
                                                   //| dm  : breeze.linalg.DenseMatrix[Double] = 5.0    65.0   NaN  
                                                   //| 3.75   40.0   NaN  
@@ -95,5 +95,32 @@ object ScratchTestSheet {
                                                   //| 0 ->  1  2 
                                                   //| 1 ->  3  4 
                                                   //| 
+      import breeze.linalg._
+  import breeze.plot._
+ 
+val f = Figure()                                  //> f  : breeze.plot.Figure = breeze.plot.Figure@e004e0e
+val p = f.subplot(0)                              //> p  : breeze.plot.Plot = breeze.plot.Plot@571401a0
+val x = linspace(0.0,1.0)                         //> x  : breeze.linalg.DenseVector[Double] = DenseVector(0.0, 0.0101010101010101
+                                                  //| 02, 0.020202020202020204, 0.030303030303030304, 0.04040404040404041, 0.05050
+                                                  //| 505050505051, 0.06060606060606061, 0.07070707070707072, 0.08080808080808081,
+                                                  //|  0.09090909090909091, 0.10101010101010102, 0.11111111111111112, 0.1212121212
+                                                  //| 1212122, 0.13131313131313133, 0.14141414141414144, 0.15151515151515152, 0.16
+                                                  //| 161616161616163, 0.17171717171717174, 0.18181818181818182, 0.191919191919191
+                                                  //| 93, 0.20202020202020204, 0.21212121212121213, 0.22222222222222224, 0.2323232
+                                                  //| 3232323235, 0.24242424242424243, 0.25252525252525254, 0.26262626262626265, 0
+                                                  //| .27272727272727276, 0.2828282828282829, 0.29292929292929293, 0.3030303030303
+                                                  //| 0304, 0.31313131313131315, 0.32323232323232326, 0.33333333333333337, 0.34343
+                                                  //| 43434343435, 0.3535353535353536, 0.36363636363636365, 0.37373737373737376, 0
+                                                  //| .38383838383838387, 0.393939393939394, 0.4040404040404041, 0.414141414141414
+                                                  //| 2, 0.42424242424242425, 
+                                                  //| Output exceeds cutoff limit.
+p += plot(x, x :^ 2.0)                            //> res2: breeze.plot.Plot = breeze.plot.Plot@571401a0
+p += plot(x, x :^ 3.0, '.')                       //> res3: breeze.plot.Plot = breeze.plot.Plot@571401a0\
+p.xlabel = "x axis"
+p.ylabel = "y axis"
+f.saveas("lines.png")
+
+                                            
+                                                  
 
 }

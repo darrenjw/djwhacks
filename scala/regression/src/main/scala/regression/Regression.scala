@@ -41,7 +41,8 @@ object Regression {
     p2.title = "Residual Histogram"
     f.saveas("resid.png")
     
-    
+    val sum=m.summary
+    println(sum)
     
 
     // Interactive session ends here

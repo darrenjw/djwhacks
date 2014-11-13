@@ -18,10 +18,9 @@ class Lm(X: ModelMatrix, yf: Frame[Int, String, Double]) {
   val coefficients = backSolve(r, qty)
   val coeffFrame = mat2frame(coefficients, Index(X.names.toArray), yf.colIx)
 
-  override def toString: String = {
-    coeffFrame.toString
-  }
-
+  override def toString: String = coeffFrame.toString
+  def summary: LmSummary = new LmSummary(this)
+    
   def backSolve(A: DenseMatrix[Double], y: DenseMatrix[Double]): DenseMatrix[Double] = {
     val yc = y.copy
     blas.dtrsm("L", "U", "N", "N", y.rows, y.cols, 1.0, A.toArray, A.rows, yc.data, y.rows)

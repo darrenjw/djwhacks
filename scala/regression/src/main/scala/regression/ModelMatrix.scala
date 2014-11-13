@@ -7,18 +7,14 @@ import FrameUtils._
 class ModelMatrix(df: Frame[Int, String, Double]) {
 
   val X = modelMatrix(df)
-  val names = "Intercept" :: (df.colIx.toVec.toSeq.toList)
+  val names = "(Intercept)" :: (df.colIx.toVec.toSeq.toList)
 
   def modelMatrix(df: Frame[Int, String, Double]): DenseMatrix[Double] = {
     val X = DenseMatrix.zeros[Double](df.numRows, df.numCols + 1)
     X(::, 0) := DenseVector.ones[Double](df.numRows)
-    println("h1")
     X(::, 1 to df.numCols) := frame2mat(df)
-    println("h2")
-    //println(X)
     X
   }
-
 
 }
 

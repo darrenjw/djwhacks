@@ -5,37 +5,27 @@ import org.saddle._
 import com.github.fommil.netlib.BLAS.{ getInstance => blas }
 import FrameUtils._
 
-class Lm(X: ModelMatrix, ys: Frame[Int, String, Double]) {
+class Lm(X: ModelMatrix, yf: Frame[Int, String, Double]) {
 
-  println("h5")
-  val y = frame2mat(ys)
-  //println(y)
+  val names = X.names
+  val y = frame2mat(yf)
   val qr = thinQR(X.X)
   val q = qr._1
-  //println(q)
   val r = qr._2
-  //println(r)
   val qty = q.t * y
-  //println(qty)
   val fitted = q * qty
-  //println(fitted)
   val residuals = y - fitted
   val coefficients = backSolve(r, qty)
+  val coeffFrame = mat2frame(coefficients, Index(X.names.toArray), yf.colIx)
 
   override def toString: String = {
-    coefficients.toString
-  }
-
-  def backSolve(A: DenseMatrix[Double], y: DenseVector[Double]): DenseVector[Double] = {
-    val ya = y.toArray
-    blas.dtrsv("U", "N", "N", A.cols, A.toArray, A.rows, ya, 1)
-    DenseVector(ya)
+    coeffFrame.toString
   }
 
   def backSolve(A: DenseMatrix[Double], y: DenseMatrix[Double]): DenseMatrix[Double] = {
-    val ya = y.toArray
-    blas.dtrsm("L", "U", "N","N", y.rows,y.cols,1.0, A.toArray, A.rows, ya, y.rows)
-    DenseMatrix(ya)
+    val yc = y.copy
+    blas.dtrsm("L", "U", "N", "N", y.rows, y.cols, 1.0, A.toArray, A.rows, yc.data, y.rows)
+    yc
   }
 
   // TODO: This is VERY inefficient for large n - need to replace with a proper thin QR by modifying qr() function definition
@@ -45,6 +35,13 @@ class Lm(X: ModelMatrix, ys: Frame[Int, String, Double]) {
     val p = A.cols
     val linalg.qr.QR(_Q, _R) = linalg.qr(A)
     (_Q(::, 0 until p), _R(0 until p, ::))
+  }
+
+  // Not actually using this now, but will be useful for something... 
+  def backSolve(A: DenseMatrix[Double], y: DenseVector[Double]): DenseVector[Double] = {
+    val yc = y.copy
+    blas.dtrsv("U", "N", "N", A.cols, A.toArray, A.rows, yc.data, 1)
+    yc
   }
 
 }

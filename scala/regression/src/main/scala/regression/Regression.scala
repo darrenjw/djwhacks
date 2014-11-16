@@ -25,7 +25,7 @@ object Regression {
     val age = getCol("Age", df2)
     val sex = getColS("Sex", df2).mapValues(x => if (x == "Male") 1.0 else 0.0)
     val y = oi.mapValues { log(_) }
-    val x = age.joinPreserveColIx(sex)
+    val x = joinFrames(List(age,sex))
     val X = ModelMatrix(x)
     val m = Lm(X, y)
     println(m)

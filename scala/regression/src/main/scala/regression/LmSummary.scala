@@ -26,7 +26,7 @@ class LmSummary(m: Lm) {
   val seF = Frame(Vec(se.toArray), m.coeffFrame.rowIx, Index("SE"))
   val t = m.coefficients(::, 0) / se
   val tF = Frame(Vec(t.toArray), m.coeffFrame.rowIx, Index("t-val"))
-  //val p=t.map{1.0-StudentsT(df).cdf(_)}.map{_*2} // .cdf missing... filed an issue
+  //val p=t.map{1.0-StudentsT(df).cdf(_)}.map{_*2} // .cdf missing... filed an issue - no incomplete beta function
   val p = t.map { 1.0 - Gaussian(0.0, 1.0).cdf(_) }.map { _ * 2 } // TODO: Gaussian approximate p-value for now... 
   val pF = Frame(Vec(p.toArray), m.coeffFrame.rowIx, Index("p-val"))
   val coeff = joinFrames(List(m.coeffFrame, seF, tF, pF))
@@ -36,7 +36,7 @@ class LmSummary(m: Lm) {
   val rSquared = (ssy - rss) / ssy
   val adjRs = 1.0 - ((n - 1.0) / (n - pp)) * (1 - rSquared)
   val k = pp - 1
-  val f = (ssy - rss) / k / (rss / df) // p-val is F on k and df under H0
+  val f = (ssy - rss) / k / (rss / df) // p-val is F on k and df under H0. No F in Breeze, and no incomplete beta function...
 
   override def toString = {
     "Residuals:\n" + five +

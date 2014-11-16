@@ -5,7 +5,7 @@ import org.saddle._
 import com.github.fommil.netlib.BLAS.{ getInstance => blas }
 import FrameUtils._
 
-class Lm(X: ModelMatrix, yf: Frame[Int, String, Double]) {
+class Lm(yf: Frame[Int, String, Double], X: ModelMatrix) {
 
   val names = X.names
   val y = frame2mat(yf)
@@ -20,7 +20,7 @@ class Lm(X: ModelMatrix, yf: Frame[Int, String, Double]) {
 
   override def toString: String = coeffFrame.toString
   def summary: LmSummary = new LmSummary(this)
-    
+
   def backSolve(A: DenseMatrix[Double], y: DenseMatrix[Double]): DenseMatrix[Double] = {
     val yc = y.copy
     blas.dtrsm("L", "U", "N", "N", y.rows, y.cols, 1.0, A.toArray, A.rows, yc.data, y.rows)
@@ -46,7 +46,13 @@ class Lm(X: ModelMatrix, yf: Frame[Int, String, Double]) {
 }
 
 object Lm {
-  def apply(X: ModelMatrix, y: Frame[Int, String, Double]) = new Lm(X, y)
+
+  def apply(y: Frame[Int, String, Double], X: ModelMatrix): Lm = new Lm(y, X)
+
+  def apply(y: Frame[Int, String, Double], XF: Frame[Int, String, Double]): Lm = Lm(y, ModelMatrix(XF))
+
+  def apply(y: Frame[Int, String, Double], LXF: List[Frame[Int, String, Double]]): Lm = Lm(y, joinFrames(LXF))
+
 }
  
  

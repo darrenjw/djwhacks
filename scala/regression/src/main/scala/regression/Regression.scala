@@ -24,10 +24,23 @@ object Regression {
     val oi = getCol("OI", df2)
     val age = getCol("Age", df2)
     val sex = getColS("Sex", df2).mapValues(x => if (x == "Male") 1.0 else 0.0)
+
+    val oiM = oi.row(sex.rfilter(_.at(0).get == 1.0).rowIx.toVec)
+    val oiF = oi.row(sex.rfilter(_.at(0).get == 0.0).rowIx.toVec)
+    val ageM = age.row(sex.rfilter(_.at(0).get == 1.0).rowIx.toVec)
+    val ageF = age.row(sex.rfilter(_.at(0).get == 0.0).rowIx.toVec)
+
+    val f0 = Figure()
+    val p0 = f0.subplot(0)
+    p0 += plot(frame2mat(ageM)(::, 0), frame2mat(oiM)(::, 0), '.')
+    p0 += plot(frame2mat(ageF)(::, 0), frame2mat(oiF)(::, 0), '.', "red")
+    p0.xlabel = "Age"
+    p0.ylabel = "OI"
+    p0.title = "OI against age"
+    f0.saveas("data.png")
+
     val y = oi.mapValues { log(_) }
-    val x = joinFrames(List(age,sex))
-    val X = ModelMatrix(x)
-    val m = Lm(X, y)
+    val m = Lm(y, List(age, sex))
     println(m)
 
     val f = Figure()
@@ -40,10 +53,9 @@ object Regression {
     p2 += hist(m.residuals(::, 0))
     p2.title = "Residual Histogram"
     f.saveas("resid.png")
-    
-    val sum=m.summary
+
+    val sum = m.summary
     println(sum)
-    
 
     // Interactive session ends here
     // ***********************************

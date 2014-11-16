@@ -7,6 +7,7 @@ object ScratchTestSheet {
   import java.io.FileReader
   import breeze.stats.regression._
   import breeze.linalg._
+  import breeze.plot._
   import org.saddle._
   import org.saddle.io._
   import FrameUtils._
@@ -33,9 +34,9 @@ object ScratchTestSheet {
                                                   //| 
 
   val dm = frame2mat(frame.mapValues(CsvParser.parseDouble))
-                                                  //> Nov 13, 2014 1:01:28 PM com.github.fommil.jni.JniLoader liberalLoad
-                                                  //| INFO: successfully loaded /tmp/jniloader1193297955642360800netlib-native_sys
-                                                  //| tem-linux-x86_64.so
+                                                  //> Nov 16, 2014 9:18:52 PM com.github.fommil.jni.JniLoader liberalLoad
+                                                  //| INFO: successfully loaded /tmp/jniloader497204747364478781netlib-native_syst
+                                                  //| em-linux-x86_64.so
                                                   //| dm  : breeze.linalg.DenseMatrix[Double] = 5.0    65.0   NaN  
                                                   //| 3.75   40.0   NaN  
                                                   //| 7.6    52.0   NaN  
@@ -68,45 +69,11 @@ object ScratchTestSheet {
                                                   //| 4.84   55.0   NaN  
                                                   //| 6.75   61.0   NaN  
                                                   //| 8.35   29.0   NaN  
-                                                  //| 3.75   27
+                                                  //| 3.75   27.
                                                   //| Output exceeds cutoff limit.
 
-  mat2frame(dm, Index(((0 until dm.rows).toArray map { _.toString })), Index("a", "b", "c"))
-                                                  //> res0: org.saddle.Frame[String,String,Double] = [101 x 3]
-                                                  //|              a       b  c 
-                                                  //|        ------- ------- -- 
-                                                  //|   0 ->  5.0000 65.0000 NA 
-                                                  //|   1 ->  3.7500 40.0000 NA 
-                                                  //|   2 ->  7.6000 52.0000 NA 
-                                                  //|   3 ->  2.4500 45.0000 NA 
-                                                  //|   4 ->  5.4000 72.0000 NA 
-                                                  //| ...
-                                                  //|  96 ->  8.8900 57.0000 NA 
-                                                  //|  97 -> 16.5000 56.0000 NA 
-                                                  //|  98 ->  4.6500 53.0000 NA 
-                                                  //|  99 -> 13.5000 56.0000 NA 
-                                                  //| 100 -> 16.1000 66.0000 NA 
-                                                  //| 
-
-  Frame(Mat(2, 2, Array(1, 2, 3, 4)), Index(0, 1), Index("a", "b"))
-                                                  //> res1: org.saddle.Frame[Int,String,Int] = [2 x 2]
-                                                  //|       a  b 
-                                                  //|      -- -- 
-                                                  //| 0 ->  1  2 
-                                                  //| 1 ->  3  4 
-                                                  //| 
-   
-
-                       import breeze.linalg._
-import breeze.stats._
-import breeze.numerics._
-
-val v=DenseVector[Double](1,2,3,4,5,6,7,8,9,10)   //> v  : breeze.linalg.DenseVector[Double] = DenseVector(1.0, 2.0, 3.0, 4.0, 5.0
-                                                  //| , 6.0, 7.0, 8.0, 9.0, 10.0)
-mean(v)                                           //> res2: Double = 5.5
-import breeze.stats.DescriptiveStats.percentile
-percentile(v.toArray,0.5)                         //> res3: Double = 5.5
-v.map{_*2}                                        //> res4: breeze.linalg.DenseVector[Double] = DenseVector(2.0, 4.0, 6.0, 8.0, 10
-                                                  //| .0, 12.0, 14.0, 16.0, 18.0, 20.0)
+  val f = Figure()                                //> f  : breeze.plot.Figure = breeze.plot.Figure@47cd0dbb
+  val p = f.subplot(0)                            //> p  : breeze.plot.Plot = breeze.plot.Plot@66bfeeae
+  p += plot(dm(::, 1), dm(::, 0), '.',"red")      //> res0: breeze.plot.Plot = breeze.plot.Plot@66bfeeae/
 
 }

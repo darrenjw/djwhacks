@@ -1,0 +1,34 @@
+#!/bin/sh
+# mkscala
+# make a scala project structure inside an existing git repo
+
+if [ "$#" -ne 1 ]; then
+  echo "mkscala: make a scala/sbt project structure inside an existing git repo"
+  echo "Usage: $0 <project-name>"
+  exit 1
+fi
+
+echo "Creating a project called $1"
+
+mkdir $1
+cd $1
+touch build.sbt
+git add build.sbt
+mkdir src
+cd src
+mkdir test
+mkdir test/scala
+mkdir test/java
+touch test/scala/$1-test.scala
+git add test/scala/$1-test.scala
+mkdir main
+mkdir main/scala
+mkdir main/scala/$1
+mkdir main/java
+touch main/scala/$1/$1.scala
+git add main/scala/$1/$1.scala
+cd ..
+
+# eof
+
+

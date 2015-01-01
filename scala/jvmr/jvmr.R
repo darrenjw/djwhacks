@@ -4,7 +4,8 @@ sbtInit<-function()
 {
   library(jvmr)
   system2("sbt","compile")
-  cpstr=system2("sbt","printClasspath",stdout=TRUE)[3]
+  cpstr=system2("sbt","printClasspath",stdout=TRUE)
+  cpstr=cpstr[length(cpstr)]
   cpsp=strsplit(cpstr,"!")[[1]]
   cp=cpsp[1:(length(cpsp)-1)]
   scalaInterpreter(cp)

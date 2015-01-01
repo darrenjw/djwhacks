@@ -13,6 +13,7 @@ import org.scalatest.prop._
 import org.junit.runner.RunWith
 
 import breeze.linalg._
+import breeze.linalg.svd.SVD
 
 @RunWith(classOf[JUnitRunner])
 class MyLinalgSuite extends FunSuite {
@@ -43,7 +44,16 @@ class MyLinalgSuite extends FunSuite {
 	assert(c(1,1)===3.0)
   }
   
-  
+test("svd") {
+  val m=DenseMatrix.rand(10,5)
+  assert(m.rows===10)
+  assert(m.cols===5)
+  val svd.SVD(u,s,v) = svd(m)
+  assert(u.rows===10)
+  assert(u.cols===10)  // "fat" SVD, as expected...
+}  
+
+
 }
 
 

@@ -1,4 +1,4 @@
-name := "breeze-test"
+name := "gibbs"
 
 version := "0.1"
 
@@ -18,6 +18,18 @@ resolvers ++= Seq(
 
 scalaVersion := "2.11.1"
 
+
+// printClasspath task required for sbtInit() in R
+
+lazy val printClasspath = taskKey[Unit]("Dump classpath")
+
+printClasspath := {
+  (fullClasspath in Runtime value) foreach {
+    e => print(e.data+"!")
+  }
+}
+
+// end of printClasspath task definition
 
 
 

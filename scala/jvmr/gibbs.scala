@@ -32,11 +32,19 @@ object Gibbs {
     }
 
     def main(args: Array[String]) = {
-      val out = genIters(State(0.0,0.0),10000,100)
-      val s = new java.io.FileWriter("output.csv")
-      s.write("x , y\n")
-      out map { it => s.write(it.toString) }
-      s.close
+      if (args.length != 3) {
+        println("Usage: sbt \"run <outFile> <iters> <thin>\"")
+        sys.exit(1)
+      } else {
+        val outF=args(0)
+        val iters=args(1).toInt
+        val thin=args(2).toInt
+        val out = genIters(State(0.0,0.0),iters,thin)
+        val s = new java.io.FileWriter(outF)
+        s.write("x , y\n")
+        out map { it => s.write(it.toString) }
+        s.close
+      }
     }
 
 }

@@ -38,7 +38,6 @@ printClasspath := {
   cpst=cpstr[length(cpstr)]
   cpsp=strsplit(cpst,"!")[[1]]
   cp=cpsp[2:(length(cpsp)-1)]
-  #print(cp)
   si=scalaInterpreter(cp,use.jvmr.class.path=FALSE)
   setwd(owd)
   si

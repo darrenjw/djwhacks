@@ -8,12 +8,12 @@ sbtInit<-function()
   cpst=cpstr[length(cpstr)]
   cpsp=strsplit(cpst,"!")[[1]]
   cp=cpsp[1:(length(cpsp)-1)]
-  scalaInterpreter(cp)
+  scalaInterpreter(cp,use.jvmr.class.path=FALSE)
 }
 
 sc=sbtInit()
 sc['import gibbs.Gibbs._']
-out=sc['genIters(State(0.0,0.0),10000,10).toArray.map{s=>Array(s.x,s.y)}']
+out=sc['genIters(State(0.0,0.0),50000,1000).toArray.map{s=>Array(s.x,s.y)}']
 library(smfsb)
 mcmcSummary(out,rows=2)
 

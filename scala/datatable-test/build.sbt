@@ -8,7 +8,7 @@ libraryDependencies  ++= Seq(
             "org.scalacheck" %% "scalacheck" % "1.11.4" % "test",
             "org.scalatest" %% "scalatest" % "2.1.7" % "test",
             "com.github.tototoshi" %% "scala-csv" % "1.1.2",
-            "com.github.martincooper" %% "scala-datatable" % "0.4.0"
+            "com.github.martincooper" %% "scala-datatable" % "0.6.0"
 )
 
 resolvers ++= Seq(

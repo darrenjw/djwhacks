@@ -32,11 +32,13 @@ object DatatableTest {
     val dtOpt=DataTable("MyDT",Seq(OICol,AgeCol,SexCol))
     val dt=dtOpt.get
     println(dt)
-    val dtF=dt.filter(row => row.as[Int]("Age") > 0 )
+    val dtF=dt.filter(row => row.as[Int]("Age") > 0 ).toDataTable
     println(dtF)
     println(dtF.length)
-    val dv=DataView(dt,dtF).get
-    println(dv)
+    println(dtF.columns("Age").as[Int].data)
+    println(dtF.columns(0).name)
+    println(dtF.columns.as[Int]("Age").data)
+    println(dtF.columns.as[Int]("Age").data.map{_.toDouble})
     println("Done")
   }
 

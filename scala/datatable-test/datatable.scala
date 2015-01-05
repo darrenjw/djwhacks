@@ -32,6 +32,7 @@ object DatatableTest {
     val dtOpt=DataTable("MyDT",Seq(OICol,AgeCol,SexCol))
     val dt=dtOpt.get
     println(dt)
+    // filter the frame and convert the view back to a table
     val dtF=dt.filter(row => row.as[Int]("Age") > 0 ).toDataTable
     println(dtF)
     println(dtF.length)

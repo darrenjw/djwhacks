@@ -1,0 +1,403 @@
+\documentclass[mathserif,handout]{beamer}
+%\documentclass{beamer}
+\usetheme{Warsaw}
+\usecolortheme{seahorse}
+\usecolortheme{orchid}
+\usepackage{amsmath,verbatim}
+\usepackage{listings}
+\usepackage[english]{babel}
+\usepackage{movie15}
+\setbeamercovered{transparent}
+
+\newcommand{\Deltap}{\ensuremath{\Delta^{\!+}}}
+\newcommand{\trans}{\ensuremath{{}^\mathrm{T}}}
+\newcommand{\eps}{\varepsilon}
+\newcommand*{\approxdist}{\mathrel{\vcenter{\offinterlineskip
+\vskip-.25ex\hbox{\hskip.55ex$\cdot$}\vskip-.25ex\hbox{$\sim$}
+\vskip-.5ex\hbox{\hskip.55ex$\cdot$}}}}
+
+% \lstMakeShortInline[language=myR]¬
+
+\lstdefinelanguage{myR}
+{
+   language=R,
+   otherkeywords={read.table, set.seed, head},
+   deletekeywords={url,codes, t, dt, Call, formula,Q, R, on,by,hat,is,
+col, set,start,end,deltat,zip},
+   sensitive=true,
+   breaklines=true,
+   morecomment=[l]{\#},
+   morestring=[b]",
+   morestring=[b]',
+   basicstyle =\ttfamily\small,
+   keywordstyle=\bfseries,
+   showtabs=false,
+   showstringspaces=false,
+   literate= {~}{$\sim$}{2},
+   numberstyle=\sffamily\scriptsize,
+   stepnumber=2
+ }
+
+
+
+
+\title{Big Data Overview}
+\author[Darren Wilkinson --- 25/9/2014]{\textbf{\large Darren 
+Wilkinson} \\
+\alert{\url{http://tinyurl.com/darrenjw}}\\
+School of Mathematics \& Statistics, \\
+Newcastle University, UK}
+\date{Induction Retreat\\Doxford Hall\\24--25th September, 2014}
+
+\begin{document}
+
+
+\frame{\titlepage}
+
+\frame{
+\frametitle{Big picture}
+\begin{itemize}
+\item Technological advancement has enabled the routine collection and
+  analysis of huge volumes of data
+\item There are many challenges to doing this, and many of these are
+  either \alert{computational}, \alert{statistical} or both
+\item Computational challenges: Capturing, storing, and processing
+  huge data volumes poses \alert{scalability} challenges --- these are
+  most straightforwardly addressed using \alert{cloud computing}
+  approaches
+\item Statistical challenges: Deriving useful information and making
+  informed decisions using \alert{big data}...
+\end{itemize}
+}
+
+\frame{
+\frametitle{What is big data?}
+\begin{itemize}
+\item Bigger than ``normal" data, but no universally agreed definition
+\item Data Volume
+  \begin{itemize}
+  \item Won't fit in RAM? Exceeds 20\% of RAM? Won't fit on a regular HDD? Won't fit in a standard relational database? Requires distributed analysis? Requires analysis in a single pass?
+  \item Different ways to be "big": many data points (large $n$), many variables (large $p$), high frequency (small $\Delta t$), data complexity (not just a numeric matrix), ...
+  \end{itemize}
+\item Not just about volume --- 3 V's: \alert{Volume}, \alert{Velocity}, \alert{Variety}
+  \begin{itemize}
+  \item Velocity: on-line analysis of large amounts of streaming data
+  \item Variety: Modelling, analysing and synthesising multiple disperate sources of data in a unified way to draw conclusions not apparent from separate analyses
+  \end{itemize}
+\end{itemize}
+}
+
+\frame{
+\frametitle{Is big data new?}
+\begin{itemize}
+\item Not really --- back in 1994 (20 years ago), Walmart had 7~billion transactions
+\item Term ``Big data" not really used before 2011, so what has changed?
+  \begin{itemize}
+  \item \alert{Ubiquity}. Automated data capture, opening up of existing data, simulations and synthetic data, exponential growth in data storage, massive increase in network bandwith, internet, ...
+  \item Gradual realisation of latent value tied up in data --- \alert{data is not knowledge} --- very possible to be data rich but information poor
+  \end{itemize}
+\item Commerce: every company is an internet company 
+\item Science
+  \begin{itemize}
+  \item Biology: Modern genomics generates massive complex data requiring sophisticated analysis. New sequencing technologies revolutionising bioscience
+  \item Astronomy: eg. Square kilometre array (SKA) --- will be generating 1,000 exobytes per day by 2020. 
+  \end{itemize}
+\end{itemize}
+}
+
+\frame{
+\frametitle{Big data opportunities}
+Two quite different classes
+\begin{itemize}
+\item \alert{Data manipulation} (sorting, selecting, matching, aggregating)
+  \begin{itemize}
+  \item eg. finding stuff (directions, shops, products, out-of-print books, ...)
+  \end{itemize}
+\item \alert{Inference} (forecasting, predicting, generalising, estimating underlying truth, counterfactuals)
+  \begin{itemize}
+  \item eg. forecasting demand for product next month, predicting other products a customer may like, identifying disease-causing genes, using survey results to understand preferences of a larger population, ...
+  \item Arguably deeper conceptual challenges: eg. everything is ``significant" with enough data, requires mathematical and/or statistical modelling and abstraction, inferential frameworks, computationally intensive statistical model-fitting procedures, understanding bias, multiple testing issues, ...
+  \end{itemize}
+\end{itemize}
+Often require a combination of the two (eg. real-time transaction fraud detection requires fast algorithms and sophisticated statistical models)
+}
+
+\frame{
+\frametitle{Models and modelling}
+\begin{itemize}
+\item ``All models are wrong, but some are useful" --- George Box
+\item ``All models are wrong, and increasingly we can do without them" --- Peter Norvig (Google)
+\item Box was right, Norvig wrong... models are still vital!
+\item What Norvig probably meant was that data-driven models can often (but not always) replace theory-driven models in big data scenarios (which is true)
+\item Models need to be wrong in the right way...
+\item Two different approaches to mathematical and statistical modelling:
+  \begin{itemize}
+  \item Data-driven models: Top-down modelling of statistical variations in the data. Traditional statistical approach. Great for prediction, but don't give much insight, and vulnerable to over-fitting.
+  \item Theory-driven models: Bottom-up modelling of generative mechanisms. More powerful, give greater insight and estimation of underlying truth, but very dangerous if theory is wrong and model mechanisms are inconsistent with data.
+  \end{itemize}
+\end{itemize}
+}
+
+\frame{
+\frametitle{Big data issues}
+\begin{itemize}
+\item Large data sets are often collected opportunistically, and not for the purpose of answering the question that you are now interested in
+\item Long-term longitudinal data sets are often difficult to exploit, as definitions, categorisations and data collection protocols often change over time
+\item Multiple-testing and spurious correlations are a constant hazard
+\item Selection bias issues are often obscure yet important --- and different for different data sources (eg. speed cameras and magazine surveys)
+\item Privacy, confidentiality and ethical considerations affect all personal data
+\end{itemize}
+}
+
+\frame{
+\frametitle{Statistical challenges}
+\begin{itemize}
+\item \alert{Design}: Can the data being recorded actually answer the
+  questions of interest? If not, can logging be modified so that it
+  can?
+\item \alert{Statistical data analysis}:
+  \begin{itemize}
+  \item \alert{Modelling}: Complex hierarchical models, time series modelling,
+    event time data, network/graph data, ``data integration''
+  \item \alert{Scalable inference}: Computational challenges addressed using
+    \alert{conditional independence} to allow \alert{local
+      computation}. Storage challenges addressed using notions of
+    \alert{sufficiency} --- summarising data without information
+    loss. \alert{Exchangeability} assumptions leading to both
+    conditional independence and sufficiency.
+  \end{itemize}
+\item \alert{Decision making}: How to automate actions on the basis of
+  (streaming) data: when to flag \alert{anomalies}, controlling
+  \alert{false discovery rate}, decision making based on
+  \alert{utility} theory
+\end{itemize}
+}
+
+
+
+\begin{comment}
+
+
+
+\frame{
+\frametitle{CDT Structure}
+\begin{itemize}
+\item 5 cohorts of approximately 12 students per cohort, starting
+  September 2014
+\item A 1+3 model with a ``Masters like'' Year 1 followed by a 3 year
+  thesis project
+\item Taught component ends with a mini group research project conducted by small interdisciplinary teams
+\item Students assigned to supervisors and main projects after Xmas
+  of Year 1
+\item Would ideally like a 3 supervisor model: 1 CS, 1 Stats, 1 Other (Applied or Industry)
+\end{itemize}
+}
+
+\frame{
+\frametitle{Year 1 taught structure (120 credits)}
+Semester 1:
+
+Begin with some bespoke training exclusive for CDT students:
+\begin{itemize}
+\item Weeks 1 and 2: EITHER \alert{MAS8380: Maths and stats for computing scientists} OR \alert{CSC8621: Computing science for mathematicians} (10 credits)
+\item Weeks 3 to 8: Two 15 credit modules running in parallel
+
+\alert{MAS8381: Statistics for big data}:
+Numerical linear algebra, likelihood, regression, multivariate data analysis, hierarchical modelling and Bayesian inference, etc.
+
+\alert{CSC8622: Programming for big data}:
+R, Java, data mining, algorithms, databases and query languages, nosql databases, graph databases
+\end{itemize}
+
+
+Module catalogue: \alert{\url{http://www.ncl.ac.uk/module-catalogue/}}
+
+}
+
+
+\frame{
+\frametitle{Year 1 taught structure}
+Some relevant CS MSc modules:
+\begin{itemize}
+\item Weeks 9 to 12: Two 10 credit modules running in parallel
+
+\alert{CSC8110: Cloud computing}:
+Distributed computing, cloud architectures, distributed algorithms, virtual machines, scalable computing patterns.
+
+\alert{CSC8111: Machine learning}:
+CS approaches to data processing and learning from data.
+
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Year 1 taught structure}
+Semester 2
+
+One shared module (Big data analytics) --- the rest is bespoke.
+
+\begin{itemize}
+\item Weeks 1 to 4: 
+
+\alert{MAS8382: Time series data} (10 credits):
+Time series models and analysis, on-line versus batch learning, state space models, Kalman filter, particle filters, event-time data, trend analysis. 
+
+\alert{CSC8101: Big data analytics}:
+Hadoop, etc. Distributed computation of statistics. Distributed model fitting and analysis. Visualisation.
+
+\item Weeks 5 to 12: Three modules running in parallel
+
+\alert{CSC8623: Research skills} (10 credits)
+
+\alert{CSC8624: Professional skills} (10 credits)
+
+\alert{CSC8625: Group project} (20 credits)
+Small interdisciplinary groups work on a big data problem.
+
+\end{itemize}
+}
+
+\frame{
+\frametitle{The first 8 weeks...}
+\begin{itemize}
+\item The \alert{first 8 weeks consists of very intensive bespoke training} designed to give everyone a solid foundation in both statistics and computing. All taught by me (Darren), Sarah and Matt.
+\item \alert{Everything is new this year}, and we are making stuff up as we go along! The official University documentation was rushed through --- don't pay too much attention to it! eg. courses will vary from their descriptions and syllabus as described in the module outline forms (MOFs). We will revise them ready for the second cohort in the light of our experience this year. Constructive feedback is very welcome.
+\item In particular, we are completely ignoring the University timetable for the first 8 weeks! From Week 9 onwards (starting 24/11/14) you should follow the standard University timetable.
+\end{itemize}
+}
+
+\frame{
+\frametitle{Initial timetable}
+\begin{itemize}
+\item Cohort split for first two weeks, but all still taking place in CLT 614A/B. Lectures will take place in CLT 614B. Practials and tutorials will take place in CLT 614A. 
+\item CS stream will do \alert{MAS8380} (Maths/stats for CS), taught by Sarah.
+\item CS stream: Jack H, Peter, Richard, Saleh, Simon, Tom
+\item Basic timetable: Lecture 10--12. Lunch 12--1. Lecture 1--2. Break 2--3. Tutorial/prac 3--4.
+\item Same pattern every working day for two weeks (10 days)
+\end{itemize}
+}
+
+\frame{
+\frametitle{Initial timetable}
+\begin{itemize}
+\item Maths/stats stream will do \alert{CSC8621}, taught by Matt.
+\item Main focus on introductory Java programming
+\item Maths/stats stream: Jack A, Jonathan, Mario, Matthew, Sajib, Shane
+\item Basic timetable: Lecture 9--10. Break 10--11. Practical 11--1. Lunch 1--2. Self-directed study 2--4.
+\item Same pattern every working day for two weeks (10 days)
+\end{itemize}
+Both courses start on the morning on Monday 29th September.
+}
+
+\frame{
+\frametitle{Weeks 3--8}
+\begin{itemize}
+\item All students take \alert{MAS8381} (Stats for big data), taught by me (Darren)
+\item Activities will be scheduled \alert{every other working day} for 6 weeks, starting on Monday 13th October
+\item Activities will vary from day to day, but will be scheduled from 9--5 each day (with a break for lunch, at least!) --- further details before the course starts
+\item Some days will be structured in the form of a reading course, with self-directed reading followed by discussion sessions. Other days will be structured more in the form of a traditional lecture course. Most days will feature a computer practical session in the afternoon.
+\item The final week will be largely free of structured activities to allow work on an assessed project.
+\end{itemize}
+}
+
+\frame{
+\frametitle{Weeks 3--8}
+\begin{itemize}
+\item All students take \alert{CSC8622} (Programming for big data)
+\item Activities will be scheduled \alert{every other working day} for 6 weeks, starting on Tuesday 14th October
+\item The first 3 weeks will be taught by Sarah, and will focus on R
+\item The last 3 weeks (starting Monday 3rd November) will be taught by Matt, and will cover Java, Databases and more general CS topics
+\item Again, activities may vary from day to day --- more details later
+\item Again, there will be fewer scheduled activities in the last week of each half in order to allow the completion of project work
+\end{itemize}
+}
+
+\frame{
+\frametitle{Weeks 9--12}
+\begin{itemize}
+\item From week 9 onwards, follow the standard University timetable: \alert{\url{http://www.ncl.ac.uk/timetable/}}
+\item All students will take CSC8110 (Cloud computing), taught by Paul, and CSC8111 (Machine learning), taught by Thomas Ploetz
+\item These modules are shared with the CS MSc courses, and will take place in teaching rooms in CLT.
+\item The training in the first 8 weeks is designed to ensure that all CDT students will have the necessary background computing knowledge to be able to cope with the shared CS modules.
+\end{itemize}
+}
+
+\frame{
+\frametitle{Drop-in help sessions}
+\begin{itemize}
+\item Starting in Week 9, Sarah and Matt will offer 1 hour weekly ``ask me anything" drop-in sessions at a time which doesn't clash with other scheduled activities (details later)
+\item The idea is mainly that students in the CS stream can ask Sarah about statistical topics/issues they are confused about, and that students in the maths/stats stream can ask Matt about computing issues they are confused about
+\item These will run in (almost) all scheduled teaching weeks until the completion of the taught component in May
+\end{itemize}
+}
+
+\frame{
+\frametitle{Blackboard}
+\begin{itemize}
+\item Blackboard is the University's adopted VLE platform: \alert{\url{https://blackboard.ncl.ac.uk/}}
+\item It isn't perfect, but it's good enough...
+\item Clicking on the ``Courses" tab will give a list of modules that you are registered for
+\item The module pages will be used extensively by the module leaders for sharing module content, further reading, tutorial and practical information, course assessment details, etc.
+\item We will try to be as ``paperless" as practically possible --- you should be able to read and access everything you need from your tablet --- Blackboard will be the standard way of enabling this way of working
+\end{itemize}
+}
+
+\frame{
+\frametitle{Blackboard community}
+\begin{itemize}
+\item Clicking on the ``Community" tab will give a list of Blackboard communities that you are associated with. Everyone associated with the CDT should be automatically enrolled in the \alert{Cloud Computing for Big Data CDT} community
+\item This community is independent of any particular module, and CDT students will remain part of this community for the full four years that they are at Newcastle --- it is the main forum for communication and information sharing for the CDT
+\item There is a discussion forum for general messages and communication --- please use it!
+\item There is a wiki for sharing links to information relevant to the programme --- please contribute to it!
+\item If everyone puts some time and effort into structuring the wiki and adding in links to sites they find useful, it will quickly become an invaluable resource.
+\end{itemize}
+}
+
+\frame{
+\frametitle{NESS}
+\begin{itemize}
+\item NESS is the University system for managing assessment and feedback: \alert{\url{https://ness.ncl.ac.uk/}}
+\item Where practical, NESS will be used for setting assignments, assignment submission, and feedback
+\item The bespoke modules are all assessed continually, via coursework and projects, with no exam
+\item Typically, you will prepare your assessed work as a Word document and upload it to NESS before a deadline for marking and assessment
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Statistical methods areas}
+\begin{itemize}
+\item Experimental design for big data problems
+\item Time series analysis and state space models (inc. on-line methods)
+\item Event time data
+\item Regression
+\item Discrimination and classification
+\item Clustering
+\item Scalable hierarchical modelling
+\item Statistical analysis of graph data AND data on graphs
+\item Decision problems in a big data context (inc. anomaly detection)
+\end{itemize}
+}
+
+\frame{
+\frametitle{Application areas}
+\begin{itemize}
+\item Computing ``middle-ware''
+\item Gaming (esp. on-line)
+\item Security
+\item Heath-care
+\item Bioinformatics
+\item Retail
+\item Finance
+\item e-Commerce
+\end{itemize}
+\alert{ISRU} as a conduit between industry and the CDT
+}
+
+\end{comment}
+
+\end{document}
+
+% eof
+

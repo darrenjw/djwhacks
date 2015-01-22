@@ -24,4 +24,8 @@ commit:
 clean:
 	rm -f *~ core *.pdf *.ps *.dvi *.log *.aux *.out *.flc
 
+pristine:
+	rm -f *.toc *.nav *.snm
+	make clean
+
 # eof

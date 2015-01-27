@@ -312,6 +312,16 @@ All about efficiency, expertise, and economies of scale
 }
 
 \frame{
+\frametitle{Storage and data}
+\begin{itemize}
+\item VMs will always have some (traditional) disk-based file system storage, but this isn't always appropriate for big data
+\item Simple solutions will start from large traditional file systems or relational database management systems (RDBMS) queried via SQL
+\item Big data solutions (such as Hadoop) will offer distributed file systems (such as HDFS) for improved data locality (data partitioning), and/or unconventional (nosql) scalable database solutions such as SimpleDB, Cassandra, MongoDB, Neo4j, etc.
+\item These platforms allow safe and efficient management of large volumes of data, sensibly partitioned for scalable data processing
+\end{itemize}
+}
+
+\frame{
 \frametitle{*--as--a--Service}
 \begin{itemize}
 \item Infrastructure (\alert{IaaS})
@@ -342,6 +352,8 @@ Big data applications are often developed at the PaaS level --- software such as
 \end{itemize}
 }
 
+\begin{comment}
+
 \frame{
 \frametitle{Category theory}
 Dummies guide:
@@ -351,8 +363,9 @@ Dummies guide:
 \item If the collection additionally supports a (sensible) ``flattening" operation, it is a \alert{monad} (required for composition)
 \item For a ``reduce" operation on a collection to parallelise cleanly, the type of the collection together with the reduction operation must define a \alert{monoid} (must be an \alert{associative} operation, so that reductions can proceed in multiple threads in parallel)
 \end{itemize}
-
 }
+
+\end{comment}
 
 \frame{
 \frametitle{Scala}
@@ -376,6 +389,8 @@ Dummies guide:
 \end{itemize}
 }
 
+\begin{comment}
+
 \frame{
 \frametitle{Static versus dynamic typing, compiled versus interpreted}
 %\small
@@ -387,6 +402,8 @@ Dummies guide:
 \item Coupled with type inference, statically typed code is actually more concise than dynamic code
 \end{itemize}
 }
+
+\end{comment}
 
 \frame{
 \frametitle{Scala ecosystem}
@@ -416,7 +433,7 @@ Large ecosystem of software libraries and developers using Scala in the big data
   \end{itemize}
 \item High-throughput sequencing (+ metagenomics) (Conor, +)
   \begin{itemize}
-  \item Each experiment generates over 100M "reads", each around 100 bp --- over 10B bp --- and that's ``old" tech...
+  \item Each experiment generates over 100M ``reads", each around 100 bp --- over 10B bp --- and that's ``old" tech...
   \end{itemize}
 \item Social media (Twitter) data analysis (Rasiah)
   \begin{itemize}
@@ -452,9 +469,21 @@ Have chosen to base all of the group projects this year around time series data 
 \item The Urban Observatory is collecting and managing data from across Newcastle, integrating sensor platforms with citizen based data collection, geospatial and satellite data
 \item It includes a new framework for integrating data into workflows, models and other applications
 \item The Urban Observatory provides a baseline for gaining a richer understanding of how the city operates, and in the process repurpose and reuse the data across many different disciplines and applications
+\item Demonstrator \alert{\href{http://ceg-research.ncl.ac.uk/uo/dashboard/}{City dashboard}} 
 %\item It is a key part of the £50m investment by Newcastle University in Science Central
 \end{itemize}
 The platform is open and queryable over the internet (REST API with JSON output). For our twitter data analysis project, I just queried the 1 million most recent geo-tagged tweets from North-East England direct from the UO API
+}
+
+\frame{
+\frametitle{Open data}
+\begin{itemize}
+\item The UO is part of a general trend towards \alert{open data}
+\item UK data gradually opening up: \alert{\url{http://data.gov.uk/}}
+\item Many businesses and organisations also have free APIs (eg. \alert{twitter}) or data available for free download (eg. \alert{wikipedia})
+\item Also possible to ``scrape" data from the web for new uses. eg. \alert{\url{http://www.gdeltproject.org/}}
+\item In science, open sharing of data is increasingly expected: eg. in bioscience, huge volumes of data archived and available for free download from organisations such as the \alert{EBI} 
+\end{itemize}
 }
 
 \subsection{Conclusions}

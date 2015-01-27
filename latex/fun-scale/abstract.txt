@@ -1,0 +1,8 @@
+
+Functional programming languages for scalable statistical computing
+
+Very large datasets are becoming increasingly typical, but the sophisticated non-linear models that statisticians have become accustomed to being able to fit are not always easy to scale up to arbitrarily large input data. A natural way to scale algorithms is to exploit concurrency and parallelism. Unfortunately, conventional imperative programming languages are very poorly adapted to writing concurrent and parallel code. Shared mutable state leads to synchronisation blocks, deadlocks and race conditions that are difficult to avoid in most languages and threading libraries. Pure functional languages avoid mutable state completely, eliminating the problem of shared mutable state, enabling natural and scalable approaches to the development of concurrent and parallel code. I will examine functional approaches to the processing of large data sets and the parallelisation of Monte Carlo statistical algorithms such as SMC. There are many interesting functional programming languages, but I will highlight Scala as representing a good trade-off between functional purity and pragmatism for statistical computing, and argue that it is no coincidence that Spark, the currently favoured framework for big data analytics, is written in Scala.
+
+
+
+

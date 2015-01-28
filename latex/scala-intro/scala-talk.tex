@@ -1,0 +1,586 @@
+\documentclass[mathserif,handout]{beamer}
+%\documentclass{beamer}
+\usetheme{Warsaw}
+\usecolortheme{seahorse}
+\usecolortheme{orchid}
+\usepackage{amsmath,verbatim}
+\usepackage{listings}
+\usepackage[english]{babel}
+\usepackage{movie15}
+\setbeamercovered{transparent}
+
+\newcommand{\Deltap}{\ensuremath{\Delta^{\!+}}}
+\newcommand{\trans}{\ensuremath{{}^\mathrm{T}}}
+\newcommand{\eps}{\varepsilon}
+\newcommand*{\approxdist}{\mathrel{\vcenter{\offinterlineskip
+\vskip-.25ex\hbox{\hskip.55ex$\cdot$}\vskip-.25ex\hbox{$\sim$}
+\vskip-.5ex\hbox{\hskip.55ex$\cdot$}}}}
+
+\lstdefinelanguage{myR}
+{
+   language=R,
+   otherkeywords={read.table, set.seed, head},
+   deletekeywords={url,codes, t, dt, Call, formula,Q, R, on,by,hat,is,
+col, set,start,end,deltat,zip},
+   sensitive=true,
+   breaklines=true,
+   morecomment=[l]{\#},
+   morestring=[b]",
+   morestring=[b]',
+   basicstyle =\ttfamily\small,
+   keywordstyle=\bfseries,
+   showtabs=false,
+   showstringspaces=false,
+   literate= {~}{$\sim$}{2},
+   numberstyle=\sffamily\scriptsize,
+   stepnumber=2
+ }
+
+\lstset{basicstyle=\ttfamily\color{blue}}
+
+\begin{document}
+
+\title[Scala for statistical computing]{Scala as a platform for statistical computing and data science}
+\author[Darren Wilkinson --- Roslin Institute, 11/2/15]{\textbf{\large Darren Wilkinson} \\
+\url{@darrenjw}\\
+\alert{\url{http://tinyurl.com/darrenjw}}\\
+School of Mathematics \& Statistics\\Newcastle University, UK}
+\date{Roslin Institute\\Edinburgh, 11th February 2015}
+
+\frame{\titlepage}
+
+\section{Introduction}
+
+\subsection{Outline}
+
+\frame{
+\frametitle{Talk outline}
+\begin{itemize}
+\item Requirements for a platform for statistical computing
+\item Background: Scala, Java and the JVM
+\item Functional programming, immutable data structures and parallelisation
+\item Quick introduction to the Breeze scientific library
+\item Examples: Monte Carlo and Linear regression
+\item Wrap-up
+\end{itemize}
+}
+
+\subsection{Requirements for a statistical computing platform}
+
+\frame{
+\frametitle{Feature wish list}
+\scriptsize
+It should:
+\begin{itemize}
+\item be a general purpose language with a sizeable user community and an array of general purpose libraries, including good GUI libraries, networking and web frameworks
+\item be free, open-source and platform independent, fast and efficient with a strong type system, and be statically typed with good compile-time type checking and type safety
+\item have a good, well-designed library for scientific computing, including non-uniform random number generation and linear algebra
+\item have reasonable type inference and a REPL for interactive use
+\item have good tool support (including build tools, doc tools, testing tools, and an intelligent IDE)
+\item have excellent support for functional programming, including support for immutability and immutable data structures and “monadic” design
+\item allow imperative programming for those (rare) occasions where it makes sense
+\item be designed with concurrency and parallelism in mind, having excellent language and library support for building really scalable concurrent and parallel applications
+\end{itemize}
+}
+
+\section{Scala}
+
+\subsection{Introduction}
+
+\frame{
+\frametitle{Scala}
+\centerline{\includegraphics[width=\textwidth]{scala-website}}
+\mbox{}\\
+\bigskip
+\alert{\url{http://www.scala-lang.org/}}
+}
+
+\frame{
+\frametitle{History and background}
+\begin{itemize}
+\item The name Scala derives from ``Scalable Language"
+\item It is a hybrid object-oriented/functional language
+\item It supports both functional and imperative styles of programming, but functional style is idiomatic
+\item It is statically typed and compiled --- compiling to Java bytecode to run on the JVM
+\item It was originally developed by Martin Odersky, one of the original authors of the Java compiler, \texttt{javac} as well as Java generics, introduced in Java 5.
+\item Development driven by perceived shortcomings of the Java programming language
+\end{itemize}
+}
+
+\frame{
+\frametitle{Scala usage}
+\begin{itemize}
+\item Scala is widely used in many large high-profile companies and organisations --- it is now a mainstream general purpose language
+\item Many large high-traffic websites are built with Scala (eg. Twitter, Foursquare, LinkedIn, Coursera, The Guardian, etc.) 
+\item Scala is widely used as a Data Science and Big Data platform due to its speed, robustness, concurrency, parallelism and general scalability (in addition to seamless Java interoperability)
+\item Scala programmers are being actively recruited by many high profile data science teams
+\end{itemize}
+}
+
+\frame{
+\frametitle{Static versus dynamic typing, compiled versus interpreted}
+%\small
+\begin{itemize}
+\item It is fun to quickly throw together a few functions in a scripting language without worrying about declaring the types of anything
+\item But for any code you want to keep or share with others you end up adding lots of boilerplate argument checking code that would be much cleaner, simpler and faster in a statically typed language
+\item Scala has a strong type system offering a high degree of compile-time checking, making it a safe and efficient language
+\item By maximising the work done by the compiler at build time you minimise the overheads at runtime
+\item Coupled with type inference, statically typed code is actually more concise than dynamic code
+\end{itemize}
+}
+
+\frame{
+\frametitle{Functional versus imperative programming}
+\begin{itemize}
+\item Functional programming offers many advantages over other programming styles
+\item In particular, it provides the best route to building scalable software, in terms of both program complexity and data size/complexity
+\item Scala has good support for functional programming, including immutable named values, immutable data structures and for-comprehensions
+\item Many languages are attempting to add functional features retrospectively (eg. lambdas in C++, lambdas, streams and the option monad in Java 8, etc.)
+\item Many new and increasingly popular languages are functional, and several are inspired by Scala (eg. Apple's Swift is essentially a cut down Scala, as is Red Hat's Ceylon)
+\end{itemize}
+}
+
+\frame{
+\frametitle{Using Scala}
+\begin{itemize}
+\item Scala is completely free and open source --- the entire Scala software distribution, including compiler and libraries, is released under a BSD license
+\item Scala is platform independent, running on any system for which a JVM exists
+\item Easy to install \texttt{scala} and \texttt{scalac}, the Scala compiler, but not really necessary
+\item The ``simple build tool" for Scala, \texttt{sbt}, is all that is needed to build and run most Scala projects, and this can be bootstrapped from a 1M Java file, \texttt{sbt-launch.jar}
+\end{itemize}
+}
+
+\frame{
+\frametitle{Versions, packages, platform independence, cloud}
+\begin{itemize}
+\item All dependencies, including Scala library versions, and associated ``packages", can be specified in a \texttt{sbt} build file, and pulled and cached at build time --- no need to ``install" anything, ever --- most basic library/package versioning problems simply disappear
+\item This is particularly convenient when scaling out to virtual machines and lightweight containers (such as Docker) in the cloud
+\item All that is required is a container with a JVM, and you can either build from source or push a redistributable binary package 
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{IDEs}
+\begin{itemize}
+\item There are several very good IDEs for Scala
+\item In general, IDEs are much better and much more powerful for statically typed languages --- IDEs can do lots of things to help you when programming in a statically typed language which simply aren't possible when using a dynamically typed language
+\item I use the ``Scala IDE" (\alert{\url{http://scala-ide.org/}}), which is based on Eclipse, but other possibilities, including IntelliJ (\alert{\url{https://www.jetbrains.com/idea/features/scala.html}}), which some prefer
+\item If you use an IDE, your code will (almost) always compile first time
+\end{itemize}
+}
+
+\frame{
+\frametitle{Reproducible research}
+\begin{itemize}
+\item Reproducible research is very important --- others should be able to run your code and reproduce your results
+  \begin{itemize}
+  \item Many within the statistics community have come to associate reproducible research with dynamic documents and literate programming --- nothing could be further from the truth!
+  \item Can more-or-less guarantee that R code and documentation written with the latest trendy literate programming framework will not build and run in 2 years time (due to incompatible library and package version changes)...
+  \end{itemize}
+\item \texttt{sbt} build files specify the particular versions of Scala and any associated dependencies required, and so projects should build and run \alert{reproducibly} without issues for many years
+\item Standard code documentation format, \alert{\href{http://docs.scala-lang.org/style/scaladoc.html}{Scaladoc}}, an improved Scala version of Javadoc, and standard testing frameworks such as ScalaTest.
+\end{itemize}
+}
+
+\frame{
+\frametitle{Data structures and parallelism}
+\begin{itemize}
+\item Scala has an extensive ``Collections framework" (\alert{\url{http://docs.scala-lang.org/overviews/collections/overview.html}}), providing a large range of data structures for almost any task (Array, List, Vector, Map, Range, Stream, Queue, Stack, ...)
+\item Most collections available as either a \alert{mutable} or \alert{immutable} version --- idiomatic Scala code favours immutable collections
+\item Most collections have an associated \alert{parallel} version, providing concurrency and parallelism ``for free" (examples later)
+\end{itemize}
+}
+
+\subsection{Functional programming}
+
+\frame{
+\frametitle{Functional approaches to concurrency and parallelisation}
+\begin{itemize}
+\item Functional languages emphasise immutable state and referentially transparent functions
+\item \alert{Immutable state}, and \alert{referentially transparent} (\alert{side-effect} free) declarative workflow patterns are widely used for systems which really need to scale (leads to naturally parallel code)
+\item \alert{Shared mutable state} is the enemy of concurrency and parallelism (synchronisation, locks, waits, deadlocks, race conditions, ...) --- by avoiding \alert{mutable state}, code becomes easy to parallelise 
+\item The recent resurgence of functional programming and functional programming languages is partly driven by the realisation that functional programming provides a natural way to develop algorithms which can exploit multi-core parallel and distributed architectures, and efficiently scale
+\end{itemize}
+}
+
+\frame{
+\frametitle{Category theory}
+Dummies guide:
+\begin{itemize}
+\item A ``collection" (or parametrised ``container" type) together with a ``map" function (defined in a sensible way) represents a \alert{functor}
+\item If the collection additionally supports a (sensible) ``apply" operation, it is an \alert{applicative}
+\item If the collection additionally supports a (sensible) ``flattening" operation, it is a \alert{monad} (required for composition)
+\item For a ``reduce" operation on a collection to parallellise cleanly, the type of the collection together with the reduction operation must define a \alert{monoid} (must be an \alert{associative} operation, so that reductions can proceed in multiple threads in parallel)
+\end{itemize}
+
+}
+
+
+\frame{
+\frametitle{Scala ecosystem}
+{\small\begin{itemize}
+\item \alert{Akka} --- actor-based concurrency framework (inspired by Erlang)
+\item \alert{Spark} --- scalable analytics library, including some ML (from Berkeley AMP Lab)
+\item \alert{Algebird} --- abstract algebra (monoid) support library (from Twitter)
+\item \alert{Scalding} --- cascading workflow library (from Twitter)
+\item \alert{Storm} --- streaming analytics library (from Twitter)
+\item \alert{Scalaz} --- category theory types (functors, monads, etc.)
+\item \alert{Breeze} --- scientific and numerical library (including non-uniform random number generation and numerical linear algebra)
+\item \alert{Saddle} --- data library (data frames, etc.)
+\end{itemize}}
+Large ecosystem of software libraries and developers using Scala in the big data space...
+}
+
+\frame{
+\frametitle{Breeze}
+\begin{itemize}
+\item Breeze is a Scala library for scientific and numerical computing --- \alert{\url{https://github.com/scalanlp/breeze}}
+\item Includes all of the usual special functions, probability distributions, (non-uniform) random number generators, matrices, vectors, numerical linear algebra, optimisation, etc.
+\item For numerical linear algebra it provides a Scala wrapper over \alert{\href{https://github.com/fommil/netlib-java}{netlib-java}}, which calls out to a native optimised BLAS/LAPACK if one can be found on the system (so, will run as fast as native code), or will fall back to a Java implementation if no native libraries can be found (so that code will always run)
+\item Blog post: \alert{\href{http://darrenjw.wordpress.com/2013/12/30/brief-introduction-to-Scala-and-breeze-for-statistical-computing/}{Brief introduction to Scala and Breeze for statistical computing}}
+\end{itemize}
+}
+
+
+
+\section{Examples}
+
+\subsection{Monte Carlo}
+
+\begin{frame}[fragile]
+\frametitle{Example: Monte Carlo (0)}
+\begin{itemize}
+\item Integrate the standard normal PDF over $[-5,5]$ by simple uniform rejection sampling on the rectangle $[-5,5]\times[0,0.5]$.
+\item First import some objects into the namespace:
+\end{itemize}
+{\scriptsize
+\begin{lstlisting}[language=java]
+import scala.math._
+import breeze.stats.distributions.Uniform
+import breeze.linalg._
+import Scala.annotation.tailrec
+
+// R-like functions for Uniform random numbers
+def runif(l: Double,u: Double) = Uniform(l,u).sample
+def runif(n: Int, l: Double, u: Double) = 
+    DenseVector[Double](Uniform(l,u).sample(n).toArray)
+\end{lstlisting}} 
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Example: Monte Carlo (1)}
+The idiomatic Breeze solution would be to use vectorised code similar to that you would use to solve the problem in R or Python
+{\small
+\begin{lstlisting}[language=java]
+val N=100000
+def f(x: Double): Double = 
+     math.exp(-x*x/2)/math.sqrt(2*Pi)
+
+def mc1(its: Int): Int = {
+  val x = runif(its,-5.0,5.0)
+  val y = runif(its,0.0,0.5)
+  val fx = x map {f(_)}
+  sum((y :< fx) map {xi => if (xi == true) 1 else 0})
+}
+println(5.0*mc1(N)/N)
+\end{lstlisting}}
+This works fine, but will exhaust available RAM for sufficiently large $N$
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Example: Monte Carlo (2)}
+In this case, better, faster and more memory efficient to use a tail call (which will actually compile down to a while loop)
+{\small
+\begin{lstlisting}[language=java]
+def mc2(its: Long): Long = {
+  @tailrec def mc(its: Long,acc: Long): Long = {
+    if (its == 0) acc else {
+      val x = runif(-5.0,5.0)
+      val y = runif(0.0,0.5)
+      if (y < f(x)) mc(its-1,acc+1) else 
+                                  mc(its-1,acc)
+    }  
+  }
+  mc(its,0)
+}
+println(5.0*mc2(N)/N)
+\end{lstlisting}}
+This works fine for any $N$ and is faster than the previous version
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Example: Monte Carlo (3)}
+Trivial to parallelise the previous version by mapping it over a parallel collection
+{\small
+\begin{lstlisting}[language=java]
+def mc3(its: Long): Long = {
+  val NP = 8 // Max number of threads to use
+  val N = its/NP // assuming NP|its
+  (1 to NP).toList.par.map{x => mc2(N)}.sum
+}
+println(5.0*mc3(N)/N)
+\end{lstlisting}}
+This kind of code is typically more-or-less as fast (sometimes faster!) than native C/MPI code...
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Example: Monte Carlo (4)}
+Timings for $10^7$ iterations on my laptop:
+{\small
+\begin{lstlisting}[language=java]
+> run
+[info] Running MonteCarlo 
+Running with 10000000 iterations
+Idiomatic vectorised solution
+0.999661
+time: 2957.277005ms
+Fast efficient (serial) tail call
+1.000262
+time: 1395.82964ms
+Parallelised version
+1.000463
+time: 337.361038ms
+Done
+\end{lstlisting}}
+\end{frame}
+
+
+
+\subsection{Linear regression}
+
+\frame{
+\frametitle{Example: linear regression (1)}
+\begin{itemize}
+\item Read a CSV file with 3 columns --- 2 numeric and one binary factor --- regress first (numeric) column on other two --- plots and summary statistics
+\item This is simple exploratory data analysis for a small data set --- I would use R for this!
+\item No reason why Scala can't do this kind of thing, but not the interest of current Scala developers
+\item Two standard implementations of multiple linear regression in Scala that I know of:
+  \begin{itemize}
+  \item Breeze: \texttt{leastSquares} (LAPACK call to \texttt{dgels})
+  \item Spark MLlib: \texttt{LinearRegressionWithSGD} (stochastic gradient descent)
+  \end{itemize}
+\item Both work perfectly well for obtaining least squares estimates of regression coefficients, but not much in the way of statistical diagnostics.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+\frametitle{Example: linear regression (2)}
+\begin{itemize}
+\item Not one to shirk a challenge, I spent a couple of evenings writing a few classes for linear regression, building on Saddle and Breeze...
+\end{itemize}
+{\small
+\begin{lstlisting}[language=java]
+import regression._
+import scala.math.log
+import org.saddle.io._
+import FrameUtils._
+
+val file = CsvFile("data/regression.csv")
+val df = CsvParser.parse(file).withColIndex(0)
+println(df)
+framePlot(getCol("Age", df), getCol("OI", df))
+\end{lstlisting}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Example: linear regression (3)}
+{\scriptsize
+\begin{lstlisting}[language=java]
+scala>  val df = CsvParser.parse(file).withColIndex(0)
+df: org.saddle.Frame[Int,String,String] =
+[101 x 3]
+         OI Age    Sex
+       ---- --- ------
+  1 ->    5  65 Female
+  2 -> 3.75  40 Female
+  3 ->  7.6  52 Female
+  4 -> 2.45  45 Female
+  5 ->  5.4  72 Female
+...
+ 97 -> 8.89  57   Male
+ 98 -> 16.5  56   Male
+ 99 -> 4.65  53   Male
+100 -> 13.5  56   Male
+101 -> 16.1  66   Male
+
+scala> 
+\end{lstlisting}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Example: linear regression (4)}
+{\scriptsize
+\begin{lstlisting}[language=java]
+val df2 = frameFilter(df, getCol("Age", df), _ > 0.0)
+println(df2)
+val oi = getCol("OI", df2)
+val age = getCol("Age", df2)
+val sex = getFactor("Sex", df2)
+framePlot(age, oi, sex).saveas("data.png")
+
+val y = oi.mapValues { log(_) }
+val m = Lm(y, List(age, sex))
+println(m)
+m.plotResiduals.saveas("resid.png")
+
+val summ = m.summary
+println(summ)
+\end{lstlisting}
+}
+\end{frame}
+
+\frame{
+\frametitle{Example: linear regression (5)}
+\centerline{\includegraphics[width=\textwidth]{data}}
+}
+
+\frame{
+\frametitle{Example: linear regression (6)}
+\centerline{\includegraphics[width=\textwidth]{resid}}
+}
+
+
+\begin{frame}[fragile]
+\frametitle{Example: linear regression (7)}
+{\scriptsize
+\begin{lstlisting}[language=java]
+scala> m.summary
+res6: regression.LmSummary =
+Residuals:
+[5 x 1]
+   Min -> -1.4005
+    LQ -> -0.2918
+Median ->  0.0308
+    UQ ->  0.3211
+   Max ->  0.8979
+Coefficients:
+[3 x 4]
+                   OI     SE  t-val  p-val
+               ------ ------ ------ ------
+(Intercept) -> 0.8292 0.1777 4.6661 0.0000
+        Age -> 0.0162 0.0035 4.6027 0.0000
+    SexMale -> 0.3189 0.1157 2.7567 0.0070
+Model statistics:
+[6 x 1]
+          RSS -> 20.0999
+          RSE ->  0.4552
+           df -> 97.0000
+    R-squared ->  0.2621
+Adjusted R-sq ->  0.2469
+       F-stat -> 17.2265
+
+scala> 
+\end{lstlisting}
+}
+\end{frame}
+
+\frame{
+\frametitle{Example: linear regression (8)}
+So we see that Scala could be just as convenient as R and similar languages for basic exploratory data analysis and visualisation, but this would require a little effort from people interested in having this functionality:
+\begin{itemize}
+\item Port the \texttt{statsmodels} package from Python
+\item Port \texttt{ggplot} (or similar viz framework)
+\item Re-write Saddle to have its data frames backed by Breeze matrices, and incorporate into Breeze
+\end{itemize}
+Each of these could be accomplished with relatively little effort (eg. a GSoC student or two) if the demand exists
+}
+
+\begin{frame}[fragile]
+\frametitle{Example: Gibbs sampler}
+{\scriptsize
+\begin{lstlisting}[language=java]
+class State(val x: Double,val y: Double)
+ 
+def nextIter(s: State): State = {
+     val newX=rngG.nextDouble(3.0,(s.y)*(s.y)+4.0)
+     new State(newX, 
+          rngN.nextDouble(1.0/(newX+1),1.0/sqrt(2*newX+2)))
+}
+ 
+def nextThinnedIter(s: State,left: Int): State = {
+   if (left==0) s 
+   else nextThinnedIter(nextIter(s),left-1)
+}
+ 
+def genIters(s: State,current: Int,stop: Int,thin: Int): State = {
+     if (!(current>stop)) {
+        println(current+" "+s.x+" "+s.y)
+        genIters(nextThinnedIter(s,thin),current+1,stop,thin)
+     }
+     else s
+}
+\end{lstlisting}
+}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Example: Parallel particle filter}
+{\scriptsize
+\begin{lstlisting}[language=java]
+(th: P) => {
+  val x0 = simx0(n, t0, th).par
+  @tailrec def pf(ll: LogLik, x: ParVector[S], t: Time, 
+             deltas: List[Time], obs: List[O]): LogLik =
+    obs match {
+      case Nil => ll
+      case head :: tail => {
+        val xp = if (deltas.head == 0) x else 
+               (x map { stepFun(_, t, deltas.head, th) })
+        val w = xp map { dataLik(_, head, th) }
+        val rows = sample(n, DenseVector(w.toArray)).par
+        val xpp = rows map { xp(_) }
+        pf(ll + math.log(mean(w)), xpp, t + deltas.head, 
+                                        deltas.tail, tail)
+      }
+    }
+  pf(0, x0, t0, deltas, obs)
+}
+\end{lstlisting}
+}
+\end{frame}
+
+
+\subsection{Summary and further pointers}
+
+\frame{
+\frametitle{Summary}
+\begin{itemize}
+\item Strong arguments can be made that a language to be used as a platform for serious statistical computing should be general purpose, platform independent, functional, statically typed and compiled
+\item For basic exploratory data analysis, visualisation and model fitting, R works perfectly well (currently better than Scala)
+\item Scala is worth considering if you are interested in any of the following:
+  \begin{itemize}
+  \item Writing your own statistical routines or algorithms
+  \item Working with computationally intensive (parallel) algorithms
+  \item Working with large and complex models for which an out-of-the-box solution doesn't exist in R
+  \item Working with large data sets (big data)
+  \item Integrating statistical analysis workflow with other system components (including web infrastructure, relational databases, no-sql databases, etc.)
+  \end{itemize}
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Links and further reading}
+\begin{itemize}
+\item Scala: \alert{\url{http://www.scala-lang.org/}}
+\item Scala on wikipedia: \alert{\url{http://en.wikipedia.org/wiki/Scala_(programming_language)}}
+\item My blog: \alert{\url{http://darrenjw.wordpress.com/}}
+  \begin{itemize}
+  \item \href{http://darrenjw.wordpress.com/2013/12/23/scala-as-a-platform-for-statistical-computing-and-data-science/}{Scala as a platform for statistical computing and data science}
+  \item \href{http://darrenjw.wordpress.com/2013/12/30/brief-introduction-to-scala-and-breeze-for-statistical-computing/}{Brief introduction to Scala and Breeze for statistical computing}
+  \item \href{http://darrenjw.wordpress.com/2013/10/04/a-functional-gibbs-sampler-in-scala/}{A functional Gibbs sampler in Scala}
+  \item \href{http://darrenjw.wordpress.com/2014/02/23/parallel-monte-carlo-using-scala/}{Parallel Monte Carlo using Scala}
+  \end{itemize}
+\item This talk and code examples: \alert{\url{https://github.com/darrenjw/statslang-scala}} (also merged into \alert{\url{https://github.com/csgillespie/statslang}})
+\end{itemize}
+
+}
+
+
+
+
+\end{document}
+

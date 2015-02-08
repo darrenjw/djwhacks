@@ -59,8 +59,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \item Requirements for a platform for statistical computing
 \item Background: Scala, Java and the JVM
 \item Functional programming, immutable data structures and parallelisation
-\item Quick introduction to the Breeze scientific library
-\item Examples: Monte Carlo and Linear regression
+\item Quick introduction to some scientific and statistical libraries
+\item Examples (including Monte Carlo and linear regression)
 \item Wrap-up
 \end{itemize}
 }
@@ -219,17 +219,26 @@ Dummies guide:
 
 \frame{
 \frametitle{Scala ecosystem}
-{\small\begin{itemize}
+\begin{itemize}
 \item \alert{Akka} --- actor-based concurrency framework (inspired by Erlang)
-\item \alert{Spark} --- scalable analytics library, including some ML (from Berkeley AMP Lab)
 \item \alert{Algebird} --- abstract algebra (monoid) support library (from Twitter)
 \item \alert{Scalding} --- cascading workflow library (from Twitter)
 \item \alert{Storm} --- streaming analytics library (from Twitter)
+\item \alert{Shapeless} --- typesafe dynamic type support
 \item \alert{Scalaz} --- category theory types (functors, monads, etc.)
-\item \alert{Breeze} --- scientific and numerical library (including non-uniform random number generation and numerical linear algebra)
-\item \alert{Saddle} --- data library (data frames, etc.)
-\end{itemize}}
+\item \alert{Cats} --- new replacement for Scalaz
+\item \alert{Wisp} --- Javascript/web browser--based interactive plotting/graphing/charting library
+\end{itemize}
 Large ecosystem of software libraries and developers using Scala in the big data space...
+}
+
+\frame{
+\frametitle{Data frames and tables}
+\begin{itemize}
+\item \alert{Saddle} --- data library (data frames, etc.) --- mature, but has poor support for heterogeneously typed columns
+\item \alert{Scala-datatable} --- light-weight immutable data table (good for in-memory processing of large data sets)
+\item \alert{Framian} --- a full-featured ``batteries included" R-like data frame
+\end{itemize}
 }
 
 \frame{
@@ -242,7 +251,16 @@ Large ecosystem of software libraries and developers using Scala in the big data
 \end{itemize}
 }
 
-
+\frame{
+\frametitle{Spark}
+\begin{itemize}
+\item Spark is a scalable analytics library, including some ML (from Berkeley AMP Lab)
+\item It is rapidly replacing Hadoop and MapReduce as the standard library for big data processing and analytics
+\item It is written in Scala, but also has APIs for Java and Python (and experimental API for R)
+\item Only the Scala API leads to both concise elegant code and good performance
+\item Central to the approach is the notion of a \alert{resilient distributed dataset} (RDD) --- hooked up to Spark via a \alert{connector}
+\end{itemize}
+}
 
 \section{Examples}
 
@@ -345,7 +363,31 @@ Done
 \end{lstlisting}}
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{Example sbt build file}
+{\scriptsize
+\begin{lstlisting}[language=java]
+name := "monte-carlo"
 
+version := "0.1"
+
+scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
+
+libraryDependencies  ++= Seq(
+            "org.scalacheck" %% "scalacheck" % "1.11.4" % "test",
+            "org.scalatest" %% "scalatest" % "2.1.7" % "test",
+            "org.scalanlp" %% "breeze" % "0.10",
+            "org.scalanlp" %% "breeze-natives" % "0.10"
+)
+
+resolvers ++= Seq(
+            "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
+            "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"
+)
+
+scalaVersion := "2.11.1"
+\end{lstlisting}}
+\end{frame}
 
 \subsection{Linear regression}
 
@@ -439,7 +481,7 @@ println(summ)
 
 \frame{
 \frametitle{Example: linear regression (6)}
-\centerline{\includegraphics[width=\textwidth]{resid}}
+\centerline{\includegraphics[width=0.8\textwidth]{resid}}
 }
 
 
@@ -479,13 +521,12 @@ scala>
 
 \frame{
 \frametitle{Example: linear regression (8)}
-So we see that Scala could be just as convenient as R and similar languages for basic exploratory data analysis and visualisation, but this would require a little effort from people interested in having this functionality:
+So we see that Scala could be just as convenient as R and similar languages for basic exploratory data analysis and visualisation, but this would require a little effort. If doing this again I would:
 \begin{itemize}
-\item Port the \texttt{statsmodels} package from Python
-\item Port \texttt{ggplot} (or similar viz framework)
-\item Re-write Saddle to have its data frames backed by Breeze matrices, and incorporate into Breeze
+\item Use Framian rather than Saddle as the basic data frame type
+\item Use Wisp for plotting and visualisation
 \end{itemize}
-Each of these could be accomplished with relatively little effort (eg. a GSoC student or two) if the demand exists
+It would then be useful to develop this into a library with functionality of the Python \alert{statsmodels} library
 }
 
 \begin{frame}[fragile]
@@ -542,6 +583,15 @@ def genIters(s: State,current: Int,stop: Int,thin: Int): State = {
 }
 \end{frame}
 
+\frame{
+\frametitle{Calling Scala from R (and vice versa)}
+\begin{itemize}
+\item R CRAN package \alert{jvmr} for bi-directional calling between R and Java and between R and Scala
+\item Useful for calling out to computationally intensive routine written in Scala from an R session
+\item Also useful for calling to R from Scala for a model-fitting procedure ``missing" from the Scala libraries
+\item Can inline R code in Scala files and Scala code in R files
+\end{itemize}
+}
 
 \subsection{Summary and further pointers}
 
@@ -565,16 +615,17 @@ def genIters(s: State,current: Int,stop: Int,thin: Int): State = {
 \frame{
 \frametitle{Links and further reading}
 \begin{itemize}
-\item Scala: \alert{\url{http://www.scala-lang.org/}}
+\item Scala: \alert{\url{http://www.scala-lang.org/}} --- includes a comprehensive documentation section
 \item Scala on wikipedia: \alert{\url{http://en.wikipedia.org/wiki/Scala_(programming_language)}}
 \item My blog: \alert{\url{http://darrenjw.wordpress.com/}}
+\item A previous version of this talk with associated code examples: \alert{\url{https://github.com/darrenjw/statslang-scala}} (also merged into \alert{\url{https://github.com/csgillespie/statslang}})
+\item Books:
   \begin{itemize}
-  \item \href{http://darrenjw.wordpress.com/2013/12/23/scala-as-a-platform-for-statistical-computing-and-data-science/}{Scala as a platform for statistical computing and data science}
-  \item \href{http://darrenjw.wordpress.com/2013/12/30/brief-introduction-to-scala-and-breeze-for-statistical-computing/}{Brief introduction to Scala and Breeze for statistical computing}
-  \item \href{http://darrenjw.wordpress.com/2013/10/04/a-functional-gibbs-sampler-in-scala/}{A functional Gibbs sampler in Scala}
-  \item \href{http://darrenjw.wordpress.com/2014/02/23/parallel-monte-carlo-using-scala/}{Parallel Monte Carlo using Scala}
+  \item Programming in Scala (Odersky, Spoon, Venners)
+  \item Functional programming in Scala (Chiusano and Bjarnason)
+  \item Scala for machine learning (Nicolas)
+  \item Several books on Spark currently in press
   \end{itemize}
-\item This talk and code examples: \alert{\url{https://github.com/darrenjw/statslang-scala}} (also merged into \alert{\url{https://github.com/csgillespie/statslang}})
 \end{itemize}
 
 }

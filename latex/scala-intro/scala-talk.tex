@@ -72,14 +72,14 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \scriptsize
 It should:
 \begin{itemize}
-\item be a general purpose language with a sizeable user community and an array of general purpose libraries, including good GUI libraries, networking and web frameworks
-\item be free, open-source and platform independent, fast and efficient with a strong type system, and be statically typed with good compile-time type checking and type safety
-\item have a good, well-designed library for scientific computing, including non-uniform random number generation and linear algebra
-\item have reasonable type inference and a REPL for interactive use
-\item have good tool support (including build tools, doc tools, testing tools, and an intelligent IDE)
-\item have excellent support for functional programming, including support for immutability and immutable data structures and “monadic” design
+\item be a \alert{general purpose} language with a sizeable user community and an array of general purpose libraries, including good GUI libraries, networking and web frameworks
+\item be free, \alert{open-source} and \alert{platform independent}, \alert{fast} and efficient with a strong type system, and be \alert{statically typed} with good compile-time type checking and \alert{type safety}
+\item have a good, well-designed \alert{library for scientific computing}, including non-uniform random number generation and linear algebra
+\item have reasonable \alert{type inference} and a \alert{REPL} for interactive use
+\item have good \alert{tool support} (including build tools, doc tools, testing tools, and an intelligent IDE)
+\item have excellent support for \alert{functional programming}, including support for \alert{immutability} and immutable data structures and “monadic” design
 \item allow imperative programming for those (rare) occasions where it makes sense
-\item be designed with concurrency and parallelism in mind, having excellent language and library support for building really scalable concurrent and parallel applications
+\item be designed with \alert{concurrency} and \alert{parallelism} in mind, having excellent language and library support for building really \alert{scalable} concurrent and parallel applications
 \end{itemize}
 }
 
@@ -102,7 +102,7 @@ It should:
 \item It is a hybrid object-oriented/functional language
 \item It supports both functional and imperative styles of programming, but functional style is idiomatic
 \item It is statically typed and compiled --- compiling to Java bytecode to run on the JVM
-\item It was originally developed by Martin Odersky, one of the original authors of the Java compiler, \texttt{javac} as well as Java generics, introduced in Java 5.
+\item It was originally developed by Martin Odersky, one of the authors of the Java compiler, \texttt{javac} as well as the creator of Java generics, introduced in Java 5.
 \item Development driven by perceived shortcomings of the Java programming language
 \end{itemize}
 }
@@ -146,7 +146,7 @@ It should:
 \item Scala is completely free and open source --- the entire Scala software distribution, including compiler and libraries, is released under a BSD license
 \item Scala is platform independent, running on any system for which a JVM exists
 \item Easy to install \texttt{scala} and \texttt{scalac}, the Scala compiler, but not really necessary
-\item The ``simple build tool" for Scala, \texttt{sbt}, is all that is needed to build and run most Scala projects, and this can be bootstrapped from a 1M Java file, \texttt{sbt-launch.jar}
+\item The ``simple build tool" for Scala, \alert{\texttt{sbt}}, is all that is needed to build and run most Scala projects, and this can be bootstrapped from a 1M Java file, \texttt{sbt-launch.jar}
 \end{itemize}
 }
 
@@ -161,16 +161,6 @@ It should:
 
 
 \frame{
-\frametitle{IDEs}
-\begin{itemize}
-\item There are several very good IDEs for Scala
-\item In general, IDEs are much better and much more powerful for statically typed languages --- IDEs can do lots of things to help you when programming in a statically typed language which simply aren't possible when using a dynamically typed language
-\item I use the ``Scala IDE" (\alert{\url{http://scala-ide.org/}}), which is based on Eclipse, but other possibilities, including IntelliJ (\alert{\url{https://www.jetbrains.com/idea/features/scala.html}}), which some prefer
-\item If you use an IDE, your code will (almost) always compile first time
-\end{itemize}
-}
-
-\frame{
 \frametitle{Reproducible research}
 \begin{itemize}
 \item Reproducible research is very important --- others should be able to run your code and reproduce your results
@@ -180,6 +170,42 @@ It should:
   \end{itemize}
 \item \texttt{sbt} build files specify the particular versions of Scala and any associated dependencies required, and so projects should build and run \alert{reproducibly} without issues for many years
 \item Standard code documentation format, \alert{\href{http://docs.scala-lang.org/style/scaladoc.html}{Scaladoc}}, an improved Scala version of Javadoc, and standard testing frameworks such as ScalaTest.
+\end{itemize}
+}
+
+\begin{frame}[fragile]
+\frametitle{Example sbt build file}
+{\scriptsize
+\begin{lstlisting}[language=java]
+name := "monte-carlo"
+
+version := "0.1"
+
+scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
+
+libraryDependencies  ++= Seq(
+            "org.scalacheck" %% "scalacheck" % "1.11.4" % "test",
+            "org.scalatest" %% "scalatest" % "2.1.7" % "test",
+            "org.scalanlp" %% "breeze" % "0.10",
+            "org.scalanlp" %% "breeze-natives" % "0.10"
+)
+
+resolvers ++= Seq(
+            "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
+            "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"
+)
+
+scalaVersion := "2.11.1"
+\end{lstlisting}}
+\end{frame}
+
+\frame{
+\frametitle{IDEs}
+\begin{itemize}
+\item There are several very good IDEs for Scala
+\item In general, IDEs are much better and much more powerful for statically typed languages --- IDEs can do lots of things to help you when programming in a statically typed language which simply aren't possible when using a dynamically typed language
+\item I use the ``Scala IDE" (\alert{\url{http://scala-ide.org/}}), which is based on Eclipse, but other possibilities, including IntelliJ (\alert{\url{https://www.jetbrains.com/idea/features/scala.html}}), which some prefer
+\item If you use an IDE, your code will (almost) always compile first time
 \end{itemize}
 }
 
@@ -211,11 +237,11 @@ Dummies guide:
 \item A ``collection" (or parametrised ``container" type) together with a ``map" function (defined in a sensible way) represents a \alert{functor}
 \item If the collection additionally supports a (sensible) ``apply" operation, it is an \alert{applicative}
 \item If the collection additionally supports a (sensible) ``flattening" operation, it is a \alert{monad} (required for composition)
-\item For a ``reduce" operation on a collection to parallellise cleanly, the type of the collection together with the reduction operation must define a \alert{monoid} (must be an \alert{associative} operation, so that reductions can proceed in multiple threads in parallel)
+\item For a ``reduce" operation on a collection to parallelise cleanly, the type of the collection together with the reduction operation must define a \alert{monoid} (must be an \alert{associative} operation, so that reductions can proceed in multiple threads in parallel)
 \end{itemize}
-
 }
 
+\subsection{Scala ecosystem}
 
 \frame{
 \frametitle{Scala ecosystem}
@@ -243,16 +269,6 @@ Large ecosystem of software libraries and developers using Scala in the big data
 }
 
 \frame{
-\frametitle{Breeze}
-\begin{itemize}
-\item Breeze is a Scala library for scientific and numerical computing --- \alert{\url{https://github.com/scalanlp/breeze}}
-\item Includes all of the usual special functions, probability distributions, (non-uniform) random number generators, matrices, vectors, numerical linear algebra, optimisation, etc.
-\item For numerical linear algebra it provides a Scala wrapper over \alert{\href{https://github.com/fommil/netlib-java}{netlib-java}}, which calls out to a native optimised BLAS/LAPACK if one can be found on the system (so, will run as fast as native code), or will fall back to a Java implementation if no native libraries can be found (so that code will always run)
-\item Blog post: \alert{\href{http://darrenjw.wordpress.com/2013/12/30/brief-introduction-to-Scala-and-breeze-for-statistical-computing/}{Brief introduction to Scala and Breeze for statistical computing}}
-\end{itemize}
-}
-
-\frame{
 \frametitle{Spark}
 \begin{itemize}
 \item Spark is a scalable analytics library, including some ML (from Berkeley AMP Lab)
@@ -260,6 +276,16 @@ Large ecosystem of software libraries and developers using Scala in the big data
 \item It is written in Scala, but also has APIs for Java and Python (and experimental API for R)
 \item Only the Scala API leads to both concise elegant code and good performance
 \item Central to the approach is the notion of a \alert{resilient distributed dataset} (RDD) --- hooked up to Spark via a \alert{connector}
+\end{itemize}
+}
+
+\frame{
+\frametitle{Breeze}
+\begin{itemize}
+\item Breeze is a Scala library for scientific and numerical computing --- \alert{\url{https://github.com/scalanlp/breeze}}
+\item Includes all of the usual special functions, probability distributions, (non-uniform) random number generators, matrices, vectors, numerical linear algebra, optimisation, etc.
+\item For numerical linear algebra it provides a Scala wrapper over \alert{\href{https://github.com/fommil/netlib-java}{netlib-java}}, which calls out to a native optimised BLAS/LAPACK if one can be found on the system (so, will run as fast as native code), or will fall back to a Java implementation if no native libraries can be found (so that code will always run)
+%\item Blog post: \alert{\href{http://darrenjw.wordpress.com/2013/12/30/brief-introduction-to-Scala-and-breeze-for-statistical-computing/}{Brief introduction to Scala and Breeze for statistical computing}}
 \end{itemize}
 }
 
@@ -364,40 +390,13 @@ Done
 \end{lstlisting}}
 \end{frame}
 
-\begin{frame}[fragile]
-\frametitle{Example sbt build file}
-{\scriptsize
-\begin{lstlisting}[language=java]
-name := "monte-carlo"
-
-version := "0.1"
-
-scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
-
-libraryDependencies  ++= Seq(
-            "org.scalacheck" %% "scalacheck" % "1.11.4" % "test",
-            "org.scalatest" %% "scalatest" % "2.1.7" % "test",
-            "org.scalanlp" %% "breeze" % "0.10",
-            "org.scalanlp" %% "breeze-natives" % "0.10"
-)
-
-resolvers ++= Seq(
-            "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
-            "Sonatype Releases" at "https://oss.sonatype.org/content/repositories/releases/"
-)
-
-scalaVersion := "2.11.1"
-\end{lstlisting}}
-\end{frame}
-
 \subsection{Linear regression}
 
 \frame{
 \frametitle{Example: linear regression (1)}
 \begin{itemize}
 \item Read a CSV file with 3 columns --- 2 numeric and one binary factor --- regress first (numeric) column on other two --- plots and summary statistics
-\item This is simple exploratory data analysis for a small data set --- I would use R for this!
-\item No reason why Scala can't do this kind of thing, but not the interest of current Scala developers
+\item This is simple exploratory data analysis for a small data set --- no reason why Scala can't do this kind of thing, but hasn't been the interest of existing Scala developers
 \item Two standard implementations of multiple linear regression in Scala that I know of:
   \begin{itemize}
   \item Breeze: \texttt{leastSquares} (LAPACK call to \texttt{dgels})
@@ -410,7 +409,7 @@ scalaVersion := "2.11.1"
 \begin{frame}[fragile]
 \frametitle{Example: linear regression (2)}
 \begin{itemize}
-\item Not one to shirk a challenge, I spent a couple of evenings writing a few classes for linear regression, building on Saddle and Breeze...
+\item Not one to shirk a challenge, I spent a couple of evenings writing a few classes for regression modelling, building on Saddle and Breeze...
 \end{itemize}
 {\small
 \begin{lstlisting}[language=java]
@@ -524,8 +523,8 @@ scala>
 \frametitle{Example: linear regression (8)}
 So we see that Scala could be just as convenient as R and similar languages for basic exploratory data analysis and visualisation, but this would require a little effort. If doing this again I would:
 \begin{itemize}
-\item Use Framian rather than Saddle as the basic data frame type
-\item Use Wisp for plotting and visualisation
+\item Use \alert{Framian} rather than \alert{Saddle} as the basic data frame type
+\item Use \alert{Wisp} for plotting and visualisation
 \end{itemize}
 It would then be useful to develop this into a library with functionality of the Python \alert{statsmodels} library
 }

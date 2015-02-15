@@ -1,0 +1,38 @@
+Docker notes
+============
+
+http://docs.docker.com/
+
+sudo docker info
+sudo docker images # list containers
+sudo docker pull ubuntu # download an image
+sudo docker run -i -t ubuntu /bin/bash # base ubuntu container
+sudo docker run -i -t webcenter/openjdk-jre /bin/bash # java 8 container
+sudo docker run -i -t williamyeh/scala /bin/bash # scala container
+
+# rstudio server (rstudio/rstudio on http://localhost:8787/)
+# details at https://github.com/ropensci/Docker 
+sudo docker run -d -p 8787:8787 cboettig/ropensci
+
+sudo docker ps # Lists only running containers
+sudo docker stop d53c7c379787 # stop a container
+sudo docker ps -a # Lists all containers
+
+# to build an image in a directory containing a Dockerfile:
+cd ~/src/git/djwhacks/docker/sbt
+sudo docker build -t darrenjw/sbt .
+sudo docker run -i -t darrenjw/sbt /bin/bash
+
+# Start a new container
+JOB=$(sudo docker run -d ubuntu /bin/sh -c "while true; do echo Hello world; sleep 1; done")
+sudo docker stop $JOB # Stop the container
+sudo docker start $JOB # Start the container
+sudo docker restart $JOB # Restart the container
+sudo docker kill $JOB # SIGKILL a container
+
+# Remove a container
+$ sudo docker stop $JOB # Container must be stopped to remove it
+$ sudo docker rm $JOB
+
+
+

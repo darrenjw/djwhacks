@@ -209,7 +209,6 @@ a circular lattice
 \end{center}
 }
 
-\end{comment}
 
 \frame{
 \frametitle{Example Monte Carlo Integral}
@@ -253,6 +252,8 @@ int main(int argc,char *argv[])
 }
 \end{frame}
 %}
+
+\end{comment}
 
 \subsection{Parallel MCMC}
 
@@ -942,19 +943,35 @@ Wilkinson, D. J. (2005)
 
 \end{comment}
 
+\section{Functional languages for concurrency and parallelism}
+
+\subsection{Problems of parallelisation in imperative languages}
+
 \frame{
 \frametitle{Problems with parallelising code}
 \begin{itemize}
 \item Synchronisation (threads standing idle waiting for other tasks to complete)
 \item Deadlocks (two or more competing actions are each waiting for the other to finish, and thus neither ever does)
-\item Race conditions (unpredictable behaviour depending on timing of unpredictable events - eg. simultaneous updating of shared mutable state)
+\item Race conditions (unpredictable behaviour depending on timing of unpredictable events - eg. simultaneous updating of data or a resource)
+\end{itemize}
+Most problems arise from concurrent processes needing to access and modify some data --- \alert{shared mutable state}
+}
+
+\frame{
+\frametitle{Functional approaches to concurrency and parallelisation}
+\begin{itemize}
+\item Functional languages emphasise immutable state and referentially transparent functions
+\item \alert{Immutable state}, and \alert{referentially transparent} (\alert{side-effect} free) declarative workflow patterns are widely used for systems which really need to scale (leads to naturally parallel code)
+\item \alert{Shared mutable state} is the enemy of concurrency and parallelism (synchronisation, locks, waits, deadlocks, race conditions, ...) --- by avoiding \alert{mutable state}, code becomes easy to parallelise 
+\item The recent resurgence of functional programming and functional programming languages is partly driven by the realisation that functional programming provides a natural way to develop algorithms which can exploit multi-core parallel and distributed architectures, and efficiently scale
 \end{itemize}
 }
+
 
 \subsection{Requirements for a statistical computing platform}
 
 \frame{
-\frametitle{Feature wish list}
+\frametitle{Statistical language feature wish list}
 \scriptsize
 It should:
 \begin{itemize}
@@ -1015,6 +1032,8 @@ It should:
 \end{itemize}
 }
 
+\subsection{Functional programming}
+
 \frame{
 \frametitle{Functional versus imperative programming}
 \begin{itemize}
@@ -1023,6 +1042,18 @@ It should:
 \item Scala has good support for functional programming, including immutable named values, immutable data structures and for-comprehensions
 \item Many languages are attempting to add functional features retrospectively (eg. lambdas in C++, lambdas, streams and the option monad in Java 8, etc.)
 \item Many new and increasingly popular languages are functional, and several are inspired by Scala (eg. Apple's Swift is essentially a cut down Scala, as is Red Hat's Ceylon)
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Category theory}
+Dummies guide:
+\begin{itemize}
+\item A ``collection" (or parametrised ``container" type) together with a ``map" function (defined in a sensible way) represents a \alert{functor}
+\item If the collection additionally supports a (sensible) ``apply" operation, it is an \alert{applicative}
+\item If the collection additionally supports a (sensible) ``flattening" operation, it is a \alert{monad} (required for composition)
+\item For a ``reduce" operation on a collection to parallelise cleanly, the type of the collection together with the reduction operation must define a \alert{monoid} (must be an \alert{associative} operation, so that reductions can proceed in multiple threads in parallel)
 \end{itemize}
 }
 
@@ -1038,7 +1069,6 @@ It should:
 \end{itemize}
 }
 
-\end{comment}
 
 \frame{
 \frametitle{Versions, packages, platform independence, cloud}
@@ -1048,8 +1078,6 @@ It should:
 \item All that is required is a container with a JVM, and you can either build from source or push a redistributable binary package 
 \end{itemize}
 }
-
-\begin{comment}
 
 \frame{
 \frametitle{Reproducible research}
@@ -1111,28 +1139,7 @@ scalaVersion := "2.11.1"
 \end{itemize}
 }
 
-\subsection{Functional programming}
 
-\frame{
-\frametitle{Functional approaches to concurrency and parallelisation}
-\begin{itemize}
-\item Functional languages emphasise immutable state and referentially transparent functions
-\item \alert{Immutable state}, and \alert{referentially transparent} (\alert{side-effect} free) declarative workflow patterns are widely used for systems which really need to scale (leads to naturally parallel code)
-\item \alert{Shared mutable state} is the enemy of concurrency and parallelism (synchronisation, locks, waits, deadlocks, race conditions, ...) --- by avoiding \alert{mutable state}, code becomes easy to parallelise 
-\item The recent resurgence of functional programming and functional programming languages is partly driven by the realisation that functional programming provides a natural way to develop algorithms which can exploit multi-core parallel and distributed architectures, and efficiently scale
-\end{itemize}
-}
-
-\frame{
-\frametitle{Category theory}
-Dummies guide:
-\begin{itemize}
-\item A ``collection" (or parametrised ``container" type) together with a ``map" function (defined in a sensible way) represents a \alert{functor}
-\item If the collection additionally supports a (sensible) ``apply" operation, it is an \alert{applicative}
-\item If the collection additionally supports a (sensible) ``flattening" operation, it is a \alert{monad} (required for composition)
-\item For a ``reduce" operation on a collection to parallelise cleanly, the type of the collection together with the reduction operation must define a \alert{monoid} (must be an \alert{associative} operation, so that reductions can proceed in multiple threads in parallel)
-\end{itemize}
-}
 
 \subsection{Scala ecosystem}
 
@@ -1170,6 +1177,7 @@ Large ecosystem of software libraries and developers using Scala in the big data
 \item Only the Scala API leads to both concise elegant code and good performance
 \item Central to the approach is the notion of a \alert{resilient distributed dataset} (RDD) --- hooked up to Spark via a \alert{connector}
 \end{itemize}
+\alert{Lazy}, \alert{functional}, \alert{immutable} data workflows are what makes it all work --- that's why it's implemented in a language like Scala
 }
 
 \frame{
@@ -1480,6 +1488,8 @@ def genIters(s: State,current: Int,stop: Int,thin: Int): State = {
 }
 \end{frame}
 
+\begin{comment}
+
 \frame{
 \frametitle{Calling Scala from R (and vice versa)}
 \begin{itemize}
@@ -1490,12 +1500,14 @@ def genIters(s: State,current: Int,stop: Int,thin: Int): State = {
 \end{itemize}
 }
 
+\end{comment}
+
 \subsection{Summary and further pointers}
 
 \frame{
 \frametitle{Summary}
 \begin{itemize}
-\item Strong arguments can be made that a language to be used as a platform for serious statistical computing should be general purpose, platform independent, functional, statically typed and compiled
+\item Strong arguments can be made that a language to be used as a platform for serious statistical computing should be general purpose, platform independent, \alert{functional}, statically typed and compiled
 \item For basic exploratory data analysis, visualisation and model fitting, R works perfectly well (currently better than Scala)
 \item Scala is worth considering if you are interested in any of the following:
   \begin{itemize}
@@ -1521,7 +1533,7 @@ def genIters(s: State,current: Int,stop: Int,thin: Int): State = {
   \item Programming in Scala (Odersky, Spoon, Venners)
   \item Functional programming in Scala (Chiusano and Bjarnason)
   \item Scala for machine learning (Nicolas)
-  \item Several books on Spark currently in press
+  \item Several books on Spark just published or currently in press
   \end{itemize}
 \end{itemize}
 

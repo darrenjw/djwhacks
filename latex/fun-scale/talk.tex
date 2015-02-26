@@ -522,6 +522,8 @@ obtain an explicit form for the updating of $\sigma$
 \end{enumerate}
 }
 
+\begin{comment}
+
 \frame{
 \frametitle{When elements of $\sigma$ are not CI:}
 
@@ -552,6 +554,8 @@ obtain an explicit form for the updating of $\sigma_i$
 	\end{enumerate}
 \end{enumerate}
 }
+
+\end{comment}
 
 \subsection{Case study}
 
@@ -1169,18 +1173,6 @@ Large ecosystem of software libraries and developers using Scala in the big data
 }
 
 \frame{
-\frametitle{Spark}
-\begin{itemize}
-\item Spark is a scalable analytics library, including some ML (from Berkeley AMP Lab)
-\item It is rapidly replacing Hadoop and MapReduce as the standard library for big data processing and analytics
-\item It is written in Scala, but also has APIs for Java and Python (and experimental API for R)
-\item Only the Scala API leads to both concise elegant code and good performance
-\item Central to the approach is the notion of a \alert{resilient distributed dataset} (RDD) --- hooked up to Spark via a \alert{connector}
-\end{itemize}
-\alert{Lazy}, \alert{functional}, \alert{immutable} data workflows are what makes it all work --- that's why it's implemented in a language like Scala
-}
-
-\frame{
 \frametitle{Breeze}
 \begin{itemize}
 \item Breeze is a Scala library for scientific and numerical computing --- \alert{\url{https://github.com/scalanlp/breeze}}
@@ -1432,7 +1424,6 @@ So we see that Scala could be just as convenient as R and similar languages for 
 It would then be useful to develop this into a library with functionality of the Python \alert{statsmodels} library
 }
 
-\end{comment}
 
 \begin{frame}[fragile]
 \frametitle{Example: Gibbs sampler}
@@ -1461,6 +1452,10 @@ def genIters(s: State,current: Int,stop: Int,thin: Int): State = {
 \end{lstlisting}
 }
 \end{frame}
+
+\end{comment}
+
+\subsection{Parallel particle filter}
 
 \begin{frame}[fragile]
 \frametitle{Example: Parallel particle filter}
@@ -1502,8 +1497,37 @@ def genIters(s: State,current: Int,stop: Int,thin: Int): State = {
 
 \end{comment}
 
+\subsection{Spark}
+
+\frame{
+\frametitle{Spark}
+\begin{itemize}
+\item Spark is a scalable analytics library, including some ML (from Berkeley AMP Lab)
+\item It is rapidly replacing Hadoop and MapReduce as the standard library for big data processing and analytics
+\item It is written in Scala, but also has APIs for Java and Python (and experimental API for R)
+\item Only the Scala API leads to both concise elegant code and good performance
+\item Central to the approach is the notion of a \alert{resilient distributed dataset} (RDD) --- hooked up to Spark via a \alert{connector}
+\end{itemize}
+\alert{Lazy}, \alert{functional}, \alert{immutable} data workflows are what makes it all work --- that's why it's implemented in a language like Scala
+}
+
+\begin{frame}[fragile]
+\frametitle{Spark example}
+eg. maximising a logistic regression log-likelihood (gradient computation):
+\begin{lstlisting}[language=java]
+val gradient = points.map { p =>
+  p.x * (1/(1+exp(-p.y*(w.dot(p.x))))-1) * p.y
+}.reduce(_ + _)
+\end{lstlisting}
+Note that the RDD \texttt{points} could be terabytes big and distributed across a large cluster of nodes, yet the code is written as for any other immutable collection
+
+The \alert{\texttt{map}} and \alert{\texttt{reduce}} operations naturally parallelise
+\end{frame}
+
+
 \subsection{Summary and further pointers}
 
+\begin{comment}
 \frame{
 \frametitle{Summary}
 \begin{itemize}
@@ -1519,6 +1543,18 @@ def genIters(s: State,current: Int,stop: Int,thin: Int): State = {
   \end{itemize}
 \end{itemize}
 }
+\end{comment}
+
+\frame{
+\frametitle{Summary}
+\begin{itemize}
+\item Strong arguments can be made that functional programming languages \alert{scale} better than conventional imperative languages
+\item \alert{Concurrency} and \alert{parallelism} are difficut to manage in imperative languages due to \alert{shared mutable state}
+\item Since functional languages avoid mutable state, writing concurrent and parallel code in functional languages is simple, natural and elegant
+\item Learning a functional language will improve your programming, even if you return to an imperative language
+\item Understanding the role of \alert{immutability} and \alert{referential transparency} in functional programming won't just make you a better programmer --- it will change how you think about \alert{computation} itself
+\end{itemize}
+}
 
 
 \frame{
@@ -1527,7 +1563,7 @@ def genIters(s: State,current: Int,stop: Int,thin: Int): State = {
 \item Scala: \alert{\url{http://www.scala-lang.org/}} --- includes a comprehensive documentation section
 \item Scala on wikipedia: \alert{\url{http://en.wikipedia.org/wiki/Scala_(programming_language)}}
 \item My blog: \alert{\url{http://darrenjw.wordpress.com/}}
-\item A somewhat related talk with associated code examples: \alert{\url{https://github.com/darrenjw/statslang-scala}} (also merged into \alert{\url{https://github.com/csgillespie/statslang}})
+%\item A somewhat related talk with associated code examples: \alert{\url{https://github.com/darrenjw/statslang-scala}} (also merged into \alert{\url{https://github.com/csgillespie/statslang}})
 \item Books:
   \begin{itemize}
   \item Programming in Scala (Odersky, Spoon, Venners)
@@ -1535,6 +1571,7 @@ def genIters(s: State,current: Int,stop: Int,thin: Int): State = {
   \item Scala for machine learning (Nicolas)
   \item Several books on Spark just published or currently in press
   \end{itemize}
+\item Coursera courses on \alert{FP in Scala} and \alert{Functional Reactive Programming}
 \end{itemize}
 
 }

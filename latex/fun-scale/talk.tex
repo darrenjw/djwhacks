@@ -51,7 +51,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \frame{
 \frametitle{Outline}
 \begin{itemize}
-\item Paralellisation of Monte Carlo
+\item Parallelisation of Monte Carlo
 \item MCMC (parallel chains and parallelised single chains)
 \item Case study: SV Models
 \item Scala, functional programming, immutable data structures and parallelisation
@@ -380,7 +380,7 @@ difficult to farm out multiple iterations to different processors
 	\alert{pre-fetching}: given a (single-block, or random sweep) M-H
 	algorithm, can farm out all $2^n$ likelihood evaluations which
 	might be required in order to advance the chain by $n$ steps
-	(but speedup is only logarithmic in number of processors)
+	(but speed-up is only logarithmic in number of processors)
 	\end{itemize}
 \item Otherwise need to parallelise each iteration...
 \end{itemize}
@@ -1549,7 +1549,7 @@ The \alert{\texttt{map}} and \alert{\texttt{reduce}} operations naturally parall
 \frametitle{Summary}
 \begin{itemize}
 \item Strong arguments can be made that functional programming languages \alert{scale} better than conventional imperative languages
-\item \alert{Concurrency} and \alert{parallelism} are difficut to manage in imperative languages due to \alert{shared mutable state}
+\item \alert{Concurrency} and \alert{parallelism} are difficult to manage in imperative languages due to \alert{shared mutable state}
 \item Since functional languages avoid mutable state, writing concurrent and parallel code in functional languages is simple, natural and elegant
 \item Learning a functional language will improve your programming, even if you return to an imperative language
 \item Understanding the role of \alert{immutability} and \alert{referential transparency} in functional programming won't just make you a better programmer --- it will change how you think about \alert{computation} itself

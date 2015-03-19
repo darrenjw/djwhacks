@@ -52,9 +52,17 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \frametitle{Outline}
 \begin{itemize}
 \item Parallelisation of Monte Carlo
-\item MCMC (parallel chains and parallelised single chains)
-\item Case study: SV Models
-\item Scala, functional programming, immutable data structures and parallelisation
+ \begin{itemize}
+ \item MCMC (parallel chains and parallelised single chains)
+ \item Case study: SV Models
+ \end{itemize}
+\item Functional programming
+ \begin{itemize}
+ \item Immutable data structures and referential transparency
+ \item Concurrency and parallelisation
+ \item Scala
+ \item Spark
+ \end{itemize} 
 \item Summary
 \end{itemize}
 }
@@ -1151,12 +1159,12 @@ scalaVersion := "2.11.1"
 \frametitle{Scala ecosystem}
 \begin{itemize}
 \item \alert{Akka} --- actor-based concurrency framework (inspired by Erlang), including \alert{Akka Streams} (\alert{reactive streams})
-\item \alert{Algebird} --- abstract algebra (monoid) support library (from Twitter)
+\item \alert{Spire}/\alert{Algebird}/\alert{Algebra} --- abstract algebra and numerics
 \item \alert{Scalding} --- cascading workflow library (from Twitter)
 \item \alert{Storm} --- streaming analytics library (from Twitter)
 \item \alert{Shapeless} --- typesafe dynamic type support
-\item \alert{Scalaz} --- category theory types (functors, monads, etc.)
-\item \alert{Cats} --- new replacement for Scalaz
+\item \alert{Scalaz}/\alert{Cats} --- category theory types (functors, monads, etc.)
+%\item \alert{Cats} --- new replacement for Scalaz
 \item \alert{Wisp} --- Javascript/web browser--based interactive plotting/graphing/charting library
 \item \alert{Scala.js} --- use Scala client-side by compiling to JS
 \end{itemize}
@@ -1525,6 +1533,18 @@ Note that the RDD \texttt{points} could be terabytes big and distributed across 
 
 The \alert{\texttt{map}} and \alert{\texttt{reduce}} operations naturally parallelise
 \end{frame}
+
+\frame{
+\frametitle{Spark combinators}
+Variety of lazy, functional combinators for RDDs which can be chained together and optimised prior to execution
+\begin{itemize}
+\item \alert{Transformations:} map, filter, flatMap, sample, union, intersection, groupByKey, ...
+\item \alert{Actions:} reduce, collect, count, take, takeSample, foreach, ...
+\end{itemize}
+\bigskip
+
+Higher-level tools include \alert{Spark SQL} for SQL and structured data processing, \alert{MLlib} for machine learning, \alert{GraphX} for graph processing, and \alert{Spark Streaming}.
+}
 
 
 \subsection{Summary and further pointers}

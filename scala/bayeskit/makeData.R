@@ -1,4 +1,4 @@
-# analysis.R
+# makeData.R
 # R code for generating data files from "smfsb" R package
 
 # Need the following CRAN package:

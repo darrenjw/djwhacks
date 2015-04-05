@@ -1,10 +1,16 @@
 # makeData.R
 # R code for generating data files from "smfsb" R package
 
-# Need the following CRAN package:
-# install.packages("smfsb")
+package=function(somepackage)
+{
+  cpackage <- as.character(substitute(somepackage))
+  if(!require(cpackage,character.only=TRUE)){
+    install.packages(cpackage)
+    library(cpackage,character.only=TRUE)
+  }
+}
 
-require(smfsb)
+package(smfsb)
 
 data(LVdata)
 write(LVpreyNoise10,"LVpreyNoise10.txt",ncolumns=1)

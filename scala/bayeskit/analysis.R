@@ -1,11 +1,16 @@
 # analysis.R
 # R code for analysis of the MCMC output file, "mcmc-out.csv"
 
+package=function(somepackage)
+{
+  cpackage <- as.character(substitute(somepackage))
+  if(!require(cpackage,character.only=TRUE)){
+    install.packages(cpackage)
+    library(cpackage,character.only=TRUE)
+  }
+}
 
-# Need the following CRAN package:
-# install.packages("smfsb")
-
-require(smfsb)
+package(smfsb)
 
 args <- commandArgs(trailingOnly = TRUE)
 filename=args[1]

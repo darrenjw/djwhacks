@@ -7,20 +7,19 @@ object pfilter {
   import scala.collection.parallel.immutable.{ ParSeq, ParVector }
   import breeze.linalg.DenseVector
   import breeze.stats.distributions.Multinomial
+  import spire.math._
+  import spire.implicits._
 
-  // R-like "diff" function
-  // TODO: Re-do generically, like the mean function
-  def diff(l: List[Double]): List[Double] = {
+  def diff[T: Fractional](l: Iterable[T]): Iterable[T] = {
     (l.tail zip l) map { x => x._1 - x._2 }
   }
 
-  // TODO: Think about sampling using log-weights for better numerical stability
-  def sample(n: Int, prob: DenseVector[Double]): Vector[Int] = {
-    Multinomial(prob).sample(n).toVector
+  def sample(n: Int, lprob: DenseVector[Double]): Vector[Int] = {
+    Multinomial(lprob).sample(n).toVector
   }
 
-  def mean[A](it: Iterable[A])(implicit n: Numeric[A]): Double = {
-    it.map(n.toDouble).sum / it.size
+  def mean[T: Numeric](it: Iterable[T]): Double = {
+    it.map(_.toDouble).sum / it.size
   }
 
   def pfMLLik[S <: State, P <: Parameter, O <: Observation](
@@ -34,7 +33,7 @@ object pfilter {
     val deltas = diff(t0 :: times)
     (th: P) => {
       val x0 = simx0(n, t0, th)
-      @tailrec def pf(ll: LogLik, x: Vector[S], t: Time, deltas: List[Time], obs: List[O]): Option[LogLik] =
+      @tailrec def pf(ll: LogLik, x: Vector[S], t: Time, deltas: Iterable[Time], obs: List[O]): Option[LogLik] =
         obs match {
           case Nil => Some(ll)
           case head :: tail => {
@@ -64,7 +63,7 @@ object pfilter {
     val deltas = diff(t0 :: times)
     (th: P) => {
       val x0 = simx0(n, t0, th)
-      @tailrec def pf(ll: LogLik, x: Vector[List[S]], t: Time, deltas: List[Time], obs: List[O]): Option[(LogLik, List[S])] =
+      @tailrec def pf(ll: LogLik, x: Vector[List[S]], t: Time, deltas: Iterable[Time], obs: List[O]): Option[(LogLik, List[S])] =
         obs match {
           case Nil => Some((ll, x(0).reverse))
           case head :: tail => {
@@ -99,7 +98,7 @@ object pfilter {
     val deltas = diff(t0 :: times)
     (th: P) => {
       val x0 = simx0(n, t0, th).par
-      @tailrec def pf(ll: LogLik, x: ParVector[S], t: Time, deltas: List[Time], obs: List[O]): Option[LogLik] =
+      @tailrec def pf(ll: LogLik, x: ParVector[S], t: Time, deltas: Iterable[Time], obs: List[O]): Option[LogLik] =
         obs match {
           case Nil => Some(ll)
           case head :: tail => {
@@ -129,7 +128,7 @@ object pfilter {
     val deltas = diff(t0 :: times)
     (th: P) => {
       val x0 = simx0(n, t0, th).par
-      @tailrec def pf(ll: LogLik, x: ParVector[List[S]], t: Time, deltas: List[Time], obs: List[O]): Option[(LogLik, List[S])] =
+      @tailrec def pf(ll: LogLik, x: ParVector[List[S]], t: Time, deltas: Iterable[Time], obs: List[O]): Option[(LogLik, List[S])] =
         obs match {
           case Nil => Some((ll, x(0).reverse))
           case head :: tail => {

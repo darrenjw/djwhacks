@@ -28,7 +28,7 @@ object LvObservation {
 
 object lvsim {
 
-  import scala.math.exp
+  import scala.math.{exp,log}
   import breeze.stats.distributions._
   import scala.annotation.tailrec
   import scala.io.Source
@@ -43,8 +43,8 @@ object lvsim {
     prey.zip(predator) map { x => LvState(x._1, x._2) }
   }
 
-  def obsLik(s: LvState, o: LvObservation, th: Parameter): Double = {
-    new Gaussian(s.prey, 10.0).pdf(o.obs)
+  def obsLik(s: LvState, o: LvObservation, th: Parameter): LogLik = {
+    log(new Gaussian(s.prey, 10.0).pdf(o.obs))
   }
 
   def runModel(its: Int) = {

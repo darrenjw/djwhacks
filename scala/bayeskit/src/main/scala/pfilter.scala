@@ -14,8 +14,8 @@ object pfilter {
     (l.tail zip l) map { x => x._1 - x._2 }
   }
 
-  def sample(n: Int, lprob: DenseVector[Double]): Vector[Int] = {
-    Multinomial(lprob).sample(n).toVector
+  def sample(n: Int, prob: DenseVector[Double]): Vector[Int] = {
+    Multinomial(prob).sample(n).toVector
   }
 
   def mean[T: Numeric](it: Iterable[T]): Double = {
@@ -27,25 +27,23 @@ object pfilter {
     simx0: (Int, Time, P) => Vector[S],
     t0: Time,
     stepFun: (S, Time, Time, P) => S,
-    dataLik: (S, O, P) => Double,
-    data: TS[O]): (P => Option[LogLik]) = {
+    dataLik: (S, O, P) => LogLik,
+    data: TS[O]): (P => LogLik) = {
     val (times, obs) = data.unzip
     val deltas = diff(t0 :: times)
     (th: P) => {
       val x0 = simx0(n, t0, th)
-      @tailrec def pf(ll: LogLik, x: Vector[S], t: Time, deltas: Iterable[Time], obs: List[O]): Option[LogLik] =
+      @tailrec def pf(ll: LogLik, x: Vector[S], t: Time, deltas: Iterable[Time], obs: List[O]): LogLik =
         obs match {
-          case Nil => Some(ll)
+          case Nil => ll
           case head :: tail => {
             val xp = if (deltas.head == 0) x else (x map { stepFun(_, t, deltas.head, th) })
-            val w = xp map { dataLik(_, head, th) }
-            if (w.sum < 1.0e-90) {
-              System.err.print("\nParticle filter bombed with parameter " + th + "\n")
-              None
-            }
+            val lw = xp map { dataLik(_, head, th) }
+            val max = lw.max
+            val w = lw map { _ - max } map { exp(_) }
             val rows = sample(n, DenseVector(w.toArray))
             val xpp = rows map { xp(_) }
-            pf(ll + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
+            pf(ll + max + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
           }
         }
       pf(0, x0, t0, deltas, obs)
@@ -57,26 +55,23 @@ object pfilter {
     simx0: (Int, Time, P) => Vector[S],
     t0: Time,
     stepFun: (S, Time, Time, P) => S,
-    dataLik: (S, O, P) => Double,
-    data: TS[O]): (P => Option[(LogLik, List[S])]) = {
+    dataLik: (S, O, P) => LogLik,
+    data: TS[O]): (P => (LogLik, List[S])) = {
     val (times, obs) = data.unzip
     val deltas = diff(t0 :: times)
     (th: P) => {
       val x0 = simx0(n, t0, th)
-      @tailrec def pf(ll: LogLik, x: Vector[List[S]], t: Time, deltas: Iterable[Time], obs: List[O]): Option[(LogLik, List[S])] =
+      @tailrec def pf(ll: LogLik, x: Vector[List[S]], t: Time, deltas: Iterable[Time], obs: List[O]): (LogLik, List[S]) =
         obs match {
-          case Nil => Some((ll, x(0).reverse))
+          case Nil => (ll, x(0).reverse)
           case head :: tail => {
             val xp = if (deltas.head == 0) x else (x map { l => stepFun(l.head, t, deltas.head, th) :: l })
-            val w = xp map { l => dataLik(l.head, head, th) }
-            if (w.sum < 1.0e-90) {
-              System.err.print("\nParticle filter bombed with parameter " + th + "\n")
-              None
-            } else {
-              val rows = sample(n, DenseVector(w.toArray))
-              val xpp = rows map { xp(_) }
-              pf(ll + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
-            }
+            val lw = xp map { l => dataLik(l.head, head, th) }
+            val max = lw.max
+            val w = lw map { _ - max } map { exp(_) }
+            val rows = sample(n, DenseVector(w.toArray))
+            val xpp = rows map { xp(_) }
+            pf(ll + max + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
           }
         }
       pf(0, x0 map { _ :: Nil }, t0, deltas, obs)
@@ -92,25 +87,23 @@ object pfilter {
     simx0: (Int, Time, P) => Vector[S],
     t0: Time,
     stepFun: (S, Time, Time, P) => S,
-    dataLik: (S, O, P) => Double,
-    data: TS[O]): (P => Option[LogLik]) = {
+    dataLik: (S, O, P) => LogLik,
+    data: TS[O]): (P => LogLik) = {
     val (times, obs) = data.unzip
     val deltas = diff(t0 :: times)
     (th: P) => {
       val x0 = simx0(n, t0, th).par
-      @tailrec def pf(ll: LogLik, x: ParVector[S], t: Time, deltas: Iterable[Time], obs: List[O]): Option[LogLik] =
+      @tailrec def pf(ll: LogLik, x: ParVector[S], t: Time, deltas: Iterable[Time], obs: List[O]): LogLik =
         obs match {
-          case Nil => Some(ll)
+          case Nil => ll
           case head :: tail => {
             val xp = if (deltas.head == 0) x else (x map { stepFun(_, t, deltas.head, th) })
-            val w = xp map { dataLik(_, head, th) }
-            if (w.sum < 1.0e-90) {
-              System.err.print("\nParticle filter bombed with parameter " + th + "\n")
-              None
-            }
+            val lw = xp map { dataLik(_, head, th) }
+            val max = lw.max
+            val w = lw map { _ - max } map { exp(_) }
             val rows = sample(n, DenseVector(w.toArray)).par
             val xpp = rows map { xp(_) }
-            pf(ll + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
+            pf(ll + max + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
           }
         }
       pf(0, x0, t0, deltas, obs)
@@ -122,26 +115,23 @@ object pfilter {
     simx0: (Int, Time, P) => Vector[S],
     t0: Time,
     stepFun: (S, Time, Time, P) => S,
-    dataLik: (S, O, P) => Double,
-    data: TS[O]): (P => Option[(LogLik, List[S])]) = {
+    dataLik: (S, O, P) => LogLik,
+    data: TS[O]): (P => (LogLik, List[S])) = {
     val (times, obs) = data.unzip
     val deltas = diff(t0 :: times)
     (th: P) => {
       val x0 = simx0(n, t0, th).par
-      @tailrec def pf(ll: LogLik, x: ParVector[List[S]], t: Time, deltas: Iterable[Time], obs: List[O]): Option[(LogLik, List[S])] =
+      @tailrec def pf(ll: LogLik, x: ParVector[List[S]], t: Time, deltas: Iterable[Time], obs: List[O]): (LogLik, List[S]) =
         obs match {
-          case Nil => Some((ll, x(0).reverse))
+          case Nil => (ll, x(0).reverse)
           case head :: tail => {
             val xp = if (deltas.head == 0) x else (x map { l => stepFun(l.head, t, deltas.head, th) :: l })
-            val w = xp map { l => dataLik(l.head, head, th) }
-            if (w.sum < 1.0e-90) {
-              System.err.print("\nParticle filter bombed with parameter " + th + "\n")
-              None
-            } else {
-              val rows = sample(n, DenseVector(w.toArray)).par
-              val xpp = rows map { xp(_) }
-              pf(ll + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
-            }
+            val lw = xp map { l => dataLik(l.head, head, th) }
+            val max = lw.max
+            val w = lw map { _ - max } map { exp(_) }
+            val rows = sample(n, DenseVector(w.toArray)).par
+            val xpp = rows map { xp(_) }
+            pf(ll + max + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
           }
         }
       pf(0, x0 map { _ :: Nil }, t0, deltas, obs)

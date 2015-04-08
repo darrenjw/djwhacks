@@ -43,7 +43,7 @@ object pfilter {
             val w = lw map { x => exp(x - max) }
             val rows = sample(n, DenseVector(w.toArray))
             val xpp = rows map { xp(_) }
-            pf(ll + max + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
+            pf(ll + max + log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
           }
         }
       pf(0, x0, t0, deltas, obs)
@@ -71,7 +71,7 @@ object pfilter {
             val w = lw map { x => exp(x - max) }
             val rows = sample(n, DenseVector(w.toArray))
             val xpp = rows map { xp(_) }
-            pf(ll + max + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
+            pf(ll + max + log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
           }
         }
       pf(0, x0 map { _ :: Nil }, t0, deltas, obs)
@@ -104,7 +104,7 @@ object pfilter {
             val w = lw map { x => exp(x - max) }
             val rows = sample(n, DenseVector(w.toArray)).par
             val xpp = rows map { xp(_) }
-            pf(ll + max + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
+            pf(ll + max + log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
           }
         }
       pf(0, x0, t0, deltas, obs)
@@ -129,11 +129,10 @@ object pfilter {
             val xp = if (deltas.head == 0) x else (x map { l => stepFun(l.head, t, deltas.head, th) :: l })
             val lw = xp map { l => dataLik(l.head, head, th) }
             val max = lw.max
-            //println(max)
             val w = lw map { x => exp(x - max) }
             val rows = sample(n, DenseVector(w.toArray)).par
             val xpp = rows map { xp(_) }
-            pf(ll + max + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
+            pf(ll + max + log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
           }
         }
       pf(0, x0 map { _ :: Nil }, t0, deltas, obs)

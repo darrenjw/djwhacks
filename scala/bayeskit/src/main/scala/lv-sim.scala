@@ -44,7 +44,7 @@ object lvsim {
   }
 
   def obsLik(s: LvState, o: LvObservation, th: Parameter): LogLik = {
-    log(new Gaussian(s.prey, 10.0).pdf(o.obs))
+    Gaussian(s.prey, 10.0).logPdf(o.obs)
   }
 
   def runModel(its: Int) = {

@@ -15,7 +15,6 @@ TODO
 ----
 Brownian motion test example.
 Unknown SD for LV example - bivariate obs, too - all three examples from SMfSB.
-More numerically stable filtering using log-weights - log-sum-exp trick...
 Simulating arbitrary SPN models.
 Diffusion approximations.
 ABC-SMC inference code.

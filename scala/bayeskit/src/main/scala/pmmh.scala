@@ -12,6 +12,7 @@ object pmmh {
   def runPmmh[P <: Parameter](s: Writer, iters: Int, initialState: P, mll: P => LogLik, peturb: P => P): List[P] = {
     @tailrec def pmmhAcc(itsLeft: Int, currentState: P, currentMll: LogLik, allIts: List[P]): List[P] = {
       System.err.print(itsLeft.toString + " ")
+      //System.err.println(currentMll)
       s.write(currentState.toString + "\n")
       if (itsLeft == 0) allIts else {
         val prop = peturb(currentState)
@@ -29,6 +30,7 @@ object pmmh {
   def runPmmhPath[P <: Parameter](s: Writer, iters: Int, initialState: P, mll: P => (LogLik, List[State]), peturb: P => P): List[P] = {
     @tailrec def pmmhAcc(itsLeft: Int, currentState: P, currentMll: LogLik, currentPath: List[State], allIts: List[P]): List[P] = {
       System.err.print(itsLeft.toString + " ")
+      //System.err.println(currentMll)
       s.write(currentState.toString + ",")
       s.write((currentPath map { _.toString }).mkString(",") + "\n")
       if (itsLeft == 0) allIts else {

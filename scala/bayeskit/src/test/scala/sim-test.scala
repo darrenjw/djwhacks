@@ -46,12 +46,13 @@ class MyTestSuite extends FunSuite {
       prey.zip(predator) map { x => LvState(x._1, x._2) }
     }
     def obsLik(s: LvState, o: LvObservation, th: Parameter): Double = {
-      new Gaussian(s.prey, 10.0).pdf(o.obs)
+      math.log(new Gaussian(s.prey, 10.0).pdf(o.obs))
     }
     val truth = simTs(LvState(100, 50), 0, 30, 2.0, stepLV, LvParameter(1.0, 0.005, 0.6))
     val data = truth map { x => (x._1, LvObservation(x._2.prey.toDouble)) }
-    val mll = pfMLLik(100, simPrior, 0.0, stepLV, obsLik, data)
+    val mll = pfMLLik(1000, simPrior, 0.0, stepLV, obsLik, data)
     val mllSample = mll(LvParameter(1.0, 0.005, 0.6))
+    println(mllSample)
     assert(mllSample <= 0.0)
   }
 
@@ -62,12 +63,13 @@ class MyTestSuite extends FunSuite {
       prey.zip(predator) map { x => LvState(x._1, x._2) }
     }
     def obsLik(s: LvState, o: LvObservation, th: Parameter): Double = {
-      new Gaussian(s.prey, 10.0).pdf(o.obs)
+      math.log(new Gaussian(s.prey, 10.0).pdf(o.obs))
     }
     val truth = simTs(LvState(100, 50), 0, 30, 2.0, stepLV, LvParameter(1.0, 0.005, 0.6))
     val data = truth map { x => (x._1, LvObservation(x._2.prey.toDouble)) }
     val mll = pfMLLikPar(100, simPrior, 0.0, stepLV, obsLik, data)
     val mllSample = mll(LvParameter(1.0, 0.005, 0.6))
+    println(mllSample)
     assert(mllSample <= 0.0)
   }
 
@@ -78,7 +80,7 @@ class MyTestSuite extends FunSuite {
       prey.zip(predator) map { x => LvState(x._1, x._2) }
     }
     def obsLik(s: LvState, o: LvObservation, th: Parameter): Double = {
-      new Gaussian(s.prey, 10.0).pdf(o.obs)
+      math.log(new Gaussian(s.prey, 10.0).pdf(o.obs))
     }
     val truth = simTs(LvState(100, 50), 0, 30, 2.0, stepLV, LvParameter(1.0, 0.005, 0.6))
     val data = truth map { x => (x._1, LvObservation(x._2.prey.toDouble)) }
@@ -94,7 +96,7 @@ class MyTestSuite extends FunSuite {
       prey.zip(predator) map { x => LvState(x._1, x._2) }
     }
     def obsLik(s: LvState, o: LvObservation, th: Parameter): Double = {
-      new Gaussian(s.prey, 10.0).pdf(o.obs)
+      math.log(new Gaussian(s.prey, 10.0).pdf(o.obs))
     }
     val truth = simTs(LvState(100, 50), 0, 30, 2.0, stepLV, LvParameter(1.0, 0.005, 0.6))
     val data = truth map { x => (x._1, LvObservation(x._2.prey.toDouble)) }

@@ -40,7 +40,7 @@ object pfilter {
             val xp = if (deltas.head == 0) x else (x map { stepFun(_, t, deltas.head, th) })
             val lw = xp map { dataLik(_, head, th) }
             val max = lw.max
-            val w = lw map { _ - max } map { exp(_) }
+            val w = lw map { x => exp(x - max) }
             val rows = sample(n, DenseVector(w.toArray))
             val xpp = rows map { xp(_) }
             pf(ll + max + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
@@ -68,7 +68,7 @@ object pfilter {
             val xp = if (deltas.head == 0) x else (x map { l => stepFun(l.head, t, deltas.head, th) :: l })
             val lw = xp map { l => dataLik(l.head, head, th) }
             val max = lw.max
-            val w = lw map { _ - max } map { exp(_) }
+            val w = lw map { x => exp(x - max) }
             val rows = sample(n, DenseVector(w.toArray))
             val xpp = rows map { xp(_) }
             pf(ll + max + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
@@ -100,7 +100,8 @@ object pfilter {
             val xp = if (deltas.head == 0) x else (x map { stepFun(_, t, deltas.head, th) })
             val lw = xp map { dataLik(_, head, th) }
             val max = lw.max
-            val w = lw map { _ - max } map { exp(_) }
+            //println(max)
+            val w = lw map { x => exp(x - max) }
             val rows = sample(n, DenseVector(w.toArray)).par
             val xpp = rows map { xp(_) }
             pf(ll + max + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)
@@ -128,7 +129,8 @@ object pfilter {
             val xp = if (deltas.head == 0) x else (x map { l => stepFun(l.head, t, deltas.head, th) :: l })
             val lw = xp map { l => dataLik(l.head, head, th) }
             val max = lw.max
-            val w = lw map { _ - max } map { exp(_) }
+            //println(max)
+            val w = lw map { x => exp(x - max) }
             val rows = sample(n, DenseVector(w.toArray)).par
             val xpp = rows map { xp(_) }
             pf(ll + max + math.log(mean(w)), xpp, t + deltas.head, deltas.tail, tail)

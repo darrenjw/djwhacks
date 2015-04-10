@@ -2,9 +2,9 @@
 
 ## Versions
 
-Scala: 2.11.6 (recent version which seems good)
-Breeze: 0.11.2 (contains the thin QR/SVD update)
-Sbt: 0.13.7 (version used in SBT book - blank line requirement dropped)
+* Scala: 2.11.6 (recent version which seems good)
+* Breeze: 0.11.2 (contains the thin QR/SVD update)
+* Sbt: 0.13.7 (version used in SBT book - blank line requirement dropped)
 
 ## SBT
 
@@ -12,14 +12,18 @@ Sbt: 0.13.7 (version used in SBT book - blank line requirement dropped)
 * tasks
 * settings
 * inspect
-* reload
+* reload (reload sbt build definition)
+
 * compile
 * run
+* run <arg 1> <arg 2> ...
 * test
-* ~test
-* doc
+* ~test (monitor and re-run when source changes)
+* testOnly
+* console
+* doc (generate scaladoc in ./target/scala-2.xx/api/)
 
-Supports <tab> completion
+Supports TAB completion - useful with "test" and "testOnly"
 
 Put "eclipse" plugin in: ~/.sbt/0.13/plugins
 

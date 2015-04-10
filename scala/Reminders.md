@@ -16,7 +16,7 @@
 
 * compile
 * run
-* run <arg 1> <arg 2> ...
+* run Arg1 Arg2 ...
 * test
 * ~test (monitor and re-run when source changes)
 * testOnly

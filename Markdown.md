@@ -18,7 +18,20 @@ this is a
 block containing
 some code
 ```
+```python
+python = code
+```
+
+```scala
+val scala = code
+```
 
 
+## Table
+
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
 
 

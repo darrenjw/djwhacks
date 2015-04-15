@@ -8,6 +8,8 @@
 
 ## SBT
 
+sbt -h # for help info
+
 * help
 * tasks
 * settings

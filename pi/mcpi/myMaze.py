@@ -30,12 +30,13 @@ def maze(width=81, height=81, complexity=.75, density=.75):
                     Z[y_ + (y - y_) // 2, x_ + (x - x_) // 2] = 1
                     x, y = x_, y_
     return Z
- 
+
+print "Generating maze..." 
 mymaze=maze(51,51).tolist()
+print "Maze generated."
 sx=54
-sy=55
+sy=25
 sz=-15
-mc.setBlock(sx,sy,sz,block.STONE)
 x=sx
 y=sy
 z=sz
@@ -50,5 +51,6 @@ for row in mymaze:
       for y in range(6):
         mc.setBlock(x,sy+y,z,block.STONE)
 
+print "Finished."
 
 

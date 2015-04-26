@@ -3,8 +3,8 @@
 // just run with:
 // scala maze.scala
 
-val width=30
-val height=8
+val width=34
+val height=9
 
 val rng = new scala.util.Random
 

@@ -3,8 +3,8 @@
 // just run with:
 // scala maze.scala
 
-val width=34
-val height=9
+val width=80
+val height=60
 
 val rng = new scala.util.Random
 
@@ -43,12 +43,12 @@ def pick[T](s: Set[T]):T = s.toList(rng.nextInt(s.size))
  }
 }
 
-// test code
+// now create a maze
 
 val init=Set( ((0,0),(0,1)) , ((0,1),(1,1)) )
-
 val tree=genTree(init)
 
+// draw a maze in ascii
 def contains(e: Edge): Boolean = e match {
  case (l1,l2) => ((tree.contains(l1,l2))|(tree.contains(l2,l1)))
 }
@@ -70,8 +70,43 @@ val maze=for {
 
 val mazeFinal=maze ++ ( for (x <- 0 until width) yield "+-" )
 val mazeStr=mazeFinal.reduce(_+_) + "+\n"
+//println(mazeStr)
 
-println(mazeStr)
+// now draw to an image
+import java.awt.image.BufferedImage
+import java.awt.{Graphics2D,Color,Font,BasicStroke}
+import java.awt.geom._
+
+val wallPx=3
+val tunnelPx=10
+
+val widthPx=width*(wallPx+tunnelPx)+wallPx
+val heightPx=height*(wallPx+tunnelPx)+wallPx
+
+val canvas = new BufferedImage(widthPx, heightPx, BufferedImage.TYPE_INT_RGB)
+val g = canvas.createGraphics()
+g.setColor(Color.WHITE)
+g.fillRect(0, 0, canvas.getWidth, canvas.getHeight)
+g.setColor(Color.BLACK)
+// first create all walls
+for (x <- 0 to width) {
+  g.fillRect(x*(wallPx+tunnelPx),0,wallPx,heightPx)
+}
+for (y <- 0 to height) {
+  g.fillRect(0,y*(wallPx+tunnelPx),widthPx,wallPx)
+}
+// now remove walls according to the spanning tree
+g.setColor(Color.WHITE)
+for (e <- tree) {
+  val minx=math.min(e._1._1,e._2._1)
+  val maxx=math.max(e._1._1,e._2._1)
+  val miny=math.min(e._1._2,e._2._2)
+  val maxy=math.max(e._1._2,e._2._2)
+  g.fillRect(wallPx+minx*(wallPx+tunnelPx),wallPx+miny*(wallPx+tunnelPx),(1+maxx-minx)*tunnelPx,(1+maxy-miny)*tunnelPx)
+}
+// save image
+g.dispose()
+javax.imageio.ImageIO.write(canvas, "png", new java.io.File("maze.png"))
 
 
 // eof

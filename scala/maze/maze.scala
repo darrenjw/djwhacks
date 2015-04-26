@@ -23,8 +23,8 @@ def inrange(loc: Loc): Boolean = loc match {
 }
 
 def extensions(tree: Set[Edge]): Set[Edge] = {
- val locs=tree.map{ e => Set(e._1,e._2) }.flatten
- val allEdges=locs.map{neighbours(_)}.flatten
+ val locs=tree.flatMap{ e => Set(e._1,e._2) }
+ val allEdges=locs.flatMap{neighbours(_)}
  val newEdges=allEdges.filter { e => {
                  val l=to(e)
                  inrange(l) & !locs.contains(l) 
@@ -45,7 +45,7 @@ def pick[T](s: Set[T]):T = s.toList(rng.nextInt(s.size))
 
 val test=Set( ((0,0),(0,1)) , ((0,1),(1,1)) )
 extensions(test)
-
+genTree(test)
 
 // eof
 

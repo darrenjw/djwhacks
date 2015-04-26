@@ -1,7 +1,9 @@
 // maze.scala
+// pure scala
+// just run with:
+// scala maze.scala
 
-
-val width=10
+val width=30
 val height=8
 
 val rng = new scala.util.Random
@@ -43,9 +45,34 @@ def pick[T](s: Set[T]):T = s.toList(rng.nextInt(s.size))
 
 // test code
 
-val test=Set( ((0,0),(0,1)) , ((0,1),(1,1)) )
-extensions(test)
-genTree(test)
+val init=Set( ((0,0),(0,1)) , ((0,1),(1,1)) )
+
+val tree=genTree(init)
+
+def contains(e: Edge): Boolean = e match {
+ case (l1,l2) => ((tree.contains(l1,l2))|(tree.contains(l2,l1)))
+}
+
+val maze=for {
+ y <- 0 until height
+ z <- 0 until 2
+ x <- 0 until width
+ str = if (z==0) {
+  if (contains(((x,y),(x,y-1)))) "+ " else "+-"
+ } else {
+  if (contains(((x,y),(x-1,y)))) "  " else "| "
+ }
+ termStr = if (x==width-1) {
+    if (z==0) str+"+\n" else str+"|\n"
+   } 
+  else str
+} yield termStr
+
+val mazeFinal=maze ++ ( for (x <- 0 until width) yield "+-" )
+val mazeStr=mazeFinal.reduce(_+_) + "+\n"
+
+println(mazeStr)
+
 
 // eof
 

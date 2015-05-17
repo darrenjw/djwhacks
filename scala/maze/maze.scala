@@ -1,10 +1,10 @@
 // maze.scala
 // pure scala
 // just run with:
-// scala maze.scala
+// scala maze.scala 
 
-val width=80
-val height=60
+val width=140
+val height=100
 
 val rng = new scala.util.Random
 

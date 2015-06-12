@@ -2,7 +2,7 @@
 SparkJoin.scala
 
 sbt assembly
-/var/tmp/spark-1.3.0-bin-hadoop2.4/bin/spark-submit target/scala-2.10/simple-join-assembly.jar
+/var/tmp/spark-1.4.0-bin-hadoop2.6/bin/spark-submit target/scala-2.10/simple-join-assembly.jar
 
 */
 
@@ -13,9 +13,6 @@ import org.apache.spark.SparkContext._
 import org.apache.spark.SparkConf
 
 import com.github.tototoshi.csv.{CSVParser,CSVReader}
-// CSVParser.parse("a,b,c",'\\', ',', '"').get
-// List(a, b, c)
-
 
 object SimpleApp {
 

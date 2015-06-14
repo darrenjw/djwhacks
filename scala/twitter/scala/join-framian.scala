@@ -42,7 +42,6 @@ object FramianJoin {
 
   def frame2csv[Row, Col](df: Frame[Row, Col], filename: String): Unit = {
     val csv = Csv.fromFrame(CsvFormat.CSV)(df).toString
-    //println("created Csv object")
     val out = new BufferedWriter(new FileWriter(new File(filename)))
     csv foreach { x => out.write(x.toString) }
     out.close

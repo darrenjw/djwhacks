@@ -12,8 +12,11 @@ class FQRead(id: String, read: String, qid: String, qual: String) {
 
   override def toString: String = s"${id}\n${read}\n${qid}\n${qual}\n"
 
+  // TODO: this properly would require escaping quotes in the qual field...
   def toJson: String =
     "{\"id\":\"%s\",\"read\":\"%s\",\"qid\":\"%s\",\"qual\":\"%s\"}\n".format(id,read,qid,qual)
+
+  def toTsv: String = s"${id}\t${read}\t${qid}\t${qual}\n"
 
 }
 
@@ -40,8 +43,10 @@ object FastQ2Json {
         case None => Stream.empty
       }
     }
-    val out = new BufferedWriter(new FileWriter(new File("fastq.json")))
-    fqs.foreach{x => out.write(x.toJson)}
+    //val out = new BufferedWriter(new FileWriter(new File("fastq.json")))
+    //fqs.foreach{x => out.write(x.toJson)}
+    val out = new BufferedWriter(new FileWriter(new File("fastq.tsv")))
+    fqs.foreach{x => out.write(x.toTsv)}
     out.close
   }
 

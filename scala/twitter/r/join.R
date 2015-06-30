@@ -29,7 +29,7 @@ png("map.png",600,1000)
 map('worldHires',
     c('UK', 'Ireland', 'Isle of Man','Isle of Wight'),
     xlim=c(-11,3), ylim=c(49,60.9))	
-points(tweets$x,tweets$y,pch=19,col=rgb(0.5,0,0,0.05))
+points(tweets$long,tweets$lat,pch=19,col=rgb(0.5,0,0,0.05))
 dev.off()
 
 message("reading screenname mapping file")

@@ -48,7 +48,7 @@ object SimpleApp {
     tweets.mapPartitions{ tweets =>
       val stringWriter = new StringWriter()
       val csvWriter = new CSVWriter(stringWriter)
-      csvWriter.writeAll((tweets.toList).map{_.toList}.map{x=>bMap.value.getOrElse(x(3),"")::x})
+      csvWriter.writeAll((tweets.toList).map{_.toList}.map{x=>bMap.value.getOrElse(x(2),"")::x})
       Iterator(stringWriter.toString)
     }.saveAsTextFile(outFiles)
 

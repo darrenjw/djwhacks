@@ -8,7 +8,7 @@ sbt run
 import java.io._
 //import java.util.zip.GZIPInputStream
 
-class FQRead(id: String, read: String, qid: String, qual: String) {
+class FQRead(val id: String,val read: String,val qid: String,val qual: String) {
 
   override def toString: String = s"${id}\n${read}\n${qid}\n${qual}\n"
 
@@ -46,7 +46,7 @@ object ParseTsv {
       }
     }
     val out = new BufferedWriter(new FileWriter(new File("reads.fastq")))
-    fqs.foreach{x => out.write(x.toString)}
+    fqs.filter(_.read.take(5)=="TAGCT").foreach{x => out.write(x.toString)}
     out.close
   }
 

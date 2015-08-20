@@ -41,8 +41,13 @@ lines(s,lty=2)
 par(op)
 
 df=data.frame(t=0:50,mp=mp,sp=sp,mp2=m,sp2=s)
-print(df)
-write.csv(df,"d003-04.csv")
+#print(df)
+#write.csv(df,"d003-04.csv")
+
+dfm=data.frame(Time=0:50,P=mp,P2=m)
+write.csv(dfm,"dsmts-003-04-mean.csv",row.names=FALSE)
+dfs=data.frame(Time=0:50,P=sp,P2=s)
+write.csv(dfs,"dsmts-003-04-sd.csv",row.names=FALSE)
 
 
 # eof

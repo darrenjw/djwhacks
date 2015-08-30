@@ -20,6 +20,7 @@ object BasicTransformation {
 
     Source(() => text.split("\\s").iterator).
       map(_.toUpperCase).
+      filter(_.length > 3).
       runForeach(println).
       onComplete(_ => system.shutdown())
 

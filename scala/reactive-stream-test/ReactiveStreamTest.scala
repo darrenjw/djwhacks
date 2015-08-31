@@ -1,32 +1,37 @@
-package sample.stream
+// My reactive stream test
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.{ Source, Sink, Flow }
+import akka.stream.scaladsl.{Source, Sink, Flow}
 
-object MyStream {
+import java.lang.management._
+
+object ReactivesStream {
 
   def main(args: Array[String]): Unit = {
     implicit val system = ActorSystem("Sys")
     import system.dispatcher
     implicit val materializer = ActorMaterializer()
 
-    val text =
-      """|Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-         |Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-         |when an unknown printer took a galley of type and scrambled it to make a type
-         |specimen book.""".stripMargin
+    val osb=ManagementFactory.getOperatingSystemMXBean()
 
-    val mySource = Source(() => text.split("\\s").iterator)
+    val mySource = Source(() => Iterator.continually(osb.getSystemLoadAverage()))
 
-    val myFlow = Flow[String].
-      map(_.toUpperCase).
-      filter(_.length > 3)
+    val myFlow = Flow[Double].
+      map(_*100).
+      map(_.toInt)
+
+    val myThrottle = Flow[Int].
+      map(x => {Thread.sleep(2000) ; x})
 
     val mySink = Sink.foreach(println)
 
-    mySource.via(myFlow).runWith(mySink).
+    mySource.via(myFlow).via(myThrottle).runWith(mySink).
       onComplete(_ => system.shutdown())
 
   }
 }
+
+// eof
+
+

@@ -1,4 +1,4 @@
-object Exercise3 {
+object Exercise2 {
 
  import scalaz.Monad
  import scalaz.syntax.monad._

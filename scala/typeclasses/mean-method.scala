@@ -1,7 +1,5 @@
 /* generic mean method */
 
-
-import scala.language.higherKinds
 import spire.math._
 import spire.implicits._
 

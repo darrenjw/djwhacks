@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Javascript code</title>
+  </head>
+
+  <body>
+    <h1>Javascript code</h1>
+
+<script type="text/javascript">
+
+function myEval(form)
+{
+ var answer
+ with(Math) {
+  answer=eval(form.evalfield.value)
+  }
+ form.evalfield.value=answer
+ return(false)
+}
+
+function factor(form)
+{
+ var number,factor
+ number=parseInt(form.factorfield.value)
+ factor=2
+ while (1==1) {
+  if (number % factor == 0) {
+   alert(number+" = "+factor+" x "+number/factor)
+   form.factorfield.value=number/factor
+   return(false)
+  }
+  if (factor > number/2) {
+   alert(number+" is prime")
+   return(false)
+  }
+  factor++
+  if (factor > 3) {
+      factor++
+  }
+ }
+ return(false)
+}
+
+</script>
+
+<hr>
+<h2>Mathematical expression evaluator</h2>
+<form onsubmit="return myEval(this)">
+<input type=text name=evalfield>
+<input type=submit value="Eval">
+</form>
+<br>
+eg. <tt>pow(2,3)-exp(3*log(2))+sin(PI/2)</tt>
+
+<hr>
+<h2>Find the smallest prime factor of an integer</h2>
+<form onsubmit="return factor(this)">
+<input type=text name=factorfield>
+<input type=submit value="Factor">
+</form>
+<br>
+
+<hr>
+This page can be downloaded to a PDA (or laptop) and used offline. The
+    source code is embedded in the HTML.
+
+    <hr>
+    <address><a href="http://www.darrenjwilkinson.btinternet.co.uk/">Darren Wilkinson</a></address>
+<!-- Created: Tue May 23 21:13:44 BST 2006 -->
+<!-- hhmts start -->
+Last modified: Sun May 28 21:21:10 BST 2006
+<!-- hhmts end -->
+  </body>
+</html>

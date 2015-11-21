@@ -3,8 +3,7 @@
 import spire.math._
 import spire.implicits._
 
-object MeanM
-{
+object MeanM {
 
   trait Mean[T] {
     def mean[T](it: Iterable[T]): Double
@@ -19,15 +18,13 @@ object MeanM
   }
 
   def main(args: Array[String]): Unit = {
-    println(List(1,2,3).mean)
-    println(Vector(1.0,2.0,2.0,2.0).mean)
+    println(List(1, 2, 3).mean)
+    println(Vector(1.0, 2.0, 2.0, 2.0).mean)
     import Mean.mean
-    println(mean(List(1,2)))
+    println(mean(List(1, 2)))
   }
 
 }
 
-
 /* eof */
-
 

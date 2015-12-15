@@ -28,6 +28,11 @@ sbt -h # for help info
 Supports TAB completion - useful with "test" and "testOnly"
 
 Put "eclipse" plugin in: ~/.sbt/0.13/plugins
+Put "gen-ensime" plugin in there, too...
+
+## Ensime
+
+
 
 ## Eclipse (Scala IDE)
 

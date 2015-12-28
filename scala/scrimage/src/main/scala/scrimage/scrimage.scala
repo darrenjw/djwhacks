@@ -11,7 +11,9 @@ object ScrimageTest {
   def main(args: Array[String]): Unit = {
 
     println("Hello")
-    Image.fromFile(new File("image.jpg")).flipX.output(new File("out.jpg"))(JpegWriter())
+    val im=Image.fromFile(new File("image.jpg")).flipX
+    val bi=im.awt // gets the BufferedImage...
+    im.output(new File("out.jpg"))(JpegWriter())
 
   }
 

@@ -32,9 +32,18 @@ Put "gen-ensime" plugin in there, too...
 
 ## Ensime
 
+From sbt run "gen-ensime" to create ensime project file.
+
+Then from emacs in a scala buffer, "M-ensime" to start up ensime
+
+* C-c C-v f - reformat source code
+* C-c C-b c - sbt compile
+* C-c C-b r - sbt run
 
 
 ## Eclipse (Scala IDE)
+
+From sbt run "eclipse" to create eclipse project files for importing into eclipse
 
 * Shift-Ctrl-F - Reformat file
 * Shift-Ctrl-W - Close all windows (from package explorer)

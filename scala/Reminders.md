@@ -40,6 +40,8 @@ Then from emacs in a scala buffer, "M-ensime" to start up ensime
 * C-c C-b c - sbt compile
 * C-c C-b r - sbt run
 
+https://github.com/ensime/ensime-emacs/wiki/Emacs-Command-Reference
+
 
 ## Eclipse (Scala IDE)
 

@@ -1,3 +1,11 @@
+/*
+errorhandling.scala
+
+Handling errors with scalaz \/
+Less powerful than using Validation
+
+ */
+
 // Error handling
 //
 // There are two types of errors:
@@ -25,11 +33,11 @@ object ApplicationCode {
   def login(userId: Int): HttpResponse =
     Database.get(userId).fold(
       l = dbError => {
-        dbError match {
-          case UserNotFound => NotFound(s"Could not find $userId")
-          case NotPermitted => NotFound(s"You shouldn't be here")
-        }
-      },
+      dbError match {
+        case UserNotFound => NotFound(s"Could not find $userId")
+        case NotPermitted => NotFound(s"You shouldn't be here")
+      }
+    },
       r = user => Ok(s"Got you user ${user.id}")
     )
 
@@ -47,4 +55,13 @@ object Database {
       case 1 => UserNotFound.left
       case x => User(x).right
     }
+}
+
+object ErrorHandling {
+
+  def main(args: Array[String]): Unit = {
+    println(Database.get(0))
+    println(Database.get(3))
+  }
+
 }

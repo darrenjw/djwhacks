@@ -1,3 +1,10 @@
+/*
+stitch.scala
+
+Service orchestration with Free Monads, Coyoneda and the interpreter pattern...
+
+ */
+
 import scalaz.{Free, ~>, Id, Coyoneda}
 import scalaz.std.list._
 import scalaz.syntax.traverse._
@@ -26,10 +33,10 @@ object Orchestration {
 
   object Request {
     def pure[A](a: A): Free[Requestable, A] =
-      Free.liftFC(Pure(a) : Request[A])
+      Free.liftFC(Pure(a): Request[A])
 
     def fetch[A](service: Service[A]): Free[Requestable, A] =
-      Free.liftFC(Fetch(service) : Request[A])
+      Free.liftFC(Fetch(service): Request[A])
   }
 
   object ToyInterpreter extends (Request ~> Id.Id) {
@@ -70,7 +77,7 @@ object Orchestration {
 
     def getUser(id: UserId): Free[Requestable, User] =
       for {
-        name  <- fetch(GetUserName(id))
+        name <- fetch(GetUserName(id))
         photo <- fetch(GetUserPhoto(id))
       } yield User(id, name, photo)
 
@@ -78,13 +85,19 @@ object Orchestration {
       for {
         tweets <- fetch(GetTweets(theId))
         result <- (tweets map { tweet: Tweet =>
-                     for {
-                       user <- getUser(tweet.userId)
-                     } yield (tweet.msg -> user)
-                   }).sequenceU
+          for {
+            user <- getUser(tweet.userId)
+          } yield (tweet.msg -> user)
+        }).sequenceU
       } yield result
 
     def run: List[(String, User)] =
       Free.runFC(free)(ToyInterpreter)
+
   }
+
+  def main(args: Array[String]): Unit = {
+    println(Example.run)
+  }
+
 }

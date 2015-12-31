@@ -1,3 +1,10 @@
+/*
+Ex4-transformers.scala
+
+Introduction to monad transformers with EitherT, OptionT and Task
+
+ */
+
 object Exercise4 {
 
  import scalaz.EitherT

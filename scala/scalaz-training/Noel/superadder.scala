@@ -1,17 +1,27 @@
+/* superadder.scala
+
+Illustration of Monoid in scalaz
+
+ */
+
 import scalaz.Monoid
 import scalaz.syntax.monoid._
 
 object SuperAdder {
-  def addItems[A : Monoid](items: List[A]): A =
+  def addItems[A: Monoid](items: List[A]): A =
     items.foldLeft(mzero[A])(_ |+| _)
 
-  def examples = {
+  def examples(): Unit = {
     import scalaz.std.option._
     import scalaz.std.anyVal._
-
-    addItems(List(1, 2, 3))
-    addItems(List(Option(1), Option(2), Option(3)))
+    println(addItems(List(1, 2, 3)))
+    println(addItems(List(Option(1), Option(2), Option(3))))
   }
+
+  def main(args: Array[String]): Unit = {
+    examples()
+  }
+
 }
 
 // Given a subtyping relationship between A and B (e.g. A <: B)

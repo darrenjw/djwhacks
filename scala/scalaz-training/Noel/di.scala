@@ -1,3 +1,12 @@
+/*
+di.scala
+
+Dependency injection using the Reader monad
+
+ */
+
+
+
 // Types of DI:
 //  - Java-land: Spring, Guice
 //  - Constructors
@@ -21,23 +30,29 @@
 // foo2(3) flatMap {result => ???} // (dependency) => ???
 
 object ReaderExample {
-  import scalaz.Reader
 
-  val reader1: Reader[String, String] =
-    Reader[String,String](name => s"Hello $name").
-      map(s => s + " How are you?")
+  def main(args: Array[String]): Unit = {
 
-  val reader2: Reader[String, String] =
-    reader1.
-      flatMap(greeting => Reader[String,String] { name =>
-        s"$greeting Your name begins with ${name.head}"
-      })
+    import scalaz.Reader
 
-  val reader3: Reader[Int, Int] = for {
-    a <- Reader[Int, Int](injected => injected)
-  } yield a + 1
+    val reader1: Reader[String, String] =
+      Reader[String, String](name => s"Hello $name").
+        map(s => s + " How are you?")
 
-  println(reader1.run("Dave"))
-  println(reader2.run("Noel"))
-  println(reader3.run(1000))
+    val reader2: Reader[String, String] =
+      reader1.
+        flatMap(greeting => Reader[String, String] { name =>
+          s"$greeting Your name begins with ${name.head}"
+        })
+
+    val reader3: Reader[Int, Int] = for {
+      a <- Reader[Int, Int](injected => injected)
+    } yield a + 1
+
+    println(reader1.run("Dave"))
+    println(reader2.run("Noel"))
+    println(reader3.run(1000))
+
+  }
+
 }

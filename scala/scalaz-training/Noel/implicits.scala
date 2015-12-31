@@ -1,4 +1,14 @@
-/*// Type class
+/*
+implicits.scala
+
+Typeclasses and implicits in scala (no scalaz in here)
+
+Monoids and Functors
+
+
+
+Type classes:
+
 trait Monoid[A] {
   def append(a1: A, a2: A): A
   def zero: A
@@ -28,21 +38,30 @@ object Syntax {
       Monoid[A].append(a, other)
   }
 }
+
  */
 
 import scala.language.higherKinds
 
 object FunctorExample {
+
   trait Functor[F[_]] {
-    def map[A,B](fa: F[A])(f: A => B): F[B]
+    def map[A, B](fa: F[A])(f: A => B): F[B]
   }
 
   implicit object optionInstance extends Functor[Option] {
-    def map[A,B](fa: Option[A])(f: A => B): Option[B] =
+    def map[A, B](fa: Option[A])(f: A => B): Option[B] =
       fa.map(f)
   }
-  implicit class FunctorOps[F[_],A](fa: F[A]) {
+
+  implicit class FunctorOps[F[_], A](fa: F[A]) {
     def map[B](f: A => B)(implicit ev: Functor[F]): F[B] =
       ev.map(fa)(f)
   }
+
+  def main(args: Array[String]): Unit = {
+    println(Some(1) map {_*2})
 }
+
+}
+

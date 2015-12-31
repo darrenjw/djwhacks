@@ -1,3 +1,9 @@
+/*
+Ex1-functor.scala
+Defining a Functor for Errors and Warnings
+
+ */
+
 object Exercise1 {
 
  import scalaz.Functor
@@ -16,8 +22,8 @@ object Exercise1 {
   implicit object resultInstance extends Functor[Result] {
    def map[A,B](r: Result[A])(f: A => B): Result[B] = r match {
      case Success(r) => Success(f(r))
-     case Warning(r,value) => Warning(f(r),value)
-     case Failure(m) => Failure(m)
+     case Warning(r,mess) => Warning(f(r),mess)
+     case Failure(mess) => Failure(mess)
    }
   }
 

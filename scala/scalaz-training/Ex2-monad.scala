@@ -1,3 +1,10 @@
+/*
+Ex2-monad.scala
+
+Define a custom monad for errors and warnings
+
+ */
+
 object Exercise2 {
 
  import scalaz.Monad

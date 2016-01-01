@@ -1,9 +1,17 @@
-import scalaz.{OptionT,EitherT}
+/*
+monadtransformers.scala
+
+Simple illustration of monad transformers, adding Option and Either to Task
+
+ */
+
+import scalaz.{OptionT, EitherT}
 import scalaz.concurrent.Task
 import scalaz.syntax.either._ // for .right
 import scalaz.syntax.monad._
 
 object MonadTransformers {
+
   def example1() = {
     type Error = String
     type Result[A] = EitherT[Task, Error, A]
@@ -25,6 +33,12 @@ object MonadTransformers {
     type Result[A] = OptionT[Step2, A]
 
     val result1 = 1.point[Result]
-    result1
+    println(result1)
   }
+
+  def main(args: Array[String]): Unit = {
+    example1()
+    example2()
+  }
+
 }

@@ -1,3 +1,13 @@
+/*
+freemonads-dave.scala
+
+Dave Gurnell's version of the free monad expression parser examples
+
+This code extends App, so doesn't need a main method
+
+
+ */
+
 import scalaz._
 import scalaz.Scalaz._
 
@@ -20,7 +30,7 @@ object FreeExample extends App {
     def apply[A](expr: Expr[A]): Id.Id[A] = expr match {
       case Add(a, b) => a + b
       case Mul(a, b) => a * b
-      case Lit(a)    => a
+      case Lit(a) => a
     }
   }
 
@@ -29,7 +39,7 @@ object FreeExample extends App {
     def apply[A](expr: Expr[A]): Log[A] = expr match {
       case msg @ Add(a, b) => List(s"$msg").tell as (a + b)
       case msg @ Mul(a, b) => List(s"$msg").tell as (a * b)
-      case msg @ Lit(a)    => List(s"$msg").tell as (a    )
+      case msg @ Lit(a) => List(s"$msg").tell as (a)
     }
   }
 
@@ -42,12 +52,12 @@ object FreeExample extends App {
   val example = {
     import Expr._
     for {
-      a   <- lit(1)
-      b   <- lit(2)
-      x   <- mul(a, b)
-      c   <- lit(3)
-      d   <- lit(4)
-      y   <- mul(c, d)
+      a <- lit(1)
+      b <- lit(2)
+      x <- mul(a, b)
+      c <- lit(3)
+      d <- lit(4)
+      y <- mul(c, d)
       sum <- add(x, y)
     } yield sum
   }

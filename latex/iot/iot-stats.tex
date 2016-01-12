@@ -115,6 +115,45 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \end{itemize}
 }
 
+\frame{
+\frametitle{Simplest possible example...}
+\begin{itemize}
+\item \alert{Steady state model}:
+  \begin{itemize}
+  \item State evolution: $x_t = x_{t-1} + \nu_t$
+  \item Observation equation: $y_t = x_t + \eps_t$
+  \item Generative in the sense that we can simulate next world state and next observation sequentially to produce a \alert{synthetic dataset} consistent with the model
+  \end{itemize}
+\item Can be inverted using Bayesian reasoning to get an update equation often known as \alert{exponential smoothing}:
+  \begin{itemize}
+  \item $\hat{x}_t = \alpha y_t + (1-\alpha)\hat{x}_{t-1} $
+  \item Function of \alert{all} previous observations, but the influence of any particular observation decays away exponentially as you look back further into the past
+  \item $\alpha$ is (a function of) the fixed model parameter and determines the weight of each data point (depends on signal-to-noise ratio)
+  \item Learning about the state can be done simply and sequentially as each data point arrives, but learning $\alpha$ usually done off-line
+  \end{itemize}
+\end{itemize}
+}
+
+\frame{
+\frametitle{Model ingredients}
+\begin{itemize}
+\item State evolution modelling:
+  \begin{itemize}
+  \item Evolving stochastic dynamics with slowly evolving trends
+  \item Seasonal components (eg. daily and/or weekly and/or yearly cycles)
+  \item Non-linear dynamics
+  \item Abrupt jumps and discontinuities
+  \end{itemize}
+\item Observation models:
+  \begin{itemize}
+  \item \alert{Noisy} (Gaussian) observations
+  \item Poisson models for \alert{count} data
+  \item Bernoulli models for \alert{binary} observations (leading to dynamic logistic regression)
+  \end{itemize}
+\item Models are \alert{composable}
+\end{itemize}
+}
+
 \subsection{POMP models}
 
 \frame{
@@ -149,7 +188,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \begin{itemize}
 \item SSMs and POMP models allow \alert{fully probabilistic inference for the world state} using observational data
 \item It is the world state that is of key inferential interest, and most questions of \alert{smoothing}, \alert{interpolation}, \alert{imputation}, \alert{prediction}, \alert{forecasting}, \alert{actions}/\alert{alerting} relate to our knowledge of and uncertainty about the world state (now, in the past, and in the future)
-\item Actions typically should not be triggered in response to simple functions of the raw data in small time windows, and ``optimal'' decision triggers can not be described using simple declarative query languages operating on the raw data, and will typically be a function of all of the past data, not just the data in a small recent time window
+\item Actions typically should not be triggered in response to simple functions of the raw data in small time windows, and ``optimal'' decision triggers can not be described using simple declarative query languages operating on the raw data%, and will typically be a function of all of the past data, not just the data in a small recent time window
+\item Can quantify \alert{information} in the data, and answer questions relating to the required \alert{sampling frequency} of a constrained sensor/device
 \end{itemize}
 }
 

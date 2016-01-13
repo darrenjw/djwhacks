@@ -289,6 +289,17 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \end{itemize}
 }
 
+\frame{
+\frametitle{Joint modelling of multiple devices}
+\begin{itemize}
+\item Often in IoT networks you will be gathering data from multiple similar devices (eg. a collection of temperature sensors in a building or in a city) --- using the same statistical model for similar devices will often be appropriate
+\item The world state $x_t$ associated with each device is likely to be different, but the static parameters $\theta$ may well be the same or similar across multiple devices
+\item If you have the opportunity to bring together data from multiple devices in the same place, you shouldn't analyse it separately!
+\item \alert{Bayesian hierarchical modelling} is a way of jointly modelling multiple data sets which pools information across multiple devices to improve parameter estimation
+\item It also allows comparative analysis and identification of devices with \alert{anomalous characteristics} 
+\end{itemize}
+}
+
 \begin{comment}
 
 \frame{

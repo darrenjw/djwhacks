@@ -3,11 +3,11 @@
 # RDME Reaction diffusion master equation
 # Next subvolume method
 
-D=80 # num grid cells
+D=50 # num grid cells
 T=120 # final time
 dt=0.25 # time step for recording
 th=c(1,0.005,0.6) # reaction rate parameters
-dc=0.1 # diffusion coefficient - same for x and y for now
+dc=0.5 # diffusion coefficient - same for x and y for now
 
 N=T/dt
 x=rep(0,D)
@@ -70,34 +70,40 @@ react=function(x,y,h,hr) {
   list(x,y)
 }
 
-t=0
-tt=dt
-i=0
-while (i < N) {
- # first consider reaction hazards
- h=cbind(th[1]*x,th[2]*x*y,th[3]*y)
- hr=h %*% rep(1,3) # apply(h,1,sum) is much slower...
- hrs=sum(hr)
- hd=dc*(x+y)*2 # assuming common diffusion coefficient for now
- hds=sum(hd)
- h0=hrs+hds
- t=t+rexp(1,h0)
- if (t>tt) {
-     i=i+1
-     tt=tt+dt
-     xmat[i,]=x
-     ymat[i,]=y
-     message(paste(N-i," ",sep=""),appendLF=FALSE)
+stepLV=function(x,y,dt) {
+ t=0
+ repeat {
+  h=cbind(th[1]*x,th[2]*x*y,th[3]*y)
+  hr=h %*% rep(1,3) # apply(h,1,sum) is much slower...
+  hrs=sum(hr)
+  hd=dc*(x+y)*2 # assuming common diffusion coefficient for now
+  hds=sum(hd)
+  h0=hrs+hds
+  t=t+rexp(1,h0)
+  if (t>dt)
+      return(list(x,y))
+  if (runif(1,0,h0)<hds) {
+   l=diffuse(x,y,hd)
+   x=l[[1]]
+   y=l[[2]]
+  } else {
+   l=react(x,y,h,hr)
+   x=l[[1]]
+   y=l[[2]]
+  }
  }
- if (runif(1,0,h0)<hds) {
-  l=diffuse(x,y,hd)
+}
+
+
+# now run the simulation algorithm
+
+for (i in 1:N) {
+  message(paste(N-i," ",sep=""),appendLF=FALSE)
+  l=stepLV(x,y,dt)
   x=l[[1]]
   y=l[[2]]
- } else {
-  l=react(x,y,h,hr)
-  x=l[[1]]
-  y=l[[2]]
- }
+  xmat[i,]=x
+  ymat[i,]=y
 }
 
 

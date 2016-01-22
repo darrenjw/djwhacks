@@ -3,8 +3,8 @@
 # RDME Reaction diffusion master equation
 # Next subvolume method
 
-D=100 # num grid cells
-T=120 # final time
+D=50 # num grid cells
+T=80 # final time
 dt=0.2 # time step for recording
 
 th1=1
@@ -23,6 +23,27 @@ y[round(D/2)]=20
 
 xmat=matrix(0,nrow=N,ncol=D)
 ymat=matrix(0,nrow=N,ncol=D)
+
+mvleft=function(v,i) {
+    v[i]=v[i]-1
+    if (i>1) {
+     v[i-1]=v[i-1]+1
+    } else {
+     l=length(v)
+     v[l]=v[l]+1
+    }
+    v
+}
+
+mvright=function(v,i) {
+    v[i]=v[i]-1
+    if (r<length(v)) {
+     v[i+1]=v[i+1]+1
+    } else {
+     v[1]=v[1]+1
+    }
+    v
+}
 
 t=0
 tt=dt
@@ -51,38 +72,17 @@ while (i < N) {
   if (r<=D) {
    # left
    if (runif(1,0,x[r]+y[r])<=x[r]) {
-    x[r]=x[r]-1
-    if (r>1) {
-     x[r-1]=x[r-1]+1
-    } else {
-     x[D]=x[D]+1
-    }
+    x=mvleft(x,r)
    } else {
-    y[r]=y[r]-1
-    if (r>1) {
-     y[r-1]=y[r-1]+1
-    } else {
-     y[D]=y[D]+1
-    }
+    y=mvleft(y,r)
    }
-  }
-  else {
+  } else {
    # right
    r=r-D
    if (runif(1,0,x[r]+y[r])<=x[r]) {
-    x[r]=x[r]-1
-    if (r<D) {
-     x[r+1]=x[r+1]+1
-    } else {
-     x[1]=x[1]+1
-    }
+    x=mvright(x,r)
    } else {
-    y[r]=y[r]-1
-    if (r<D) {
-     y[r+1]=y[r+1]+1
-    } else {
-     y[1]=y[1]+1
-    }
+    y=mvright(y,r)
    }
   }
  } else {

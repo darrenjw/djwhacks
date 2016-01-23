@@ -4,7 +4,7 @@
 # Next subvolume method
 
 D=50 # num grid cells (DxD grid)
-T=30 # final time
+T=120 # final time
 dt=0.25 # time step for recording
 th=c(1,0.005,0.6) # reaction rate parameters
 dc=0.5 # diffusion coefficient - same for x and y for now

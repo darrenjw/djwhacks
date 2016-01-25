@@ -63,9 +63,25 @@ object ReactDiff2d {
     }
   }
 
+  def react(x: Matrix[Int], y: Matrix[Int], h: Vector[DenseMatrix[Double]], hr: DenseMatrix[Double]): Unit = {
+    val r = Multinomial(hr.toDenseVector).draw
+    val i = r % D
+    val j = r / D
+    val u = Uniform(0.0, hr(i, j)).draw
+    if (u < h(0)(i, j)) {
+      x(i, j) += 1
+    } else if (u < h(0)(i, j) + h(1)(i, j)) {
+      x(i, j) -= 1
+      y(i, j) += 1
+    } else {
+      y(i, j) -= 1
+    }
+  }
+
+  // TODO: This should make a defensive copy at the top level
   @annotation.tailrec
   def stepLV(x: DenseMatrix[Int], y: DenseMatrix[Int], dt: Double): (DenseMatrix[Int], DenseMatrix[Int]) = {
-    val h = Vector[Matrix[Double]](x map { _ * th(0) }, (x :* y) map { _ * th(1) }, y map { _ * th(2) })
+    val h = Vector[DenseMatrix[Double]](x map { _ * th(0) }, (x :* y) map { _ * th(1) }, y map { _ * th(2) })
     val hr = h(0) + h(1) + h(2)
     val hrs = hr.sum
     val hd = ((x + y) map { _ * dc }) * 4.0
@@ -77,7 +93,7 @@ object ReactDiff2d {
         diffuse(x, y, hd)
         stepLV(x, y, dt - et)
       } else {
-        // react(x,y,h,hr)
+        react(x,y,h,hr)
         stepLV(x, y, dt - et)
       }
     }

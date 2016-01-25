@@ -7,7 +7,7 @@ D=50 # num grid cells (DxD grid)
 T=120 # final time
 dt=0.25 # time step for recording
 th=c(1,0.005,0.6) # reaction rate parameters
-dc=0.5 # diffusion coefficient - same for x and y for now
+dc=0.25 # diffusion coefficient - same for x and y for now
 
 N=T/dt
 x=matrix(0,ncol=D,nrow=D)

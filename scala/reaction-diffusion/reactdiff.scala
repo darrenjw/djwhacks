@@ -16,12 +16,12 @@ object ReactDiff2d {
   import breeze.plot._
 
   val D = 50
-  val T = 120
+  val T = 12
   val dt = 0.25
   val th = Vector(1.0, 0.005, 0.6)
   val dc = 0.25
 
-  val N = T / dt
+  val N = (T / dt).toInt
   val x = DenseMatrix.zeros[Int](D, D)
   x(D / 2, D / 2) = 60
   val y = DenseMatrix.zeros[Int](D, D)
@@ -78,33 +78,41 @@ object ReactDiff2d {
     }
   }
 
-  // TODO: This should make a defensive copy at the top level
-  @annotation.tailrec
   def stepLV(x: DenseMatrix[Int], y: DenseMatrix[Int], dt: Double): (DenseMatrix[Int], DenseMatrix[Int]) = {
-    val h = Vector[DenseMatrix[Double]](x map { _ * th(0) }, (x :* y) map { _ * th(1) }, y map { _ * th(2) })
-    val hr = h(0) + h(1) + h(2)
-    val hrs = hr.sum
-    val hd = ((x + y) map { _ * dc }) * 4.0
-    val hds = hd.sum
-    val h0 = hrs + hds
-    val et = Exponential(h0).draw
-    if (et > dt) (x, y) else {
-      if (Uniform(0.0, h0).draw < hds) {
-        diffuse(x, y, hd)
-        stepLV(x, y, dt - et)
-      } else {
-        react(x,y,h,hr)
-        stepLV(x, y, dt - et)
+    @annotation.tailrec
+    def go(x: DenseMatrix[Int], y: DenseMatrix[Int], dt: Double): (DenseMatrix[Int], DenseMatrix[Int]) = {
+      val h = Vector[DenseMatrix[Double]](x map { _ * th(0) }, (x :* y) map { _ * th(1) }, y map { _ * th(2) })
+      val hr = h(0) + h(1) + h(2)
+      val hrs = sum(hr)
+      val hd = ((x + y) map { _ * dc }) * 4.0
+      val hds = sum(hd)
+      val h0 = hrs + hds
+      val et = Exponential(h0).draw
+      if (et > dt) (x, y) else {
+        if (Uniform(0.0, h0).draw < hds) {
+          diffuse(x, y, hd)
+          go(x, y, dt - et)
+        } else {
+          react(x, y, h, hr)
+          go(x, y, dt - et)
+        }
       }
     }
+    val xc = x.copy
+    val yc = y.copy
+    go(xc, yc, dt)
   }
 
   def main(args: Array[String]): Unit = {
     println("Hello")
     val f = Figure()
-    for (i <- 1 to T) {
-      println(i)
-      val (xt, yt) = stepLV(x, y, dt)
+    var xt=x
+    var yt=y
+    for (i <- 1 to N) {
+      print("" + (N - i) + " ")
+      val next = stepLV(xt, yt, dt)
+      xt=next._1
+      yt=next._2
       f.clear()
       f.subplot(0) += image(xt map { _ * 1.0 })
       f.subplot(1, 2, 1) += image(yt map { _ * 1.0 })

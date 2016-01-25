@@ -27,32 +27,40 @@ object ReactDiff2d {
   val y = DenseMatrix.zeros[Int](D, D)
   y(D / 2, D / 2) = 60
 
-  def mvLeft(m: Matrix[Int], i: Int, j: Int): Unit = {
+  def mvLeft(m: Matrix[Int], i: Int, j: Int): (Int, Int) = {
     m(i, j) -= 1
-    if (j > 0) m(i, j - 1) += 1 else m(i, m.cols - 1) += 1
+    val jj = if (j > 0) j - 1 else m.cols - 1
+    m(i, jj) += 1
+    (i, jj)
   }
 
-  def mvRight(m: Matrix[Int], i: Int, j: Int): Unit = {
+  def mvRight(m: Matrix[Int], i: Int, j: Int): (Int, Int) = {
     m(i, j) -= 1
-    if (j < m.cols - 1) m(i, j + 1) += 1 else m(i, 0) += 1
+    val jj = if (j < m.cols - 1) j + 1 else 0
+    m(i, jj) += 1
+    (i, jj)
   }
 
-  def mvUp(m: Matrix[Int], i: Int, j: Int): Unit = {
+  def mvUp(m: Matrix[Int], i: Int, j: Int): (Int, Int) = {
     m(i, j) -= 1
-    if (i > 0) m(i - 1, j) += 1 else m(m.rows - 1, j) += 1
+    val ii = if (i > 0) i - 1 else m.rows - 1
+    m(ii, j) += 1
+    (ii, j)
   }
 
-  def mvDown(m: Matrix[Int], i: Int, j: Int): Unit = {
+  def mvDown(m: Matrix[Int], i: Int, j: Int): (Int, Int) = {
     m(i, j) -= 1
-    if (i < m.rows - 1) m(i + 1, j) += 1 else m(0, j) += 1
+    val ii = if (i < m.rows - 1) i + 1 else 0
+    m(ii, j) += 1
+    (ii, j)
   }
 
-  def diffuse(x: Matrix[Int], y: Matrix[Int], hd: DenseMatrix[Double]): Unit = {
+  def diffuse(x: Matrix[Int], y: Matrix[Int], hd: DenseMatrix[Double]): List[(Int, Int)] = {
     val r = Multinomial(hd.toDenseVector).draw
     val i = r % D
     val j = r / D
     val u = Uniform(0.0, 1.0).draw
-    if (u < 0.25) {
+    val extra = if (u < 0.25) {
       if (Uniform(0.0, x(i, j) + y(i, j)).draw < x(i, j)) mvLeft(x, i, j) else mvLeft(y, i, j)
     } else if (u < 0.5) {
       if (Uniform(0.0, x(i, j) + y(i, j)).draw < x(i, j)) mvRight(x, i, j) else mvRight(y, i, j)
@@ -61,9 +69,10 @@ object ReactDiff2d {
     } else {
       if (Uniform(0.0, x(i, j) + y(i, j)).draw < x(i, j)) mvDown(x, i, j) else mvDown(y, i, j)
     }
+    List((i, j), extra)
   }
 
-  def react(x: Matrix[Int], y: Matrix[Int], h: Vector[DenseMatrix[Double]], hr: DenseMatrix[Double]): Unit = {
+  def react(x: Matrix[Int], y: Matrix[Int], h: Vector[DenseMatrix[Double]], hr: DenseMatrix[Double]): List[(Int, Int)] = {
     val r = Multinomial(hr.toDenseVector).draw
     val i = r % D
     val j = r / D
@@ -76,43 +85,61 @@ object ReactDiff2d {
     } else {
       y(i, j) -= 1
     }
+    List((i, j))
+  }
+
+  def recalc(pix: (Int, Int), x: DenseMatrix[Int], y: DenseMatrix[Int], h: Vector[DenseMatrix[Double]], hr: DenseMatrix[Double], hd: DenseMatrix[Double]): (Double, Double) = {
+    val i = pix._1
+    val j = pix._2
+    val oldhr = h(0)(i, j) + h(1)(i, j) + h(2)(i, j)
+    val oldhd = hd(i, j)
+    h(0)(i, j) = th(0) * x(i, j)
+    h(1)(i, j) = th(1) * x(i, j) * y(i, j)
+    h(2)(i, j) = th(2) * y(i, j)
+    val newhr = h(0)(i, j) + h(1)(i, j) + h(2)(i, j)
+    hr(i, j) = newhr
+    val newhd = 4.0 * dc * (x(i, j) + y(i, j))
+    hd(i, j) = newhd
+    (newhr - oldhr, newhd - oldhd)
   }
 
   def stepLV(x: DenseMatrix[Int], y: DenseMatrix[Int], dt: Double): (DenseMatrix[Int], DenseMatrix[Int]) = {
+    val xc = x.copy
+    val yc = y.copy
+    val h = Vector[DenseMatrix[Double]](x map { _ * th(0) }, (x :* y) map { _ * th(1) }, y map { _ * th(2) })
+    val hr = h(0) + h(1) + h(2)
+    val hrs = sum(hr)
+    val hd = ((x + y) map { _ * dc }) * 4.0
+    val hds = sum(hd)
     @annotation.tailrec
-    def go(x: DenseMatrix[Int], y: DenseMatrix[Int], dt: Double): (DenseMatrix[Int], DenseMatrix[Int]) = {
-      val h = Vector[DenseMatrix[Double]](x map { _ * th(0) }, (x :* y) map { _ * th(1) }, y map { _ * th(2) })
-      val hr = h(0) + h(1) + h(2)
-      val hrs = sum(hr)
-      val hd = ((x + y) map { _ * dc }) * 4.0
-      val hds = sum(hd)
+    def go(x: DenseMatrix[Int], y: DenseMatrix[Int], dt: Double, hrs: Double, hds: Double): (DenseMatrix[Int], DenseMatrix[Int]) = {
       val h0 = hrs + hds
       val et = Exponential(h0).draw
       if (et > dt) (x, y) else {
-        if (Uniform(0.0, h0).draw < hds) {
+        val touched = if (Uniform(0.0, h0).draw < hds) {
           diffuse(x, y, hd)
-          go(x, y, dt - et)
         } else {
           react(x, y, h, hr)
-          go(x, y, dt - et)
         }
+        val deltah = (touched map { recalc(_, x, y, h, hr, hd) }).foldLeft((0.0,0.0))((a,b)=>(a._1+b._1,a._2+b._2))
+        val newhrs = hrs + deltah._1
+        val newhds = hds + deltah._2
+        go(x, y, dt - et, newhrs, newhds)
       }
     }
-    val xc = x.copy
-    val yc = y.copy
-    go(xc, yc, dt)
+    go(xc, yc, dt, hrs, hds)
   }
 
   def main(args: Array[String]): Unit = {
     println("Hello")
     val f = Figure()
-    var xt=x
-    var yt=y
+    var xt = x
+    var yt = y
     for (i <- 1 to N) {
       print("" + (N - i) + " ")
       val next = stepLV(xt, yt, dt)
-      xt=next._1
-      yt=next._2
+      xt = next._1
+      yt = next._2
       f.clear()
       f.subplot(0) += image(xt map { _ * 1.0 })
       f.subplot(1, 2, 1) += image(yt map { _ * 1.0 })

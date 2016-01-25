@@ -16,7 +16,7 @@ object ReactDiff2d {
   import breeze.plot._
 
   val D = 50
-  val T = 12
+  val T = 120
   val dt = 0.25
   val th = Vector(1.0, 0.005, 0.6)
   val dc = 0.25
@@ -143,7 +143,7 @@ object ReactDiff2d {
       f.clear()
       f.subplot(0) += image(xt map { _ * 1.0 })
       f.subplot(1, 2, 1) += image(yt map { _ * 1.0 })
-      // f.saveas("plot.png")
+      f.saveas(f"out$i%04d.png")
     }
     println("Goodbye")
   }

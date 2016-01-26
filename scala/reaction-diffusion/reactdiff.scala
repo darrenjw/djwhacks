@@ -139,8 +139,8 @@ object ReactDiff2d {
     val my = max(y)
     for (i <- 0 until D) {
       for (j <- 0 until D) {
-        wr.setSample(i, j, 2, 255 * x(i, j) / mx)
-        wr.setSample(i, j, 0, 255 * y(i, j) / my)
+        wr.setSample(i, j, 2, 255 * x(i, j) / mx) // band 2 is blue
+        wr.setSample(i, j, 0, 255 * y(i, j) / my) // band 0 is red
       }
     }
     canvas

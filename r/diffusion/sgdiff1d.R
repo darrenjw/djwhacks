@@ -4,7 +4,7 @@
 D=100 # num grid cells
 S=1000 # num time steps
 dc=0.05 # diffusion coefficient
-sig=0.1 # noise strength
+dt=0.1 # time step
 
 state=rep(0,D)
 state[round(D/2)]=D
@@ -18,9 +18,11 @@ rr=function(v) c(v[D],v[1:(D-1)])
 for (i in 1:S) {
  sp=rl(state)
  sm=rr(state)
- state=state+dc*(sp+sm-2*state) # diffusion
- noise=rnorm(D,0,sig) # Gaussian noise
- state=state+noise-rl(noise) # add noise but conserve mass
+ noise=rnorm(D,0,sqrt(dt)) # Gaussian noise
+ diff=sqrt(dc*(sm+state))*noise
+ state=state+dc*(sp+sm-2*state)*dt # diffusion
+ state=state+diff-rl(diff) # add noise but conserve mass
+ state[state<0]=-state[state<0] # reflect at zero
  mat[i,]=state
 }
 

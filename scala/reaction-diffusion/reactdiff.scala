@@ -8,15 +8,17 @@ Simulated with the next subvolume method
 
 object ReactDiff2d {
 
+  import annotation.tailrec
+
   import breeze.linalg._
   import breeze.math._
   import breeze.numerics._
   import breeze.stats.distributions.{Uniform, Exponential, Multinomial}
 
-  import breeze.plot._
+  import java.awt.image.BufferedImage
 
   val D = 50
-  val T = 120
+  val T = 12
   val dt = 0.25
   val th = Vector(1.0, 0.005, 0.6)
   val dc = 0.25
@@ -111,7 +113,7 @@ object ReactDiff2d {
     val hrs = sum(hr)
     val hd = ((x + y) map { _ * dc }) * 4.0
     val hds = sum(hd)
-    @annotation.tailrec
+    @tailrec
     def go(x: DenseMatrix[Int], y: DenseMatrix[Int], dt: Double, hrs: Double, hds: Double): (DenseMatrix[Int], DenseMatrix[Int]) = {
       val h0 = hrs + hds
       val et = Exponential(h0).draw
@@ -121,7 +123,7 @@ object ReactDiff2d {
         } else {
           react(x, y, h, hr)
         }
-        val deltah = (touched map { recalc(_, x, y, h, hr, hd) }).foldLeft((0.0,0.0))((a,b)=>(a._1+b._1,a._2+b._2))
+        val deltah = (touched map { recalc(_, x, y, h, hr, hd) }).foldLeft((0.0, 0.0))((a, b) => (a._1 + b._1, a._2 + b._2))
         val newhrs = hrs + deltah._1
         val newhds = hds + deltah._2
         go(x, y, dt - et, newhrs, newhds)
@@ -130,21 +132,36 @@ object ReactDiff2d {
     go(xc, yc, dt, hrs, hds)
   }
 
+  def mkImage(x: DenseMatrix[Int], y: DenseMatrix[Int]): BufferedImage = {
+    val canvas = new BufferedImage(D, D, BufferedImage.TYPE_INT_RGB)
+    val wr = canvas.getRaster
+    val mx = max(x)
+    val my = max(y)
+    for (i <- 0 until D) {
+      for (j <- 0 until D) {
+        wr.setSample(i, j, 2, 255 * x(i, j) / mx)
+        wr.setSample(i, j, 0, 255 * y(i, j) / my)
+      }
+    }
+    canvas
+  }
+
   def main(args: Array[String]): Unit = {
     println("Hello")
-    val f = Figure()
-    var xt = x
-    var yt = y
-    for (i <- 1 to N) {
-      print("" + (N - i) + " ")
-      val next = stepLV(xt, yt, dt)
-      xt = next._1
-      yt = next._2
-      f.clear()
-      f.subplot(0) += image(xt map { _ * 1.0 })
-      f.subplot(1, 2, 1) += image(yt map { _ * 1.0 })
-      f.saveas(f"out$i%04d.png")
+    @tailrec
+    def go(x: DenseMatrix[Int], y: DenseMatrix[Int], left: Int): Unit = {
+      if (left > 0) {
+        print("" + left + " ")
+        val i = N - left
+        val next = stepLV(x, y, dt)
+        val xt = next._1
+        val yt = next._2
+        val im = mkImage(xt, yt)
+        javax.imageio.ImageIO.write(im, "png", new java.io.File(f"img$i%04d.png"))
+        go(xt, yt, left - 1)
+      }
     }
+    go(x, y, N)
     println("Goodbye")
   }
 

@@ -48,7 +48,7 @@ col, set,start,end,deltat,zip},
 \url{@darrenjw}\\
 \alert{\url{tinyurl.com/darrenjw}}\\
 School of Mathematics \& Statistics\\Newcastle University, UK}
-\date{Statistics Seminar\\Newcastle University\\ 5th February 2016}
+\date{Statistics Seminar\\Newcastle University\\5th February 2016}
 
 \frame{\titlepage}
 
@@ -59,20 +59,258 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \frame{
 \frametitle{Talk outline}
 \begin{itemize}
-\item Internet of Data
-\item How statisticians think about (time series) data
-\item State space models and signal processing
-\item Continuous time modelling and POMPs
-\item On-line versus off-line algorithms
-\item Streaming data and flow graphs
-\item Lambda architectures
+\item Chemical reaction networks
+\item Discrete mass-action stochastic kinetics
+\item Diffusion and the well-mixed assumption
+\item Stochastic diffusion in 1D
+\item Stochastic reaction-diffusion in 1D
+\item Stochastic diffusion and reaction-diffusion in 2D
+\item Filtering stochastic reaction-diffusion models?!
+\end{itemize}
+}
+
+\subsection{Chemical reaction networks}
+
+
+\frame{
+\frametitle{Lotka--Volterra system}
+Trivial (familiar) example from population dynamics (in reality, the
+``reactions'' will be elementary biochemical reactions taking place
+inside a cell)
+%The running example through this talk will be a familiar example from population dynamics --- the Lotka--Volterra predator--prey system. We will regard it as a particular example of a broad class of nonlinear multivariate Markov jump processes known as \alert{stochastic kinetic models}
+\begin{block}{Reactions}
+\begin{align*}
+X &\longrightarrow 2X \tag{prey reproduction}\\
+X+Y &\longrightarrow 2Y \tag{prey-predator interaction}\\
+Y &\longrightarrow \emptyset \tag{predator death}
+\end{align*}
+\end{block}
+\begin{itemize}
+\item $X$ -- Prey, $Y$ -- Predator
+\item We can re-write this using matrix notation
+% for the corresponding Petri net
 \end{itemize}
 }
 
 
 \frame{
+\frametitle{Forming the matrix representation}
+\begin{block}{The L-V system in tabular form}
 \begin{center}
-%\includemovie{.85\textheight}{.85\textheight}{dsrd2d.mp4}
+\begin{tabular}{|c|c|rr|rr|rr|}\hline
+& Rate Law &\multicolumn{2}{|c|}{LHS}&\multicolumn{2}{|c|}{RHS}&\multicolumn{2}{|c|}{Net-effect} \\
+& $h(\cdot,c)$ & $X$&$Y$ & $X$&$Y$ & $X$&$Y$ \\ \hline
+$R_1$ & $c_1 x$ & 1 & 0 & 2 & 0 & 1 & 0 \\
+$R_2$ & $c_2 xy$ & 1 & 1 & 0 & 2 & -1 & 1 \\
+$R_3$ & $c_3 y$ & 0 & 1 & 0 & 0 & 0 & -1 \\ \hline
+\end{tabular}
+\end{center}
+\end{block}
+%\pause
+Call the $3\times 2$ net-effect (or \alert{reaction}) matrix $N$. The 
+matrix $S=N'$ is the \alert{stoichiometry matrix} of the
+system. 
+Typically both are \alert{sparse}. 
+%The SVD of $S$ (or $N$) is
+%of interest for structural analysis of the 
+%system dynamics...
+}
+
+
+\frame{
+\frametitle{Stochastic chemical kinetics}
+\begin{itemize}
+\item $u$ species: $\mathcal{X}_1,\ldots,\mathcal{X}_u$, and $v$
+reactions: $\mathcal{R}_1,\ldots,\mathcal{R}_v$
+\item $\mathcal{R}_i:\ p_{i1}\mathcal{X}_1+\cdots+p_{iu}\mathcal{X}_u
+\longrightarrow q_{i1}\mathcal{X}_1+\cdots+q_{iu}\mathcal{X}_u,\ 
+i=1,\ldots,v$
+\item In matrix form: $P\mathcal{X} \longrightarrow Q\mathcal{X}$ ($P$
+and $Q$ are \alert{sparse})
+\item $S=(Q-P)'$ is the \alert{stoichiometry matrix} of the system
+\item $X_{jt}$: \# molecules of $\mathcal{X}_j$ at time
+$t$. $X_t=(X_{1t},\ldots,X_{ut})'$
+\item Reaction $\mathcal{R}_i$ has \alert{hazard} (or \alert{rate law}, or
+\alert{propensity}) $h_i(X_t,c_i)$, where $c_i$ is a \alert{rate
+parameter}, $c=(c_1,\ldots,c_v)'$,
+$h(X_t,c)=(h_1(X_t,c_1),\ldots,h_v(X_t,c_v))'$ and the system evolves as a \alert{Markov jump process}
+\item For \alert{mass-action stochastic kinetics},
+\[
+h_i(X_t,c_i) = c_i\prod_{j=1}^u\binom{X_{jt}}{p_{ij}},\quad i=1,\ldots,v
+\]
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{The Gillespie algorithm}
+\small
+\begin{enumerate}
+\item Initialise the system at $t=0$ with rate constants
+$c_1,c_2,\ldots,c_v$ and initial numbers of molecules for each
+species, $x=(x_1,x_2,\ldots,x_u)'$.
+\item For each $i=1,2,\ldots,v$, calculate $h_i(x,c_i)$ based on the
+current state, $x$.
+\item Calculate $h_0(x,c) \equiv \sum_{i=1}^v h_i(x,c_i)$, the
+combined reaction hazard.
+\item Simulate time to next event, $\tau$, as an $Exp(h_0(x,c))$ random
+quantity, and put $t:=t+\tau$.
+\item Simulate the reaction index, $j$, as a discrete random quantity
+with probabilities $h_i(x,c_i)$ $/$ $h_0(x,c)$, $i=1,2,\ldots,v$.
+\item Update $x$ according to reaction $j$. That is, put
+$x:=x+S^{(j)}$, where $S^{(j)}$ denotes the $j$th column of the
+stoichiometry matrix $S$.
+\item Output $x$ and $t$.
+\item If $t<T_{max}$, return to step 2.
+\end{enumerate}
+}
+
+
+
+\frame{
+\frametitle{The Lotka-Volterra model}
+\includegraphics[width=5cm,clip=true]{ch06-lv-dynamics}
+\includegraphics[width=5cm,clip=true]{ch06-lv-phase}
+\\
+\includegraphics[width=5cm,clip=true]{ch06-stoch-lv}
+\includegraphics[width=5cm,clip=true]{ch06-stoch-lv-phase}
+}
+
+\subsection{The well-mixed assumption}
+
+
+\frame{
+\frametitle{The well-mixed assumption}
+\begin{itemize}
+\item The fundamental assumption underpinning the mass-action stochastic kinetic approach to modelling chemical reactions as a Markov jump process is that the hazard associated with any reaction event is \alert{constant}
+\item It is this assumption of constant hazard which leads to exponential inter-arrival times of reaction events and all of the other algorithms commonly used for non-spatial modelling
+\item However, it's pretty clear that molecules far apart will have a lower reaction hazard than molecules which are nearby
+\item Mass-action kinetics assumes that molecular \alert{diffusion} is rapid relative to the time scales associated with the chemical \alert{reactions}
+\item Evidence that this assumption is violated for some interesting intra-cellular processes
+\end{itemize}
+}
+
+
+\section{Lattice models for diffusion and reaction diffusion}
+
+\subsection{Stochastic diffusion on a 1D lattice}
+
+\subsection{Stochastic molecular diffusion}
+
+\frame{
+\frametitle{Stochastic particle models}
+\begin{itemize}
+\item One approach to discrete stochastic modelling of reaction diffusion processes is to completely abandon the well-mixed framework and switch to modelling the position of every single molecule in space
+\item Molecules can react when they ``collide'' (come within a threshold reaction distance)
+\item Sophisticated statistical physics theory for describing the probabilistic behaviour of such processes, and complex algorithms for exact and approximate stochastic simulation of time course trajectories of the system evolution
+\item Several free software implementations, with \alert{Smoldyn} being a notable example (Andrews et al, 2010)
+\item Although useful for some problems, it's very difficult to implement, and exceptionally computationally intensive...
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Discrete stochastic models of diffusion}
+\begin{itemize}
+\item Let us begin by assuming that we can identify finite subvolumes of volume $V$ sufficiently small that the well-mixed assumption is valid
+\item Note that we are regarding $V$ as fixed and \alert{not} (at this stage) thinking about taking any kind of continuum limit as, say, $V\longrightarrow 0$
+\item Just consider a single species, $X$, which is well-mixed within each subvolume
+\item However, molecules may be able to move (\alert{diffuse}) to an adjacent subvolume
+\item It is clear that the \alert{rate} at which a particular molecule will diffuse to an adjecent subvolume must be \alert{constant}, due to the well mixed assumption
+\end{itemize}
+}
+
+\subsection{Stochastic diffusion on a 1D lattice}
+
+\frame{
+\frametitle{Discrete stochastic diffusion on a 1D lattice}
+PICTURE HERE (3 adjecent boxes with arrows)
+\begin{itemize}
+\item Assume a collection of $N$ subvolumes, labelled $1,2,\ldots,N$, each of volume $V$, arranged linearly so that a molecule in subvolume $i$ may diffuse to subvolume $i+1$ (and \emph{vice versa})
+\item The \alert{diffusion rate} is $D$, so that the probability of a particular molecule in volume $i$ moving to volume $i+1$ in time $\delta t$ is $D\delta t$
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Stochastic kinetics of diffusion}
+REPEAT PICTURE?
+\begin{itemize}
+\item We can think of diffusion events as ``reactions'':
+\begin{align*}
+{\cal X}_i &\longrightarrow {\cal X}_{i+1} \\
+{\cal X}_i &\longrightarrow {\cal X}_{i-1} 
+\end{align*}
+\item There are 2 reactions per subvolume, so $2N$ reactions in total (wrapping the ends to form a loop)
+\item This defines a Markov jump process which we can solve exactly or simulate using the Gillespie algorithm
+\end{itemize}
+}
+
+\frame{
+\frametitle{Simulating 1D diffusion}
+IMAGE MAP OF DISCRETE STOCHASTIC DIFFUSION
+\begin{itemize}
+\item blah
+\end{itemize}
+}
+
+\frame{
+\frametitle{SDE approximation of discrete stochastic diffusion}
+\begin{itemize}
+\item Let $X_{i,t}$ be the number of molecules (of $\cal X$) in volume $i$ at time $t$
+\item Molecules leave volume $i$ at rate $2DX_{i,t}$ and enter at rate $D(X_{i-1,t}+X_{i+1,t})$
+\item So for $\delta X_{i,t}=X_{i,t+\delta t}-X_{i,t}$ we have
+\begin{align*} 
+\operatorname{E}(\delta X_{i,t}) &\simeq D(X_{i-1,t}-2X_{i,t}+X_{i+1,t})\delta t\\
+\operatorname{Var}(\delta X_{i,t}) &\simeq D(X_{i-1,t}+2X_{i,t}+X_{i+1,t})\delta t
+\end{align*}
+\item It is helpful to re-write the expectation using \alert{finite differences} notation
+\end{itemize}
+}
+
+\frame{
+\frametitle{Finite differences}
+\begin{itemize}
+\item Backshift operator, $B$, s.t. $BX_{i,t}=X_{i-1,t}$
+\item Difference operator, $\nabla\equiv 1-B$ so that $\nabla X_{i,t}=X_{i,t}-X_{i-1,t}$
+\item Laplace operator, $\Delta\equiv \nabla^2 B^{-1}$ so that 
+\[\Delta X_{i,t} = X_{i-1,t}-2X_{i,t}+X_{i+1,t}\]
+\item So we may re-write the infintesimal moments as
+\begin{align*}
+\operatorname{E}(\delta X_{i,t}) &\simeq D\Delta X_{i,t}\delta t\\
+\operatorname{Var}(\delta X_{i,t}) &\simeq D(\Delta X_{i,t}+4X_{i,t})\delta t
+\end{align*}
+\end{itemize}
+}
+
+
+
+\subsection{Stochastic reaction diffusion on a 1D lattice}
+
+
+
+\subsection{Stochastic reaction diffusion in 2D}
+
+
+
+\section{Filtering}
+
+\subsection{Particle filters for reaction diffusion models}
+
+
+
+
+\frame{
+\frametitle{blah}
+\begin{itemize}
+\item blah
+\end{itemize}
+}
+
+\frame{
+\frametitle{Discrete stochastic reaction diffusion on a 2D lattice}
+\begin{center}
+%\includemovie{.8\textheight}{.8\textheight}{dsrd2d.mp4}
 \movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{dsrd2d.mp4}
 \end{center}
 }

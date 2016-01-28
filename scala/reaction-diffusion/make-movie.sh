@@ -1,6 +1,8 @@
 #!/bin/sh
 # make-movie.sh
 
+rm -f img????-s.png
+
 for name in img????.png
 do
   short="${name%.*}"
@@ -9,8 +11,9 @@ do
   convert "$name" -scale 1000x1000 -define png:color-type=2 "${short}-s.png"
 done
 
-avconv -r 4 -i img%04d-s.png -r 24 movie.mp4
+rm -f movie.mp4
 
+avconv -r 4 -i img%04d-s.png movie.mp4
 
 # eof
 

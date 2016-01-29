@@ -241,7 +241,7 @@ REPEAT PICTURE?
 {\cal X}_i &\longrightarrow {\cal X}_{i+1} \\
 {\cal X}_i &\longrightarrow {\cal X}_{i-1} 
 \end{align*}
-\item There are 2 reactions per subvolume, so $2N$ reactions in total (wrapping the ends to form a loop)
+\item There are 2 reactions per subvolume, so $2N$ reactions in total (for periodic boundary conditions)
 \item This defines a Markov jump process which we can solve exactly or simulate using the Gillespie algorithm
 \end{itemize}
 }
@@ -295,10 +295,49 @@ but this \alert{isn't quite right}, since the noise needs to be coupled to prese
 \item If $W_{i,t}$ is the Brownian motion governing the flow of mass between cells $i-1$ and $i$, then we actually have
 \end{itemize}
 \begin{multline*}
-dX_{i,t} = D\Delta X_{i,t}\,dt + \sqrt{D (X_{i-1,t}+X_{i,t})}\,dW_{i,t}\\ + \sqrt{D (X_{i,t}+X_{i+1,t})}\,dW_{i+1,t}
+dX_{i,t} = D\Delta X_{i,t}\,dt + \sqrt{D (X_{i-1,t}+X_{i,t})}\,dW_{i,t}\\ - \sqrt{D (X_{i,t}+X_{i+1,t})}\,dW_{i+1,t}
 \end{multline*}
 }
 
+\frame{
+\frametitle{Continuum limit}
+\begin{itemize}
+\item The noise becomes negligable in high concentration scenarios
+\item Setting the noise terms to zero gives
+\[
+\frac{d x_{i}}{d t} = D\Delta x_{i},\quad i=1,2,\ldots,N
+\]
+which corresponds exactly to the \alert{method of lines} for the \alert{centred finite difference} approximation to the heat/diffusion equation
+\[
+\frac{\partial x}{\partial t} = D\Delta x
+\]
+\item \alert{With} the noise terms, it is a method of lines approach to solving the relevant diffusion \alert{SPDE}
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Multivariate SDE}
+Put $X_t = \begin{pmatrix}X_{1,t}\\X_{2,t}\\\vdots\\X_{N,t}\end{pmatrix}$,
+\(
+B = \begin{pmatrix}0&0&0&\cdots&0&1\\1&0&0&\ddots&0&0\\0&1&0&\ddots&0&0\\\vdots&\ddots&\ddots&\ddots&\ddots&\vdots\\0&0&0&\cdots&1&0\end{pmatrix}
+\),
+$\nabla=I-B$, $\Delta=\nabla^2B^{-1}=\nabla^2B\trans$, so that
+\[
+\Delta = \begin{pmatrix}-2&1&0&0&\cdots&0&1\\1&-2&1&0&\ddots&0&0\\0&1&-2&1&\ddots&0&0\\\vdots&\ddots&\ddots&\ddots&\ddots&\ddots&\vdots\\0&0&0&0&\ddots&-2&1\\1&0&0&0&\cdots&1&-2\end{pmatrix}
+\]
+}
+
+\frame{
+\frametitle{Multivariate SDE}
+Also define $\Lambda(X_t) = $
+{\scriptsize
+\[\begin{pmatrix}\sqrt{X_{N,t}+X_{1,t}}&-\sqrt{X_{1,t}+X_{2,t}}&0&\cdots&0\\0&\sqrt{X_{1,t}+X_{2,t}}&-\sqrt{X_{2,t}+X_{3,t}}&\ddots&0\\\vdots&\ddots&\ddots&\ddots&\vdots\\-\sqrt{X_{1,t}+X_{N,t}}&0&0&\cdots&\sqrt{X_{N-1,t}+X_{N,t}}\end{pmatrix}\]}
+Then we can describe diffusion of the lattice with the multivariate SDE
+\[
+dX_t = D\Delta X_t\,dt +  \sqrt{D}\Lambda(X_t)\,dW_t
+\]
+}
 
 \subsection{Stochastic reaction diffusion on a 1D lattice}
 

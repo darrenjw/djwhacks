@@ -284,6 +284,21 @@ IMAGE MAP OF DISCRETE STOCHASTIC DIFFUSION
 }
 
 
+\frame{
+\frametitle{SDE system for stochastic diffusion on a lattice}
+\begin{itemize}
+\item Given the infintesimal moments we \alert{might} guess at a system of SDEs of the form
+\[
+dX_{i,t} = D\Delta X_{i,t}\,dt + \sqrt{D(\Delta X_{i,t}+4X_{i,t}})\,dW_{i,t}
+\]
+but this \alert{isn't quite right}, since the noise needs to be coupled to preserve mass balance
+\item If $W_{i,t}$ is the Brownian motion governing the flow of mass between cells $i-1$ and $i$, then we actually have
+\end{itemize}
+\begin{multline*}
+dX_{i,t} = D\Delta X_{i,t}\,dt + \sqrt{D (X_{i-1,t}+X_{i,t})}\,dW_{i,t}\\ + \sqrt{D (X_{i,t}+X_{i+1,t})}\,dW_{i+1,t}
+\end{multline*}
+}
+
 
 \subsection{Stochastic reaction diffusion on a 1D lattice}
 

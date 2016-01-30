@@ -292,17 +292,37 @@ IMAGE MAP OF DISCRETE STOCHASTIC DIFFUSION
 dX_{i,t} = D\Delta X_{i,t}\,dt + \sqrt{D(\Delta X_{i,t}+4X_{i,t}})\,dW_{i,t}
 \]
 but this \alert{isn't quite right}, since the noise needs to be coupled to preserve mass balance
-\item If $W_{i,t}$ is the Brownian motion governing the flow of mass between cells $i-1$ and $i$, then we actually have
+\item If $W_{i,t}$ is the Brownian motion governing the flow of mass between cells $i$ and $i+1$, then we actually have
 \end{itemize}
 \begin{multline*}
-dX_{i,t} = D\Delta X_{i,t}\,dt + \sqrt{D (X_{i-1,t}+X_{i,t})}\,dW_{i,t}\\ - \sqrt{D (X_{i,t}+X_{i+1,t})}\,dW_{i+1,t}
+dX_{i,t} = D\Delta X_{i,t}\,dt + \sqrt{D (X_{i,t}+X_{i+1,t})}\,dW_{i,t}\\ - \sqrt{D (X_{i-1,t}+X_{i,t})}\,dW_{i-1,t}
 \end{multline*}
 }
+
+\begin{frame}[fragile]
+\frametitle{Backshift version and pseudo-code}
+\begin{itemize}
+\item We can also use the backshift operator to re-write the stochastic terms to give an SDE family of the form
+\end{itemize}
+\[
+dX_{i,t} = D\Delta X_{i,t}\,dt + \sqrt{D}\left(\sqrt{(1+B^{-1})X_{i,t}}-\sqrt{(1+B)X_{i,t}}\,B\right)dW_{i,t}
+\]
+\begin{itemize}
+\item
+This formulation leads to efficient Euler-Maruyama time-stepping algortihms in vectorised languages such as R (or Python, or Matlab, ...)
+\begin{lstlisting}{myR}
+dwt = rnorm(N,0,sqrt(dt))
+x = x + D*laplace(x)*dt + sqrt(D)*(
+        sqrt(x+forward(x))*dwt - 
+        sqrt(x+back(x))*back(dwt))
+\end{lstlisting}
+\end{itemize}
+\end{frame}
 
 \frame{
 \frametitle{Continuum limit}
 \begin{itemize}
-\item The noise becomes negligable in high concentration scenarios
+\item The noise becomes negligible in high concentration scenarios
 \item Setting the noise terms to zero gives
 \[
 \frac{d x_{i}}{d t} = D\Delta x_{i},\quad i=1,2,\ldots,N
@@ -330,13 +350,15 @@ $\nabla=I-B$, $\Delta=\nabla^2B^{-1}=\nabla^2B\trans$, so that
 
 \frame{
 \frametitle{Multivariate SDE}
-Also define $\Lambda(X_t) = $
-{\scriptsize
-\[\begin{pmatrix}\sqrt{X_{N,t}+X_{1,t}}&-\sqrt{X_{1,t}+X_{2,t}}&0&\cdots&0\\0&\sqrt{X_{1,t}+X_{2,t}}&-\sqrt{X_{2,t}+X_{3,t}}&\ddots&0\\\vdots&\ddots&\ddots&\ddots&\vdots\\-\sqrt{X_{1,t}+X_{N,t}}&0&0&\cdots&\sqrt{X_{N-1,t}+X_{N,t}}\end{pmatrix}\]}
-Then we can describe diffusion of the lattice with the multivariate SDE
+\begin{itemize}
+\item Clear we can write the drift as $D\Delta X_t$
+\item Elementary manipulation gives the ``diffusion'' matrix as $\sqrt{D}\nabla\operatorname{diag}\{\sqrt{(I+B\trans)X_t}\}$
+\item Then we can describe diffusion on the lattice with the multivariate SDE
 \[
-dX_t = D\Delta X_t\,dt +  \sqrt{D}\Lambda(X_t)\,dW_t
+dX_t = D\Delta X_t\,dt +  \sqrt{D}\nabla\operatorname{diag}\left\{\sqrt{(I+B\trans)X_t}\right\}\,dW_t
 \]
+\item Clear to SPDE experts that this is a method of lines solution to a limiting SPDE
+\end{itemize}
 }
 
 \subsection{Stochastic reaction diffusion on a 1D lattice}

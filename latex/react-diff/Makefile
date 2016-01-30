@@ -3,16 +3,14 @@
 
 FILE=srdm
 
-$(FILE).pdf: $(FILE).tex
+DIAFIGS=1d.pdf
+
+$(FILE).pdf: $(FILE).tex $(DIAFIGS)
 	pdflatex $(FILE)
 	pdflatex $(FILE)
 
-$(FILE).ps: $(FILE).dvi
-	dvips $(FILE)
-
-$(FILE).dvi: $(FILE).tex
-	latex $(FILE)
-	latex $(FILE)
+1d.pdf: 1d.dia
+	dia --export 1d.pdf 1d.dia
 
 view: $(FILE).pdf
 	acroread $(FILE).pdf &
@@ -30,6 +28,6 @@ commit:
 	make update
 
 clean:
-	rm -f *~ core *.pdf *.ps *.dvi *.log *.aux *.out *.flc
+	rm -f *~ core $(FILE).pdf *.ps *.dvi *.log *.aux *.out *.flc
 
 # eof

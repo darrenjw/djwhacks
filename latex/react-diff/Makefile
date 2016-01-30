@@ -10,7 +10,8 @@ $(FILE).pdf: $(FILE).tex $(DIAFIGS)
 	pdflatex $(FILE)
 
 1d.pdf: 1d.dia
-	dia --export 1d.pdf 1d.dia
+	dia --export=1d.eps 1d.dia
+	epstopdf 1d.eps
 
 view: $(FILE).pdf
 	acroread $(FILE).pdf &
@@ -28,6 +29,6 @@ commit:
 	make update
 
 clean:
-	rm -f *~ core $(FILE).pdf *.ps *.dvi *.log *.aux *.out *.flc
+	rm -f *~ core $(FILE).pdf $(DIAFIGS) *.ps *.eps *.dvi *.log *.aux *.out *.flc
 
 # eof

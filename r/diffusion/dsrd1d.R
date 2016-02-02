@@ -4,10 +4,10 @@
 # Next subvolume method
 
 D=50 # num grid cells
-T=120 # final time
-dt=0.25 # time step for recording
+T=100 # final time
+dt=0.5 # time step for recording
 th=c(1,0.005,0.6) # reaction rate parameters
-dc=0.5 # diffusion coefficient - same for x and y for now
+dc=0.25 # diffusion coefficient - same for x and y for now
 
 N=T/dt
 x=rep(0,D)
@@ -107,10 +107,13 @@ for (i in 1:N) {
 }
 
 
+pdf("dsrd1d.pdf",6,4)
 op=par(mfrow=c(1,2))
 image(xmat,main="x - prey",xlab="Time",ylab="Space")
 image(ymat,main="y - predator",xlab="Time",ylab="Space")
+dev.off()
 par(op)
+
 message("Done!")
 
 

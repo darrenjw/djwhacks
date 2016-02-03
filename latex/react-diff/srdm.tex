@@ -434,11 +434,17 @@ ONE OR TWO EXAMPLE PLOTS
 
 \frame{
 \frametitle{The spatial chemical Langevin equation (CLE)}
+\small
 \begin{itemize}
-\item Start by thinking separately about diffusion and reaction for every species in every subvolume --- $X_{i,n,t}$ is amount of species $i$ in subvolume $n$ at time $t$
-\item Diffusion: $dX_{i,n,t} = D_i\Delta X_{i,n,t} dt + \sqrt{D_i}\left(\right)dW_{i,n,t}$
-\item Reaction: 
+\item Start by thinking separately about diffusion and reaction --- $X_{i,n,t}$ is amount of species $i$ in subvolume $n$ at time $t$
+\item Diffusion: $dX_{i,n,t} = D_i\Delta X_{i,n,t} dt + \sqrt{D_i}\left(\sqrt{(1+B^{-1})X_{i,n,t}} - \sqrt{(1+B)X_{i,n,t}}B\right)dW_{i,n,t}$
+\item Reaction: $dX_{i,n,t} = S_ih(X_{n,t})dt+S_i\operatorname{diag}\left\{\sqrt{h(X_{n,t})}\right\}dW^\star_{n,t}$
 \item Combining these gives the spatial CLE:
+\end{itemize}
+\begin{multline*}
+dX_{i,n,t} = [D_i\Delta X_{i,n,t}  +S_ih(X_{n,t})]dt+ \sqrt{D_i}\left(\sqrt{(1+B^{-1})X_{i,n,t}} \right. \\ \left. - \sqrt{(1+B)X_{i,n,t}}B\right)dW_{i,n,t}+S_i\operatorname{diag}\left\{\sqrt{h(X_{n,t})}\right\}dW^\star_{n,t}
+\end{multline*}
+\begin{itemize}
 \item But in practice, just alternate between diffusion and reaction steps for every species in every subvolume
 \end{itemize}
 }
@@ -450,6 +456,16 @@ ONE OR TWO EXAMPLE PLOTS
 
 \frame{
 \frametitle{Volume scaling}
+\begin{itemize}
+\item We have seen how the diffusion constants scale with the \alert{length} of the associated subvolume
+\item Reaction rates for the well mixed case typically scale according to the \alert{volume} of the container, with the scaling depending on the order of the reaction
+ \begin{itemize}
+ \item Zeroth order: Stochastic rate $c_j = k_j V$ for volume-independent rate $k_j$ (typically)
+ \item First order: Rates are independent of volume, $c_j = k_j$
+ \item Second order: Stochastic rate $c_j = k_j / V$ is inversely proportional to the container volume
+ \end{itemize}
+\item By scaling rates appropriately, we can simulate model on coarser and finer grids without changing qualitative behaviour (up to a point)
+\end{itemize}
 }
 
 \frame{

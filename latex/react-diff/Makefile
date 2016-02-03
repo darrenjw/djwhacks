@@ -3,7 +3,7 @@
 
 FILE=srdm
 
-DIAFIGS=1d.pdf
+DIAFIGS=1d.pdf 2d.pdf
 
 $(FILE).pdf: $(FILE).tex $(DIAFIGS)
 	pdflatex $(FILE)
@@ -12,6 +12,10 @@ $(FILE).pdf: $(FILE).tex $(DIAFIGS)
 1d.pdf: 1d.dia
 	dia --export=1d.eps 1d.dia
 	epstopdf 1d.eps
+
+2d.pdf: 2d.dia
+	dia --export=2d.eps 2d.dia
+	epstopdf 2d.eps
 
 view: $(FILE).pdf
 	acroread $(FILE).pdf &

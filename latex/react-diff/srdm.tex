@@ -62,10 +62,10 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \item Chemical reaction networks
 \item Discrete mass-action stochastic kinetics
 \item Diffusion and the well-mixed assumption
-\item Stochastic diffusion in 1D
-\item Stochastic reaction-diffusion in 1D
-\item Stochastic diffusion and reaction-diffusion in 2D
-\item Filtering stochastic reaction-diffusion models?!
+\item Stochastic diffusion in 1d
+\item Stochastic reaction-diffusion in 1d
+\item Stochastic diffusion and reaction-diffusion in 2d
+%\item Filtering stochastic reaction-diffusion models?!
 \end{itemize}
 }
 
@@ -186,7 +186,7 @@ stoichiometry matrix $S$.
 \item It is this assumption of constant hazard which leads to exponential inter-arrival times of reaction events and all of the other algorithms commonly used for non-spatial modelling
 \item However, it's pretty clear that molecules far apart will have a lower reaction hazard than molecules which are nearby
 \item Mass-action kinetics assumes that molecular \alert{diffusion} is rapid relative to the time scales associated with the chemical \alert{reactions}
-\item Evidence that this assumption is violated for some interesting intra-cellular processes
+\item Evidence that this assumption is violated for many interesting intra-cellular processes
 \end{itemize}
 }
 
@@ -218,10 +218,10 @@ stoichiometry matrix $S$.
 \end{itemize}
 }
 
-\subsection{Stochastic diffusion on a 1D lattice}
+\subsection{Stochastic diffusion on a 1d lattice}
 
 \frame{
-\frametitle{Discrete stochastic diffusion on a 1D lattice}
+\frametitle{Discrete stochastic diffusion on a 1d lattice}
 \centerline{\includegraphics[height=0.3\textheight]{1d}}
 \begin{itemize}
 \item Assume a collection of $N$ subvolumes, labelled $1,2,\ldots,N$, each of volume $V$, arranged linearly so that a molecule in subvolume $i$ may diffuse to subvolume $i+1$ (and \emph{vice versa})
@@ -244,7 +244,7 @@ stoichiometry matrix $S$.
 }
 
 \frame{
-\frametitle{Simulating 1D diffusion}
+\frametitle{Simulating 1d diffusion}
 \centerline{\includegraphics[height=0.8\textheight]{dsdiff1d}}
 }
 
@@ -375,7 +375,7 @@ dX_t = D\Delta X_t\,dt +  \sqrt{D}\nabla\operatorname{diag}\left\{\sqrt{(I+B\tra
 \end{itemize}
 }
 
-\subsection{Stochastic reaction diffusion on a 1D lattice}
+\subsection{Stochastic reaction diffusion on a 1d lattice}
 
 
 \frame{
@@ -427,10 +427,6 @@ Just simulate trajectories with the Gillespie algorithm:
 \end{itemize}
 }
 
-\frame{
-\frametitle{Lotka-Volterra with 1D diffusion}
-ONE OR TWO EXAMPLE PLOTS
-}
 
 \frame{
 \frametitle{The spatial chemical Langevin equation (CLE)}
@@ -451,7 +447,7 @@ dX_{i,n,t} = [D_i\Delta X_{i,n,t}  +S_ih(X_{n,t})]dt+ \sqrt{D_i}\left(\sqrt{(1+B
 
 \frame{
 \frametitle{Spatial CLE for Lotka-Volterra}
-ONE OR TWO EXAMPLE PLOTS
+EXAMPLE PLOT LOOKING SIMILAR TO PREVIOUS
 }
 
 \frame{
@@ -470,36 +466,60 @@ ONE OR TWO EXAMPLE PLOTS
 
 \frame{
 \frametitle{Spatial CLE on a fine grid}
-EXAMPLE PLOT
+EXAMPLE PLOT LIKE THE PREVIOUS BUT ON A FINER GRID
 }
 
-\section{Stochastic reaction diffusion in 2D}
+\section{Stochastic reaction diffusion in 2d}
 
-\subsection{Diffusion in 2D}
+\subsection{Diffusion in 2d}
 
 \frame{
 \frametitle{Discrete stochastic diffusion on a 2d lattice}
+\centerline{\includegraphics[height=0.4\textheight]{2d}}
+\[
+B_1 X_{i,j,t} \equiv X_{i-1,j,t},\quad B_2 X_{i,j,t} \equiv X_{i,j-1,t}
+\]
+\[
+\nabla_i \equiv 1-B_i,\quad \Delta \equiv \nabla_1B_1^{-1} + \nabla_2B_2^{-1}
+\]
+So $\Delta X_{i,j,t} = X_{i-1,j,t}+X_{i+1,j,t}+X_{i,j-1,t}+X_{i,j+1,t}-4X_{i,j,t}$
 }
 
 \frame{
 \frametitle{Isotropy and lattice artifacts}
+\centerline{\includegraphics[height=0.8\textheight]{lattice}}
 }
 
 \frame{
 \frametitle{SDE approximation}
+\small
+Diffusion on a 2d lattice can be approximated by the following system of SDEs:
+\begin{multline*}
+dX_{i,j,t} = D\Delta X_{i,j,t}dt + \sqrt{D(X_{i,j,t}+X_{i+1,j,t})}dW_{i,j,t} \\
+- \sqrt{D(X_{i-1,j,t}+X_{i,j,t})}dW_{i-1,j,t}+ \sqrt{D(X_{i,j,t}+X_{i,j+1,t})}dW^\star_{i,j,t} \\
+- \sqrt{D(X_{i,j-1,t}+X_{i,j,t})}dW^\star_{i,j-1,t}
+\end{multline*}
+We can re-write this using backshift notation as:
+\begin{multline*}
+dX_{ijt} = D\Delta X_{ijt}dt + \sqrt{D}\left(\left[\sqrt{(1+B_1^{-1})X_{ijt}}-\sqrt{(1+B_1)X_{ijt}}B_1\right]dW_{ijt}\right. \\
++ \left.\left[\sqrt{(1+B_2^{-1})X_{ijt}}-\sqrt{(1+B_2)X_{ijt}}B_2\right]dW^\star_{ijt}\right)
+\end{multline*}
 }
 
-\subsection{Reaction diffusion in 2D}
+\subsection{Reaction diffusion in 2d}
 
 \frame{
 \frametitle{Lotka Volterra in 2d}
 \begin{itemize}
-\item blah
+\item Returning to discrete stochastic reaction-diffusion, we can have diffusion for each species and a set of reactions for each subvolume
+\item For our Lotka Volterra example, we will have 2 species and $3+2\times 4=11$ reactions per subvolume
+\item So, on a $50\times 50$ grid, we will have 5,000 species and 27,500 reactions to manage and simulate
+\item I use a reasonably efficient Gillespie implementation (local hazard updating) in Scala, outputting a series of 2d images to be formed into a movie (prey are blue and predators are red)
 \end{itemize}
 }
 
 \frame{
-\frametitle{Discrete stochastic reaction diffusion on a 2D lattice}
+\frametitle{Discrete stochastic reaction diffusion on a 2d lattice}
 \begin{center}
 %\includemovie{.8\textheight}{.8\textheight}{dsrd2d.mp4}
 \movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{dsrd2d.mp4}
@@ -520,9 +540,12 @@ EXAMPLE PLOT
 
 
 \frame{
-\frametitle{blah}
+\frametitle{Summary}
 \begin{itemize}
-\item blah
+\item Discrete stochastic models of molecular diffusion combine nicely with discrete stochastic kinetic models of chemical reaction networks to give Markov jump process models described by the RDME
+\item The RDME does not have a continuum limit in general (the length scale of the subvolumes must remain much larger than the reaction distance of bimolecular reactions)
+\item RDME models can be approximated with systems of coupled SDEs corresponding to the spatial CLE
+\item The spatial CLE is efficient to simulate, and corresponds to a finite-difference discretisation of a limiting reaction-diffusion SPDE
 \end{itemize}
 }
 

@@ -210,11 +210,11 @@ stoichiometry matrix $S$.
 \frame{
 \frametitle{Discrete stochastic models of diffusion}
 \begin{itemize}
-\item Let us begin by assuming that we can identify finite subvolumes of volume $V$ sufficiently small that the well-mixed assumption is valid
+\item Let us begin by assuming that we can identify finite sub-volumes of volume $V$ sufficiently small that the well-mixed assumption is valid
 \item Note that we are regarding $V$ as fixed and \alert{not} (at this stage) thinking about taking any kind of continuum limit as, say, $V\longrightarrow 0$
-\item Just consider a single species, $X$, which is well-mixed within each subvolume
-\item However, molecules may be able to move (\alert{diffuse}) to an adjacent subvolume
-\item It is clear that the \alert{rate} at which a particular molecule will diffuse to an adjecent subvolume must be \alert{constant}, due to the well mixed assumption
+\item Just consider a single species, $X$, which is well-mixed within each sub-volume
+\item However, molecules may be able to move (\alert{diffuse}) to an adjacent sub-volume
+\item It is clear that the \alert{rate} at which a particular molecule will diffuse to an adjacent sub-volume must be \alert{constant}, due to the well mixed assumption
 \end{itemize}
 }
 
@@ -224,7 +224,7 @@ stoichiometry matrix $S$.
 \frametitle{Discrete stochastic diffusion on a 1d lattice}
 \centerline{\includegraphics[height=0.3\textheight]{1d}}
 \begin{itemize}
-\item Assume a collection of $N$ subvolumes, labelled $1,2,\ldots,N$, each of volume $V$, arranged linearly so that a molecule in subvolume $i$ may diffuse to subvolume $i+1$ (and \emph{vice versa})
+\item Assume a collection of $N$ sub-volumes, labelled $1,2,\ldots,N$, each of volume $V$, arranged linearly so that a molecule in sub-volume $i$ may diffuse to sub-volume $i+1$ (and \emph{vice versa})
 \item The \alert{diffusion rate} is $D$, so that the probability of a particular molecule in volume $i$ moving to volume $i+1$ in time $\delta t$ is $D\delta t$
 \end{itemize}
 }
@@ -238,7 +238,7 @@ stoichiometry matrix $S$.
 {\cal X}_i &\longrightarrow {\cal X}_{i+1} \\
 {\cal X}_i &\longrightarrow {\cal X}_{i-1} 
 \end{align*}
-\item There are 2 reactions per subvolume, so $2N$ reactions in total (for periodic boundary conditions)
+\item There are 2 reactions per sub-volume, so $2N$ reactions in total (for periodic boundary conditions)
 \item This defines a Markov jump process which we can solve exactly or simulate using the Gillespie algorithm
 \end{itemize}
 }
@@ -265,11 +265,11 @@ stoichiometry matrix $S$.
 \frame{
 \frametitle{Finite differences}
 \begin{itemize}
-\item Backshift operator, $B$, s.t. $BX_{i,t}=X_{i-1,t}$
+\item Back-shift operator, $B$, s.t. $BX_{i,t}=X_{i-1,t}$
 \item Difference operator, $\nabla\equiv 1-B$ so that $\nabla X_{i,t}=X_{i,t}-X_{i-1,t}$
 \item Laplace operator, $\Delta\equiv \nabla^2 B^{-1}$ so that 
 \[\Delta X_{i,t} = X_{i-1,t}-2X_{i,t}+X_{i+1,t}\]
-\item So we may re-write the infintesimal moments as
+\item So we may re-write the infinitesimal moments as
 \begin{align*}
 \operatorname{E}(\delta X_{i,t}) &\simeq D\Delta X_{i,t}\delta t\\
 \operatorname{Var}(\delta X_{i,t}) &\simeq D(\Delta X_{i,t}+4X_{i,t})\delta t
@@ -281,7 +281,7 @@ stoichiometry matrix $S$.
 \frame{
 \frametitle{SDE system for stochastic diffusion on a lattice}
 \begin{itemize}
-\item Given the infintesimal moments we \alert{might} guess at a system of SDEs of the form
+\item Given the infinitesimal moments we \alert{might} guess at a system of SDEs of the form
 \[
 dX_{i,t} = D\Delta X_{i,t}\,dt + \sqrt{D(\Delta X_{i,t}+4X_{i,t}})\,dW_{i,t}
 \]
@@ -294,16 +294,16 @@ dX_{i,t} = D\Delta X_{i,t}\,dt + \sqrt{D (X_{i,t}+X_{i+1,t})}\,dW_{i,t}\\ - \sqr
 }
 
 \begin{frame}[fragile]
-\frametitle{Backshift version and pseudo-code}
+\frametitle{Back-shift version and pseudo-code}
 \begin{itemize}
-\item We can also use the backshift operator to re-write the stochastic terms to give an SDE family of the form
+\item We can also use the back-shift operator to re-write the stochastic terms to give an SDE family of the form
 \end{itemize}
 \[
 dX_{i,t} = D\Delta X_{i,t}\,dt + \sqrt{D}\left(\sqrt{(1+B^{-1})X_{i,t}}-\sqrt{(1+B)X_{i,t}}\,B\right)dW_{i,t}
 \]
 \begin{itemize}
 \item
-This formulation leads to efficient Euler-Maruyama time-stepping algortihms in vectorised languages such as R (or Python, or Matlab, ...)
+This formulation leads to efficient Euler-Maruyama time-stepping algorithms in vectorised languages such as R (or Python, or Matlab, ...)
 \begin{lstlisting}{myR}
 dwt = rnorm(N,0,sqrt(dt))
 x = x + D*laplace(x)*dt + sqrt(D)*(
@@ -321,7 +321,7 @@ x = x + D*laplace(x)*dt + sqrt(D)*(
 \frame{
 \frametitle{Length scaling}
 \begin{itemize}
-\item The rate at which molecules move from one subvolume to the next must obviously depend on the size of the box
+\item The rate at which molecules move from one sub-volume to the next must obviously depend on the size of the box
 \item The smaller the box, the higher the rate at which molecules diffuse out of the box
 \item Thinking about random walks and the expected distance from the origin, it is clear that the rate must be proportional to \emph{length}${}^{-2}$, so put
 \[
@@ -382,7 +382,7 @@ dX_t = D\Delta X_t\,dt +  \sqrt{D}\nabla\operatorname{diag}\left\{\sqrt{(I+B\tra
 \frametitle{Reaction diffusion master equation (RDME)}
 \begin{itemize}
 \item Returning to the discrete stochastic case, let's now consider multiple species and additional reactions...
-\item For the Lotka Volterra model, we just have separate species for the prey and predator in each subvolume
+\item For the Lotka Volterra model, we just have separate species for the prey and predator in each sub-volume
 \begin{align*}
 X_i &\longrightarrow 2X_i \tag{prey reproduction}\\
 X_i+Y_i &\longrightarrow 2Y_i \tag{prey-predator interaction}\\
@@ -418,12 +418,12 @@ Just simulate trajectories with the Gillespie algorithm:
 }
 
 \frame{
-\frametitle{Next subvolume method}
+\frametitle{Next sub-volume method}
 \begin{itemize}
 \item The model ends up being a Markov jump process and so can be simulated with any exact discrete event simulation algorithm --- the previous example was simulated using a simple Gillespie algorithm
 \item Due to the large number of species, reactions and reaction events, naive implementations of the Gillespie algorithm are inefficient
-\item The \alert{next subvolume method} (Elf and Ehrenberg, '04) is a variant of the \alert{next reaction method} (Gibson and Bruck, '00) for RDME models
-\item The algorithm keeps track of the time of the next event for each subvolume in a queue, and then selects the next subvolume to have an event executed from the top of the queue
+\item The \alert{next sub-volume method} (Elf and Ehrenberg, '04) is a variant of the \alert{next reaction method} (Gibson and Bruck, '00) for RDME models
+\item The algorithm keeps track of the time of the next event for each sub-volume in a queue, and then selects the next sub-volume to have an event executed from the top of the queue
 \end{itemize}
 }
 
@@ -432,7 +432,7 @@ Just simulate trajectories with the Gillespie algorithm:
 \frametitle{The spatial chemical Langevin equation (CLE)}
 \small
 \begin{itemize}
-\item Start by thinking separately about diffusion and reaction --- $X_{i,n,t}$ is amount of species $i$ in subvolume $n$ at time $t$
+\item Start by thinking separately about diffusion and reaction --- $X_{i,n,t}$ is amount of species $i$ in sub-volume $n$ at time $t$
 \item Diffusion: $dX_{i,n,t} = D_i\Delta X_{i,n,t} dt + \sqrt{D_i}\left(\sqrt{(1+B^{-1})X_{i,n,t}} - \sqrt{(1+B)X_{i,n,t}}B\right)dW_{i,n,t}$
 \item Reaction: $dX_{i,n,t} = S_ih(X_{n,t})dt+S_i\operatorname{diag}\left\{\sqrt{h(X_{n,t})}\right\}dW^\star_{n,t}$
 \item Combining these gives the spatial CLE:
@@ -441,7 +441,7 @@ Just simulate trajectories with the Gillespie algorithm:
 dX_{i,n,t} = [D_i\Delta X_{i,n,t}  +S_ih(X_{n,t})]dt+ \sqrt{D_i}\left(\sqrt{(1+B^{-1})X_{i,n,t}} \right. \\ \left. - \sqrt{(1+B)X_{i,n,t}}B\right)dW_{i,n,t}+S_i\operatorname{diag}\left\{\sqrt{h(X_{n,t})}\right\}dW^\star_{n,t}
 \end{multline*}
 \begin{itemize}
-\item But in practice, just alternate between diffusion and reaction steps for every species in every subvolume
+\item But in practice, just alternate between diffusion and reaction steps for every species in every sub-volume
 \end{itemize}
 }
 
@@ -453,7 +453,7 @@ dX_{i,n,t} = [D_i\Delta X_{i,n,t}  +S_ih(X_{n,t})]dt+ \sqrt{D_i}\left(\sqrt{(1+B
 \frame{
 \frametitle{Volume scaling}
 \begin{itemize}
-\item We have seen how the diffusion constants scale with the \alert{length} of the associated subvolume
+\item We have seen how the diffusion constants scale with the \alert{length} of the associated sub-volume
 \item Reaction rates for the well mixed case typically scale according to the \alert{volume} of the container, with the scaling depending on the order of the reaction
  \begin{itemize}
  \item Zeroth order: Stochastic rate $c_j = k_j V$ for volume-independent rate $k_j$ (typically)
@@ -486,7 +486,7 @@ So $\Delta X_{i,j,t} = X_{i-1,j,t}+X_{i+1,j,t}+X_{i,j-1,t}+X_{i,j+1,t}-4X_{i,j,t
 }
 
 \frame{
-\frametitle{Isotropy and lattice artifacts}
+\frametitle{Isotropy and lattice artefacts}
 \centerline{\includegraphics[height=0.8\textheight]{lattice}}
 }
 
@@ -499,7 +499,7 @@ dX_{i,j,t} = D\Delta X_{i,j,t}dt + \sqrt{D(X_{i,j,t}+X_{i+1,j,t})}dW_{i,j,t} \\
 - \sqrt{D(X_{i-1,j,t}+X_{i,j,t})}dW_{i-1,j,t}+ \sqrt{D(X_{i,j,t}+X_{i,j+1,t})}dW^\star_{i,j,t} \\
 - \sqrt{D(X_{i,j-1,t}+X_{i,j,t})}dW^\star_{i,j-1,t}
 \end{multline*}
-We can re-write this using backshift notation as:
+We can re-write this using back-shift notation as:
 \begin{multline*}
 dX_{ijt} = D\Delta X_{ijt}dt + \sqrt{D}\left(\left[\sqrt{(1+B_1^{-1})X_{ijt}}-\sqrt{(1+B_1)X_{ijt}}B_1\right]dW_{ijt}\right. \\
 + \left.\left[\sqrt{(1+B_2^{-1})X_{ijt}}-\sqrt{(1+B_2)X_{ijt}}B_2\right]dW^\star_{ijt}\right)
@@ -511,8 +511,8 @@ dX_{ijt} = D\Delta X_{ijt}dt + \sqrt{D}\left(\left[\sqrt{(1+B_1^{-1})X_{ijt}}-\s
 \frame{
 \frametitle{Lotka Volterra in 2d}
 \begin{itemize}
-\item Returning to discrete stochastic reaction-diffusion, we can have diffusion for each species and a set of reactions for each subvolume
-\item For our Lotka Volterra example, we will have 2 species and $3+2\times 4=11$ reactions per subvolume
+\item Returning to discrete stochastic reaction-diffusion, we can have diffusion for each species and a set of reactions for each sub-volume
+\item For our Lotka Volterra example, we will have 2 species and $3+2\times 4=11$ reactions per sub-volume
 \item So, on a $50\times 50$ grid, we will have 5,000 species and 27,500 reactions to manage and simulate
 \item I use a reasonably efficient Gillespie implementation (local hazard updating) in Scala, outputting a series of 2d images to be formed into a movie (prey are blue and predators are red)
 \end{itemize}
@@ -527,7 +527,7 @@ dX_{ijt} = D\Delta X_{ijt}dt + \sqrt{D}\left(\left[\sqrt{(1+B_1^{-1})X_{ijt}}-\s
 }
 
 \frame{
-\frametitle{SDE approximaton}
+\frametitle{SDE approximation}
 \begin{center}
 %\includemovie{.8\textheight}{.8\textheight}{dsrd2d.mp4}
 \movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2d.mp4}
@@ -537,7 +537,7 @@ dX_{ijt} = D\Delta X_{ijt}dt + \sqrt{D}\left(\left[\sqrt{(1+B_1^{-1})X_{ijt}}-\s
 \begin{comment}
 
 \frame{
-\frametitle{SDE approximaton on a fine grid}
+\frametitle{SDE approximation on a fine grid}
 \begin{center}
 %\includemovie{.8\textheight}{.8\textheight}{dsrd2d.mp4}
 \movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2dv2.mp4}
@@ -568,7 +568,7 @@ dX_{ijt} = D\Delta X_{ijt}dt + \sqrt{D}\left(\left[\sqrt{(1+B_1^{-1})X_{ijt}}-\s
 \frametitle{Summary}
 \begin{itemize}
 \item Discrete stochastic models of molecular diffusion combine nicely with discrete stochastic kinetic models of chemical reaction networks to give Markov jump process models described by the RDME
-\item The RDME does not have a continuum limit in general (the length scale of the subvolumes must remain much larger than the reaction distance of bimolecular reactions)
+\item The RDME does not have a continuum limit in general (the length scale of the sub-volumes must remain much larger than the reaction distance of bi-molecular reactions)
 \item RDME models can be approximated with systems of coupled SDEs corresponding to the spatial CLE
 \item The spatial CLE is efficient to simulate, and corresponds to a finite-difference discretisation of a limiting reaction-diffusion SPDE
 \end{itemize}

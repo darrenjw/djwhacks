@@ -35,17 +35,12 @@ diffuse=function(m) {
         sqrt(m+left(m))*dwt - sqrt(m+right(m))*right(dwt)
         + sqrt(m+up(m))*dwts - sqrt(m+down(m))*down(dwts)
     )
+    print(paste("min is",min(m)))
     m=rectify(m)
     m
 }
 
-op=par(mfrow=c(1,2))
-
-for (i in 1:S) {
- # first diffuse
- x=diffuse(x)
- y=diffuse(y)
- # next react
+react=function(x,y) {
  h1=th[1]*x
  h2=th[2]*x*y
  h3=th[3]*y
@@ -58,7 +53,22 @@ for (i in 1:S) {
  y = rectify(y + Sto[2,1]*(h1*dt+sqrt(h1)*dw1t)
     +Sto[2,2]*(h2*dt+sqrt(h2)*dw2t)
     +Sto[2,3]*(h3*dt+sqrt(h3)*dw3t))
+ list(x,y)
+}
+
+op=par(mfrow=c(1,2))
+
+for (i in 1:S) {
+ # first diffuse
+ x=diffuse(x)
+ y=diffuse(y)
+ # next react
+ xy=react(x,y)
+ x=xy[[1]]
+ y=xy[[2]]
  # plot results
+ print(paste(i,": max x is",max(x),"and max y is",max(y)))
+ print(paste(i,": sum x is",sum(x),"and sum y is",sum(y)))
  image(x,main="x - prey",xlab="Time",ylab="Space")
  image(y,main="y - predator",xlab="Time",ylab="Space")
 }

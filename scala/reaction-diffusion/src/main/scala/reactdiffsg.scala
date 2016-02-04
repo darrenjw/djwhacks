@@ -18,23 +18,30 @@ object ReactDiff2dSG {
   import java.awt.image.BufferedImage
 
   val D = 50
-  val T = 12 // Was 120...
-  val dt = 0.25
+  val T = 100
+  val dt = 0.2
   val th = Vector(1.0, 0.005, 0.6)
   val dc = 0.25
+
+  val S = new DenseMatrix(2, 3, Array[Double](1, 0, -1, 1, 0, -1))
+
+  val sdt=Math.sqrt(dt)
+  println("sdt "+sdt)
+  val sdc=Math.sqrt(dc)
+  println("sdc "+sdc)
 
   val N = (T / dt).toInt
   val x = DenseMatrix.zeros[Double](D, D)
   x(D / 2, D / 2) = 60
   val y = DenseMatrix.zeros[Double](D, D)
-  y(D / 2, D / 2) = 60
+  y(D / 2, D / 2) = 20
 
   def up(m: DenseMatrix[Double]): DenseMatrix[Double] = {
     DenseMatrix.vertcat(m(1 until m.rows, ::), m(0 to 0, ::))
   }
 
   def down(m: DenseMatrix[Double]): DenseMatrix[Double] = {
-    DenseMatrix.vertcat(m((m.rows - 1) to (m.rows - 1), ::), m(0 until (m.rows - 1),::))
+    DenseMatrix.vertcat(m((m.rows - 1) to (m.rows - 1), ::), m(0 until (m.rows - 1), ::))
   }
 
   def left(m: DenseMatrix[Double]): DenseMatrix[Double] = {
@@ -50,32 +57,54 @@ object ReactDiff2dSG {
   }
 
   def rectify(m: DenseMatrix[Double]): DenseMatrix[Double] = {
-    // abs(m) // reflect
-    m map { e => if (e>0.0) e else 0.0 } // absorb
-}
+    m map { e => if (e > 0.0) e else 0.0 } // absorb
+  }
 
   def sqrt(m: DenseMatrix[Double]): DenseMatrix[Double] = m map (Math.sqrt(_))
 
   def diffuse(m: DenseMatrix[Double]): DenseMatrix[Double] = {
-    val dwt = new DenseMatrix(D,D,Gaussian(0.0,Math.sqrt(dt)).sample(D*D).toArray)
-    val dwts = new DenseMatrix(D,D,Gaussian(0.0,Math.sqrt(dt)).sample(D*D).toArray)
-    rectify(m + dc*laplace(m)*dt + Math.sqrt(dc)*(
-      sqrt(m+left(m))*dwt - sqrt(m+right(m))*right(dwt)
-        + sqrt(m+up(m))*dwts - sqrt(m+down(m))*down(dwts)
-      )
-    )
+    val dwt = new DenseMatrix(D, D, (Gaussian(0.0, sdt).sample(D * D)).toArray)
+    val dwts = new DenseMatrix(D, D, (Gaussian(0.0, sdt).sample(D * D)).toArray)
+    val md=laplace(m)*(dt*dc)
+    val mh= ((sqrt(m + left(m)) :* dwt) - (sqrt(m + right(m)) :* right(dwt)))*sdc
+    val mv=((sqrt(m + up(m)) :* dwts) - (sqrt(m + down(m)) :* down(dwts)))*sdc
+    //println("sum mh is "+sum(mh))
+    //println("sum mv is "+sum(mv))
+    val mn=m+md +mh + mv
+    println("min mn is "+min(mn))
+    rectify(mn)
+  }
+
+  def react(x: DenseMatrix[Double],y: DenseMatrix[Double]): (DenseMatrix[Double],DenseMatrix[Double]) = {
+    val h1 = x * th(0)
+    val h2 = (x :* y) * th(1)
+    val h3 = y * th(2)
+    val dw1t = new DenseMatrix(D, D, Gaussian(0.0, sdt).sample(D * D).toArray)
+    val dw2t = new DenseMatrix(D, D, Gaussian(0.0, sdt).sample(D * D).toArray)
+    val dw3t = new DenseMatrix(D, D, Gaussian(0.0, sdt).sample(D * D).toArray)
+    val r1=(h1 * dt) + (sqrt(h1) :* dw1t)
+    val r2=(h2 * dt) + (sqrt(h2) :* dw2t)
+    val r3=(h3 * dt) + (sqrt(h3) :* dw3t)
+    val dx = (r1 * S(0, 0)) + (r2 * S(0, 1)) + (r3 * S(0, 2))
+    val dy = (r1 * S(1, 0)) + (r2 * S(1, 1)) + (r3 * S(1, 2))
+    (rectify(x+dx), rectify(y+dy))
+
 }
 
-  def stepLV(x: DenseMatrix[Double],y: DenseMatrix[Double],dt: Double): (DenseMatrix[Double],DenseMatrix[Double]) = {
-    (diffuse(x),diffuse(y))
-}
-
+  def stepLV(x: DenseMatrix[Double], y: DenseMatrix[Double], dt: Double): (DenseMatrix[Double], DenseMatrix[Double]) = {
+    val xd = diffuse(x)
+    val yd = diffuse(y)
+    react(xd,yd)
+    //(xd,yd)
+  }
 
   def mkImage(x: DenseMatrix[Double], y: DenseMatrix[Double]): BufferedImage = {
     val canvas = new BufferedImage(D, D, BufferedImage.TYPE_INT_RGB)
     val wr = canvas.getRaster
     val mx = max(x)
     val my = max(y)
+    println("Max x is "+mx+" and max y is "+my)
+    println("Sum x is "+sum(x)+" and sum y is "+sum(y))
     for (i <- 0 until D) {
       for (j <- 0 until D) {
         wr.setSample(i, j, 2, round(255 * x(i, j) / mx).toInt) // band 2 is blue
@@ -87,6 +116,7 @@ object ReactDiff2dSG {
 
   def main(args: Array[String]): Unit = {
     println("Hello")
+    println(S.toString)
     @tailrec
     def go(x: DenseMatrix[Double], y: DenseMatrix[Double], left: Int): Unit = {
       if (left > 0) {

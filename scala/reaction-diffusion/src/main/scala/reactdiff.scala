@@ -18,7 +18,7 @@ object ReactDiff2d {
   import java.awt.image.BufferedImage
 
   val D = 50
-  val T = 120
+  val T = 12 // Was 120...
   val dt = 0.25
   val th = Vector(1.0, 0.005, 0.6)
   val dc = 0.25

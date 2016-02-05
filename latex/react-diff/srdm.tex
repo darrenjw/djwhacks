@@ -43,7 +43,7 @@ col, set,start,end,deltat,zip},
 
 \begin{document}
 
-\title{Spatially distributed stochastic kinetic models}
+\title[Spatially distributed stochastic kinetic models]{Spatially distributed stochastic kinetic models: Lotka--Volterra in Space!}
 \author[Darren Wilkinson --- Statistics seminar, 5/2/16]{\textbf{\large Darren Wilkinson} \\
 \url{@darrenjw}\\
 \alert{\url{tinyurl.com/darrenjw}}\\
@@ -382,7 +382,7 @@ dX_t = D\Delta X_t\,dt +  \sqrt{D}\nabla\operatorname{diag}\left\{\sqrt{(I+B\tra
 \frametitle{Reaction diffusion master equation (RDME)}
 \begin{itemize}
 \item Returning to the discrete stochastic case, let's now consider multiple species and additional reactions...
-\item For the Lotka Volterra model, we just have separate species for the prey and predator in each sub-volume
+\item For the Lotka--Volterra model, we just have separate species for the prey and predator in each sub-volume
 \begin{align*}
 X_i &\longrightarrow 2X_i \tag{prey reproduction}\\
 X_i+Y_i &\longrightarrow 2Y_i \tag{prey-predator interaction}\\
@@ -397,7 +397,7 @@ Y_i &\longrightarrow Y_{i-1} \tag{predator moves left}
 }
 
 \frame{
-\frametitle{Discrete stochastic Lotka Volterra on a 1d lattice}
+\frametitle{Discrete stochastic Lotka--Volterra on a 1d lattice}
 Just simulate trajectories with the Gillespie algorithm:
 \centerline{\includegraphics[height=0.8\textheight]{dsrd1d}}
 }
@@ -509,10 +509,10 @@ dX_{ijt} = D\Delta X_{ijt}dt + \sqrt{D}\left(\left[\sqrt{(1+B_1^{-1})X_{ijt}}-\s
 \subsection{Reaction diffusion in 2d}
 
 \frame{
-\frametitle{Lotka Volterra in 2d}
+\frametitle{Lotka--Volterra in 2d}
 \begin{itemize}
 \item Returning to discrete stochastic reaction-diffusion, we can have diffusion for each species and a set of reactions for each sub-volume
-\item For our Lotka Volterra example, we will have 2 species and $3+2\times 4=11$ reactions per sub-volume
+\item For our Lotka--Volterra example, we will have 2 species and $3+2\times 4=11$ reactions per sub-volume
 \item So, on a $50\times 50$ grid, we will have 5,000 species and 27,500 reactions to manage and simulate
 \item I use a reasonably efficient Gillespie implementation (local hazard updating) in Scala, outputting a series of 2d images to be formed into a movie (prey are blue and predators are red)
 \end{itemize}
@@ -547,7 +547,7 @@ dX_{ijt} = D\Delta X_{ijt}dt + \sqrt{D}\left(\left[\sqrt{(1+B_1^{-1})X_{ijt}}-\s
 \end{comment}
 
 \frame{
-\frametitle{Lotka Volterra SPDE dynamics}
+\frametitle{Lotka--Volterra SPDE dynamics}
 \begin{center}
 %\movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2dv3.mp4}
 \movie{\includegraphics[height=0.85\textheight]{dsrd2d}}{sgrd2dv3.mp4}
@@ -555,7 +555,7 @@ dX_{ijt} = D\Delta X_{ijt}dt + \sqrt{D}\left(\left[\sqrt{(1+B_1^{-1})X_{ijt}}-\s
 }
 
 \frame{
-\frametitle{Lotka Volterra SPDE dynamics (3 seeds)}
+\frametitle{Lotka--Volterra SPDE dynamics (3 seeds)}
 \begin{center}
 %\includemovie{.8\textheight}{.8\textheight}{sgrd2dv4.mp4}
 %\movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2dv4.mp4}

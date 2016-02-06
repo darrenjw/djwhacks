@@ -1,11 +1,11 @@
 # sgrd2d.R
 # reaction diffusion on a 2d grid with Gaussian noise
 
-D=50 # num grid cells
-T=100 # finish time
-dc=0.25 # diffusion coefficient
+D=200 # num grid cells
+T=250 # finish time
+dc=0.5 # diffusion coefficient
 dt=0.2 # time step
-th=c(1,0.005,0.6) # reaction rate parameters
+th=c(1,0.05,0.6) # reaction rate parameters
 
 Sto=matrix(c(1,-1,0,0,1,-1),ncol=3,byrow=TRUE)
 
@@ -35,7 +35,7 @@ diffuse=function(m) {
         sqrt(m+left(m))*dwt - sqrt(m+right(m))*right(dwt)
         + sqrt(m+up(m))*dwts - sqrt(m+down(m))*down(dwts)
     )
-    print(paste("min is",min(m)))
+    #print(paste("min is",min(m)))
     m=rectify(m)
     m
 }
@@ -67,8 +67,9 @@ for (i in 1:S) {
  x=xy[[1]]
  y=xy[[2]]
  # plot results
- print(paste(i,": max x is",max(x),"and max y is",max(y)))
- print(paste(i,": sum x is",sum(x),"and sum y is",sum(y)))
+ message(paste(i,""),appendLF=FALSE)
+ #print(paste(i,": max x is",max(x),"and max y is",max(y)))
+ #print(paste(i,": sum x is",sum(x),"and sum y is",sum(y)))
  image(x,main="x - prey",xlab="Time",ylab="Space")
  image(y,main="y - predator",xlab="Time",ylab="Space")
 }

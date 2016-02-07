@@ -71,7 +71,7 @@ object ReactDiff2dSG {
     //println("sum mh is "+sum(mh))
     //println("sum mv is "+sum(mv))
     val mn=m+md +mh + mv
-    println("min mn is "+min(mn))
+    //println("min mn is "+min(mn))
     rectify(mn)
   }
 
@@ -103,8 +103,8 @@ object ReactDiff2dSG {
     val wr = canvas.getRaster
     val mx = max(x)
     val my = max(y)
-    println("Max x is "+mx+" and max y is "+my)
-    println("Sum x is "+sum(x)+" and sum y is "+sum(y))
+    //println("Max x is "+mx+" and max y is "+my)
+    //println("Sum x is "+sum(x)+" and sum y is "+sum(y))
     for (i <- 0 until D) {
       for (j <- 0 until D) {
         wr.setSample(i, j, 2, round(255 * x(i, j) / mx).toInt) // band 2 is blue

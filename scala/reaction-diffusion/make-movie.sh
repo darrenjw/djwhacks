@@ -13,7 +13,7 @@ done
 
 rm -f movie.mp4
 
-avconv -r 4 -i img%04d-s.png movie.mp4
+avconv -r 20 -i img%04d-s.png movie.mp4
 
 # eof
 

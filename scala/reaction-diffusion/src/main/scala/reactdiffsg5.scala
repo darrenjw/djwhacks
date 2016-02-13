@@ -21,10 +21,10 @@ object ReactDiff2dSGv5 {
   val T = 100
   val dt = 0.1
   val th = Vector(1.0, 0.05, 0.6)
-  val dcu = 1.0
-  val dcd = 2.5
-  val dcl = 1.0
-  val dcr = 2.2
+  val dcu = DenseMatrix.tabulate(D,D){case (i,j) => 1.0+i.toDouble/D}
+  val dcd = DenseMatrix.tabulate(D,D){case (i,j) => i.toDouble/D}
+  val dcl = DenseMatrix.tabulate(D,D){case (i,j) => i.toDouble/D}
+  val dcr = DenseMatrix.tabulate(D,D){case (i,j) => 2.0*i.toDouble/D}
 
   val S = new DenseMatrix(2, 3, Array[Double](1, 0, -1, 1, 0, -1))
 
@@ -69,7 +69,7 @@ object ReactDiff2dSGv5 {
     //val dwt = new DenseMatrix(D, D, (Gaussian(0.0, sdt).sample(D * D)).toArray)
     //val dwts = new DenseMatrix(D, D, (Gaussian(0.0, sdt).sample(D * D)).toArray)
     //val md=laplace(m)*(dt*dc)
-    val md = (up(m)*dcu+down(m)*dcd+left(m)*dcl+right(m)*dcr-m*(dcu+dcd+dcl+dcr))*dt
+    val md = ((up(m) :* dcu)+(down(m) :* dcd)+(left(m) :* dcl)+(right(m) :* dcr)-(m :* (dcu+dcd+dcl+dcr)))*dt
     //val mh= ((sqrt(m + left(m)) :* dwt) - (sqrt(m + right(m)) :* right(dwt)))*sdc
     //val mv=((sqrt(m + up(m)) :* dwts) - (sqrt(m + down(m)) :* down(dwts)))*sdc
     //println("sum mh is "+sum(mh))

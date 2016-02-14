@@ -4,8 +4,8 @@ Interesting simple pure functional front-end language. Sort of a "purescript for
 
 ## Install
 
-sudo apt-get install npm nodejs-legacy
-sudo npm install -g elm
+* sudo apt-get install npm nodejs-legacy
+* sudo npm install -g elm
 
 ## Getting started
 

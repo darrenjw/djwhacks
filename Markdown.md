@@ -35,3 +35,11 @@ Content Cell  | Content Cell
 Content Cell  | Content Cell
 
 
+## Convert to HTML
+
+```bash
+pandoc --from markdown_github --to html --standalone README.md --output README.html
+```
+
+
+

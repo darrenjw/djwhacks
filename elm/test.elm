@@ -1,3 +1,13 @@
+-- This is a single line comment
+
+{- This is a multi-line comment.
+   It can span multiple lines.
+-}
+
+{- It is possible to {- nest -} multi-line comments -}
+
+
+
 import Color exposing (..)
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)

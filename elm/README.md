@@ -31,5 +31,7 @@ Running "elm" from command line gives usage hints
     * http://elm-lang.org/examples
     * http://elm-lang.org/docs
         * http://elm-lang.org/docs/syntax
+* https://en.wikipedia.org/wiki/Elm_(programming_language)
+
 
 

@@ -20,6 +20,9 @@ $(FILE).pdf: $(FILE).tex $(DIAFIGS)
 view: $(FILE).pdf
 	acroread $(FILE).pdf &
 
+present: $(FILE).pdf
+	okular $(FILE).pdf
+
 edit:
 	gedit $(FILE).tex &
 

@@ -20,11 +20,16 @@ mod = glm(y~x,family="binomial")
 print(summary(mod))
 
 # Now lets do it ourselves...
+
+# first the b() function from the exp family, and it's derivatives, etc.
+b=function(x) log(1+exp(x))
 bp = function(x) expit(x)
 bpp = function(x) {
     e = exp(-x)
     e/((1+e)*(1+e))
 }
+
+# Now IRLS...
 bhat = c(0,0)
 for (i in 1:10) {
     print(i)
@@ -39,14 +44,13 @@ for (i in 1:10) {
 print(mod)
 # looks good!  ;-)
 
-# Now let's try some MCMC...
+# Now let's try some simple MH MCMC...
 its = 20000
 tune = 0.1
 beta.old = bhat
 post=matrix(0,nrow=its,ncol=2)
 post[1,] = beta.old
 oll = -1e99
-b=function(x) log(1+exp(x))
 for (i in 2:its) {
     message(paste(i,""),appendLF=FALSE)
     beta.prop = beta.old + rnorm(2,0,tune)
@@ -71,9 +75,59 @@ for (i in 1:2) {
     abline(v=bhat[i],col=4,lwd=2)
     acf(post[,i])
 }
-plot(post,pch=19,col=rgb(0,0,0,0.1))
+plot(post,pch=19,col=rgb(0,0,0,0.1),main="RW MH")
+points(rbind(beta,bhat),pch=19,col=3:4,cex=2)
+#par(op)
+
+# Now lets run a Langevin algorithm (raw - not MALA)
+tau = 0.005
+stau = sqrt(tau)
+# score function
+u = function(beta) {t(X) %*% (y-bp(X %*% beta))}
+
+beta.la = bhat
+postla = matrix(0,nrow=its,ncol=2)
+postla[1,] = beta.la
+for (i in 2:its) {
+    message(paste(i,""),appendLF=FALSE)
+    beta.la = beta.la + 0.5*tau*u(beta.la) + stau*rnorm(2,0,1)
+    postla[i,] = beta.la
+}
+message("")
+
+# Now plot the MCMC output
+plot(postla,pch=19,col=rgb(0,0,0,0.1),main="(unadjusted) Langevin algorithm")
+points(rbind(beta,bhat),pch=19,col=3:4,cex=2)
+
+# Now let's run a MALA
+beta.old = bhat
+postmala = matrix(0,nrow=its,ncol=2)
+postmala[1,] = beta.old
+oll = -1e99
+for (i in 2:its) {
+    message(paste(i,""),appendLF=FALSE)
+    beta.prop = beta.old + 0.5*tau*u(beta.old) + stau*rnorm(2,0,1)
+    eta = as.vector(X %*% beta.prop)
+    ll = sum(eta*y) - sum(b(eta))
+    a = ll - oll +
+        sum(dnorm(beta.old,beta.prop +
+                           0.5*tau*u(beta.prop),rep(stau,2),log=TRUE)) -
+        sum(dnorm(beta.prop,beta.old +
+                            0.5*tau*u(beta.old),rep(stau,2),log=TRUE))
+    if (log(runif(1,0,1)) < a) {
+        beta.old = beta.prop
+        oll = ll
+    }    
+    postmala[i,] = beta.old
+}
+message("")
+
+# Now plot the MCMC output
+#op=par(mfrow=c(3,3))
+plot(postmala,pch=19,col=rgb(0,0,0,0.1),main="MALA")
 points(rbind(beta,bhat),pch=19,col=3:4,cex=2)
 par(op)
+
 
 
 

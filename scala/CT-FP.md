@@ -1,4 +1,3 @@
-# CT-FP.md
 
 # Category Theory (CT) for Functional Programming (FP) Links
 

@@ -4,8 +4,10 @@
 ## General Category Theory
 
 * [Wikipedia](https://en.wikipedia.org/wiki/):
+    * [CT Portal](https://en.wikipedia.org/wiki/Portal:Category_theory)
     * [CT](https://en.wikipedia.org/wiki/Category_theory)
     * [Category](https://en.wikipedia.org/wiki/Category_(mathematics))
+    * [Initial and terminal objects](https://en.wikipedia.org/wiki/Initial_and_terminal_objects)
     * [Functor](https://en.wikipedia.org/wiki/Functor)
     * [Monad (CT)](https://en.wikipedia.org/wiki/Monad_(category_theory))
     * [Natural transformation](https://en.wikipedia.org/wiki/Natural_transformation)

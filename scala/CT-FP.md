@@ -5,6 +5,7 @@
 
 * [Wikipedia](https://en.wikipedia.org/wiki/):
     * [CT](https://en.wikipedia.org/wiki/Category_theory)
+    * [Category](https://en.wikipedia.org/wiki/Category_(mathematics))
     * [Functor](https://en.wikipedia.org/wiki/Functor)
     * [Monad (CT)](https://en.wikipedia.org/wiki/Monad_(category_theory))
     * [Natural transformation](https://en.wikipedia.org/wiki/Natural_transformation)

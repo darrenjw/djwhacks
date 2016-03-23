@@ -7,6 +7,8 @@
     * [CT](https://en.wikipedia.org/wiki/Category_theory)
     * [Functor](https://en.wikipedia.org/wiki/Functor)
     * [Monad (CT)](https://en.wikipedia.org/wiki/Monad_(category_theory))
+    * [Natural transformation](https://en.wikipedia.org/wiki/Natural_transformation)
+    * [Free object](https://en.wikipedia.org/wiki/Free_object)
 
 ## CT for FP
 

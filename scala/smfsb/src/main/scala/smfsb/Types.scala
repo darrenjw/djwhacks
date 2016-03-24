@@ -11,10 +11,12 @@ object Types {
 
   trait Parameter
 
-  type Time=Double
-  type State=DenseVector[Int]
-  type HazardVec=DenseVector[Double]
-  type Ts = List[(Time,State)]
+  type Time = Double
+  type State = DenseVector[Int]
+  type HazardVec = DenseVector[Double]
+  type Ts[S] = List[(Time, S)]
+  type LogLik = Double
+  type Observation = DenseVector[Double]
 
 }
 

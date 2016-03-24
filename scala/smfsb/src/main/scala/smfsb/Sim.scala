@@ -16,13 +16,13 @@ object Sim {
     tt: Time,
     dt: Time,
     stepFun: (State, Time, Time) => State
-  ): Ts = {
+  ): Ts[State] = {
     @tailrec def simTsList(
-      list: Ts,
+      list: Ts[State],
       tt: Time,
       dt: Time,
       stepFun: (State, Time, Time) => State
-    ): Ts = {
+    ): Ts[State] = {
       val (t0, x0) = list.head
       if (t0 >= tt) list else {
         val t1 = t0 + dt
@@ -33,7 +33,8 @@ object Sim {
     simTsList(List((t0, x0)), tt, dt, stepFun).reverse
   }
 
-  def plotTs(ts: Ts): Unit = {
+  import breeze.linalg._
+  def plotTs[T<:DenseVector[Int]](ts: Ts[T]): Unit = {
     import breeze.plot._
     import breeze.linalg._
     val times=DenseVector((ts map (_._1)).toArray)

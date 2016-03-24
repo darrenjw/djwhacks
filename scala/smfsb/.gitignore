@@ -1,8 +1,11 @@
+# .gitignore for scala projects
+
+# Classes and logs
 *.class
 *.log
 *~
 
-# sbt specific
+# SBT-specific
 .cache
 .history
 .classpath
@@ -23,4 +26,5 @@ project/plugins/project/
 # Scala-IDE specific
 .scala_dependencies
 .worksheet
+
 

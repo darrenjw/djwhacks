@@ -3,8 +3,8 @@
 ## Versions
 
 * Scala: 2.11.7 (recent version which seems good)
-* Breeze: 0.11.2 (contains the thin QR/SVD update)
-* Sbt: 0.13.7 (version used in SBT book - blank line requirement dropped)
+* Breeze: 0.12
+* Sbt: 0.13.8
 
 ## SBT
 
@@ -34,11 +34,12 @@ Put "gen-ensime" plugin in there, too...
 
 From sbt run "gen-ensime" to create ensime project file.
 
-Then from emacs in a scala buffer, "M-ensime" to start up ensime
+Then from emacs in a scala buffer, "M-x ensime" to start up ensime
 
 * C-c C-v f - reformat source code
 * C-c C-b c - sbt compile
 * C-c C-b r - sbt run
+* M-x ensime-update - force an update of the ensime server
 
 https://github.com/ensime/ensime-emacs/wiki/Emacs-Command-Reference
 

@@ -34,7 +34,7 @@ object Sim {
   }
 
   import breeze.linalg._
-  def plotTs[T <: IntState](ts: Ts[T]): Unit = {
+  def plotTsDouble(ts: Ts[DoubleState]): Unit = {
     import breeze.plot._
     import breeze.linalg._
     val times = DenseVector((ts map (_._1)).toArray)
@@ -47,6 +47,23 @@ object Sim {
     p.ylabel = "Species count"
     f.saveas("TsPlot.png")
   }
+
+  def plotTsInt(ts: Ts[IntState]): Unit = {
+    val dts = ts map { t => (t._1, t._2.map { _ * 1.0 }) }
+    plotTsDouble(dts)
+  }
+
+/*
+
+  def plotTs[S: State](ts: Ts[S]): Unit = {
+    val s0 = (ts(0)._2)
+    s0 match {
+      case v: IntState => plotTsInt(ts)
+      case v: DoubleState => plotTsDouble(ts)
+    }
+  }
+
+ */
 
   // TODO: Add a simSample function
 

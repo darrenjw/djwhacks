@@ -10,19 +10,19 @@ import annotation.tailrec
 
 object Sim {
 
-  def simTs(
-    x0: State,
+  def simTs[S: State](
+    x0: S,
     t0: Time,
     tt: Time,
     dt: Time,
-    stepFun: (State, Time, Time) => State
-  ): Ts[State] = {
+    stepFun: (S, Time, Time) => S
+  ): Ts[S] = {
     @tailrec def simTsList(
-      list: Ts[State],
+      list: Ts[S],
       tt: Time,
       dt: Time,
-      stepFun: (State, Time, Time) => State
-    ): Ts[State] = {
+      stepFun: (S, Time, Time) => S
+    ): Ts[S] = {
       val (t0, x0) = list.head
       if (t0 >= tt) list else {
         val t1 = t0 + dt
@@ -34,12 +34,12 @@ object Sim {
   }
 
   import breeze.linalg._
-  def plotTs[T<:DenseVector[Int]](ts: Ts[T]): Unit = {
+  def plotTs[T <: IntState](ts: Ts[T]): Unit = {
     import breeze.plot._
     import breeze.linalg._
-    val times=DenseVector((ts map (_._1)).toArray)
-    val idx=0 until ts(0)._2.length
-    val states=ts map (_._2)
+    val times = DenseVector((ts map (_._1)).toArray)
+    val idx = 0 until ts(0)._2.length
+    val states = ts map (_._2)
     val f = Figure()
     val p = f.subplot(0)
     idx.foreach(i => p += plot(times, DenseVector((states map (_(i).toDouble)).toArray)))

@@ -41,7 +41,7 @@ class MyTestSuite extends FunSuite {
     import Sim._
     val step = stepLv(lvparam)
     val ts = simTs(DenseVector(50, 40), 0.0, 20.0, 0.1, step)
-    // plotTs(ts)
+    //plotTs(ts)
     assert(ts.length === 201)
   }
 
@@ -69,9 +69,21 @@ class MyTestSuite extends FunSuite {
     val stepMmPts = Step.pts(mm, 0.1)
     val step = stepMmPts(mmparam)
     val ts = simTs(DenseVector(301, 120, 0, 0), 0.0, 100.0, 0.5, step)
-    plotTs(ts)
+    //plotTs(ts)
     assert(ts.length === 201)
   }
+
+  test("simTs with CLE for lv model") {
+    import SpnExamples._
+    import Sim._
+    val step = stepLvc(lvparam)
+    val ts = simTs(DenseVector(50.0, 40.0), 0.0, 20.0, 0.1, step)
+    //plotTs(ts)
+    assert(ts.length === 201)
+  }
+
+
+
 
 }
 

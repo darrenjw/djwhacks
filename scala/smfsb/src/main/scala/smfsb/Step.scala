@@ -73,7 +73,11 @@ object Step {
   }
 
 
+  // TODO: general SDE E-M simulator
 
+  // TODO: general ODE Euler method
+
+  // TODO: method for converting cts SPNs to SDEs and ODEs
 
   // TODO: add a simple adaptive time-stepping tau-leap algorithm, too...
 

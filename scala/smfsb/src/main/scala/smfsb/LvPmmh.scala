@@ -1,6 +1,8 @@
 /*
 LvPmmh.scala
 
+Actual LV PMMH example from my book (prey only, known noise)
+Mainly to check everything is working correctly...
 
  */
 
@@ -28,14 +30,14 @@ object LvPmmh {
   def obsLik(th: LvParameter)(s: IntState, o: DoubleState): LogLik = {
     //Gaussian(s(0).toDouble, 10.0).logPdf(o(0)) // doesn't work...
     val sigma = 10.0
-    val mu: Double = s.copy.apply(0).toDouble // problem line!
+    val mu: Double = s.copy.apply(0).toDouble // problem line! Seem to have to copy?!
     val x: Double = o(0)
     val q = (x - mu) / sigma
     val ll: Double = -math.log(sigma) - 0.5 * q * q
     ll
   }
 
-  def runModel(its: Int) = {
+  def runModel(its: Int): Unit = {
     val rawData = Source.fromFile("LVpreyNoise10.txt").getLines
     val data = ((0 to 30 by 2).toList zip rawData.toList) map { x => (x._1.toDouble, DenseVector(x._2.toDouble)) }
     val mll = pfMll(150, simPrior, 0.0, stepLv, obsLik, data)

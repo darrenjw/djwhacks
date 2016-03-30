@@ -38,6 +38,7 @@ object SpnExamples {
     )
   )
   val stepLv = Step.gillespie(lv)
+  val stepLvPts = Step.pts(lv)
 
   // Immigration death model
   case class IdParameter(alpha: Double, mu: Double)

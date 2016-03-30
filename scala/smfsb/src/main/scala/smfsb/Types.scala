@@ -20,7 +20,6 @@ object Types {
   }
   // Leave implementations to be model-specific...
 
-
   // Hard-coded types...
   type Time = Double
   type Ts[S] = List[(Time, S)]
@@ -36,7 +35,6 @@ object Types {
   implicit val dvdState = new State[DoubleState] {
   }
 
-
   // State type class, with implementations for Ints and Doubles
   trait Observation[O] {
   }
@@ -45,6 +43,11 @@ object Types {
   implicit val dvdObs = new Observation[DoubleState] {
   }
 
+  // Data set type class, for ABC methods
+  trait DataSet[D] {
+  }
+  implicit val tsisDs = new DataSet[Ts[IntState]] {
+  }
 
   // TODO: Make this a type class too...
   type HazardVec = DenseVector[Double]

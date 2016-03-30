@@ -11,6 +11,14 @@ object SmfsbApp {
 
   def main(args: Array[String]): Unit = {
     println("hello")
+    if (args.length == 1) {
+      val its = args(0).toInt
+      import LvPmmh._
+      runModel(its)
+    } else {
+      println("sbt \"run <its>\"")
+    }
+    println("goodbye")
   }
 
 }

@@ -9,6 +9,8 @@ package smfsb
 
 import Types._
 import breeze.linalg._
+import breeze.stats.distributions.Gaussian
+import math.exp
 
 case class Spn[P: Parameter, S: State](
   species: List[String],
@@ -22,7 +24,8 @@ object SpnExamples {
   // Lotka-Volterra model 
   case class LvParameter(th0: Double, th1: Double, th2: Double)
   implicit val lvParameter = new Parameter[LvParameter] {
-    def perturb(value: LvParameter) = value
+    def perturb(p: LvParameter) = LvParameter(p.th0*exp(Gaussian(0, 0.05).draw),p.th1*exp(Gaussian(0, 0.05).draw),p.th2*exp(Gaussian(0, 0.05).draw))
+    def toCsv(p: LvParameter) =  "" + p.th0 + "," + p.th1 + "," + p.th2
   }
   val lvparam = LvParameter(1.0, 0.005, 0.6)
   val lv = Spn[LvParameter, IntState](
@@ -39,7 +42,8 @@ object SpnExamples {
   // Immigration death model
   case class IdParameter(alpha: Double, mu: Double)
   implicit val idParameter = new Parameter[IdParameter] {
-    def perturb(value: IdParameter) = value
+    def perturb(p: IdParameter) = p
+    def toCsv(p: IdParameter) = p.toString
   }
   val idparam = IdParameter(1.0, 0.1)
   val id = Spn[IdParameter, IntState](
@@ -54,6 +58,7 @@ object SpnExamples {
   case class MmParameter(c1: Double, c2: Double, c3: Double)
   implicit val mmParameter = new Parameter[MmParameter] {
     def perturb(value: MmParameter) = value
+    def toCsv(p: MmParameter) = p.toString
   }
   val mmparam = MmParameter(0.00166, 1e-04, 0.1)
   val mm = Spn[MmParameter, IntState](
@@ -68,6 +73,7 @@ object SpnExamples {
   case class ArParameter(c: DenseVector[Double])
   implicit val arParameter = new Parameter[ArParameter] {
     def perturb(value: ArParameter) = value
+    def toCsv(p: ArParameter) = p.toString
   }
   val arparam = ArParameter(DenseVector(1.0, 10.0, 0.01, 10.0, 1.0, 1.0, 0.1, 0.01))
   val ar = Spn[ArParameter, IntState](

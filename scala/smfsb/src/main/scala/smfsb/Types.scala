@@ -12,11 +12,14 @@ object Types {
   // Parameter type class
   trait Parameter[T] {
     def perturb(value: T): T
+    def toCsv(value: T): String
   }
   implicit class ParameterSyntax[T](value: T) {
     def perturb(implicit inst: Parameter[T]): T = inst.perturb(value)
+    def toCsv(implicit inst: Parameter[T]): String = inst.toCsv(value)
   }
   // Leave implementations to be model-specific...
+
 
   // Hard-coded types...
   type Time = Double
@@ -33,9 +36,18 @@ object Types {
   implicit val dvdState = new State[DoubleState] {
   }
 
-  // TODO: Make these type classes too...
+
+  // State type class, with implementations for Ints and Doubles
+  trait Observation[O] {
+  }
+  implicit val dviObs = new Observation[IntState] {
+  }
+  implicit val dvdObs = new Observation[DoubleState] {
+  }
+
+
+  // TODO: Make this a type class too...
   type HazardVec = DenseVector[Double]
-  type Observation = DenseVector[Double]
 
 }
 

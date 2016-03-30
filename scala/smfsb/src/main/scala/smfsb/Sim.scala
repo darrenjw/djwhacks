@@ -53,6 +53,9 @@ object Sim {
     plotTsDouble(dts)
   }
 
+// TODO: Figure out how to dynamically dispatch the plot function...
+// Easiest way is probably to introduce a "toDVD" method on State and Observation
+
 /*
 
   def plotTs[S: State](ts: Ts[S]): Unit = {

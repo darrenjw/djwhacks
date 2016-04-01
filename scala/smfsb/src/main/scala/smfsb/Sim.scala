@@ -34,39 +34,19 @@ object Sim {
   }
 
   import breeze.linalg._
-  def plotTsDouble(ts: Ts[DoubleState]): Unit = {
+  def plotTs[S: State](ts: Ts[S]): Unit = {
     import breeze.plot._
     import breeze.linalg._
     val times = DenseVector((ts map (_._1)).toArray)
-    val idx = 0 until ts(0)._2.length
+    val idx = 0 until ts(0)._2.toDvd.length
     val states = ts map (_._2)
     val f = Figure()
     val p = f.subplot(0)
-    idx.foreach(i => p += plot(times, DenseVector((states map (_(i).toDouble)).toArray)))
+    idx.foreach(i => p += plot(times, DenseVector((states map (_.toDvd.apply(i))).toArray)))
     p.xlabel = "Time"
     p.ylabel = "Species count"
     f.saveas("TsPlot.png")
   }
-
-  def plotTsInt(ts: Ts[IntState]): Unit = {
-    val dts = ts map { t => (t._1, t._2.map { _ * 1.0 }) }
-    plotTsDouble(dts)
-  }
-
-  // TODO: Figure out how to dynamically dispatch the plot function...
-  // Easiest way is probably to introduce a "toDvd" method on State and Observation
-
-  /*
-
-  def plotTs[S: State](ts: Ts[S]): Unit = {
-    val s0 = (ts(0)._2)
-    s0 match {
-      case v: IntState => plotTsInt(ts)
-      case v: DoubleState => plotTsDouble(ts)
-    }
-  }
-
- */
 
   def toCsv[S: State](ts: Ts[S]): String = {
     val ls = ts map { t => t._1.toString + "," + t._2.toCsv + "\n" }

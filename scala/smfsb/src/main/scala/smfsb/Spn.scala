@@ -26,6 +26,7 @@ object SpnExamples {
   implicit val lvParameter = new Parameter[LvParameter] {
     def perturb(p: LvParameter) = LvParameter(p.th0 * exp(Gaussian(0, 0.05).draw), p.th1 * exp(Gaussian(0, 0.05).draw), p.th2 * exp(Gaussian(0, 0.05).draw))
     def toCsv(p: LvParameter) = "" + p.th0 + "," + p.th1 + "," + p.th2
+    def toDvd(p: LvParameter) = DenseVector(p.th0,p.th1,p.th2)
   }
   val lvparam = LvParameter(1.0, 0.005, 0.6)
   val lv = Spn[LvParameter, IntState](
@@ -45,6 +46,7 @@ object SpnExamples {
   implicit val idParameter = new Parameter[IdParameter] {
     def perturb(p: IdParameter) = p
     def toCsv(p: IdParameter) = p.toString
+    def toDvd(p: IdParameter) = DenseVector(p.alpha,p.mu)
   }
   val idparam = IdParameter(1.0, 0.1)
   val id = Spn[IdParameter, IntState](
@@ -60,6 +62,7 @@ object SpnExamples {
   implicit val mmParameter = new Parameter[MmParameter] {
     def perturb(value: MmParameter) = value
     def toCsv(p: MmParameter) = p.toString
+    def toDvd(p: MmParameter) = DenseVector(p.c1,p.c2,p.c3)
   }
   val mmparam = MmParameter(0.00166, 1e-04, 0.1)
   val mm = Spn[MmParameter, IntState](
@@ -74,7 +77,8 @@ object SpnExamples {
   case class ArParameter(c: DenseVector[Double])
   implicit val arParameter = new Parameter[ArParameter] {
     def perturb(value: ArParameter) = ArParameter(value.c.map(_ * math.exp(Gaussian(0.0, 0.1).draw)))
-    def toCsv(p: ArParameter) = p.c.toCsv
+    def toCsv(p: ArParameter) = (p.c.toArray map (_.toString)).mkString(",")
+    def toDvd(p: ArParameter) = p.c
   }
   val arparam = ArParameter(DenseVector(1.0, 10.0, 0.01, 10.0, 1.0, 1.0, 0.1, 0.01))
   val ar = Spn[ArParameter, IntState](

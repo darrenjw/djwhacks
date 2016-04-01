@@ -26,7 +26,7 @@ object ArPmmh {
   def simData(): Unit = {
     import Sim._
     val ts = simTs(DenseVector(10, 0, 0, 0, 0), 0.0, 500.0, 10.0, stepAr(arparam))
-    plotTsInt(ts)
+    plotTs(ts)
     val s = new PrintWriter(new File("AR-perfect.txt"))
     s.write(toCsv(ts))
     s.close

@@ -43,24 +43,24 @@ object LvAbc {
   val abcDist = abcDistance(lvModel, lvDist) _
 
   def pilotRun(n: Int): Double = {
-    val abcSample = simPrior(n) // .par
+    val abcSample = simPrior(n).par
     val dist = abcSample map { p => abcDist(p) }
-    val sorted = dist.sorted
-    val cut = sorted(n / 200)
+    val sorted = dist.toVector.sorted
+    val cut = sorted(n / 1000)
     cut
   }
 
   def runModel(n: Int): Unit = {
     println("starting pilot")
-    val cutoff = pilotRun(50000)
+    val cutoff = pilotRun(100000)
     println("finished pilot. starting prior sim")
-    val priorSample = simPrior(n) // .par
+    val priorSample = simPrior(n).par
     println("finished prior sim. starting main forward sim")
     val dist = priorSample map { p => abcDist(p) }
     println("finished main sim. tidying up")
     val abcSample = (priorSample zip dist) filter (_._2 < cutoff)
     println(abcSample.length)
-    val s = new PrintWriter(new File("LVPN10-Abc1m.csv"))
+    val s = new PrintWriter(new File("LVPN10-Abc10m.csv"))
     // val s=new OutputStreamWriter(System.out)
     s.write("th0,th1,th2,d\n")
     abcSample map {t => s.write(t._1.toCsv+","+t._2+"\n")}
@@ -69,7 +69,7 @@ object LvAbc {
   }
 
   def main(args: Array[String]): Unit = {
-    runModel(1000000)
+    runModel(10000000)
   }
 
 }

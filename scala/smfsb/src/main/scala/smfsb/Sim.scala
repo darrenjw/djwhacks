@@ -33,7 +33,6 @@ object Sim {
     simTsList(List((t0, x0)), tt, dt, stepFun).reverse
   }
 
-  import breeze.linalg._
   def plotTs[S: State](ts: Ts[S]): Unit = {
     import breeze.plot._
     import breeze.linalg._

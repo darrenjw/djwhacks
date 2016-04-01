@@ -33,17 +33,25 @@ object Step {
     }
   }
 
+  def myPoisson(mean: Double): Int = if (mean < 200.0) {
+    // should cope better with large means...
+    Poisson(mean).sample
+  } else {
+    abs(round(Gaussian(mean, math.sqrt(mean)).draw)).toInt
+  }
+
   def pts[P: Parameter](n: Spn[P, IntState], dt: Double = 0.01): (P) => (IntState, Time, Time) => IntState = {
     val Sto = (n.post - n.pre).t
     val v = Sto.cols
     (th: P) => (x, t0, deltat) => {
       @tailrec def go(x: IntState, t0: Time, deltat: Time): IntState = {
-        if (deltat <= 0.0) x else {
+        //println(x.toCsv+" | "+t0+" "+deltat)
+        if (deltat <= 1.0e-8) x else {
           val adt = if (dt > deltat) deltat else dt
           val h = n.h(th)(x, t0)
-          val r = h map (hi => Poisson(hi * adt).sample)
+          val r = h map (hi => myPoisson(hi * adt))
           val nx = x + (Sto * r).toDenseVector
-          val tnx = nx map (xi => max(xi, 0))
+          val tnx = nx map (xi => abs(xi))
           go(tnx, t0 + adt, deltat - adt)
         }
       }
@@ -52,7 +60,7 @@ object Step {
   }
 
   def cle[P: Parameter](n: Spn[P, DoubleState], dt: Double = 0.01): (P) => (DoubleState, Time, Time) => DoubleState = {
-    val Sto = ((n.post - n.pre) map {_ * 1.0}).t
+    val Sto = ((n.post - n.pre) map { _ * 1.0 }).t
     val v = Sto.cols
     val sdt = Math.sqrt(dt)
     (th: P) => (x, t0, deltat) => {
@@ -61,7 +69,7 @@ object Step {
           val adt = if (dt > deltat) deltat else dt
           val sdt = Math.sqrt(adt)
           val h = n.h(th)(x, t0)
-          val dw = DenseVector(Gaussian(0.0,sdt).sample(v).toArray)
+          val dw = DenseVector(Gaussian(0.0, sdt).sample(v).toArray)
           val dx = Sto * ((h * adt) + (sqrt(h) :* dw))
           val nx = x + dx.toDenseVector
           val tnx = abs(nx)
@@ -71,7 +79,6 @@ object Step {
       go(x, t0, deltat)
     }
   }
-
 
   // TODO: general SDE E-M simulator
 

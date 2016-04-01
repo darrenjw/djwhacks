@@ -53,10 +53,10 @@ object Sim {
     plotTsDouble(dts)
   }
 
-// TODO: Figure out how to dynamically dispatch the plot function...
-// Easiest way is probably to introduce a "toDVD" method on State and Observation
+  // TODO: Figure out how to dynamically dispatch the plot function...
+  // Easiest way is probably to introduce a "toDvd" method on State and Observation
 
-/*
+  /*
 
   def plotTs[S: State](ts: Ts[S]): Unit = {
     val s0 = (ts(0)._2)
@@ -67,6 +67,11 @@ object Sim {
   }
 
  */
+
+  def toCsv[S: State](ts: Ts[S]): String = {
+    val ls = ts map { t => t._1.toString + "," + t._2.toCsv + "\n" }
+    ls.foldLeft("")(_ + _)
+  }
 
   // TODO: Add a simSample function
 

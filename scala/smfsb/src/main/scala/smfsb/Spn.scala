@@ -24,8 +24,8 @@ object SpnExamples {
   // Lotka-Volterra model 
   case class LvParameter(th0: Double, th1: Double, th2: Double)
   implicit val lvParameter = new Parameter[LvParameter] {
-    def perturb(p: LvParameter) = LvParameter(p.th0*exp(Gaussian(0, 0.05).draw),p.th1*exp(Gaussian(0, 0.05).draw),p.th2*exp(Gaussian(0, 0.05).draw))
-    def toCsv(p: LvParameter) =  "" + p.th0 + "," + p.th1 + "," + p.th2
+    def perturb(p: LvParameter) = LvParameter(p.th0 * exp(Gaussian(0, 0.05).draw), p.th1 * exp(Gaussian(0, 0.05).draw), p.th2 * exp(Gaussian(0, 0.05).draw))
+    def toCsv(p: LvParameter) = "" + p.th0 + "," + p.th1 + "," + p.th2
   }
   val lvparam = LvParameter(1.0, 0.005, 0.6)
   val lv = Spn[LvParameter, IntState](
@@ -73,8 +73,8 @@ object SpnExamples {
   // Auto-regulatory network
   case class ArParameter(c: DenseVector[Double])
   implicit val arParameter = new Parameter[ArParameter] {
-    def perturb(value: ArParameter) = value
-    def toCsv(p: ArParameter) = p.toString
+    def perturb(value: ArParameter) = ArParameter(value.c.map(_ * math.exp(Gaussian(0.0, 0.1).draw)))
+    def toCsv(p: ArParameter) = p.c.toCsv
   }
   val arparam = ArParameter(DenseVector(1.0, 10.0, 0.01, 10.0, 1.0, 1.0, 0.1, 0.01))
   val ar = Spn[ArParameter, IntState](
@@ -84,7 +84,6 @@ object SpnExamples {
     (th: ArParameter) => (x, t) => DenseVector(th.c(0) * x(1) * x(4), th.c(1) * x(0), th.c(2) * x(1), th.c(3) * x(2), th.c(4) * 0.5 * x(3) * (x(3) - 1), th.c(5) * x(4), th.c(6) * x(2), th.c(7) * x(3))
   )
   val stepAr = Step.gillespie(ar)
-
 
   // Continuous (CLE) version of the Lotka-Volterra model
   val lvc = Spn[LvParameter, DoubleState](

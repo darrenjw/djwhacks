@@ -18,7 +18,7 @@ object LvPmmh {
   import java.io.{File, PrintWriter, OutputStreamWriter}
   import Types._
   import SpnExamples._
-  import Mll.pfMll
+  import Mll._
   import Pmmh.runPmmh
 
   def simPrior(th: LvParameter)(n: Int, t: Time): IVec[IntState] = {
@@ -40,8 +40,8 @@ object LvPmmh {
   def runModel(its: Int): Unit = {
     val rawData = Source.fromFile("LVpreyNoise10.txt").getLines
     val data = ((0 to 30 by 2).toList zip rawData.toList) map { x => (x._1.toDouble, DenseVector(x._2.toDouble)) }
-    val mll = pfMll(150, simPrior, 0.0, stepLv, obsLik, data)
-    val s = new PrintWriter(new File("LVPN10-Pmmh100k.csv"))
+    val mll = pfMllP(160, simPrior, 0.0, stepLv, obsLik, data)
+    val s = new PrintWriter(new File("LVPN10-PPmmh100k.csv"))
     // val s=new OutputStreamWriter(System.out)
     s.write("th0,th1,th2\n")
     //s.write(((0 to 30 by 2) map { n => "x" + n + ",y" + n }).mkString(",") + "\n")
@@ -52,8 +52,8 @@ object LvPmmh {
   def runModelPts(its: Int): Unit = {
     val rawData = Source.fromFile("LVpreyNoise10.txt").getLines
     val data = ((0 to 30 by 2).toList zip rawData.toList) map { x => (x._1.toDouble, DenseVector(x._2.toDouble)) }
-    val mll = pfMll(150, simPrior, 0.0, stepLvPts, obsLik, data)
-    val s = new PrintWriter(new File("LVPN10-Pmmh100k-Pts.csv"))
+    val mll = pfMllP(160, simPrior, 0.0, stepLvPts, obsLik, data)
+    val s = new PrintWriter(new File("LVPN10-PPmmh100k-Pts.csv"))
     // val s=new OutputStreamWriter(System.out)
     s.write("th0,th1,th2\n")
     //s.write(((0 to 30 by 2) map { n => "x" + n + ",y" + n }).mkString(",") + "\n")
@@ -64,8 +64,8 @@ object LvPmmh {
   def main(args: Array[String]): Unit = {
     println("Running the exact model")
     runModel(100000)
-    println("Running the Pts model")
-    runModelPts(100000)
+    //println("Running the Pts model")
+    //runModelPts(100000)
   }
 
 }

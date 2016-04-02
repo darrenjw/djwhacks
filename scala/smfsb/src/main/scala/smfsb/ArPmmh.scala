@@ -30,6 +30,11 @@ object ArPmmh {
     val s = new PrintWriter(new File("AR-perfect.txt"))
     s.write(toCsv(ts))
     s.close
+    val nts = ts.map(r => (r._1,r._2.map(_*1.0) + DenseVector(Gaussian(0.0,10.0).sample(5).toArray)))
+    plotTs(nts)
+    val s2 = new PrintWriter(new File("AR-noise10.txt"))
+    s2.write(toCsv(nts))
+    s2.close
   }
 
   def simPrior(th: ArParameter)(n: Int, t: Time): IVec[IntState] = {
@@ -40,6 +45,7 @@ object ArPmmh {
 
   def obsLik(th: ArParameter)(s: IntState, o: DoubleState): LogLik = {
     // Hard code a noise standard deviation of 10
+    // Observing all species
     val ll = (s.toArray.toList zip o.toArray.toList) map { t =>
       Gaussian(t._1.toDouble, 10.0).logPdf(t._2)
     }
@@ -47,17 +53,14 @@ object ArPmmh {
   }
 
   def runModel(its: Int): Unit = {
-    val rawData = Source.fromFile("AR-perfect.txt").getLines.toList
+    val rawData = Source.fromFile("AR-noise10.txt").getLines.toList
     val data = rawData.map(_.split(",")).map(
       r => (r.head.toDouble, r.tail.map(_.toDouble))
     ).map(
         t => (t._1, DenseVector(t._2.toArray))
       )
-    // Choose one:
-    //val step = stepAr
-    val step=Step.pts(ar,0.02)
-    val mll = pfMllP(160, simPrior, 0.0, step, obsLik, data)
-    val s = new PrintWriter(new File("ARP-Pmmh10k.csv"))
+    val mll = pfMllP(160, simPrior, 0.0, stepAr, obsLik, data)
+    val s = new PrintWriter(new File("AR-Pmmh1k.csv"))
     // val s=new OutputStreamWriter(System.out)
     s.write((0 until 8).map(_.toString).map("c" + _).mkString(",") + "\n")
     val pmmhOutput = runPmmh(s, its, arparam, mll)
@@ -66,7 +69,7 @@ object ArPmmh {
 
   def main(args: Array[String]): Unit = {
     // simData() // will re-generate a new simulated dataset!!! Only run if _sure_!
-    runModel(10000)
+    runModel(1000)
   }
 
 }

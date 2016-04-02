@@ -30,7 +30,8 @@ object ArAbc {
 
   // Assume known initial state for now...
   def arModel(th: ArParameter): Ts[IntState] = {
-    val step = Step.pts(ar, 0.001)
+    val step = stepAr
+    // val step = Step.pts(ar, 0.001)
     simTs(
       DenseVector(10, 0, 0, 0, 0),
       0.0, 500.0, 10.0, step(th)
@@ -72,13 +73,13 @@ object ArAbc {
     val abcSample = simPrior(n).par
     val dist = abcSample map { p => abcDist(p) }
     val sorted = dist.toVector.sorted
-    val cut = sorted(n / 10)
+    val cut = sorted(n / 100)
     cut
   }
 
   def runModel(n: Int): Unit = {
     println("starting pilot")
-    val cutoff = pilotRun(100)
+    val cutoff = pilotRun(10000)
     println("cutoff is " + cutoff)
     println("finished pilot. starting prior sim")
     val priorSample = simPrior(n).par
@@ -86,8 +87,8 @@ object ArAbc {
     val dist = priorSample map { p => abcDist(p) }
     println("finished main sim. tidying up")
     val abcSample = (priorSample zip dist) filter (_._2 < cutoff)
-    println(abcSample.length)
-    val s = new PrintWriter(new File("AR-Abc1k.csv"))
+    println("final sample size: "+abcSample.length)
+    val s = new PrintWriter(new File("AR-Abc10k.csv"))
     // val s=new OutputStreamWriter(System.out)
     s.write((0 until 8).map(_.toString).map("c" + _).mkString(",") + "\n")
     abcSample map { t => s.write(t._1.toCsv + "," + t._2 + "\n") }
@@ -96,7 +97,7 @@ object ArAbc {
   }
 
   def main(args: Array[String]): Unit = {
-    runModel(1000)
+    runModel(10000)
   }
 
 }

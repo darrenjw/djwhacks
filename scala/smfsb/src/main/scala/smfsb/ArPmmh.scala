@@ -30,7 +30,8 @@ object ArPmmh {
     val s = new PrintWriter(new File("AR-perfect.txt"))
     s.write(toCsv(ts))
     s.close
-    val nts = ts.map(r => (r._1, r._2.map(_ * 1.0) + DenseVector(Gaussian(0.0, 10.0).sample(5).toArray)))
+    val nts = ts.map(r => (r._1, r._2.map(_ * 1.0) +
+      DenseVector(Gaussian(0.0, 10.0).sample(5).toArray)))
     plotTs(nts)
     val s2 = new PrintWriter(new File("AR-noise10.txt"))
     s2.write(toCsv(nts))

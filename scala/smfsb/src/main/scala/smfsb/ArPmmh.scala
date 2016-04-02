@@ -59,8 +59,8 @@ object ArPmmh {
     ).map(
         t => (t._1, DenseVector(t._2.toArray))
       )
-    val mll = pfMllP(160, simPrior, 0.0, stepAr, obsLik, data)
-    val s = new PrintWriter(new File("AR-Pmmh1k.csv"))
+    val mll = pfMllP(240, simPrior, 0.0, stepAr, obsLik, data)
+    val s = new PrintWriter(new File("AR-Pmmh1k-240.csv"))
     // val s=new OutputStreamWriter(System.out)
     s.write((0 until 8).map(_.toString).map("c" + _).mkString(",") + "\n")
     val pmmhOutput = runPmmh(s, its, arparam, mll)

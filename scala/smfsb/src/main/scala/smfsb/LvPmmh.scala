@@ -62,10 +62,10 @@ object LvPmmh {
   }
 
   def main(args: Array[String]): Unit = {
-    println("Running the exact model")
-    runModel(100000)
-    //println("Running the Pts model")
-    //runModelPts(100000)
+    //println("Running the exact model")
+    //runModel(100000)
+    println("Running the Pts model")
+    runModelPts(100000)
   }
 
 }

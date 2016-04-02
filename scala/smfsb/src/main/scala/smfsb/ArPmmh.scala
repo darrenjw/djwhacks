@@ -30,7 +30,7 @@ object ArPmmh {
     val s = new PrintWriter(new File("AR-perfect.txt"))
     s.write(toCsv(ts))
     s.close
-    val nts = ts.map(r => (r._1,r._2.map(_*1.0) + DenseVector(Gaussian(0.0,10.0).sample(5).toArray)))
+    val nts = ts.map(r => (r._1, r._2.map(_ * 1.0) + DenseVector(Gaussian(0.0, 10.0).sample(5).toArray)))
     plotTs(nts)
     val s2 = new PrintWriter(new File("AR-noise10.txt"))
     s2.write(toCsv(nts))
@@ -44,6 +44,13 @@ object ArPmmh {
   }
 
   def obsLik(th: ArParameter)(s: IntState, o: DoubleState): LogLik = {
+    // Hard code a noise standard deviation of 10
+    // Observing P and P2 only
+    Gaussian(s(3).toDouble, 10.0).logPdf(o(3)) +
+      Gaussian(s(4).toDouble, 10.0).logPdf(o(4))
+  }
+
+  def obsLikFull(th: ArParameter)(s: IntState, o: DoubleState): LogLik = {
     // Hard code a noise standard deviation of 10
     // Observing all species
     val ll = (s.toArray.toList zip o.toArray.toList) map { t =>

@@ -88,7 +88,7 @@ object ArAbc {
     println("finished main sim. tidying up")
     val abcSample = (priorSample zip dist) filter (_._2 < cutoff)
     println("final sample size: "+abcSample.length)
-    val s = new PrintWriter(new File("AR-Abc10k.csv"))
+    val s = new PrintWriter(new File("AR-Abc100k.csv"))
     // val s=new OutputStreamWriter(System.out)
     s.write((0 until 8).map(_.toString).map("c" + _).mkString(",") + "\n")
     abcSample map { t => s.write(t._1.toCsv + "," + t._2 + "\n") }
@@ -97,7 +97,7 @@ object ArAbc {
   }
 
   def main(args: Array[String]): Unit = {
-    runModel(10000)
+    runModel(100000)
   }
 
 }

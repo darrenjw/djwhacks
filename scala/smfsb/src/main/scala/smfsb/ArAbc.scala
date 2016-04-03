@@ -104,7 +104,7 @@ object ArAbc {
     println("final sample size: "+abcSample.length)
     val s = new PrintWriter(new File("AR-Abc100k.csv"))
     // val s=new OutputStreamWriter(System.out)
-    s.write((0 until 8).map(_.toString).map("c" + _).mkString(",") + "\n")
+    s.write((0 until 8).map(_.toString).map("c" + _).mkString(",") + ",distance\n")
     abcSample map { t => s.write(t._1.toCsv + "," + t._2 + "\n") }
     s.close
 

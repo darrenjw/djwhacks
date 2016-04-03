@@ -51,6 +51,20 @@ object ArAbc {
 
   def simPrior: ArParameter = {
     val c = DenseVector(
+      1.0,
+      10.0,
+      0.1,
+      math.exp(Uniform(-1, 4).draw),
+      1.0,
+      math.exp(Uniform(-2, 3).draw),
+      math.exp(Uniform(-3, 2).draw),
+      math.exp(Uniform(-6, -1).draw)
+    )
+    ArParameter(c)
+  }
+
+  def simPriorFull: ArParameter = {
+    val c = DenseVector(
       Uniform(-2, 3).draw,
       Uniform(-1, 4).draw,
       Uniform(-6, -1).draw,
@@ -88,7 +102,7 @@ object ArAbc {
     println("finished main sim. tidying up")
     val abcSample = (priorSample zip dist) filter (_._2 < cutoff)
     println("final sample size: "+abcSample.length)
-    val s = new PrintWriter(new File("AR-Abc100k.csv"))
+    val s = new PrintWriter(new File("AR-Abc10k.csv"))
     // val s=new OutputStreamWriter(System.out)
     s.write((0 until 8).map(_.toString).map("c" + _).mkString(",") + "\n")
     abcSample map { t => s.write(t._1.toCsv + "," + t._2 + "\n") }
@@ -97,7 +111,7 @@ object ArAbc {
   }
 
   def main(args: Array[String]): Unit = {
-    runModel(100000)
+    runModel(10000)
   }
 
 }

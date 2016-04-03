@@ -76,7 +76,8 @@ object SpnExamples {
   // Auto-regulatory network
   case class ArParameter(c: DenseVector[Double])
   implicit val arParameter = new Parameter[ArParameter] {
-    def perturb(value: ArParameter) = ArParameter(value.c.map(_ * math.exp(Gaussian(0.0, 0.1).draw)))
+    // def perturb(value: ArParameter) = ArParameter(value.c.map(_ * math.exp(Gaussian(0.0, 0.1).draw)))
+    def perturb(v: ArParameter) = ArParameter(DenseVector(v.c(0),v.c(1),v.c(2),v.c(3)*math.exp(Gaussian(0.0, 0.1).draw),v.c(4),v.c(5)*math.exp(Gaussian(0.0, 0.1).draw),v.c(6)*math.exp(Gaussian(0.0, 0.1).draw),v.c(7)*math.exp(Gaussian(0.0, 0.1).draw)))
     def toCsv(p: ArParameter) = (p.c.toArray map (_.toString)).mkString(",")
     def toDvd(p: ArParameter) = p.c
   }

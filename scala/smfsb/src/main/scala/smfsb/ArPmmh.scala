@@ -62,13 +62,13 @@ object ArPmmh {
 
   // prior weight the mll
   def getPwmll(mll: ArParameter => LogLik): ArParameter => LogLik = {
-    import math.log
+    import math.exp
     p =>
       if (
-        (p.c(3) > log(-1)) & (p.c(3) < log(4)) &
-          (p.c(5) > log(-2)) & (p.c(5) < log(3)) &
-          (p.c(6) > log(-3)) & (p.c(6) < log(2)) &
-          (p.c(7) > log(-6)) & (p.c(7) < log(-1))
+        (p.c(3) > exp(-1)) & (p.c(3) < exp(4)) &
+          (p.c(5) > exp(-2)) & (p.c(5) < exp(3)) &
+          (p.c(6) > exp(-3)) & (p.c(6) < exp(2)) &
+          (p.c(7) > exp(-6)) & (p.c(7) < exp(-1))
       ) mll(p) else -1.0e99
   }
 

@@ -2,6 +2,7 @@
 ArAbc.scala
 
 Simple example for doing inference for the AutoReg model using ABC methods
+using simple Euclidean distance
 
  */
 

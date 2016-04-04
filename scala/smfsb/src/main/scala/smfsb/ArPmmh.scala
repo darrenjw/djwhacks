@@ -60,6 +60,18 @@ object ArPmmh {
     ll.foldLeft(0.0)(_ + _)
   }
 
+  // prior weight the mll
+  def getPwmll(mll: ArParameter => LogLik): ArParameter => LogLik = {
+    import math.log
+    p =>
+      if (
+        (p.c(3) > log(-1)) & (p.c(3) < log(4)) &
+          (p.c(5) > log(-2)) & (p.c(5) < log(3)) &
+          (p.c(6) > log(-3)) & (p.c(6) < log(2)) &
+          (p.c(7) > log(-6)) & (p.c(7) < log(-1))
+      ) mll(p) else -1.0e99
+  }
+
   def runModel(its: Int): Unit = {
     val rawData = Source.fromFile("AR-noise10.txt").getLines.toList
     val data = rawData.map(_.split(",")).map(
@@ -68,10 +80,11 @@ object ArPmmh {
         t => (t._1, DenseVector(t._2.toArray))
       )
     val mll = pfMllP(240, simPrior, 0.0, stepAr, obsLik, data)
+    val pwmll = getPwmll(mll)
     val s = new PrintWriter(new File("AR-Pmmh10k-240.csv"))
     // val s=new OutputStreamWriter(System.out)
     s.write((0 until 8).map(_.toString).map("c" + _).mkString(",") + "\n")
-    val pmmhOutput = runPmmh(s, its, arparam, mll)
+    val pmmhOutput = runPmmh(s, its, arparam, pwmll)
     s.close
   }
 

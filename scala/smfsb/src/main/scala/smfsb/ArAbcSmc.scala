@@ -132,15 +132,23 @@ object ArAbcSmc {
     metric
   }
 
+  def normaliseLogWeights(lw: DenseVector[Double]): DenseVector[Double] = {
+    import breeze.linalg._
+    val m=max(lw)
+    val alw=lw.map(_-m)
+    val s=m+math.log(sum(alw.map(math.exp(_))))
+    val nlw=lw.map(_-s)
+    println(nlw.map(math.exp(_)))
+    nlw
+  }
+
   def refineSample(params: Vector[ArParameter],logWeights: DenseVector[Double],distance: ArParameter => Double,it: Int): Unit = {
     import breeze.linalg.max
-    import math.exp
+    import math.{exp,log}
     println("Starting iteration "+it)
     val factor=5
     val n=params.length
-    val mlw=max(logWeights)
-    val alw=logWeights.map(_-mlw)
-    val idx=sample(factor*n,alw.map(exp(_)))
+    val idx=sample(factor*n,logWeights.map(exp(_)))
     val propParams=idx.toVector.map(i=>params(i).perturb).par
     val dist=propParams map {p => distance(p)}
     val sorted=dist.toVector.sorted
@@ -155,12 +163,15 @@ object ArAbcSmc {
       mt+math.log(at.map(exp(_)).sum)
     }
     val newLogWeights1=denoms.map(d=>1.0-d)
-    val newLogWeights = (newParams zip newLogWeights1).map(t=> if (
+    val newLogWeights2 = (newParams zip newLogWeights1).map(t=> if (
         (t._1.c(3) > exp(-1)) & (t._1.c(3) < exp(4)) &
           (t._1.c(5) > exp(-2)) & (t._1.c(5) < exp(3)) &
           (t._1.c(6) > exp(-3)) & (t._1.c(6) < exp(2)) &
           (t._1.c(7) > exp(-6)) & (t._1.c(7) < exp(-1))
     ) t._2 else -1e99)
+    val newLogWeights = normaliseLogWeights(DenseVector(newLogWeights2.toVector.toArray))
+    // TEST WITH FIXED WEIGHTS
+    //val newLogWeights = normaliseLogWeights(DenseVector.fill(newLogWeights2.length,1.0))
     val filename=f"AR-AbcSmc-$it%03d.csv"
     println("Writing file: "+filename)
     val s = new PrintWriter(new File(filename))
@@ -168,7 +179,7 @@ object ArAbcSmc {
     newParams.toVector map { p => s.write(p.toCsv + "\n") }
     s.close
     if (it<10)
-      refineSample(newParams.toVector,DenseVector(newLogWeights.toVector.toArray),distance,it+1)
+      refineSample(newParams.toVector,newLogWeights,distance,it+1)
     }
 
   def runModel(n: Int): Unit = {
@@ -176,7 +187,7 @@ object ArAbcSmc {
     val distance = abcDistance(arModel, metric) _
     println("Starting prior sim")
     val priorSample = simPrior(n)
-    val initWeights=DenseVector.fill(n,math.log(1.0/n))
+    val initWeights=normaliseLogWeights(DenseVector.fill(n,1.0))
     println("Finished prior sim. Starting main sim")
     refineSample(priorSample,initWeights,distance,1)
   }

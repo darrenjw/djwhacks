@@ -76,7 +76,8 @@ object SpnExamples {
   // Auto-regulatory network
   case class ArParameter(c: DenseVector[Double]) {
     def pertLogPdf(p: ArParameter): LogLik = {
-      Gaussian(c(3),0.1).logPdf(p.c(3))+Gaussian(c(5),0.1).logPdf(p.c(5))+Gaussian(c(6),0.1).logPdf(p.c(6))+Gaussian(c(7),0.1).logPdf(p.c(7))
+      import math.log
+      Gaussian(log(c(3)),0.1).logPdf(log(p.c(3)))+Gaussian(log(c(5)),0.1).logPdf(log(p.c(5)))+Gaussian(log(c(6)),0.1).logPdf(log(p.c(6)))+Gaussian(log(c(7)),0.1).logPdf(log(p.c(7)))
       }
     }
   implicit val arParameter = new Parameter[ArParameter] {

@@ -132,27 +132,35 @@ object ArAbcSmc {
     metric
   }
 
-  def refineSample(params: Vector[ArParameter],weights: DenseVector[Double],distance: ArParameter => Double,it: Int): Unit = {
+  def refineSample(params: Vector[ArParameter],logWeights: DenseVector[Double],distance: ArParameter => Double,it: Int): Unit = {
+    import breeze.linalg.max
+    import math.exp
     println("Starting iteration "+it)
     val factor=5
     val n=params.length
-    val idx=sample(factor*n,weights)
+    val mlw=max(logWeights)
+    val alw=logWeights.map(_-mlw)
+    val idx=sample(factor*n,alw.map(exp(_)))
     val propParams=idx.toVector.map(i=>params(i).perturb).par
     val dist=propParams map {p => distance(p)}
     val sorted=dist.toVector.sorted
     val cut=sorted(n)
     println("New cutoff is "+cut)
     val newParams=(propParams zip dist).filter(_._2 < cut).map(_._1)
-    val samp=params zip weights.toArray.toVector
+    val samp=params.zip(logWeights.toArray.toVector)
     val denoms=newParams.map{p=>
-      val terms=samp.map(t=>p.pertPdf(t._1)*t._2)
-      terms.sum
+      val terms=samp.map(t=>p.pertLogPdf(t._1)+t._2)
+      val mt=terms.max
+      val at=terms.map(_-mt)
+      mt+math.log(at.map(exp(_)).sum)
     }
-    // TODO - truncate weights with no support...
-    val newRawWeights=denoms.map(d=>1.0/d)
-    val rws=newRawWeights.sum
-    println("Raw weight sum is "+rws)
-    val newWeights=newRawWeights.map(_/rws)
+    val newLogWeights1=denoms.map(d=>1.0-d)
+    val newLogWeights = (newParams zip newLogWeights1).map(t=> if (
+        (t._1.c(3) > exp(-1)) & (t._1.c(3) < exp(4)) &
+          (t._1.c(5) > exp(-2)) & (t._1.c(5) < exp(3)) &
+          (t._1.c(6) > exp(-3)) & (t._1.c(6) < exp(2)) &
+          (t._1.c(7) > exp(-6)) & (t._1.c(7) < exp(-1))
+    ) t._2 else -1e99)
     val filename=f"AR-AbcSmc-$it%03d.csv"
     println("Writing file: "+filename)
     val s = new PrintWriter(new File(filename))
@@ -160,7 +168,7 @@ object ArAbcSmc {
     newParams.toVector map { p => s.write(p.toCsv + "\n") }
     s.close
     if (it<10)
-      refineSample(newParams.toVector,DenseVector(newWeights.toVector.toArray),distance,it+1)
+      refineSample(newParams.toVector,DenseVector(newLogWeights.toVector.toArray),distance,it+1)
     }
 
   def runModel(n: Int): Unit = {
@@ -168,7 +176,7 @@ object ArAbcSmc {
     val distance = abcDistance(arModel, metric) _
     println("Starting prior sim")
     val priorSample = simPrior(n)
-    val initWeights=DenseVector.fill(n,1.0/n)
+    val initWeights=DenseVector.fill(n,math.log(1.0/n))
     println("Finished prior sim. Starting main sim")
     refineSample(priorSample,initWeights,distance,1)
   }

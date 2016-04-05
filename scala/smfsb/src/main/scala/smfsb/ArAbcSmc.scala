@@ -172,7 +172,7 @@ object ArAbcSmc {
     val newLogWeights = normaliseLogWeights(DenseVector(newLogWeights2.toVector.toArray))
     // TEST WITH FIXED WEIGHTS
     //val newLogWeights = normaliseLogWeights(DenseVector.fill(newLogWeights2.length,1.0))
-    val filename=f"AR-AbcSmc-$it%03d.csv"
+    val filename=f"AR-AbcSmc10k-$it%03d.csv"
     println("Writing file: "+filename)
     val s = new PrintWriter(new File(filename))
     s.write((0 until 8).map(_.toString).map("c" + _).mkString(",")+"\n")
@@ -183,7 +183,7 @@ object ArAbcSmc {
     }
 
   def runModel(n: Int): Unit = {
-    val metric = pilotRun(1000)
+    val metric = pilotRun(10000)
     val distance = abcDistance(arModel, metric) _
     println("Starting prior sim")
     val priorSample = simPrior(n)
@@ -193,7 +193,7 @@ object ArAbcSmc {
   }
 
   def main(args: Array[String]): Unit = {
-    runModel(1000)
+    runModel(10000)
   }
 
 }

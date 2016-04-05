@@ -138,7 +138,7 @@ object ArAbcSmc {
     val alw=lw.map(_-m)
     val s=m+math.log(sum(alw.map(math.exp(_))))
     val nlw=lw.map(_-s)
-    println(nlw.map(math.exp(_)))
+    //println(nlw.map(math.exp(_)))
     nlw
   }
 

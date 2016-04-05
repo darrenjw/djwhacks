@@ -151,6 +151,7 @@ object ArAbcSmc {
     // TODO - truncate weights with no support...
     val newRawWeights=denoms.map(d=>1.0/d)
     val rws=newRawWeights.sum
+    println("Raw weight sum is "+rws)
     val newWeights=newRawWeights.map(_/rws)
     val filename=f"AR-AbcSmc-$it%03d.csv"
     println("Writing file: "+filename)

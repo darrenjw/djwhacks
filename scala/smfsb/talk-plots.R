@@ -6,12 +6,17 @@ library(smfsb)
 # Functions to produce the actual plots
 
 mcmcPlots=function(mat,root) {
+    pdf(paste(root,"-tr.pdf",sep=""),10,8)
     mcmcSummary(mat)
+    dev.off()
+    pdf(paste(root,"-sc.pdf",sep=""),10,8)
     plot(mat,pch=19,cex=0.2,main=root)    
+    dev.off()
 }
 
 abcPlots=function(mat,root) {
     mcmcSummary(mat,plot=FALSE)
+    pdf(paste(root,"-md.pdf",sep=""),10,8)
     op=par(mfrow=c(2,2))
     names=colnames(mat)
     p=dim(mat)[2]
@@ -19,7 +24,10 @@ abcPlots=function(mat,root) {
         hist(mat[,i],30,main=names[i],xlab="Value",freq=FALSE)
     }
     par(op)
+    dev.off()
+    pdf(paste(root,"-sc.pdf",sep=""),10,8)
     plot(mat,pch=19,cex=0.2,main=root)    
+    dev.off()
 }
 
 plotFile=function(filename,type="mcmc") {
@@ -64,6 +72,8 @@ for (i in 1:10) {
     filename=sprintf("AR-AbcSmc10k-%03d.csv",i)
     plotFile(filename,type="abc")
 }
+
+
 
 # eof
 

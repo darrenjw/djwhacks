@@ -74,7 +74,12 @@ object SpnExamples {
   val stepMm = Step.gillespie(mm)
 
   // Auto-regulatory network
-  case class ArParameter(c: DenseVector[Double])
+  case class ArParameter(c: DenseVector[Double]) {
+    def pertLogPdf(p: ArParameter): LogLik = {
+      import math.log
+      Gaussian(log(c(3)),0.1).logPdf(log(p.c(3)))+Gaussian(log(c(5)),0.1).logPdf(log(p.c(5)))+Gaussian(log(c(6)),0.1).logPdf(log(p.c(6)))+Gaussian(log(c(7)),0.1).logPdf(log(p.c(7)))
+      }
+    }
   implicit val arParameter = new Parameter[ArParameter] {
     // def perturb(value: ArParameter) = ArParameter(value.c.map(_ * math.exp(Gaussian(0.0, 0.1).draw)))
     def perturb(v: ArParameter) = ArParameter(DenseVector(v.c(0),v.c(1),v.c(2),v.c(3)*math.exp(Gaussian(0.0, 0.1).draw),v.c(4),v.c(5)*math.exp(Gaussian(0.0, 0.1).draw),v.c(6)*math.exp(Gaussian(0.0, 0.1).draw),v.c(7)*math.exp(Gaussian(0.0, 0.1).draw)))

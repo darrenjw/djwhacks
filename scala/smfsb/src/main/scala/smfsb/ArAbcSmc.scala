@@ -1,14 +1,14 @@
 /*
-ArAbcSs.scala
+ArAbcSmc.scala
 
 Simple example for doing inference for the AutoReg model using ABC methods with
-summary statistics
+summary statistics and SMC
 
  */
 
 package smfsb
 
-object ArAbcSs {
+object ArAbcSmc {
 
   import scala.io.Source
   import breeze.linalg.DenseVector
@@ -19,6 +19,7 @@ object ArAbcSs {
   import Step.pts
   import Abc._
   import Sim.simTs
+  import Mll.sample
 
   val rawData = Source.fromFile("AR-noise10.txt").getLines.toList
   val data = rawData.map(_.split(",")).map(
@@ -115,9 +116,9 @@ object ArAbcSs {
     (0 until n).toVector map { x => simPrior }
   }
 
-  def pilotRun(n: Int): (Ts[DoubleState] => Double, Double) = {
+  def pilotRun(n: Int): Ts[DoubleState] => Double = {
     import breeze.stats._
-    println("starting pilot")
+    println("Starting pilot")
     val abcSample = simPrior(n).par
     val dataSets = abcSample map (p => arModel(p))
     val rss = dataSets map { ts => rawSs(ts) }
@@ -127,34 +128,72 @@ object ArAbcSs {
     println("sds: " + sds)
     val ss = getSs(sds)
     val metric = getMetric(ss)
-    val dist = dataSets map (ts => metric(ts))
-    val sorted = dist.toVector.sorted
-    val cut = sorted(n / 200)
-    println("finished pilot")
-    (metric, cut)
+    println("Finished pilot")
+    metric
   }
 
-  def runModel(n: Int): Unit = {
-    val (metric, cutoff) = pilotRun(10000)
-    println("cutoff is " + cutoff)
-    val distance = abcDistance(arModel, metric) _
-    println("starting prior sim")
-    val priorSample = simPrior(n).par
-    println("finished prior sim. starting main forward sim")
-    val dist = priorSample map { p => distance(p) }
-    println("finished main sim. tidying up")
-    val abcSample = (priorSample zip dist) filter (_._2 < cutoff)
-    println("final sample size: " + abcSample.length)
-    val s = new PrintWriter(new File("AR-AbcSs1m.csv"))
-    // val s=new OutputStreamWriter(System.out)
-    s.write((0 until 8).map(_.toString).map("c" + _).mkString(",") + ",distance\n")
-    abcSample map { t => s.write(t._1.toCsv + "," + t._2 + "\n") }
-    s.close
+  def normaliseLogWeights(lw: DenseVector[Double]): DenseVector[Double] = {
+    import breeze.linalg._
+    val m=max(lw)
+    val alw=lw.map(_-m)
+    val s=m+math.log(sum(alw.map(math.exp(_))))
+    val nlw=lw.map(_-s)
+    //println(nlw.map(math.exp(_)))
+    nlw
+  }
 
+  def refineSample(params: Vector[ArParameter],logWeights: DenseVector[Double],distance: ArParameter => Double,it: Int): Unit = {
+    import breeze.linalg.max
+    import math.{exp,log}
+    println("Starting iteration "+it)
+    val factor=5
+    val n=params.length
+    val idx=sample(factor*n,logWeights.map(exp(_)))
+    val propParams=idx.toVector.map(i=>params(i).perturb).par
+    val dist=propParams map {p => distance(p)}
+    val sorted=dist.toVector.sorted
+    val cut=sorted(n)
+    println("New cutoff is "+cut)
+    val newParams=(propParams zip dist).filter(_._2 < cut).map(_._1)
+    val samp=params.zip(logWeights.toArray.toVector)
+    val denoms=newParams.map{p=>
+      val terms=samp.map(t=>p.pertLogPdf(t._1)+t._2)
+      val mt=terms.max
+      val at=terms.map(_-mt)
+      mt+math.log(at.map(exp(_)).sum)
+    }
+    val newLogWeights1=denoms.map(d=>1.0-d)
+    val newLogWeights2 = (newParams zip newLogWeights1).map(t=> if (
+        (t._1.c(3) > exp(-1)) & (t._1.c(3) < exp(4)) &
+          (t._1.c(5) > exp(-2)) & (t._1.c(5) < exp(3)) &
+          (t._1.c(6) > exp(-3)) & (t._1.c(6) < exp(2)) &
+          (t._1.c(7) > exp(-6)) & (t._1.c(7) < exp(-1))
+    ) t._2 else -1e99)
+    val newLogWeights = normaliseLogWeights(DenseVector(newLogWeights2.toVector.toArray))
+    // TEST WITH FIXED WEIGHTS
+    //val newLogWeights = normaliseLogWeights(DenseVector.fill(newLogWeights2.length,1.0))
+    val filename=f"AR-AbcSmc10k-$it%03d.csv"
+    println("Writing file: "+filename)
+    val s = new PrintWriter(new File(filename))
+    s.write((0 until 8).map(_.toString).map("c" + _).mkString(",")+"\n")
+    newParams.toVector map { p => s.write(p.toCsv + "\n") }
+    s.close
+    if (it<10)
+      refineSample(newParams.toVector,newLogWeights,distance,it+1)
+    }
+
+  def runModel(n: Int): Unit = {
+    val metric = pilotRun(10000)
+    val distance = abcDistance(arModel, metric) _
+    println("Starting prior sim")
+    val priorSample = simPrior(n)
+    val initWeights=normaliseLogWeights(DenseVector.fill(n,1.0))
+    println("Finished prior sim. Starting main sim")
+    refineSample(priorSample,initWeights,distance,1)
   }
 
   def main(args: Array[String]): Unit = {
-    runModel(1000000)
+    runModel(10000)
   }
 
 }

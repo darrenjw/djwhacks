@@ -81,7 +81,7 @@ object ArPmmh {
       )
     val mll = pfMllP(240, simPrior, 0.0, stepAr, obsLik, data)
     val pwmll = getPwmll(mll)
-    val s = new PrintWriter(new File("AR-Pmmh10k-240.csv"))
+    val s = new PrintWriter(new File("AR-Pmmh100k-240.csv"))
     // val s=new OutputStreamWriter(System.out)
     s.write((0 until 8).map(_.toString).map("c" + _).mkString(",") + "\n")
     val pmmhOutput = runPmmh(s, its, arparam, pwmll)
@@ -90,7 +90,7 @@ object ArPmmh {
 
   def main(args: Array[String]): Unit = {
     // simData() // will re-generate a new simulated dataset!!! Only run if _sure_!
-    runModel(10000)
+    runModel(100000)
   }
 
 }

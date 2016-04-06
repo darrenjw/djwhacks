@@ -49,7 +49,8 @@ plotFile=function(filename,type="mcmc") {
 
 myCols=function(mat) {
     nm=mat[,c("c3","c5","c6","c7")]
-    colnames(nm)=c("k3","k4r","k5","k6")
+    # colnames(nm)=c("k3","k4r","k5","k6")
+    colnames(nm)=c("kTrans","kDiss","kRDeg","kPDeg")
     nm
 }
 
@@ -61,18 +62,32 @@ myLog=function(mat) {
     lm
 }
 
-# Script to read the data and call the plotting functions
-
-plotFile("AR-Pmmh10k-240-r1.csv")
-
-plotFile("AR-Abc1m.csv",type="abc")
-plotFile("AR-AbcSs1m.csv",type="abc")
-
-for (i in 1:10) {
-    filename=sprintf("AR-AbcSmc10k-%03d.csv",i)
-    plotFile(filename,type="abc")
+plotInf=function() {
+    plotFile("AR-Pmmh10k-240-r1.csv")
+    plotFile("AR-Abc1m.csv",type="abc")
+    plotFile("AR-AbcSs1m.csv",type="abc")
+    for (i in 1:10) {
+        filename=sprintf("AR-AbcSmc10k-%03d.csv",i)
+        plotFile(filename,type="abc")
+    }
 }
 
+plotData=function() {
+    perf=read.csv("AR-perfect.txt",header=FALSE)
+    times=perf[,1]
+    perf=ts(perf[,2:dim(perf)[2]],start=times[1],deltat=times[2]-times[1])
+    pdf("AR-Data.pdf",10,8)
+    plot(perf,plot.type="single",lty=c(2,2,2,1,1),ylab="Molecule count",lwd=2,main="True species counts at 50 time points and noisy data on two species")
+    noise=read.csv("AR-noise10.txt",header=FALSE)
+    points(times,noise[,5],pch=19)
+    points(times,noise[,6],pch=17)
+    dev.off()
+}
+
+# script to generate the plots
+
+plotData()
+plotInf()
 
 
 # eof

@@ -6,6 +6,7 @@
 * April 2016 meetup: http://www.meetup.com/FP-North-East/events/229282155/
 * Twitter: [@FP_North_East](https://twitter.com/FP_North_East)
 * GitHub: https://github.com/FP-North-East
+* Slack: https://fp-north-east.slack.com/
 
 ### Part 1: Higher order functions
 

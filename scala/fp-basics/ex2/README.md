@@ -46,8 +46,27 @@ Again, these test cases are all included in the associated Scala template in thi
 
 ### Part B (if time permits)
 
-(solve a triangular system of nonlinear equations)
+The quadratic curve `y = a*x*x` for any fixed `a > 0` intersects the unit circle `x*x + y*y = 1` exactly once for `0 <= x <= 1`. Our task is to use our function `findRootOpt` to find this `x`.
 
+Using just a tiny bit of maths, we can write the solution to this problem as the solution to the triangular system:
+
+```scala
+y - a*(1-y*y) = 0
+
+x*x + y*y -1 = 0
+
+```
+
+The left hand side of first equation will clearly be negative at `y=0` and positive at `y=1`. Then for `0 <= y <= 1`, the left hand side of the second equation will be negative at `x=0` and positive at `x=1`.
+
+Write a function, `solveQuad`, which accepts a value `a`, and uses a for-expression with `findRootOpt` to obtain the solution for `x`. It should have signature:
+
+```scala
+solveQuad(a: Double): Option[Double]
+```
+
+We can test this function by picking an `a`, solving for `x`, computing `y = a*x*x`, then checking whether `x*x + y*y = 1`. Some example tests are included in the Scala template in this directory.
 
 You can run all tests for Part A and Part B with the `~test` task in `sbt`, or just the specific tests for Part B with `~testOnly PartB`.
+
 

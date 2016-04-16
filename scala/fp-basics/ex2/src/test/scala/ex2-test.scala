@@ -73,7 +73,6 @@ class PartA extends FunSuite {
 
 }
 
-
 @RunWith(classOf[JUnitRunner])
 class PartB extends FunSuite {
 
@@ -95,11 +94,30 @@ class PartB extends FunSuite {
 
   import Ex2._
 
+  def testX(a: Double, x: Double): Boolean = {
+    val y = a * x * x
+    approxEq(x * x + y * y, 1.0)
+  }
+
+  test("solveQuad(0.1)") {
+    assert(testX(0.1, solveQuad(0.1).getOrElse(0.0)))
+  }
+
+  test("solveQuad(1.0)") {
+    assert(testX(1.0, solveQuad(1.0).getOrElse(0.0)))
+  }
+
+  test("solveQuad(10.0)") {
+    assert(testX(10.0, solveQuad(10.0).getOrElse(0.0)))
+  }
+
+  test("solveQuad(0.01)") {
+    assert(testX(0.01, solveQuad(0.01).getOrElse(0.0)))
+  }
+
 
 
 }
-
-
 
 /* eof */
 

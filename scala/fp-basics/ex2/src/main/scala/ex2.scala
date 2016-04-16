@@ -5,6 +5,8 @@ ex2.scala
 
 object Ex2 {
 
+  // Part A
+
   def findRootOpt(low: Double, high: Double)(f: Double => Double): Option[Double] = {
     if ((low < high) & (f(low) * f(high) < 0.0))
       Some(findRoot(low, high)(f)) else None
@@ -24,6 +26,13 @@ object Ex2 {
       if (fl * fm > 0.0) findRoot(mid, fm, high)(f) else findRoot(low, fl, mid)(f)
     }
   }
+
+  // Part B
+
+  def solveQuad(a: Double): Option[Double] = for {
+    y <- findRootOpt(0.0, 1.0)(y => y - a * (1 - y * y))
+    x <- findRootOpt(0.0, 1.0)(x => x * x + y * y - 1.0)
+  } yield x
 
 }
 

@@ -63,7 +63,7 @@ myLog=function(mat) {
 }
 
 plotInf=function() {
-    plotFile("AR-Pmmh10k-240-ct.csv")
+    plotFile("AR-Pmmh100k-240-t.csv")
     plotFile("AR-Abc1m.csv",type="abc")
     plotFile("AR-AbcSs1m.csv",type="abc")
     for (i in 1:10) {

@@ -146,7 +146,7 @@ object ArAbcSmc {
     import breeze.linalg.max
     import math.{exp,log}
     println("Starting iteration "+it)
-    val factor=5
+    val factor=10
     val n=params.length
     val idx=sample(factor*n,logWeights.map(exp(_)))
     val propParams=idx.toVector.map(i=>params(i).perturb).par

@@ -1,28 +1,21 @@
 
 # "bayeskit"
 
-## Scala library for Bayesian computation - especially SMC and pMCMC algorithms for Markov processes
+## Scala library for Bayesian computation - pMCMC algorithms for Markov processes
 
 Uses "sbt" for building - build file in this directory.
 A default sbt installation should "compile", "test" and "run" code.
 Code relies heavily on "breeze".
 
-This code is EXPERIMENTAL. It is not yet for general use.
-Copyright (C) 2014, Darren Wilkinson, http://tinyurl.com/darrenjw
+This code is EXPERIMENTAL ABANDONWARE. It is not intended for general use.
 
-TODO
-----
-* Brownian motion test example.
-* Unknown SD for LV example - bivariate obs, too - all three examples from SMfSB.
-* Simulating arbitrary SPN models.
-* Diffusion approximations.
-* ABC-SMC inference code.
-* Scaladoc.
-* Parsing SBML models into SPN simulators (using jsbml).
-* Hook to Java-based SBML simulator.
+However, I am open-sourcing all of the code in this directory and all subdirectories of this directory under an Apache license, for the benefit of some students who would like to use it as part of their Masters project.
 
+Copyright 2016 Darren J Wilkinson
 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
 
-% eof
+See the LICENSE file for details.
 
 

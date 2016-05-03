@@ -66,8 +66,12 @@ plotInf=function() {
     plotFile("AR-Pmmh100k-240-t.csv")
     plotFile("AR-Abc1m.csv",type="abc")
     plotFile("AR-AbcSs1m.csv",type="abc")
-    for (i in 1:10) {
-        filename=sprintf("AR-AbcSmc10k-%03d.csv",i)
+    for (i in 1:20) {
+        filestem=sprintf("AR-AbcSmc20k-%03d",i)
+        shortname=paste(filestem,".csv",sep="")
+        filename=paste(filestem,"-t.csv",sep="")
+        command=paste("mcmc.py -t 4 <",shortname,">",filename)
+        system(command)
         plotFile(filename,type="abc")
     }
 }

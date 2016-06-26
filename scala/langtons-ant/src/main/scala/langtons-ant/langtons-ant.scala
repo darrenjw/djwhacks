@@ -5,6 +5,8 @@ https://en.wikipedia.org/wiki/Langton%27s_ant
 
  */
 
+import java.awt.image.BufferedImage
+
 case class Img(size: Int, data: Vector[Boolean]) {
 
   def apply(x: Int, y: Int): Boolean = data(y * size + x)
@@ -48,16 +50,32 @@ object LangtonsAnt {
   def nextState(s: State): State = {
     val size = s.img.size
     val ant = s.ant.move
-    val wAnt = Ant(ant.x % size, ant.y % size, ant.d)
+    val wa = Ant((ant.x + size) % size, (ant.y + size) % size, ant.d)
+    if (s.img(wa.x, wa.y)) State(Ant(wa.x, wa.y, (wa.d + 1) % 4), s.img.updated(wa.x, wa.y, false))
+    else State(Ant(wa.x, wa.y, (wa.d + 3) % 4), s.img.updated(wa.x, wa.y, true))
+  }
 
-    s
+  def stateStream(s: State): Stream[State] = s #:: stateStream(nextState(s))
+
+  def img2Image(img: Img): BufferedImage = {
+    val canvas = new BufferedImage(img.size, img.size, BufferedImage.TYPE_BYTE_BINARY)
+    val wr = canvas.getRaster
+    for (x <- 0 until img.size) {
+      for (y <- 0 until img.size) {
+        wr.setSample(x, y, 0, if (img(x, y)) 0 else 1)
+      }
+    }
+    canvas
   }
 
   def main(args: Array[String]): Unit = {
-    println("hi")
-    val im = Img(5).updated(2, 2, true)
-    println(im)
-    println("bye")
+    println("starting")
+    val ss = stateStream(State(300))
+    val is = ss.map(s => s.img)
+    val bis = is.map(img2Image(_))
+    val fin = bis.drop(20000).head
+    javax.imageio.ImageIO.write(fin, "png", new java.io.File("img.png"))
+    println("done")
   }
 
 }

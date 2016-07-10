@@ -57,6 +57,11 @@ object LangtonsAnt {
 
   def stateStream(s: State): Stream[State] = s #:: stateStream(nextState(s))
 
+  def thinStream[T](s: Stream[T],th: Int): Stream[T] = {
+    val ss = s.drop(th)
+    ss.head #:: thinStream(ss,th)
+    }
+
   def img2Image(img: Img): BufferedImage = {
     val canvas = new BufferedImage(img.size, img.size, BufferedImage.TYPE_BYTE_BINARY)
     val wr = canvas.getRaster

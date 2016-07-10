@@ -14,17 +14,17 @@ import LangtonsAnt._
 
 object AntSwingApp extends SimpleSwingApplication {
 
-  val ssize=300
+  val ssize=250
+  val stretch=5
 
   def top = new MainFrame {
     title = "Langton's Ant"
-    val panel = ImagePanel(ssize)
+    val panel = ImagePanel(ssize*stretch)
     contents = new BoxPanel(Orientation.Vertical) {
       contents += panel
       border = Swing.EmptyBorder(10, 10, 10, 10)
     }
-    var is=stateStream(State(ssize)).map(s=>img2Image(s.img))
-    is=thinStream(is,10)
+    var is=thinStream(stateStream(State(ssize)),100).map(s=>img2Image(s.img)).map(biResize(_,ssize*stretch,ssize*stretch))
     val timer=new javax.swing.Timer(1,Swing.ActionListener(e=>{
       panel.bi=is.head
       is=is.tail

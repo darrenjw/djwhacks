@@ -12,6 +12,9 @@
     * [Monad (CT)](https://en.wikipedia.org/wiki/Monad_(category_theory))
     * [Natural transformation](https://en.wikipedia.org/wiki/Natural_transformation)
     * [Free object](https://en.wikipedia.org/wiki/Free_object)
+	* [Higher category theory](https://en.wikipedia.org/wiki/Higher_category_theory)
+* [n-Lab](https://ncatlab.org/nlab/show/HomePage)
+	* [Monad](https://ncatlab.org/nlab/show/monad)
 
 ## CT for FP
 
@@ -23,10 +26,13 @@
     * [Arrow](https://en.wikipedia.org/wiki/Arrow_(computer_science))
 * [Catamorphisms](http://chrislambda.github.io/blog/2014/01/30/catamorphisms-in-15-minutes/)
 * [CT for programmers](http://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/)
+* [FP Jargon](https://github.com/hemanth/functional-programming-jargon)
+* [Why do monads matter?](https://cdsmith.wordpress.com/2012/04/18/why-do-monads-matter/)
 
 ### Haskell
 
 * [HaskellWiki](https://en.wikibooks.org/wiki/Haskell)
+    * [Typeclassopedia](https://wiki.haskell.org/Typeclassopedia)
     * [CT](https://en.wikibooks.org/wiki/Haskell/Category_theory)
     * [Monoid](https://en.wikibooks.org/wiki/Haskell/Monoids)
     * [Applicative functors](https://en.wikibooks.org/wiki/Haskell/Applicative_functors)
@@ -36,12 +42,17 @@
     * [Arrows](https://en.wikibooks.org/wiki/Haskell/Understanding_arrows)
 * [Functors, Applicatives, And Monads](http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html)
 * Grasping [Functors](https://medium.com/@xanderdeseyn/grasping-haskell-functors-applicatives-and-monads-part-1-93368e0a7a74), [Applicatives](https://medium.com/@xanderdeseyn/grasping-haskell-functors-applicatives-and-monads-part-2-65255e3e6a1d), and Monads
+* [The State Monad](http://brandon.si/code/the-state-monad-a-tutorial-for-the-confused/)
+* [Recursion schemes](http://blog.sumtypeofway.com/an-introduction-to-recursion-schemes/)
 
 ### Scala
 
-* [Learning Scalaz](http://eed3si9n.com/learning-scalaz/)
-* [Herding Cats](http://eed3si9n.com/herding-cats/)
 * [Cats](http://typelevel.org/cats/)
+  * [Herding Cats](http://eed3si9n.com/herding-cats/)
+  * [Overview of Cats Free Monad](http://blog.scalac.io/2016/06/02/overview-of-free-monad-in-cats.html)
+* [Learning Scalaz](http://eed3si9n.com/learning-scalaz/)
 * [Free objects](http://engineering.wingify.com/posts/Free-objects/)
 * [Free monad](http://underscore.io/blog/posts/2015/04/23/deriving-the-free-monad.html)
+* [The underrated applicative functor](https://softwaremill.com/applicative-functor/)
+* [Scala comonad tutorial](http://blog.higher-order.com/blog/2015/06/23/a-scala-comonad-tutorial/)
 

@@ -27,12 +27,11 @@ sbt -h # for help info
 
 Supports TAB completion - useful with "test" and "testOnly"
 
-Put "eclipse" plugin in: ~/.sbt/0.13/plugins
-Put "gen-ensime" plugin in there, too...
+Put "ensime" plugin line in: ~/.sbt/0.13/plugins/plugins.sbt: addSbtPlugin("org.ensime" % "sbt-ensime" % "0.5.1")
 
 ## Ensime
 
-From sbt run "gen-ensime" to create ensime project file.
+From sbt run "ensimeConfig" to create ensime project file.
 
 Then from emacs in a scala buffer, "M-x ensime" to start up ensime
 

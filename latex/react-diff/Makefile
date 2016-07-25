@@ -18,7 +18,7 @@ $(FILE).pdf: $(FILE).tex $(DIAFIGS)
 	epstopdf 2d.eps
 
 view: $(FILE).pdf
-	acroread $(FILE).pdf &
+	xdg-open $(FILE).pdf &
 
 present: $(FILE).pdf
 	okular $(FILE).pdf

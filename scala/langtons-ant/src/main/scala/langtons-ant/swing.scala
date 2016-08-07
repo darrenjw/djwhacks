@@ -5,10 +5,8 @@ Swing app to visualise langtons ant
  */
 
 import scala.swing._
-//import scala.swing.event._
 import java.awt.{Graphics2D, Color, BasicStroke}
 import java.awt.image.BufferedImage
-//import scala.math._
 import scala.util.Random
 import LangtonsAnt._
 

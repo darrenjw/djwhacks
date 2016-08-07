@@ -55,7 +55,9 @@ object LangtonsAnt {
     else State(Ant(wa.x, wa.y, (wa.d + 3) % 4), s.img.updated(wa.x, wa.y, true))
   }
 
-  def stateStream(s: State): Stream[State] = s #:: stateStream(nextState(s))
+  def stateStreamManual(s: State): Stream[State] = s #:: stateStream(nextState(s))
+
+  def stateStream(s: State): Stream[State] = Stream.iterate(s)(nextState(_))
 
   def thinStream[T](s: Stream[T],th: Int): Stream[T] = {
     val ss = s.drop(th)

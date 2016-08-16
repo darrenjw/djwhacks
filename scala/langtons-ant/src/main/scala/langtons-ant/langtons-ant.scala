@@ -6,6 +6,8 @@ https://en.wikipedia.org/wiki/Langton%27s_ant
  */
 
 import java.awt.image.BufferedImage
+import scalaview.SwingImageViewer
+import scalaview.Utils._
 
 case class Img(size: Int, data: Vector[Boolean]) {
 
@@ -64,27 +66,13 @@ object LangtonsAnt {
     canvas
   }
 
-  def thinStream[T](s: Stream[T], th: Int): Stream[T] = {
-    val ss = s.drop(th)
-    ss.head #:: thinStream(ss, th)
-  }
-
-  def biResize(img: BufferedImage, newW: Int, newH: Int): BufferedImage = {
-    val tmp = img.getScaledInstance(newW, newH, java.awt.Image.SCALE_REPLICATE);
-    val dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
-    val g2d = dimg.createGraphics();
-    g2d.drawImage(tmp, 0, 0, null);
-    g2d.dispose();
-    dimg
-  }
-
   def main(args: Array[String]): Unit = {
-    println("starting")
     val ssize = 250
     val stretch = 5
-    val is = thinStream(stateStream(State(ssize)), 100).map(s => img2Image(s.img)).map(biResize(_, ssize * stretch, ssize * stretch))
+    val is = thinStream(stateStream(State(ssize)), 100).
+      map(s => img2Image(s.img)).
+      map(biResize(_, ssize * stretch, ssize * stretch))
     SwingImageViewer(is)
-    println("done")
   }
 
 }

@@ -7,10 +7,7 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 libraryDependencies  ++= Seq(
             "org.scalacheck" %% "scalacheck" % "1.11.4" % "test",
             "org.scalatest" %% "scalatest" % "2.1.7" % "test",
-            "org.scalanlp" %% "breeze" % "0.12",
-            "org.scalanlp" %% "breeze-natives" % "0.12",
-            "org.scala-lang" % "scala-swing" % "2.11+"
-
+            "darrenjw" %% "scala-view" % "0.1"
 )
 
 resolvers ++= Seq(

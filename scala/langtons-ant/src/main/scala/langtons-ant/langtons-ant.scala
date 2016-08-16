@@ -21,9 +21,7 @@ case class Img(size: Int, data: Vector[Boolean]) {
 }
 
 object Img {
-
   def apply(size: Int) = new Img(size, Vector.fill(size * size)(false))
-
 }
 
 case class Ant(x: Int, y: Int, d: Int) {
@@ -40,9 +38,7 @@ case class Ant(x: Int, y: Int, d: Int) {
 case class State(ant: Ant, img: Img)
 
 object State {
-
   def apply(size: Int): State = State(Ant(size / 2, size / 2, 0), Img(size))
-
 }
 
 object LangtonsAnt {
@@ -55,14 +51,7 @@ object LangtonsAnt {
     else State(Ant(wa.x, wa.y, (wa.d + 3) % 4), s.img.updated(wa.x, wa.y, true))
   }
 
-  def stateStreamManual(s: State): Stream[State] = s #:: stateStream(nextState(s))
-
   def stateStream(s: State): Stream[State] = Stream.iterate(s)(nextState(_))
-
-  def thinStream[T](s: Stream[T],th: Int): Stream[T] = {
-    val ss = s.drop(th)
-    ss.head #:: thinStream(ss,th)
-    }
 
   def img2Image(img: Img): BufferedImage = {
     val canvas = new BufferedImage(img.size, img.size, BufferedImage.TYPE_BYTE_BINARY)
@@ -75,22 +64,26 @@ object LangtonsAnt {
     canvas
   }
 
-  def biResize(img: BufferedImage,newW: Int,newH: Int): BufferedImage = {
+  def thinStream[T](s: Stream[T], th: Int): Stream[T] = {
+    val ss = s.drop(th)
+    ss.head #:: thinStream(ss, th)
+  }
+
+  def biResize(img: BufferedImage, newW: Int, newH: Int): BufferedImage = {
     val tmp = img.getScaledInstance(newW, newH, java.awt.Image.SCALE_REPLICATE);
     val dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
     val g2d = dimg.createGraphics();
     g2d.drawImage(tmp, 0, 0, null);
     g2d.dispose();
     dimg
-    }
+  }
 
   def main(args: Array[String]): Unit = {
     println("starting")
-    val ss = stateStream(State(300))
-    val is = ss.map(s => s.img)
-    val bis = is.map(img2Image(_))
-    val fin = bis.drop(20000).head
-    javax.imageio.ImageIO.write(fin, "png", new java.io.File("img.png"))
+    val ssize = 250
+    val stretch = 5
+    val is = thinStream(stateStream(State(ssize)), 100).map(s => img2Image(s.img)).map(biResize(_, ssize * stretch, ssize * stretch))
+    SwingImageViewer(is)
     println("done")
   }
 

@@ -1,3 +1,10 @@
+# stay-on-the-road.py
+# Microbit game by @darrenjw and (mainly) @andrewjp
+
+# Use the left and right buttons to keep the car on the road 
+
+
+
 import microbit
 import math
 import random

@@ -1,3 +1,9 @@
+# Based on snakebit.py from:
+# https://github.com/martinohanlon/microbit-micropython
+# and just hacked around a bit to figure out what is going on
+# Modifications by @andrewjp
+
+
 import microbit
 import math
 import random

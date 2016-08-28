@@ -13,6 +13,7 @@
     * https://microbit-micropython.readthedocs.io/en/latest/microbit_micropython_api.html
   * https://github.com/martinohanlon/microbit-micropython
 * https://codethemicrobit.com/    (aka.ms/microbit)
+  * https://codethemicrobit.com/device
 * http://www.samsung.com/uk/microbit/
 * http://make.techwillsaveus.com/projects/step-counter-by-the-faraday-institute
 

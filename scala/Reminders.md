@@ -3,8 +3,9 @@
 ## Versions
 
 * Scala: 2.11.7 (recent version which seems good)
-* Breeze: 0.12
 * Sbt: 0.13.8
+* Breeze: 0.12
+* Cats: 0.7.0
 
 ## SBT
 

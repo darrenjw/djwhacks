@@ -13,9 +13,9 @@ object Multinomial {
   // does not require weights to be normalised
   def mnResample(N: Int, w: Vector[Double]): Vector[Int] = {
     val sw = w.reduce(_ + _)
-    w.scanLeft((10, sw))((p, w) => (if (p._1 > 0) p._1 - Binomial(p._1, w / p._2).draw else 0, p._2 - w)).
+    w.scanLeft((N, sw))((p, w) => (if (p._1 > 0) p._1 - Binomial(p._1, w / p._2).draw else 0, p._2 - w)).
       drop(1).
-      scanLeft((10, 0))((a, b) => (b._1, a._1 - b._1)).
+      scanLeft((N, 0))((a, b) => (b._1, a._1 - b._1)).
       drop(1).
       map(_._2)
   }

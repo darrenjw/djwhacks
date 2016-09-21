@@ -2,8 +2,8 @@
 TsvFilter.scala
 
 sbt assembly
-/var/tmp/spark-1.4.0-bin-hadoop2.6/bin/spark-submit --master local[4] --driver-memory 2g target/scala-2.10/Filter-assembly-0.1.jar
 
+/var/tmp/spark-2.0.0-bin-hadoop2.7/bin/spark-submit --master local[4] --driver-memory 2g target/scala-2.11/Filter-assembly-0.1.jar
 
 */
 

@@ -1,3 +1,7 @@
+{-
+change.hs
+
+-}
 
 
 change :: Int -> [Int] -> Int
@@ -9,3 +13,8 @@ change = \x c -> if (x==0) then 1 else
       (change (x - first) c) + (change x rest) 
 
 main = print (change (read "12" :: Int) [50,20,10,5,2,1])
+
+-- eof
+
+
+

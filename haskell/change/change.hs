@@ -1,6 +1,8 @@
 {-
 change.hs
 
+First stab at a "count change" program in Haskell...
+
 -}
 
 

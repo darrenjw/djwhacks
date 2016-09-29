@@ -49,6 +49,8 @@
     * [List of mathematical tools and libraries](https://wiki.scala-lang.org/display/SW/Tools+and+Libraries#ToolsandLibraries-Mathematics) on the scala wiki
 * Big data
     * [Spark](http://spark.apache.org/) - Scalable analytics for scala (from the AMPLab) ([spark on wikipedia](http://en.wikipedia.org/wiki/Spark_(cluster_computing_framework)))
+        * [2.0.0 release](http://spark.apache.org/releases/spark-release-2-0-0.html)
+        * [Mastering Spark](https://jaceklaskowski.gitbooks.io/mastering-apache-spark/content/)
     * [Flink](https://flink.apache.org/) - new Spark alternative (better at streaming? cleaner api?)
     * [Escalante](http://escalante.io/) - Scala for JBoss
     * [Kafka](http://kafka.apache.org/) - stream processing
@@ -61,6 +63,7 @@
 		  * [Scaladoc](http://doc.akka.io/api/akka-stream-and-http-experimental/1.0-M4/)
 		  * [Diving in to Akka Streams](https://medium.com/@kvnwbbr/diving-into-akka-streams-2770b3aeabb0)
 		  * [A first look at Akka Streams](http://rnduja.github.io/2016/03/25/a_first_look_to_akka_stream/)
+                  * [Replace actors with Streams](https://softwaremill.com/replacing-akka-actors-with-akka-streams/)
 * Web
     * [Lift](http://liftweb.net/) web framework
     * [Play](http://www.playframework.com/) web framework (recommended by [typesafe](http://typesafe.com/))
@@ -100,9 +103,15 @@
 	* [Generalised type constraints](http://blog.bruchez.name/2015/11/generalized-type-constraints-in-scala.html)
 	* [Bullet proof data science in Scala](http://www.data-intuitive.com/2016/06/bullet-proof-data-analysis-in-scala/)
     * [Kafka as unix pipes](http://logallthethings.com/2015/09/15/kafka-by-example-kafka-as-unix-pipes/)
+    * [Scala one-liners](https://gist.github.com/mkaz/d11f8f08719d6d27bab5)
+    * [FP for the average Joe - I - Validation](http://www.47deg.com/blog/fp-for-the-average-joe-part-1-scalaz-validation)
+        * [II - Monad transformers](http://www.47deg.com/blog/fp-for-the-average-joe-part-2-scalaz-monad-transformers)
+        * [III - Free monads](http://www.47deg.com/blog/fp-for-the-average-joe-part3-free-monads)
+* MOOCs
     * [Functional programming](https://www.coursera.org/course/progfun) Scala course on Coursera
         * [Scala cheat sheet](https://github.com/lrytz/progfun-wiki/blob/gh-pages/CheatSheet.md)
     * [Principles of reactive programming](https://www.coursera.org/course/reactive) Follow-up Scala course on Coursera 
+* Books
     * [Functional programming in scala](http://www.manning.com/bjarnason/) (non-free p-book, with bundled DRM-free PDF and e-books) - and associated [github repo](https://github.com/fpinscala/fpinscala)
 
 

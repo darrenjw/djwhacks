@@ -7,4 +7,6 @@ A few links for Haskell programming...
   * [Typeclassopedia](https://wiki.haskell.org/Typeclassopedia)
 * [lyahfgg](http://learnyouahaskell.com/)
 * [Futurelearn: Haskell](https://www.futurelearn.com/courses/functional-programming-haskell/)
+  * [TryHaskell](https://tryhaskell.org/)
+* [Haskell for Scala programmers](http://tech.ovoenergy.com/scala/haskell/2016/03/29/Tour-of-haskell-for-scala.html)
 

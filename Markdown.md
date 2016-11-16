@@ -18,6 +18,7 @@ this is a
 block containing
 some code
 ```
+
 ```python
 python = code
 ```
@@ -35,10 +36,22 @@ Content Cell  | Content Cell
 Content Cell  | Content Cell
 
 
-## Convert to HTML
+## Convert to HTML, code extraction, etc.
 
 ```bash
+# convert to HTML
 pandoc --from markdown_github --to html --standalone README.md --output README.html
+# convert to PDF
+pandoc README.md -o README.pdf
+
+# extract code blocks
+## all code
+cat MyFile.md | sed -n '/^```/,/^```/ p' | sed '/^```/ d' > MyFile.txt
+## just bash
+cat MyFile.md | sed -n '/^```bash/,/^```/ p' | sed '/^```/ d' > MyFile.sh
+## leave whitespace between blocks
+cat MyFile.md | sed -n '/^```bash/,/^```/ p' | sed 's/^```.*//g' > MyFile.sh
+
 ```
 
 

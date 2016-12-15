@@ -1,23 +1,18 @@
 /*
-compile with:
-% javac DemoApp.java
-and run with
-% java DemoApp
- - must have appropriate CLASSPATH and LD_LIBRARY_PATH
- - see the libsbml java tutorial for details. 
+DemoApp.java
+
+Simple demo of jSBML
+ 
 */
 
-// import org.sbml.libsbml.*;
 import org.sbml.jsbml.*;
-import org.sbml.jsbml.xml.stax.*;
 
 public class DemoApp
 {
-    public static void main(String args[])
+
+    public static void main(String args[]) throws javax.xml.stream.XMLStreamException, java.io.IOException
     {
-	//System.loadLibrary("sbmlj");
-	String filename="/home/ndjw1/src/sbml/ch07-ar-stoch.xml";
-	//String filename="ch07-ar-stoch.xml";
+	String filename="ch07-mm-stoch.xml";
 	SBMLReader reader = new SBMLReader();
 	SBMLDocument document = reader.readSBML(filename);
 	Model model = document.getModel();
@@ -26,11 +21,17 @@ public class DemoApp
 	for (int i = 0; i < model.getNumSpecies(); i++) {
 	    Species species = (Species)listOfSpecies.get(i);
 	    System.out.println(
-			       species.getName() + "  " +
-			       species.getCompartment() + "  " +
+			       species.getId() + "\t" +
+			       species.getName() + "\t" +
+			       species.getCompartment() + "\t" +
 			       species.getInitialAmount()
 			       );
 	}
     }
+
 }
+
+
+/* eof */
+
 

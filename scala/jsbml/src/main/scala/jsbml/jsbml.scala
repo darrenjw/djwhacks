@@ -25,7 +25,7 @@ object JsbmlApp
 			       species.getCompartment() + "\t" +
 			       species.getInitialAmount()
 			       )
-	}
+	  }
        )
     }
 

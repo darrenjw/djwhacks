@@ -16,6 +16,10 @@
     * [ScalaIDE](http://scala-ide.org/) for Eclipse
     * [SBT](http://www.scala-sbt.org/) - the scala build tool ([sbt on wikipedia](http://en.wikipedia.org/wiki/SBT_(software)))
 	  * [sbt: the missing tutorial](https://github.com/shekhargulati/52-technologies-in-2016/blob/master/02-sbt/README.md)
+	  * [Improving workflow with local SBT files](http://www.cakesolutions.net/teamblogs/improving-workflow-with-local-sbt-files)
+          * [Deploying to sonatype](http://www.scala-sbt.org/0.13/docs/Using-Sonatype.html)
+          * [sbt-sonatype plugin](https://github.com/xerial/sbt-sonatype)
+          * [sbt "new" and templates](http://www.scala-sbt.org/0.13/docs/sbt-new-and-Templates.html)
     * [scalaz](https://github.com/scalaz/scalaz) - functional extensions to core scala (category theory types)
         * [ScalaDoc](http://docs.typelevel.org/api/scalaz/nightly/)
         * [learning scalaz](http://eed3si9n.com/learning-scalaz/)
@@ -24,6 +28,7 @@
         * [herding cats](http://eed3si9n.com/herding-cats/) - tutorials
 	* [shapeless](https://github.com/milessabin/shapeless) - generic programming extensions to core scala (combinators, hlists, etc.)
 	  * [Getting started with shapeless](http://jto.github.io/articles/getting-started-with-shapeless/)
+          * [The Type Astronaut's Guide to Shapeless](https://github.com/underscoreio/shapeless-guide)
 	  * [Shapeless intro and HLists](https://scalerablog.wordpress.com/2015/11/23/shapeless-introduction-and-hlists-part-1/)
 	  * [Shapeless HLists](http://enear.github.io/2016/04/05/bits-shapeless-1-hlists/)
 	  * [Solving problems generically with shapeless](http://www.cakesolutions.net/teamblogs/solving-problems-in-a-generic-way-using-shapeless)
@@ -51,6 +56,7 @@
     * [Spark](http://spark.apache.org/) - Scalable analytics for scala (from the AMPLab) ([spark on wikipedia](http://en.wikipedia.org/wiki/Spark_(cluster_computing_framework)))
         * [2.0.0 release](http://spark.apache.org/releases/spark-release-2-0-0.html)
         * [Mastering Spark](https://jaceklaskowski.gitbooks.io/mastering-apache-spark/content/)
+	* [sparkz](https://github.com/gm-spacagna/sparkz) - functional API for Spark
     * [Flink](https://flink.apache.org/) - new Spark alternative (better at streaming? cleaner api?)
     * [Escalante](http://escalante.io/) - Scala for JBoss
     * [Kafka](http://kafka.apache.org/) - stream processing
@@ -87,7 +93,10 @@
         * [Data frames and tables in Scala](https://darrenjw.wordpress.com/2015/08/21/data-frames-and-tables-in-scala/)
         * [HOFs, closures, partial application and currying](https://darrenjw.wordpress.com/2015/11/16/hofs-closures-partial-application-and-currying-to-solve-the-function-environment-problem-in-scala/)
         * [Monads in Scala](https://darrenjw.wordpress.com/2016/04/15/first-steps-with-monads-in-scala/)
-		* [A scalable particle filter in Scala](https://darrenjw.wordpress.com/2016/07/22/a-scalable-particle-filter-in-scala/)
+	* [A scalable particle filter in Scala](https://darrenjw.wordpress.com/2016/07/22/a-scalable-particle-filter-in-scala/)
+	* [Working with SBML using Scala](https://darrenjw.wordpress.com/2016/12/17/working-with-sbml-using-scala/)
+    * [Getting started in Scala](https://gist.github.com/djspiewak/cb72c41ac335a3a9b28b3307be04aa43)
+    * [Scala starter kit](http://www.cakesolutions.net/teamblogs/scala-starter-kit)
     * [Scala school](http://twitter.github.com/scala_school/) (from twitter)
         * [Effective scala](http://twitter.github.io/effectivescala/) (best practices)
     * [A tour of scala](http://docs.scala-lang.org/tutorials/tour/tour-of-scala.html)
@@ -98,15 +107,19 @@
     * [Scala glossary](http://docs.scala-lang.org/glossary/)
     * [Scala by example](http://www.scala-lang.org/docu/files/ScalaByExample.pdf) (PDF)
     * [Design patterns in scala](http://pavelfatin.com/design-patterns-in-scala/)
-	* [Pattern match generic types](http://www.cakesolutions.net/teamblogs/ways-to-pattern-match-generic-types-in-scala)
-	* [Getting to know CanBuildFrom](http://blog.bruchez.name/2012/08/getting-to-know-canbuildfrom-without-phd.html)
-	* [Generalised type constraints](http://blog.bruchez.name/2015/11/generalized-type-constraints-in-scala.html)
-	* [Bullet proof data science in Scala](http://www.data-intuitive.com/2016/06/bullet-proof-data-analysis-in-scala/)
+    * [Old design patterns in scala](http://www.lihaoyi.com/post/OldDesignPatternsinScala.html)
+    * [Pattern match generic types](http://www.cakesolutions.net/teamblogs/ways-to-pattern-match-generic-types-in-scala)
+    * [Getting to know CanBuildFrom](http://blog.bruchez.name/2012/08/getting-to-know-canbuildfrom-without-phd.html)
+    * [Generalised type constraints](http://blog.bruchez.name/2015/11/generalized-type-constraints-in-scala.html)
+    * [Bullet proof data science in Scala](http://www.data-intuitive.com/2016/06/bullet-proof-data-analysis-in-scala/)
     * [Kafka as unix pipes](http://logallthethings.com/2015/09/15/kafka-by-example-kafka-as-unix-pipes/)
     * [Scala one-liners](https://gist.github.com/mkaz/d11f8f08719d6d27bab5)
     * [FP for the average Joe - I - Validation](http://www.47deg.com/blog/fp-for-the-average-joe-part-1-scalaz-validation)
         * [II - Monad transformers](http://www.47deg.com/blog/fp-for-the-average-joe-part-2-scalaz-monad-transformers)
         * [III - Free monads](http://www.47deg.com/blog/fp-for-the-average-joe-part3-free-monads)
+    * [Continuous Delivery for Scala with TravisCI](http://timperrett.com/2016/10/02/continuous-delivery-for-scala-with-travisci/)
+    * [Overcoming type erasure in Scala](https://medium.com/byte-code/overcoming-type-erasure-in-scala-8f2422070d20)
+    * [Best Gitter channels on: Scala](https://medium.freecodecamp.com/best-gitter-channels-on-scala-ee1e209844d5)
 * MOOCs
     * [Functional programming](https://www.coursera.org/course/progfun) Scala course on Coursera
         * [Scala cheat sheet](https://github.com/lrytz/progfun-wiki/blob/gh-pages/CheatSheet.md)

@@ -6,6 +6,7 @@
 * Sbt: 0.13.8
 * Breeze: 0.12
 * Cats: 0.7.0
+* Ensime: 1.12.4
 
 ## SBT
 
@@ -28,7 +29,7 @@ sbt -h # for help info
 
 Supports TAB completion - useful with "test" and "testOnly"
 
-Put "ensime" plugin line in: ~/.sbt/0.13/plugins/plugins.sbt: addSbtPlugin("org.ensime" % "sbt-ensime" % "0.5.1")
+Put "ensime" plugin line in: ~/.sbt/0.13/plugins/plugins.sbt: addSbtPlugin("org.ensime" % "sbt-ensime" % "1.12.4")
 
 ## Ensime
 

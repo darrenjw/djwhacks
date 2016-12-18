@@ -53,6 +53,13 @@ git merge upstream/master
 git push
 ```
 
+## Web links
+
+* [Learn Git in 30 Minutes](http://tutorialzine.com/2016/06/learn-git-in-30-minutes/)
+* [Getting Git Right](https://www.atlassian.com/git/)
+* [Lesser known Git commands](https://hackernoon.com/lesser-known-git-commands-151a1918a60)
+* [Git from the inside out](https://codewords.recurse.com/issues/two/git-from-the-inside-out)
+
 ### eof
 
 

@@ -16,7 +16,7 @@
   * https://codethemicrobit.com/device
 * http://www.samsung.com/uk/microbit/
 * http://make.techwillsaveus.com/projects/step-counter-by-the-faraday-institute
-
+* http://www.suppertime.co.uk/blogmywiki/2016/02/kettle-run/
 
 
 

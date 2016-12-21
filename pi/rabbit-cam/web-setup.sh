@@ -9,7 +9,7 @@ sudo chown www-data:www-data /var/www
 sudo chmod 775 /var/www
 sudo usermod -a -G www-data pi
 
-
+cp index.html /var/www
 
 
 

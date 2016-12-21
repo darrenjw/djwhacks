@@ -8,8 +8,6 @@ But need to enable camera in raspi-config and reboot
 
 Basic web setup in web-setup.sh
 
-But need to copy index.html into /var/www
-
 Also need to add relevant lines to `crontab -e`:
 ```
 @reboot /home/pi/camera-script.sh 2>&1

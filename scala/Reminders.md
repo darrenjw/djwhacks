@@ -2,9 +2,9 @@
 
 ## Versions
 
-* Scala: 2.11.7 (recent version which seems good)
+* Scala: 2.11.7 (for Java 6/7, or Spark), or 2.12.1 for Java 8
 * Sbt: 0.13.8
-* Breeze: 0.12
+* Breeze: 0.12 or "latest.integration" for 0.13 snapshot
 * Cats: 0.7.0
 * Ensime: 1.12.4
 
@@ -18,14 +18,22 @@ sbt -h # for help info
 * inspect
 * reload (reload sbt build definition)
 
+* clean
 * compile
 * run
 * run Arg1 Arg2 ...
 * test
 * ~test (monitor and re-run when source changes)
-* testOnly
+* testOnly *blah*
 * console
 * doc (generate scaladoc in ./target/scala-2.xx/api/)
+
+* projects
+* project *blah*
+* package (generate jar in ./target/scala-2.xx/)
+* publish-local (stuff jar in ivy cache)
+* publish (to maven repo)
+* assembly (requires assembly plugin)
 
 Supports TAB completion - useful with "test" and "testOnly"
 

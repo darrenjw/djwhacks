@@ -1,0 +1,127 @@
+\documentclass[mathserif,handout]{beamer}
+%\documentclass{beamer}
+\usetheme{Warsaw}
+\usecolortheme{seahorse}
+\usecolortheme{orchid}
+\usepackage{amsmath,verbatim}
+\usepackage{listings}
+\usepackage[english]{babel}
+\setbeamercovered{transparent}
+
+\newcommand{\Deltap}{\ensuremath{\Delta^{\!+}}}
+\newcommand{\trans}{\ensuremath{{}^\mathrm{T}}}
+\newcommand{\eps}{\varepsilon}
+\newcommand*{\approxdist}{\mathrel{\vcenter{\offinterlineskip
+\vskip-.25ex\hbox{\hskip.55ex$\cdot$}\vskip-.25ex\hbox{$\sim$}
+\vskip-.5ex\hbox{\hskip.55ex$\cdot$}}}}
+
+\lstdefinelanguage{myR}
+{
+   language=R,
+   otherkeywords={read.table, set.seed, head},
+   deletekeywords={url,codes, t, dt, Call, formula,Q, R, on,by,hat,is,
+col, set,start,end,deltat,zip},
+   sensitive=true,
+   breaklines=true,
+   morecomment=[l]{\#},
+   morestring=[b]",
+   morestring=[b]',
+   basicstyle =\ttfamily\small,
+   keywordstyle=\bfseries,
+   showtabs=false,
+   showstringspaces=false,
+   literate= {~}{$\sim$}{2},
+   numberstyle=\sffamily\scriptsize,
+   stepnumber=2
+ }
+
+\lstset{basicstyle=\ttfamily\color{blue}}
+
+\begin{document}
+
+\title{On-line algorithms for IoT data streams}
+\author[Darren Wilkinson --- IoT Systems, 16/1/17]{\textbf{\large Darren Wilkinson} \\
+\url{@darrenjw}\\
+\alert{\url{http://tinyurl.com/darrenjw}}\\
+School of Mathematics \& Statistics\\Newcastle University, UK}
+\date{IoT Systems Workshop\\Lumley Castle, Co. Durham\\ 16th--17th January 2017}
+
+\frame{\titlepage}
+
+\frame{
+  \frametitle{Statistical analysis of streaming IoT data}
+  \begin{itemize}
+  \item IoT is really all about the \alert{data} --- data is not ``smart'', but the analysis of it could be...
+  \item Some statistical analysis must be done \alert{off-line}, using algorithms that must make many passes over the data, but many algorithms can be implemented in an \alert{on-line} fashion, \alert{sequentially} processing each unit of data as it arrives via a data \alert{stream}
+  \item \alert{State space models} and \alert{partially observed Markov process (POMP) models} provide a foundation for understanding (noisy) time series data from sensors
+    \item Bayesian approaches to state updating in state space models can often be carried out on-line...
+  \end{itemize}
+}
+
+\frame{
+  \frametitle{Abstraction for streaming data processing}
+  \begin{itemize}
+  \item Fundamental streaming data abstraction:\\
+    \alert{\texttt{update: (State, Observation) => State}}
+  \item Pure function to combine current knowledge of world state with a new data observation to get an updated view of current world state
+  \item Can be applied to any kind of \alert{\texttt{Stream[Observation]}} data structure via a HOF such as \alert{\texttt{foldLeft}} or \alert{\texttt{scanLeft}} to obtain a \alert{\texttt{Stream[State]}}
+  \item Consequently, a function corresponding to this type signature can be dropped into essentially any kind of streaming data framework: Storm, Kafka, Akka-streams, Flink, etc., without needing to couple the updating logic to any particular stream technology
+    \item The ability to capture updating logic in a function of this type is precisely what we mean by saying that an algorithm can be implemented on-line
+    \end{itemize}
+  }
+
+\frame{
+  \frametitle{PhD Students}
+  \begin{itemize}
+  \item \alert{Rui Viera} (sponsored by RedHat)
+    \begin{itemize}
+    \item Review, comparison and development of on-line algorithms for Bayesian inference for state space models of streaming internet time series data
+      \item Implementation in R (with C++), Java and Scala
+      \end{itemize}
+  \item \alert{Jonny Law} (EPSRC CDT in CCfBD)
+    \begin{itemize}
+    \item Extension of Rui's work to irregularly spaced (time-stamped) data streams
+    \item Focus on functional programming approaches using Scala, building complex models by composing from simple components, and coupling to the Akka-streams reactive-streams library
+      \item Application to Newcastle's Urban Observatory data
+      \end{itemize}
+    \end{itemize}
+  }
+
+
+\begin{frame}
+  \frametitle{Links and further info:}
+  \begin{itemize}
+  \item \alert{Rui}:
+    \begin{itemize}
+    \item \texttt{@ruimvieira} on Twitter and \texttt{@ruivieira} on GitHub
+    \item Blog: \url{www.ruivieira.org}
+      \item Paper: \alert{\url{arxiv.org/abs/1608.08666}} (review and comparison of on-line inference algorithms)
+    \end{itemize}
+  \item \alert{Jonny}:
+    \begin{itemize}
+    \item \texttt{@lawsy} on Twitter and \texttt{@jonnylaw} on GitHub
+      \item Blog: \url{jonnylaw.github.io}
+      \item Paper and Software: \alert{\url{git.io/statespace}} (composable state-space models, embedding in akka-streams)
+    \end{itemize}
+  \item \alert{Me}:
+    \begin{itemize}
+    \item \texttt{@darrenjw} on Twitter and GitHub
+    \item Blogs:
+      \begin{itemize}
+      \item \url{darrenjw.wordpress.com} --- mainly Scala for data science
+      \item \url{darrenjw2.wordpress.com} --- mainly Raspberry Pi stuff
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}  
+\end{frame}
+
+
+
+
+
+
+
+
+
+\end{document}
+

@@ -64,8 +64,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \item Fundamental streaming data abstraction:\\
     \alert{\texttt{update: (State, Observation) => State}}
   \item Pure function to combine current knowledge of world state with a new data observation to get an updated view of current world state
-  \item Can be applied to any kind of \alert{\texttt{Stream[Observation]}} data structure via a HOF such as \alert{\texttt{foldLeft}} or \alert{\texttt{scanLeft}} to obtain a \alert{\texttt{Stream[State]}}
-  \item Consequently, a function corresponding to this type signature can be dropped into essentially any kind of streaming data framework: Storm, Kafka, Akka-streams, Flink, etc., without needing to couple the updating logic to any particular stream technology
+  \item Can be applied to any kind of \alert{\texttt{Stream[Observation]}} data structure via a HOF such as (\alert{\texttt{foldLeft}} or) \alert{\texttt{scanLeft}} to obtain a \alert{\texttt{Stream[State]}}
+  \item Consequently, a function corresponding to this type signature can be dropped into essentially any kind of streaming data framework: Storm, Kafka, Akka-streams (reactive-streams), FS2, Spark-streaming, Flink, etc., without needing to couple the updating logic to any particular stream technology
   \item Given a decision function \alert{\texttt{action: State => Decision}}, can \alert{map} over a \alert{\texttt{Stream[State]}} to get a \alert{\texttt{Stream[Decision]}}
   %  \item The ability to capture updating logic in a function of this type is precisely what we mean by saying that an algorithm can be implemented on-line
     \end{itemize}

@@ -54,7 +54,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \item IoT is really all about the \alert{data} --- data is not ``smart'', but the analysis of it could be...
   \item Some statistical analysis must be done \alert{off-line}, using algorithms that must make many passes over the data, but many algorithms can be implemented in an \alert{on-line} fashion, \alert{sequentially} processing each unit of data as it arrives via a data \alert{stream}
   \item \alert{State space models} and \alert{partially observed Markov process (POMP) models} provide a foundation for understanding (noisy) time series data from sensors
-    \item Bayesian approaches to state updating in state space models can often be carried out on-line...
+    \item \alert{Bayesian inference} approaches to state updating in state space models can often be carried out on-line...
   \end{itemize}
 }
 
@@ -66,7 +66,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \item Pure function to combine current knowledge of world state with a new data observation to get an updated view of current world state
   \item Can be applied to any kind of \alert{\texttt{Stream[Observation]}} data structure via a HOF such as \alert{\texttt{foldLeft}} or \alert{\texttt{scanLeft}} to obtain a \alert{\texttt{Stream[State]}}
   \item Consequently, a function corresponding to this type signature can be dropped into essentially any kind of streaming data framework: Storm, Kafka, Akka-streams, Flink, etc., without needing to couple the updating logic to any particular stream technology
-    \item The ability to capture updating logic in a function of this type is precisely what we mean by saying that an algorithm can be implemented on-line
+  \item Given a decision function \alert{\texttt{action: State => Decision}}, can \alert{map} over a \alert{\texttt{Stream[State]}} to get a \alert{\texttt{Stream[Decision]}}
+  %  \item The ability to capture updating logic in a function of this type is precisely what we mean by saying that an algorithm can be implemented on-line
     \end{itemize}
   }
 

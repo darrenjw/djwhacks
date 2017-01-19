@@ -53,8 +53,44 @@ git merge upstream/master
 git push
 ```
 
+## Branching and merging
+
+```bash
+git checkout -b my-branch
+```
+
+Shorthand for:
+```bash
+git branch my-branch
+git checkout my-branch
+```
+
+Commit changes before switching branches. Switch back to `master` with:
+```bash
+git checkout master
+```
+
+Delete branch with:
+```bash
+git branch -d old-branch
+```
+
+Pull in changes to current branch from `master` with:
+```bash
+git merge master
+```
+
+Pull changes from a branch into master with:
+```bash
+git checkout master
+git merge good-branch
+```
+
+
 ## Web links
 
+* [Pro Git](https://git-scm.com/book/en/v2/) (book)
+  * [Basic branching and merging](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging) (including conflict resolution)
 * [Learn Git in 30 Minutes](http://tutorialzine.com/2016/06/learn-git-in-30-minutes/)
 * [Getting Git Right](https://www.atlassian.com/git/)
 * [Lesser known Git commands](https://hackernoon.com/lesser-known-git-commands-151a1918a60)

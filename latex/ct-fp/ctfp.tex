@@ -1,4 +1,4 @@
-\documentclass[mathserif]{beamer}
+\documentclass[mathserif,handout]{beamer}
 %\documentclass{beamer}
 \usetheme{Luebeck}
 \usecolortheme{spruce}
@@ -144,28 +144,52 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \frame{
   \frametitle{FP}
   \begin{itemize}
-  \item bar
+  \item In pure FP, all state is \alert{immutable} --- you can assign names to things, but you can't change what the name points to --- no ``variables'' in the usual sense
+  \item Functions are \alert{pure} and \alert{referentially transparent} --- they can't have side-effects --- they are just like functions in mathematics...
+  \item Functions can be recursive, and \alert{recursion} can be used to iterate over recursive data structures --- useful since no conventional ``for'' or ``while'' loops in pure FP languages
+  \item Functions are first class objects, and \alert{higher-order functions} (HOFs) are used extensively --- functions which return a function or accept a function as argument
   \end{itemize}
   }
 
 \frame{
-  \frametitle{Concurrency, programming and shared mutable state}
+  \frametitle{Concurrency, parallel programming and shared mutable state}
   \begin{itemize}
-  \item bar
+  \item Modern computer architectures have processors with several cores, and possibly several processors
+  \item Parallel programming is required to properly exploit this hardware
+  \item The main difficulties in parallel and concurrent programming in imperative programming all relate to issues associated with \alert{shared mutable state}
+  \item In pure FP, state is not mutable, so there is no mutable state, and hence no shared mutable state
+    \item Most of the difficulties associated with parallel and concurrent programming just don't exist in FP --- this has been one of the main reasons for the recent resurgence of FP languages
   \end{itemize}
   }
 
 \frame{
   \frametitle{Ideal languages for statistical computing}
   \begin{itemize}
-  \item bar
+  \item We should approach the problem of statistical modelling and efficient computation in a modular, composable, functional way
+  \item To do this we need programming languages which are:
+    \begin{itemize}
+    \item \alert{Strongly statically typed} (but with type inference)
+    \item \alert{Compiled} (but possibly to a VM)
+    \item \alert{Functional} (with support for immutable values and higher-order functions)
+      \item and have support for \alert{typeclasses} and \alert{higher-kinded types}, allowing the adoption of design patterns from category theory
+    \end{itemize}
+  \item For efficient statistical computing, it can be argued that evaluation should be \alert{strict} rather than \alert{lazy} by default
+    \item \alert{Scala} is a popular language which meets the above constraints
   \end{itemize}
   }
 
 \frame{
   \frametitle{Monadic collections}
   \begin{itemize}
-  \item bar
+  \item A collection of type \texttt{M[T]} can contain (multiple) values of type \texttt{T}
+  \item If the collection supports a higher-order function\\ \texttt{map(f: T => S): M[S]} then we call the collection a \alert{Functor}
+    \begin{itemize}
+    \item eg. \texttt{List(1,3,5,7) map (x => x*2) = List(2,6,10,14)}
+    \end{itemize}
+  \item If the collection additional supports a higher-order function\\ \texttt{flatMap(f: T => M[S]): M[S]} then we call the collection a \alert{Monad}
+    \begin{itemize}
+    \item eg. \texttt{List(1,3,5,7) flatMap (x => List(x,x+1)) = \\\hspace{6ex}List(1, 2, 3, 4, 5, 6, 7, 8)}
+    \end{itemize}
   \end{itemize}
   }
 

@@ -59,6 +59,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 
 \section{Introduction}
 
+\begin{comment}
+  
 \subsection{Preamble}
 
 \frame{
@@ -78,6 +80,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     \end{itemize}
     \end{itemize}
   }
+
+\end{comment}
 
 \subsection{Outline}
 
@@ -134,7 +138,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 
 \section{FP and CT}
 
-\subsection{FP}
+\subsection{Functional Programming}
 
 \frame{
   \frametitle{What is FP?}
@@ -192,7 +196,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     \begin{itemize}
     \item eg. |List(1,3,5,7) map (x => x*2) = List(2,6,10,14)|
     \end{itemize}
-  \item If the collection additional supports a higher-order function\\
+  \item If the collection additionally supports a higher-order function\\
     |flatMap(f: T => M[S]): M[S]| then we call the collection a \alert{Monad}
     \begin{itemize}
     \item eg. |List(1,3,5,7) flatMap (x => List(x,x+1))|\\
@@ -226,7 +230,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \item Monadic functions |f: S => M[T]|, |g: T => M[U]|, |h: U => M[V]| don't compose directly, but do using |flatMap|:\\
     |s => f(s) flatMap g flatMap h| has type |S => M[V]|
   \item Can be written as a ``for-comprehension'' (``do'' in Haskell):\\
-    |s => for (t<-f(s); u<-g(t); v<-h(u)) yield u|
+    |s => for (t<-f(s); u<-g(t); v<-h(u)) yield v|
     \item Just syntactic sugar for the chained |flatMap|s above --- really \alert{not} an imperative-style ``for loop'' at all...
   \end{itemize}
 \end{frame}
@@ -282,19 +286,77 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \end{frame}
 
 
-\subsection{CT}
+\subsection{Category Theory}
 
 \begin{frame}[fragile]
   \frametitle{Category theory}
+  \begin{itemize}
+  \item A category $\mathcal{C}$ consists of a collection of \alert{objects}, $\operatorname{ob}(\mathcal{C})$, and \alert{morphisms}, $\operatorname{hom}(\mathcal{C})$. Each morphism is an ordered pair of objects (an arrow between objects). For $x,y\in \operatorname{ob}(\mathcal{C})$, the set of morphisms from $x$ to $y$ is denoted $\operatorname{hom}_{\mathcal{C}}(x,y)$. $f\in \operatorname{hom}_{\mathcal{C}}(x,y)$ is often written $f: x \longrightarrow y$.
+  \item Categories are closed under \alert{composition}, so that if $f: x\longrightarrow y$ and $g: y\longrightarrow z$, then there must also exist a morphism $h: x\longrightarrow z$ written $h=g \circ f$.
+  \item Composition is associative, so that $f\circ(g\circ h) = (f\circ g)\circ h$ for all composible $f, g, h\in \operatorname{hom}(\mathcal{C})$.
+    \item For every $x\in \operatorname{ob}(\mathcal{C})$ there exists an \alert{identity} morphism $\operatorname{id}_x: x\longrightarrow x$, with the property that for any $f: x\longrightarrow y$ we have $f = f\circ \operatorname{id}_x = \operatorname{id}_y\circ f$.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Examples of categories}
+  \begin{itemize}
+  \item The category \textbf{Set} has an object for every \alert{set}, and its morphisms represent set \alert{functions}
+    \begin{itemize}
+    \item Note that this is a category, since functions are composable and we have identity functions, and function composition is associative
+      \item Note that objects are ``atomic'' in category theory --- it is not possible to ``look inside'' the objects to see the set elements --- category theory is ``point-free''
+    \end{itemize}
+  \item For a pure FP language, we can form a category where objects represent \alert{types}, and morphisms represent \alert{functions} from one type to another
+    \begin{itemize}
+      \item In Haskell this category is often referred to as \textbf{Hask}
+    \item This category is very similar to \textbf{Set}, in practice
+    \item By modelling FP types and functions as a category, we can bring ideas and techniques from CT into FP
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{\textbf{Set} and \textbf{Hask}}
+  \begin{itemize}
+  \item $0\in\operatorname{ob}(\textbf{Set})$ is the empty set, $\emptyset$
+    \begin{itemize}
+    \item There is a unique morphism from $0$ to every other object --- it is an example of the concept of an \alert{initial object}
+      \item $0$ in \textbf{Set} corresponds to the type |Void| in \textbf{Hask}, the type with no values
+    \end{itemize}
+  \item $1\in\operatorname{ob}(\textbf{Set})$ is a set containing exactly one element (and all such objects are \alert{isomorphic})
+    \begin{itemize}
+    \item There is a unique morphism from every other object to $1$ --- it is an example of the concept of a \alert{terminal object}
+    \item $1$ in \textbf{Set} corresponds to the type |Unit| in \textbf{Hask}, the type with exactly one value, |()|
+      \item Morphisms from $1$ to other objects must represent \alert{constant} functions, and hence must correspond to \alert{elements} of a set or \alert{values} of a type --- so we can use morphisms from $1$ to ``look inside'' our objects if we must...
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Monoid as a category with one object}
   \begin{itemize}
   \item bar
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{foo}
+  \frametitle{Functors}
   \begin{itemize}
   \item bar
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Monads}
+  \begin{itemize}
+  \item bar
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Applicative Functors}
+  \begin{itemize}
+  \item Lax monoidal functor (with a strength) ???
   \end{itemize}
 \end{frame}
 

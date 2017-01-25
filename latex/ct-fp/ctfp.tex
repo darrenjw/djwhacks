@@ -41,6 +41,10 @@ col, set,start,end,deltat,zip},
 
 \lstset{basicstyle=\ttfamily\color{blue}}
 
+% \lstset{language=scala, basicstyle=\ttfamily\small, breaklines=true}
+
+\lstMakeShortInline[language=scala]|
+
 \begin{document}
 
 \title[CT and FP for scalable statistical computing]{An introduction to category theory and functional programming for scalable statistical modelling and computation}
@@ -49,6 +53,7 @@ col, set,start,end,deltat,zip},
 \alert{\url{tinyurl.com/darrenjw}}\\
 School of Mathematics \& Statistics\\Newcastle University, UK}
 \date{Statistics Seminar\\Newcastle University\\3rd February 2017}
+
 
 \frame{\titlepage}
 
@@ -151,7 +156,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \end{itemize}
   }
 
-\frame{
+\begin{frame}[fragile]
   \frametitle{Concurrency, parallel programming and shared mutable state}
   \begin{itemize}
   \item Modern computer architectures have processors with several cores, and possibly several processors
@@ -160,7 +165,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \item In pure FP, state is not mutable, so there is no mutable state, and hence no shared mutable state
     \item Most of the difficulties associated with parallel and concurrent programming just don't exist in FP --- this has been one of the main reasons for the recent resurgence of FP languages
   \end{itemize}
-  }
+\end{frame}
 
 \frame{
   \frametitle{Ideal languages for statistical computing}
@@ -171,70 +176,175 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     \item \alert{Strongly statically typed} (but with type inference)
     \item \alert{Compiled} (but possibly to a VM)
     \item \alert{Functional} (with support for immutable values and higher-order functions)
-      \item and have support for \alert{typeclasses} and \alert{higher-kinded types}, allowing the adoption of design patterns from category theory
+      \item and have support for \alert{typeclasses} and \alert{higher-kinded types}, allowing the adoption of design patterns from \alert{category theory}
     \end{itemize}
   \item For efficient statistical computing, it can be argued that evaluation should be \alert{strict} rather than \alert{lazy} by default
     \item \alert{Scala} is a popular language which meets the above constraints
   \end{itemize}
   }
 
-\frame{
+\begin{frame}[fragile]
   \frametitle{Monadic collections}
   \begin{itemize}
-  \item A collection of type \texttt{M[T]} can contain (multiple) values of type \texttt{T}
-  \item If the collection supports a higher-order function\\ \texttt{map(f: T => S): M[S]} then we call the collection a \alert{Functor}
+  \item A collection of type |M[T]| can contain (multiple) values of type |T|
+  \item If the collection supports a higher-order function\\
+    |map(f: T => S): M[S]| then we call the collection a \alert{Functor}
     \begin{itemize}
-    \item eg. \texttt{List(1,3,5,7) map (x => x*2) = List(2,6,10,14)}
+    \item eg. |List(1,3,5,7) map (x => x*2) = List(2,6,10,14)|
     \end{itemize}
-  \item If the collection additional supports a higher-order function\\ \texttt{flatMap(f: T => M[S]): M[S]} then we call the collection a \alert{Monad}
+  \item If the collection additional supports a higher-order function\\
+    |flatMap(f: T => M[S]): M[S]| then we call the collection a \alert{Monad}
     \begin{itemize}
-    \item eg. \texttt{List(1,3,5,7) flatMap (x => List(x,x+1)) = \\\hspace{6ex}List(1, 2, 3, 4, 5, 6, 7, 8)}
+    \item eg. |List(1,3,5,7) flatMap (x => List(x,x+1))|\\
+      \hspace{6ex} |= List(1, 2, 3, 4, 5, 6, 7, 8)|
     \end{itemize}
   \end{itemize}
-  }
+\end{frame}
 
+\begin{frame}[fragile]
+  \frametitle{Other monadic types: Option}
+  \begin{itemize}
+  \item Some computations can fail, and we can capture that possibility with a type called |Option|
+    \begin{itemize}
+    \item in Scala --- it is |Optional| in Java 8 and |Maybe| in Haskell
+      \end{itemize}
+    \item An |Option[T]| can contain |Some[T]| or |None|
+    \item So if we have |chol: Matrix => Option[TriMatrix]| we can check to see if we have a result
+    \item But if we also have |triSolve: (TriMatrix,Vector) => Option[Vector]|, how do we ``compose'' these?
+      \begin{itemize}
+      \item |chol(mat) map (tm => triSolve(tm,vec))| has type |Option[Option[Vector]]| which isn't quite what we want
+      \item |chol(mat) flatMap (tm => triSolve(tm,vec))| has type |Option[Vector]| which we do want
+        \item |flatMap| allows \alert{composition} of monadic functions
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Composing monadic functions}
+  \begin{itemize}
+  \item Given functions |f: S => T|, |g: T => U|, |h: U => V|, we can compose them as |h compose g compose f| or |s => h(g(f(s)))| to get |hgf: S => V|
+  \item Monadic functions |f: S => M[T]|, |g: T => M[U]|, |h: U => M[V]| don't compose directly, but do using |flatMap|:\\
+    |s => f(s) flatMap g flatMap h| has type |S => M[V]|
+  \item Can be written as a ``for-comprehension'' (``do'' in Haskell):\\
+    |s => for (t<-f(s); u<-g(t); v<-h(u)) yield u|
+    \item Just syntactic sugar for the chained |flatMap|s above --- really \alert{not} an imperative-style ``for loop'' at all...
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Other monadic types: Future}
+  \begin{itemize}
+  \item A |Future[T]| is used to dispatch a (long-running) computation to another thread to run in parallel with the main thread
+  \item When a |Future| is created, the call returns immediately, and the main thread continues, allowing the |Future| to be ``used'' before its result (of type |T|) is computed
+  \item |map| can be used to transform the result of a |Future|, and |flatMap| can be used to chain together |Futures| by allowing the output of one |Future| to be used as the input to another
+  \item |Future|s can be transformed using |map| and |flatMap| irrespective of whether or not the |Future| computation has yet completed and actually contains a value
+    \item |Future|s are a powerful method for developing parallel and concurrent programs in a modular, composable way
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Other monadic types: Prob/Rand}
+  \begin{itemize}
+  \item The \alert{Probability monad} is another important monad with obvious relevance to statistical computing
+  \item A |Rand[T]| represents a random quantity of type |T|
+  \item It is used to encapsulate the non-determinism of functions returning random quantities --- otherwise these would break the \alert{purity} and \alert{referential transparancy} of the function
+  \item |map| is used to transform one random quantity into another
+  \item |flatMap| is used to chain together stochastic functions to create joint and/or marginal random variables, or to \alert{propagate uncertainty} through a computational workflow or pipeline
+    \item Probability monads form the basis for the development of \alert{probabilistic programming languages} using FP
+    \item The probability monad is typically implemented as a \alert{State monad}, the mechanism for handling mutable state using FP
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Parallel monadic collections}
+  \begin{itemize}
+  \item Using |map| to apply a \alert{pure} function to all of the elements in a collection can clearly be done in parallel
+  \item So if the collection contains $n$ elements, then the computation time can be reduced from $O(n)$ to $O(1)$ (on infinite parallel hardware)
+    \begin{itemize}
+    \item |Vector(3,5,7) map (_*2) = Vector(6,10,14)|
+    \item |Vector(3,5,7).par map (_*2) = ParVector(6,10,14)|
+    \end{itemize}
+    \item We can carry out \alert{reductions} as \alert{folds} over collections:\\
+      |Vector(6,10,14).par reduce (_+_) = 30|
+      \item In general, sequential folds can not be parallelised, but...
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Monoids and parallel ``map--reduce''}
+  \begin{itemize}
+  \item A \alert{monoid} is a very important concept in FP
+  \item For now we will think of a monoid as a \alert{set} of elements with a \alert{binary relation} which is \alert{associative}, and having an \alert{identity} element wrt the binary relation
+  \item You can think of it as a \alert{semi-group} with an identity or a \alert{group} without an inverse
+  \item |fold|s, |scan|s and |reduce| operations can be computed in parallel using \alert{tree reduction}, reducing time from $O(n)$ to $O(\log n)$ (on infinite parallel hardware)
+  \item ``\alert{map--reduce}'' is just the pattern of processing large amounts of data in an immutable collection by first \alert{map}ping the data (in parallel) into a monoid and then tree-\alert{reduc}ing the result (in parallel)
+  \end{itemize}
+\end{frame}
 
 
 \subsection{CT}
 
-\frame{
-  \frametitle{foo}
+\begin{frame}[fragile]
+  \frametitle{Category theory}
   \begin{itemize}
   \item bar
   \end{itemize}
-  }
+\end{frame}
 
-\frame{
+\begin{frame}[fragile]
   \frametitle{foo}
   \begin{itemize}
   \item bar
   \end{itemize}
-}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{foo}
+  \begin{itemize}
+  \item bar
+  \end{itemize}
+\begin{lstlisting}[language=scala]
+  val x = 1
+  val y = f(x)
+\end{lstlisting}
+\end{frame}
+
+\subsection{Scalable modelling and computation}
+
+\begin{frame}[fragile]
+  \frametitle{foo}
+  \begin{itemize}
+  \item bar
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{foo}
+  \begin{itemize}
+  \item bar
+  \end{itemize}
+\end{frame}
+
 
 \subsection{Scalable statistical computing}
 
-\frame{
-  \frametitle{foo}
-  \begin{itemize}
-  \item bar
-  \end{itemize}
-  }
-
-\frame{
-  \frametitle{foo}
-  \begin{itemize}
-  \item bar
-  \end{itemize}
-  }
-
 \section{Summary and conclusions}
 
-\frame{
-  \frametitle{foo}
+\begin{frame}
+  \frametitle{Summary}
   \begin{itemize}
-  \item bar
+  \item Obviously can't ``teach'' much about either FP or CT in a single talk/seminar
+  \item Don't expect everyone to have understood everything
+  \item The aim was to give a little insight into:
+    \begin{itemize}
+    \item Why FP is interesting, and inherently more modular, composable and scalable than imperative programming
+    \item CT is a good model for composable computation, because it is a theory of structure and composition
+      \item CT provides powerful abstractions which make FP easier, more modular, and more general
+      \end{itemize}
   \end{itemize}
-  }
+\end{frame}
+
+
 
 \frame{
   \frametitle{Conclusions}
@@ -247,7 +357,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     \item \alert{Functional} (with support for immutable values and higher-order functions)
       \item and have support for \alert{typeclasses} and \alert{higher-kinded types}, allowing the adoption of design patterns from category theory
     \end{itemize}
-    \item \alert{Scala} and \alert{Spark} provide a nice illustration of the power of this approach, but there are other interesting languages, including: Haskell, ML, OCaml, Frege, Eta, ...
+    \item \alert{Scala} and \alert{Spark} provide a nice illustration of the power of this approach, but there are other interesting languages, including: Haskell, (S)ML, OCaml, Frege, Eta, ...
   \end{itemize}
   }
 

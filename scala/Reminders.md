@@ -5,7 +5,7 @@
 * Scala: 2.11.7 (for Java 6/7, or Spark), or 2.12.1 for Java 8
 * Sbt: 0.13.8
 * Breeze: 0.12 or "latest.integration" for 0.13 snapshot
-* Cats: 0.7.0
+* Cats: 0.9.0
 * Ensime: 1.12.4
 
 ## SBT

@@ -45,6 +45,7 @@ col, set,start,end,deltat,zip},
 
 \lstMakeShortInline[language=scala]|
 
+
 \begin{document}
 
 \title[CT and FP for scalable statistical computing]{An introduction to category theory and functional programming for scalable statistical modelling and computation}
@@ -58,30 +59,6 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \frame{\titlepage}
 
 \section{Introduction}
-
-\begin{comment}
-  
-\subsection{Preamble}
-
-\frame{
-  \frametitle{Preamble}
-  \begin{itemize}
-  \item This talk isn't yet quite ready for ``prime time''
-    \begin{itemize}
-    \item Very much ``work in progress''
-      \end{itemize}
-  \item It's a bit of a ``brain dump''...
-    \begin{itemize}
-    \item But something I've been thinking about on-and-off for the last 20 years...
-    \end{itemize}
-  \item Almost at the stage where I can begin to articulate my ideas
-    \begin{itemize}
-    \item but not quite...
-    \end{itemize}
-    \end{itemize}
-  }
-
-\end{comment}
 
 \subsection{Outline}
 
@@ -278,7 +255,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \frametitle{Monoids and parallel ``map--reduce''}
   \begin{itemize}
   \item A \alert{monoid} is a very important concept in FP
-  \item For now we will think of a monoid as a \alert{set} of elements with a \alert{binary relation} which is \alert{associative}, and having an \alert{identity} element wrt the binary relation
+  \item For now we will think of a monoid as a \alert{set} of elements with a \alert{binary relation} $\star$ which is \alert{closed} and \alert{associative}, and having an \alert{identity} element wrt the binary relation
   \item You can think of it as a \alert{semi-group} with an identity or a \alert{group} without an inverse
   \item |fold|s, |scan|s and |reduce| operations can be computed in parallel using \alert{tree reduction}, reducing time from $O(n)$ to $O(\log n)$ (on infinite parallel hardware)
   \item ``\alert{map--reduce}'' is just the pattern of processing large amounts of data in an immutable collection by first \alert{map}ping the data (in parallel) into a monoid and then tree-\alert{reduc}ing the result (in parallel)
@@ -335,14 +312,39 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \begin{frame}[fragile]
   \frametitle{Monoid as a category with one object}
   \begin{itemize}
-  \item bar
+  \item Given our definition of a category, we can now reconsider the notion of a \alert{moniod} now as a \alert{category with one object}
+  \item The object represents the ``type'' of the monoid, and the \alert{morphisms represent the ``values''}
+  \item From our definition of a category, we know that there is an \alert{identity} morphism, that the morphisms are closed under \alert{composition}, and that they are \alert{associative}...
+  \item For a monoid type object, $M$ in \textbf{Hask}, the morphisms represent \alert{functions}, $f_a: M\longrightarrow M$ defined by $f_a(m)=m\star a$
+    \item Again, we see that it is the morphisms that really matter, and that these can be used to ``probe'' the ``internal structure'' of an object...
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Functors}
   \begin{itemize}
-  \item bar
+  \item A \alert{functor} is a mapping from one category to another which preserves some structure
+  \item A functor $F$ from $\mathcal{C}$ to $\mathcal{D}$, written $F: \mathcal{C}\longrightarrow\mathcal{D}$ is a pair of functions (both denoted $F$):
+    \begin{itemize}
+    \item $F: \operatorname{ob}(\mathcal{C}) \longrightarrow \operatorname{ob}(\mathcal{D})$
+    \item $F: \operatorname{hom}(\mathcal{C})\longrightarrow\operatorname{hom}(\mathcal{D})$, where $\forall f\in\operatorname{hom}(\mathcal{C})$, we have $F(f: x\longrightarrow y): F(x)\longrightarrow F(y)$
+      \item In other words, if $f\in\operatorname{hom}_{\mathcal{C}}(x,y)$, then $F(f)\in\operatorname{hom}_{\mathcal{D}}(F(x),F(y))$
+    \end{itemize}
+  \item The functor must satisfy the \alert{functor laws}:
+      \begin{itemize}
+      \item $F(\operatorname{id}_x) = \operatorname{id}_{F(x)},\forall x\in\operatorname{ob}(\mathcal{C})$
+      \item $F(f\circ g) = F(f)\circ F(g)$ for all composable $f,g\in \operatorname{hom}(\mathcal{C})$
+      \end{itemize}
+      %  \item The laws ensure that we can form a category, called \textbf{Cat}, which has categories as objects and functors as morphisms
+      \item A functor $F:\mathcal{C}\longrightarrow\mathcal{C}$ is called an \alert{endofunctor} --- in the context of functional programming, the word functor usually refers to an endofunctor $F: \textbf{Hask}\longrightarrow\textbf{Hask}$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Natural transformations}
+  \begin{itemize}
+  \item Often there are multiple functors between pairs of categories, and sometimes it is useful to be able to tranform one to another
+    \item Suppose we have two functors $F,G: \mathcal{C}\longrightarrow\mathcal{D}$
   \end{itemize}
 \end{frame}
 
@@ -379,6 +381,29 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \item bar
   \end{itemize}
 \end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{foo}
+  \begin{itemize}
+  \item bar
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{foo}
+  \begin{itemize}
+  \item bar
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{foo}
+  \begin{itemize}
+  \item bar
+  \end{itemize}
+\end{frame}
+
+
 
 \begin{frame}[fragile]
   \frametitle{foo}

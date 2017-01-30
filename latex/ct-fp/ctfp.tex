@@ -315,7 +315,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \item Given our definition of a category, we can now reconsider the notion of a \alert{moniod} now as a \alert{category with one object}
   \item The object represents the ``type'' of the monoid, and the \alert{morphisms represent the ``values''}
   \item From our definition of a category, we know that there is an \alert{identity} morphism, that the morphisms are closed under \alert{composition}, and that they are \alert{associative}...
-  \item For a monoid type object, $M$ in \textbf{Hask}, the morphisms represent \alert{functions}, $f_a: M\longrightarrow M$ defined by $f_a(m)=m\star a$
+  \item For a monoid type object, $M$ in \textbf{Hask}, the \alert{(endo)morphisms} represent \alert{functions}, $f_a: M\longrightarrow M$ defined by $f_a(m)=m\star a$
     \item Again, we see that it is the morphisms that really matter, and that these can be used to ``probe'' the ``internal structure'' of an object...
   \end{itemize}
 \end{frame}
@@ -343,8 +343,15 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \begin{frame}[fragile]
   \frametitle{Natural transformations}
   \begin{itemize}
-  \item Often there are multiple functors between pairs of categories, and sometimes it is useful to be able to tranform one to another
-    \item Suppose we have two functors $F,G: \mathcal{C}\longrightarrow\mathcal{D}$
+  \item Often there are multiple functors between pairs of categories, and sometimes it is useful to be able to transform one to another
+  \item Suppose we have two functors $F,G: \mathcal{C}\longrightarrow\mathcal{D}$
+  \item A \alert{natural transformation} $\alpha: F \Rightarrow G$ is a family of morphisms in $\mathcal{D}$, where $\forall x\in\mathcal{C}$, the \alert{component} $\alpha_x:F(x)\longrightarrow G(x)$ is a morphism in $\mathcal{D}$
+  \item To be considered \alert{natural}, this family of morphisms must satisfy the \alert{naturality law}:
+    \begin{itemize}
+    \item $\alpha_y\circ F(f) = G(f)\circ \alpha_x,\quad \forall f: x\longrightarrow y \in \operatorname{hom}(\mathcal{C})$
+    \end{itemize}
+  \item \alert{Naturality} is one of the most fundamental concepts in category theory
+    \item In the context of FP, a natural transformation could (say) map an |Option| to a |List| (with at most one element)
   \end{itemize}
 \end{frame}
 

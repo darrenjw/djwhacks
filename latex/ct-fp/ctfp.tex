@@ -39,12 +39,32 @@ col, set,start,end,deltat,zip},
    stepnumber=2
  }
 
-\lstset{basicstyle=\ttfamily\color{blue}}
-
+% \lstset{basicstyle=\ttfamily\color{blue}}
 % \lstset{language=scala, basicstyle=\ttfamily\small, breaklines=true}
 
-\lstMakeShortInline[language=scala]|
+\definecolor{dkgreen}{rgb}{0,0.2,0}
+\definecolor{dkblue}{rgb}{0,0,0.6}
 
+\lstdefinelanguage{scala}{
+  morekeywords={abstract,case,catch,class,def,%
+    do,else,extends,false,final,finally,%
+    for,if,implicit,import,match,mixin,%
+    new,null,object,override,package,%
+    private,protected,requires,return,sealed,%
+    super,this,throw,trait,true,try,%
+    type,val,var,while,with,yield},
+  otherkeywords={=>,<-,<\%,<:,>:,\#,@},
+  sensitive=true,
+  basicstyle =\ttfamily\small\color{dkblue},
+  keywordstyle=\sffamily\bfseries\color{dkgreen},
+  morecomment=[l]{//},
+  morecomment=[n]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+  morestring=[b]"""
+}
+
+\lstMakeShortInline[language=scala]|
 
 \begin{document}
 
@@ -377,23 +397,15 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     \begin{itemize}
     \item $\operatorname{hom}_{\mathcal{C}_T}(x,y) = \operatorname{hom}_\mathcal{C}(x,T(y)),\ \forall x,y\in\operatorname{ob}(\mathcal{C})$
     \end{itemize}
-  \item The identity morphisms in $\mathcal{C}_T$ are given by $\operatorname{id}_x = \eta(x), \forall x$, and morphisms $f: x\longrightarrow T(y)$ and $g: y\longrightarrow T(z)$ in $\mathcal{C}$ can compose to form $g\ \circ_T f : x\longrightarrow T(z)$ via
+  \item The identity morphisms in $\mathcal{C}_T$ are given by $\operatorname{id}_x = \eta(x), \forall x$, and morphisms $f: x\longrightarrow T(y)$ and $g: y\longrightarrow T(z)$ in $\mathcal{C}$ can compose to form $g\, \circ_T f : x\longrightarrow T(z)$ via
     \begin{itemize}
-      \item g\ \circ_T f = \mu_z \circ T(g) \circ f$
+      \item $g\ \circ_T f = \mu_z \circ T(g) \circ f$
     \end{itemize}
     leading to composition of morphisms in $\mathcal{C_T}$.
     \item In FP, the morphisms in $C_T$ are often referred to as \alert{Kleisli arrows}, or \alert{Kleislis}, or sometimes just \alert{arrows} (although \alert{Arrow} usually refers to a generalisation of Kleisli arrows, sometimes known as \alert{Hughes arrows})
   \end{itemize}
 \end{frame}
 
-
-
-\begin{frame}[fragile]
-  \frametitle{Applicative Functors}
-  \begin{itemize}
-  \item Lax monoidal endofunctor (with a strength) ???
-  \end{itemize}
-\end{frame}
 
 \subsection{Scalable modelling and computation}
 
@@ -427,38 +439,139 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \end{itemize}
 \end{frame}
 
+
 \begin{frame}[fragile]
-  \frametitle{foo}
+  \frametitle{Distributed computation}
   \begin{itemize}
-  \item bar
+  \item Big data frameworks such as Spark have been developed for the analysis of huge (internet scale) datasets on large clusters in the cloud
+  \item They typically work by layering on top of a distributed file system (such as HDFS) which distributes a data set across a cluster and leaves data in place, sending required computation across the network to the data
+    \item With a little thought, it is clear that even in the case of ``small data'' but ``big models''/``big computation'', these frameworks can be exploited for distributing computation
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{foo}
+  \frametitle{Typeclasses}
   \begin{itemize}
-  \item bar
+  \item \alert{Typeclasses} are a mechanism for supporting \alert{ad hoc polymorphism} in (functional) programming languages
+  \item They are more flexible way to provide polymorphic functionality than traditional inheritance-based object classes in traditional object-oriented programming languages
+  \item To define a typeclass (such as |Monoid|) for a basic type, the language must support \alert{parametric types}
+  \item To define a typeclass (such as |Functor| or |Monad|) for a parametric type or type constructor, the language must support \alert{higher-kinded types} (very few widely-used languages do)
   \end{itemize}
 \end{frame}
 
 
+\begin{frame}[fragile]
+  \frametitle{Typeclasses for Monoid, Functor and Monad}
+  \begin{itemize}
+  \item In Scala, we can define typeclasses for |Monoid|, |Functor| and |Monad| (using parametric and higher-kinded types):
+  \end{itemize}
+  \begin{lstlisting}[language=scala]
+  trait Monoid[A] {
+    def combine(a1: A, a2: A): A
+    def id: A
+  }
+    
+  trait Functor[F[_]] {
+    def map[A,B](fa: F[A])(f: A => B): F[B]
+  }
+
+  trait Monad[M[_]] extends Functor[M] {
+    def unit[A](a: A): M[A]
+    def flatMap[A,B](ma: M[A])(f: A => M[B]): M[B]
+  }
+\end{lstlisting}
+\end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{foo}
+  \frametitle{A generic collection typeclass}
   \begin{itemize}
-  \item bar
+  \item We can define a typeclass for generic monadic collections:
+\begin{lstlisting}[language=scala]
+trait GenericColl[C[_]] {
+  def map[A,B](ca: C[A])(f: A => B): C[B]
+  def reduce[A](ca: C[A])(f: (A, A) => A): A
+  def flatMap[A,B,D[B] <: GenTraversable[B]](
+                 ca: C[A])(f: A => D[B]): C[B]
+  def zip[A,B](ca: C[A])(cb: C[B]): C[(A, B)]
+  def length[A](ca: C[A]): Int
+}
+\end{lstlisting}
+and then define instances for standard collections (eg. |Vector|), parallel collections (eg. |ParVector|), and distributed parallel collections (eg. |RDD|)
+\item We can then write code that is completely \alert{parallelisation--agnostic}
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{foo}
+  \frametitle{A scalable particle filter}
+Single--observation update of a bootstrap particle filter:
+\begin{lstlisting}[language=scala]
+def update[S: State, O: Observation,
+                        C[_]: GenericColl](
+    dataLik: (S, O) => LogLik, stepFun: S => S
+       )(x: C[S], o: O): (LogLik, C[S]) = {
+  val xp = x map (stepFun(_))
+  val lw = xp map (dataLik(_, o))
+  val max = lw reduce (math.max(_, _))
+  val rw = lw map (lwi => math.exp(lwi - max))
+  val srw = rw reduce (_ + _)
+  val l = rw.length
+  val z = rw zip xp
+  val rx = z flatMap (p => Vector.fill(
+            Poisson(p._1 * l / srw).draw)(p._2))
+  (max + math.log(srw / l), rx)
+}  
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Filtering as a functional fold}
   \begin{itemize}
-  \item bar
+  \item Once we have a function for executing one step of a particle filter, we can produce a function for particle filtering as a functional fold over a sequence of observations:
   \end{itemize}
 \begin{lstlisting}[language=scala]
-  val x = 1
-  val y = f(x)
+def pFilter[S: State, O: Observation,
+    C[_]: GenericColl, D[O] <: GenTraversable[O]](
+    x0: C[S], data: D[O], dataLik: (S, O) => LogLik,
+    stepFun: S => S ): (LogLik, C[S]) = {
+  val updater = update[S, O, C](dataLik, stepFun) _
+  data.foldLeft((0.0, x0))((prev, o) => {
+    val next = updater(prev._2, o)
+    (prev._1 + next._1, next._2)
+  })
+}
 \end{lstlisting}
+Again, completely parallelisation--agnostic...
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Scalable statistical modelling}
+  \begin{itemize}
+  \item We have looked a lot at scalable statistical \alert{computation}, but what about scalable statistical \alert{modelling} more generally?
+  \item Independently of any computational issues, statistical modelling of large, complex problems is all about structure, modularity and composition --- again, the domain of category theory...
+  \item When Bayesian hierarchical modelling, we often use \alert{probabilistic programming languages} (such as BUGS, JAGS, Stan...) to build up a large, complex (DAG) model from simple components
+    \item It turns out that \alert{monads}, and especially \alert{free monads}, can give us a different (better?) perspective on building and inferring probabilistic models
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{foo}
+  \begin{itemize}
+  \item bar
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{foo}
+  \begin{itemize}
+  \item bar
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{foo}
+  \begin{itemize}
+  \item bar
+  \end{itemize}
 \end{frame}
 
 

@@ -358,14 +358,95 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \begin{frame}[fragile]
   \frametitle{Monads}
   \begin{itemize}
+  \item A \alert{monad} on a category $\mathcal{C}$ is an endofunctor $T: \mathcal{C}\longrightarrow\mathcal{C}$ together with two natural transformations $\eta: \operatorname{Id}_\mathcal{C} \longrightarrow T$ (\alert{lift}) and $\mu: T^2\longrightarrow T$ (\alert{flatten}) fullfilling the \alert{monad laws}:
+    \begin{itemize}
+    \item \alert{Associativity}: $\mu \circ T\mu = \mu \circ \mu T$, as transformations $T^3\longrightarrow T$
+      \item \alert{Identity}: $\mu \circ T\eta = \mu\circ \eta T = 1_T$, as transformations $T\longrightarrow T$
+    \end{itemize}
+  \item The associativity law says that the two ways of \alert{flattening} $T(T(T(x)))$ to $T(x)$ are the same
+  \item The identity law says that the two ways of \alert{lifting} $T(x)$ to $T(T(x))$ and then flattening back to $T(x)$ both get back to the original $T(x)$
+    \item In FP, we often use |M| (for monad) rather than $T$ (for triple), and say that there are four monad laws --- the additional two laws correspond to the naturality of $\eta$ (lift) and $\mu$ (flatten)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Kleisli category}
+  \begin{itemize}
+    \item Kleisli categories formalise monadic composition
+  \item For any monad $T$ over a category $\mathcal{C}$, the \alert{Kleisli category} of $\mathcal{C}$, written $\mathcal{C}_T$ is a category with the same objects as $\mathcal{C}$, but with morphisms given by:
+    \begin{itemize}
+    \item $\operatorname{hom}_{\mathcal{C}_T}(x,y) = \operatorname{hom}_\mathcal{C}(x,T(y)),\ \forall x,y\in\operatorname{ob}(\mathcal{C})$
+    \end{itemize}
+  \item The identity morphisms in $\mathcal{C}_T$ are given by $\operatorname{id}_x = \eta(x), \forall x$, and morphisms $f: x\longrightarrow T(y)$ and $g: y\longrightarrow T(z)$ in $\mathcal{C}$ can compose to form $g\ \circ_T f : x\longrightarrow T(z)$ via
+    \begin{itemize}
+      \item g\ \circ_T f = \mu_z \circ T(g) \circ f$
+    \end{itemize}
+    leading to composition of morphisms in $\mathcal{C_T}$.
+    \item In FP, the morphisms in $C_T$ are often referred to as \alert{Kleisli arrows}, or \alert{Kleislis}, or sometimes just \alert{arrows} (although \alert{Arrow} usually refers to a generalisation of Kleisli arrows, sometimes known as \alert{Hughes arrows})
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{Applicative Functors}
+  \begin{itemize}
+  \item Lax monoidal endofunctor (with a strength) ???
+  \end{itemize}
+\end{frame}
+
+\subsection{Scalable modelling and computation}
+
+\begin{frame}[fragile]
+  \frametitle{Apache Spark}
+  \begin{itemize}
+  \item We have already seen how parallel monadic collections can automatically parallelise ``map'' and ``reduce'' operations
+  \item \alert{Apache Spark} is a Scala library for Big Data analyics on (large) clusters of machines (in the cloud)
+  \item The basic datatype provided by Spark is an \alert{RDD} --- a resilient distributed dataset
+  \item An RDD is just a \alert{lazy}, \alert{distributed}, parallel monadic collection, supporting methods such as |map|, |flatMap|, |reduce|, etc., which can be used in exactly the same way as any other monadic collection
+    \item Code looks exactly the same whether the RDD is a small dataset on a laptop or terabytes in size, distributed over a large Spark cluster
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Lazyness, composition, laws and optimisations}
+  \begin{itemize}
+    \item Lazyness allows some optimisations to be performed that would be difficult to automate otherwise
+    \item Consider a dataset |rdd: RDD[T]|, functions |f: T => U|, |g: U => V|, and a binary operation |op: (V,V) => V| for monoidal type |V|
+    \item We can map the two functions and then reduce with:
+      \begin{itemize}
+      \item |rdd map f map g reduce op|
+        \item to get a value of type |V|, all computed in parallel
+      \end{itemize}
+    \item However, re-writing this as:
+      \begin{itemize}
+      \item |rdd map (g compose f) reduce op|
+        \item would eliminate an intermediate collection, but is equivalent due to the 2nd functor law
+      \end{itemize}
+      \item Category theory \alert{laws} often correspond to \alert{optimisations} that can be applied to code without affecting results --- Spark can do these optimisations \alert{automatically} due to lazy evaluation
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{foo}
+  \begin{itemize}
   \item bar
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Applicative Functors}
+  \frametitle{foo}
   \begin{itemize}
-  \item Lax monoidal functor (with a strength) ???
+  \item bar
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+  \frametitle{foo}
+  \begin{itemize}
+  \item bar
   \end{itemize}
 \end{frame}
 
@@ -380,44 +461,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \end{lstlisting}
 \end{frame}
 
-\subsection{Scalable modelling and computation}
 
-\begin{frame}[fragile]
-  \frametitle{foo}
-  \begin{itemize}
-  \item bar
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{foo}
-  \begin{itemize}
-  \item bar
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{foo}
-  \begin{itemize}
-  \item bar
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{foo}
-  \begin{itemize}
-  \item bar
-  \end{itemize}
-\end{frame}
-
-
-
-\begin{frame}[fragile]
-  \frametitle{foo}
-  \begin{itemize}
-  \item bar
-  \end{itemize}
-\end{frame}
 
 
 \subsection{Scalable statistical computing}

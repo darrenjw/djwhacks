@@ -102,10 +102,10 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     \pause
   \item Everything!
     \pause
-  \item \alert{R} has become the defacto standard programming language for statistical computing --- it was designed by statisticians for statisticians, and it shows!
+  \item \alert{R} has become the de facto standard programming language for statistical computing --- it was designed by statisticians for statisticians, and it shows!
     \begin{itemize}
     \item Many dubious language design choices, meaning it will always be ugly, slow and inefficient (without many significant breaking changes to the language)
-    \item R's inherent inefficiencies mean that much of the R codebase isn't in R at all, but instead in other languages, such as \alert{Fortran}, \alert{C} and \alert{C++}
+    \item R's inherent inefficiencies mean that much of the R code-base isn't in R at all, but instead in other languages, such as \alert{Fortran}, \alert{C} and \alert{C++}
       \item Although faster and more efficient that R, these languages are actually all even \alert{worse} languages for statistical computing than R!
       \end{itemize}
   \end{itemize}
@@ -143,7 +143,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \item FP languages emphasise the use of \alert{immutable} data, \alert{pure}, \alert{referentially transparent functions}, and \alert{higher-order functions}
   \item Unlike commonly used \alert{imperative} programming languages, they are closer to the Church end of the \alert{Church-Turing thesis} --- eg. closer to \alert{Lambda--calculus} than a \alert{Turing--machine}
   \item The original Lambda--calculus was \alert{untyped}, corresponding to a \alert{dynamically--typed} programming language, such as \alert{Lisp}
-    \item \alert{Statically--typed} FP languages (such as \alert{Haskell}) are arguably more scalable, corresponding to the \alert{simply--typed Lambda--calculus}, closely related to \alert{cartesian closed categories}...
+    \item \alert{Statically--typed} FP languages (such as \alert{Haskell}) are arguably more scalable, corresponding to the \alert{simply--typed Lambda--calculus}, closely related to \alert{Cartesian closed categories}...
   \end{itemize}
   }
 
@@ -248,9 +248,9 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \begin{itemize}
   \item The \alert{Probability monad} is another important monad with obvious relevance to statistical computing
   \item A |Rand[T]| represents a random quantity of type |T|
-  \item It is used to encapsulate the non-determinism of functions returning random quantities --- otherwise these would break the \alert{purity} and \alert{referential transparancy} of the function
+  \item It is used to encapsulate the non-determinism of functions returning random quantities --- otherwise these would break the \alert{purity} and \alert{referential transparency} of the function
   \item |map| is used to transform one random quantity into another
-  \item |flatMap| is used to chain together stochastic functions to create joint and/or marginal random variables, or to \alert{propagate uncertainty} through a computational workflow or pipeline
+  \item |flatMap| is used to chain together stochastic functions to create joint and/or marginal random variables, or to \alert{propagate uncertainty} through a computational work-flow or pipeline
     \item Probability monads form the basis for the development of \alert{probabilistic programming languages} using FP
     \item The probability monad is typically implemented as a \alert{State monad}, the mechanism for handling mutable state using FP
   \end{itemize}
@@ -290,7 +290,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \begin{itemize}
   \item A category $\mathcal{C}$ consists of a collection of \alert{objects}, $\operatorname{ob}(\mathcal{C})$, and \alert{morphisms}, $\operatorname{hom}(\mathcal{C})$. Each morphism is an ordered pair of objects (an arrow between objects). For $x,y\in \operatorname{ob}(\mathcal{C})$, the set of morphisms from $x$ to $y$ is denoted $\operatorname{hom}_{\mathcal{C}}(x,y)$. $f\in \operatorname{hom}_{\mathcal{C}}(x,y)$ is often written $f: x \longrightarrow y$.
   \item Categories are closed under \alert{composition}, so that if $f: x\longrightarrow y$ and $g: y\longrightarrow z$, then there must also exist a morphism $h: x\longrightarrow z$ written $h=g \circ f$.
-  \item Composition is associative, so that $f\circ(g\circ h) = (f\circ g)\circ h$ for all composible $f, g, h\in \operatorname{hom}(\mathcal{C})$.
+  \item Composition is associative, so that $f\circ(g\circ h) = (f\circ g)\circ h$ for all composable $f, g, h\in \operatorname{hom}(\mathcal{C})$.
     \item For every $x\in \operatorname{ob}(\mathcal{C})$ there exists an \alert{identity} morphism $\operatorname{id}_x: x\longrightarrow x$, with the property that for any $f: x\longrightarrow y$ we have $f = f\circ \operatorname{id}_x = \operatorname{id}_y\circ f$.
   \end{itemize}
 \end{frame}
@@ -332,7 +332,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \begin{frame}[fragile]
   \frametitle{Monoid as a category with one object}
   \begin{itemize}
-  \item Given our definition of a category, we can now reconsider the notion of a \alert{moniod} now as a \alert{category with one object}
+  \item Given our definition of a category, we can now reconsider the notion of a \alert{monoid} now as a \alert{category with one object}
   \item The object represents the ``type'' of the monoid, and the \alert{morphisms represent the ``values''}
   \item From our definition of a category, we know that there is an \alert{identity} morphism, that the morphisms are closed under \alert{composition}, and that they are \alert{associative}...
   \item For a monoid type object, $M$ in \textbf{Hask}, the \alert{(endo)morphisms} represent \alert{functions}, $f_a: M\longrightarrow M$ defined by $f_a(m)=m\star a$
@@ -378,15 +378,19 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \begin{frame}[fragile]
   \frametitle{Monads}
   \begin{itemize}
-  \item A \alert{monad} on a category $\mathcal{C}$ is an endofunctor $T: \mathcal{C}\longrightarrow\mathcal{C}$ together with two natural transformations $\eta: \operatorname{Id}_\mathcal{C} \longrightarrow T$ (\alert{lift}) and $\mu: T^2\longrightarrow T$ (\alert{flatten}) fullfilling the \alert{monad laws}:
+  \item A \alert{monad} on a category $\mathcal{C}$ is an endofunctor $T: \mathcal{C}\longrightarrow\mathcal{C}$ together with two natural transformations $\eta: \operatorname{Id}_\mathcal{C} \longrightarrow T$ (\alert{unit}) and $\mu: T^2\longrightarrow T$ (\alert{multiplication}) fulfilling the \alert{monad laws}:
     \begin{itemize}
-    \item \alert{Associativity}: $\mu \circ T\mu = \mu \circ \mu T$, as transformations $T^3\longrightarrow T$
-      \item \alert{Identity}: $\mu \circ T\eta = \mu\circ \eta T = 1_T$, as transformations $T\longrightarrow T$
+    \item \alert{Associativity}: $\mu \circ T\mu = \mu \circ \mu_T$, as transformations $T^3\longrightarrow T$
+      \item \alert{Identity}: $\mu \circ T\eta = \mu\circ \eta_T = 1_T$, as transformations $T\longrightarrow T$
     \end{itemize}
   \item The associativity law says that the two ways of \alert{flattening} $T(T(T(x)))$ to $T(x)$ are the same
   \item The identity law says that the two ways of \alert{lifting} $T(x)$ to $T(T(x))$ and then flattening back to $T(x)$ both get back to the original $T(x)$
-    \item In FP, we often use |M| (for monad) rather than $T$ (for triple), and say that there are four monad laws --- the additional two laws correspond to the naturality of $\eta$ (lift) and $\mu$ (flatten)
+    \item In FP, we often use |M| (for monad) rather than $T$ (for triple), and say that there are three monad laws --- the additional law corresponds to the naturality of $\mu$
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+\centerline{\includegraphics[height=0.9\textheight]{monad-is}}
 \end{frame}
 
 \begin{frame}[fragile]
@@ -406,6 +410,9 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+\centerline{\includegraphics[height=0.9\textheight]{say-monad}}
+\end{frame}
 
 \subsection{Scalable modelling and computation}
 
@@ -413,7 +420,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \frametitle{Apache Spark}
   \begin{itemize}
   \item We have already seen how parallel monadic collections can automatically parallelise ``map'' and ``reduce'' operations
-  \item \alert{Apache Spark} is a Scala library for Big Data analyics on (large) clusters of machines (in the cloud)
+  \item \alert{Apache Spark} is a Scala library for Big Data analytics on (large) clusters of machines (in the cloud)
   \item The basic datatype provided by Spark is an \alert{RDD} --- a resilient distributed dataset
   \item An RDD is just a \alert{lazy}, \alert{distributed}, parallel monadic collection, supporting methods such as |map|, |flatMap|, |reduce|, etc., which can be used in exactly the same way as any other monadic collection
     \item Code looks exactly the same whether the RDD is a small dataset on a laptop or terabytes in size, distributed over a large Spark cluster
@@ -560,23 +567,6 @@ Again, completely parallelisation--agnostic...
   \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{foo}
-  \begin{itemize}
-  \item bar
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{foo}
-  \begin{itemize}
-  \item bar
-  \end{itemize}
-\end{frame}
-
-
-
-
 \subsection{Scalable statistical computing}
 
 \section{Summary and conclusions}
@@ -601,7 +591,7 @@ Again, completely parallelisation--agnostic...
   \frametitle{Conclusions}
   \begin{itemize}
   \item We should approach the problem of statistical modelling and computation in a modular, composable, functional way, guided by underpinning principles from category theory
-  \item To implement solutions to problems in statistical modelling and compution in a more scalable way, we need programming languages which are:
+  \item To implement solutions to problems in statistical modelling and computation in a more scalable way, we need programming languages which are:
     \begin{itemize}
     \item \alert{Strongly statically typed} (but with type inference)
     \item \alert{Compiled} (but possibly to a VM)

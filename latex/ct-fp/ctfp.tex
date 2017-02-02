@@ -73,7 +73,7 @@ col, set,start,end,deltat,zip},
 \url{@darrenjw}\\
 \alert{\url{tinyurl.com/darrenjw}}\\
 School of Mathematics \& Statistics\\Newcastle University, UK}
-\date{Statistics Seminar\\Newcastle University\\3rd February 2017}
+\date{Statistics Seminar, Newcastle University\\3rd February 2017}
 
 
 \frame{\titlepage}
@@ -289,7 +289,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \frametitle{Category theory}
   \begin{itemize}
   \item A category $\mathcal{C}$ consists of a collection of \alert{objects}, $\operatorname{ob}(\mathcal{C})$, and \alert{morphisms}, $\operatorname{hom}(\mathcal{C})$. Each morphism is an ordered pair of objects (an arrow between objects). For $x,y\in \operatorname{ob}(\mathcal{C})$, the set of morphisms from $x$ to $y$ is denoted $\operatorname{hom}_{\mathcal{C}}(x,y)$. $f\in \operatorname{hom}_{\mathcal{C}}(x,y)$ is often written $f: x \longrightarrow y$.
-  \item Categories are closed under \alert{composition}, so that if $f: x\longrightarrow y$ and $g: y\longrightarrow z$, then there must also exist a morphism $h: x\longrightarrow z$ written $h=g \circ f$.
+  \item Morphisms are closed under \alert{composition}, so that if $f: x\longrightarrow y$ and $g: y\longrightarrow z$, then there must also exist a morphism $h: x\longrightarrow z$ written $h=g \circ f$.
   \item Composition is associative, so that $f\circ(g\circ h) = (f\circ g)\circ h$ for all composable $f, g, h\in \operatorname{hom}(\mathcal{C})$.
     \item For every $x\in \operatorname{ob}(\mathcal{C})$ there exists an \alert{identity} morphism $\operatorname{id}_x: x\longrightarrow x$, with the property that for any $f: x\longrightarrow y$ we have $f = f\circ \operatorname{id}_x = \operatorname{id}_y\circ f$.
   \end{itemize}
@@ -306,7 +306,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \item For a pure FP language, we can form a category where objects represent \alert{types}, and morphisms represent \alert{functions} from one type to another
     \begin{itemize}
       \item In Haskell this category is often referred to as \textbf{Hask}
-    \item This category is very similar to \textbf{Set}, in practice
+    \item This category is very similar to \textbf{Set}, in practice (both CCCs)
     \item By modelling FP types and functions as a category, we can bring ideas and techniques from CT into FP
       \end{itemize}
   \end{itemize}
@@ -561,9 +561,10 @@ Again, completely parallelisation--agnostic...
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{foo}
+  \frametitle{Monads for probabilistic programming}
   \begin{itemize}
-  \item bar
+  \item The \alert{probability monad} provides a foundation for describing random variables in a pure functional way
+    \item 
   \end{itemize}
 \end{frame}
 
@@ -574,13 +575,13 @@ Again, completely parallelisation--agnostic...
 \begin{frame}
   \frametitle{Summary}
   \begin{itemize}
-  \item Obviously can't ``teach'' much about either FP or CT in a single talk/seminar
-  \item Don't expect everyone to have understood everything
+  \item You can't learn much about either FP or CT in a single talk/seminar
+  \item I don't expect everyone to have understood everything!
   \item The aim was to give a little insight into:
     \begin{itemize}
     \item Why FP is interesting, and inherently more modular, composable and scalable than imperative programming
-    \item CT is a good model for composable computation, because it is a theory of structure and composition
-      \item CT provides powerful abstractions which make FP easier, more modular, and more general
+    \item Why CT is a good model for composable computation (because it is a theory of structure and composition)
+      \item Why CT provides powerful abstractions which make FP easier, more modular, and more general
       \end{itemize}
   \end{itemize}
 \end{frame}
@@ -593,14 +594,16 @@ Again, completely parallelisation--agnostic...
   \item We should approach the problem of statistical modelling and computation in a modular, composable, functional way, guided by underpinning principles from category theory
   \item To implement solutions to problems in statistical modelling and computation in a more scalable way, we need programming languages which are:
     \begin{itemize}
-    \item \alert{Strongly statically typed} (but with type inference)
-    \item \alert{Compiled} (but possibly to a VM)
-    \item \alert{Functional} (with support for immutable values and higher-order functions)
-      \item and have support for \alert{typeclasses} and \alert{higher-kinded types}, allowing the adoption of design patterns from category theory
+    \item \alert{Strongly statically typed}
+    \item \alert{Compiled}
+    \item \alert{Functional}
+      \item and support \alert{typeclasses} and \alert{higher-kinded types}
     \end{itemize}
-    \item \alert{Scala} and \alert{Spark} provide a nice illustration of the power of this approach, but there are other interesting languages, including: Haskell, (S)ML, OCaml, Frege, Eta, ...
+  \item \alert{Scala} and \alert{Spark} provide a nice illustration of the power of this approach, but there are other interesting languages, including: Haskell, (S)ML, OCaml, Frege, Eta, ...
+    \item For more about Scala: \alert{\url{darrenjw.wordpress.com}}
   \end{itemize}
   }
+
 
 \end{document}
 

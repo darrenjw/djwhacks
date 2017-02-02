@@ -1,4 +1,4 @@
-\documentclass[mathserif,handout]{beamer}
+\documentclass[mathserif]{beamer}
 %\documentclass{beamer}
 \usetheme{Luebeck}
 \usecolortheme{spruce}
@@ -103,6 +103,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \item Everything!
     \pause
   \item \alert{R} has become the de facto standard programming language for statistical computing --- the S language was designed by statisticians for statisticians in the mid 1970's, and it shows!
+    \pause
     \begin{itemize}
     \item Many dubious language design choices, meaning it will always be ugly, slow and inefficient (without many significant breaking changes to the language)
     \item R's inherent inefficiencies mean that much of the R code-base isn't in R at all, but instead in other languages, such as \alert{Fortran}, \alert{C} and \alert{C++}
@@ -138,7 +139,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \subsection{Functional Programming}
 
 \frame{
-  \frametitle{What is FP?}
+  \frametitle{What is functional programming?}
   \begin{itemize}
   \item FP languages emphasise the use of \alert{immutable} data, \alert{pure}, \alert{referentially transparent functions}, and \alert{higher-order functions}
   \item Unlike commonly used \alert{imperative} programming languages, they are closer to the Church end of the \alert{Church-Turing thesis} --- eg. closer to \alert{Lambda--calculus} than a \alert{Turing--machine}
@@ -148,7 +149,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   }
 
 \frame{
-  \frametitle{FP}
+  \frametitle{Functional programming}
   \begin{itemize}
   \item In pure FP, all state is \alert{immutable} --- you can assign names to things, but you can't change what the name points to --- no ``variables'' in the usual sense
   \item Functions are \alert{pure} and \alert{referentially transparent} --- they can't have side-effects --- they are just like functions in mathematics...
@@ -162,7 +163,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \begin{itemize}
   \item Modern computer architectures have processors with several cores, and possibly several processors
   \item Parallel programming is required to properly exploit this hardware
-  \item The main difficulties in parallel and concurrent programming in imperative programming all relate to issues associated with \alert{shared mutable state}
+  \item The main difficulties with parallel and concurrent programming using imperative languages all relate to issues associated with \alert{shared mutable state}
   \item In pure FP, state is not mutable, so there is no mutable state, and hence no shared mutable state
     \item Most of the difficulties associated with parallel and concurrent programming just don't exist in FP --- this has been one of the main reasons for the recent resurgence of FP languages
   \end{itemize}
@@ -176,7 +177,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     \begin{itemize}
     \item \alert{Strongly statically typed} (but with type inference)
     \item \alert{Compiled} (but possibly to a VM)
-    \item \alert{Functional} (with support for immutable values and higher-order functions)
+    \item \alert{Functional} (with support for immutable values, immutable collections, ADTs and higher-order functions)
       \item and have support for \alert{typeclasses} and \alert{higher-kinded types}, allowing the adoption of design patterns from \alert{category theory}
     \end{itemize}
   \item For efficient statistical computing, it can be argued that evaluation should be \alert{strict} rather than \alert{lazy} by default
@@ -187,7 +188,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \begin{frame}[fragile]
   \frametitle{Monadic collections}
   \begin{itemize}
-  \item A collection of type |M[T]| can contain (multiple) values of type |T|
+  \item A collection of type |M[T]| can contain (multiple) values of type~|T|
   \item If the collection supports a higher-order function\\
     |map(f: T => S): M[S]| then we call the collection a \alert{Functor}
     \begin{itemize}
@@ -460,7 +461,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \frametitle{Typeclasses}
   \begin{itemize}
   \item \alert{Typeclasses} are a mechanism for supporting \alert{ad hoc polymorphism} in (functional) programming languages
-  \item They are more flexible way to provide polymorphic functionality than traditional inheritance-based object classes in traditional object-oriented programming languages
+  \item They are more flexible way to provide polymorphic functionality than traditional inheritance-based object classes in conventional object-oriented programming languages
   \item To define a typeclass (such as |Monoid|) for a basic type, the language must support \alert{parametric types}
   \item To define a typeclass (such as |Functor| or |Monad|) for a parametric type or type constructor, the language must support \alert{higher-kinded types} (very few widely-used languages do)
   \end{itemize}

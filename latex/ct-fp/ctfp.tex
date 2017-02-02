@@ -102,11 +102,11 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     \pause
   \item Everything!
     \pause
-  \item \alert{R} has become the de facto standard programming language for statistical computing --- it was designed by statisticians for statisticians, and it shows!
+  \item \alert{R} has become the de facto standard programming language for statistical computing --- the S language was designed by statisticians for statisticians in the mid 1970's, and it shows!
     \begin{itemize}
     \item Many dubious language design choices, meaning it will always be ugly, slow and inefficient (without many significant breaking changes to the language)
     \item R's inherent inefficiencies mean that much of the R code-base isn't in R at all, but instead in other languages, such as \alert{Fortran}, \alert{C} and \alert{C++}
-      \item Although faster and more efficient that R, these languages are actually all even \alert{worse} languages for statistical computing than R!
+      \item Although faster and more efficient that R, these languages are actually all even \alert{worse} languages for statistical computing than~R!
       \end{itemize}
   \end{itemize}
   }
@@ -226,7 +226,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \item Given functions |f: S => T|, |g: T => U|, |h: U => V|, we can compose them as |h compose g compose f| or |s => h(g(f(s)))| to get |hgf: S => V|
   \item Monadic functions |f: S => M[T]|, |g: T => M[U]|, |h: U => M[V]| don't compose directly, but do using |flatMap|:\\
     |s => f(s) flatMap g flatMap h| has type |S => M[V]|
-  \item Can be written as a ``for-comprehension'' (``do'' in Haskell):\\
+  \item Can be written as a \alert{for-comprehension} (|do| in Haskell):\\
     |s => for (t<-f(s); u<-g(t); v<-h(u)) yield v|
     \item Just syntactic sugar for the chained |flatMap|s above --- really \alert{not} an imperative-style ``for loop'' at all...
   \end{itemize}
@@ -428,9 +428,9 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Lazyness, composition, laws and optimisations}
+  \frametitle{Laziness, composition, laws and optimisations}
   \begin{itemize}
-    \item Lazyness allows some optimisations to be performed that would be difficult to automate otherwise
+    \item Laziness allows some optimisations to be performed that would be difficult to automate otherwise
     \item Consider a dataset |rdd: RDD[T]|, functions |f: T => U|, |g: U => V|, and a binary operation |op: (V,V) => V| for monoidal type |V|
     \item We can map the two functions and then reduce with:
       \begin{itemize}
@@ -561,16 +561,35 @@ Again, completely parallelisation--agnostic...
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{Monads for probabilistic programming}
+  \frametitle{Composing random variables with the probability monad}
   \begin{itemize}
   \item The \alert{probability monad} provides a foundation for describing random variables in a pure functional way
-    \item 
+  \item We can build up joint distributions from marginal and conditional distributions using \alert{monadic composition}
+  \item For example, consider an exponential mixture of Poissons (marginally negative binomial): we can think of an exponential distribution parametrised by a rate as a function |Exponential: Double => Rand[Double]| and a Poisson parametrised by its mean as a function |Poisson: Double => Rand[Int]|
+    \item Those two functions don't directly compose, but do in the Kleisli category of the |Rand| monad, so |Exponential(3) flatMap {Poisson(_)}| will return a |Rand[Int]| which we can draw samples from if required
   \end{itemize}
 \end{frame}
 
-\subsection{Scalable statistical computing}
+
+\begin{frame}[fragile]
+  \frametitle{Monads for probabilistic programming}
+  \begin{itemize}
+    \item For larger probability models we can use \alert{for-comprehensions} to simplify the model building process, eg.
+\begin{lstlisting}[language=scala]
+  for { mu <- Gaussian(10,1)
+        tau <- Gamma(1,1)
+        sig = 1.0/sqrt(tau)
+        obs <- Gaussian(mu,sig) }
+  yield ((mu,tau,obs))
+\end{lstlisting}
+  \item We can use a regular probability monad for building forward models this way, and even for building models with simple Bayesian inference procedures allowing conditioning
+    \item For sophisticated probabilistic sampling algorithms (eg. SMC, MCMC, pMCMC, HMC, ...) it is better to build models like this using a \alert{free monad} which can be \alert{interpreted} in different ways
+  \end{itemize}
+\end{frame}
 
 \section{Summary and conclusions}
+
+\subsection{Summary}
 
 \begin{frame}
   \frametitle{Summary}
@@ -586,7 +605,7 @@ Again, completely parallelisation--agnostic...
   \end{itemize}
 \end{frame}
 
-
+\subsection{Conclusions}
 
 \frame{
   \frametitle{Conclusions}

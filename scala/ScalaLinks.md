@@ -26,6 +26,9 @@
     * [cats](https://github.com/non/cats) - new alternative to scalaz - will one day replace scalaz, but still a moving target
         * [documentation](http://typelevel.org/cats/)
         * [herding cats](http://eed3si9n.com/herding-cats/) - tutorials
+	* [dogs](https://github.com/stew/dogs) - functional data structures
+	* [FS2](https://github.com/functional-streams-for-scala/fs2) - functional streams in Scala
+	  * [From Scalaz Streams to FS2](https://partialflow.wordpress.com/2016/07/17/from-scalaz-streams-to-fs2/)
 	* [shapeless](https://github.com/milessabin/shapeless) - generic programming extensions to core scala (combinators, hlists, etc.)
 	  * [Getting started with shapeless](http://jto.github.io/articles/getting-started-with-shapeless/)
           * [The Type Astronaut's Guide to Shapeless](https://github.com/underscoreio/shapeless-guide)
@@ -51,13 +54,18 @@
         * [framian](https://github.com/pellucidanalytics/framian/wiki/Framian-Guide) - another R-like data frame for Scala
     * [Factorie](http://factorie.github.io/factorie/) - probabilistic modelling library
     * [bayes-scala](https://github.com/danielkorzekwa/bayes-scala) - Bayesian networks in scala
+    * [Figaro](https://github.com/p2t2/figaro) - probabilistic programming library
+      * [HMMs with Figaro](https://mioalter.wordpress.com/2016/02/13/hmm-hidden-markov-models-with-figaro/)
     * [List of mathematical tools and libraries](https://wiki.scala-lang.org/display/SW/Tools+and+Libraries#ToolsandLibraries-Mathematics) on the scala wiki
 * Big data
     * [Spark](http://spark.apache.org/) - Scalable analytics for scala (from the AMPLab) ([spark on wikipedia](http://en.wikipedia.org/wiki/Spark_(cluster_computing_framework)))
-        * [2.0.0 release](http://spark.apache.org/releases/spark-release-2-0-0.html)
-        * [Mastering Spark](https://jaceklaskowski.gitbooks.io/mastering-apache-spark/content/)
+	* [2.0.0 release](http://spark.apache.org/releases/spark-release-2-0-0.html)
+	* [Mastering Spark](https://jaceklaskowski.gitbooks.io/mastering-apache-spark/content/)
 	* [sparkz](https://github.com/gm-spacagna/sparkz) - functional API for Spark
-    * [Flink](https://flink.apache.org/) - new Spark alternative (better at streaming? cleaner api?)
+	* [A quickie on playing with Spark in SBT](https://databaseline.wordpress.com/2017/01/13/a-quickie-on-playing-with-spark-in-sbt/)
+	* [Implementing an RDD scanLeft Transform With Cascade RDDs](http://erikerlandson.github.io/blog/2014/08/09/implementing-an-rdd-scanleft-transform-with-cascade-rdds/)
+	  * [Implementing Parallel Prefix Scan as a Spark RDD Transform](http://erikerlandson.github.io/blog/2014/08/12/implementing-parallel-prefix-scan-as-a-spark-rdd-transform/)
+    * [Flink](https://flink.apache.org/) - new Spark alternative (better at streaming? cleaner api? but actually in java...)
     * [Escalante](http://escalante.io/) - Scala for JBoss
     * [Kafka](http://kafka.apache.org/) - stream processing
     * [storm](http://storm-project.net/) - realtime analytics from twitter - now largely obsolete
@@ -69,7 +77,9 @@
 		  * [Scaladoc](http://doc.akka.io/api/akka-stream-and-http-experimental/1.0-M4/)
 		  * [Diving in to Akka Streams](https://medium.com/@kvnwbbr/diving-into-akka-streams-2770b3aeabb0)
 		  * [A first look at Akka Streams](http://rnduja.github.io/2016/03/25/a_first_look_to_akka_stream/)
-                  * [Replace actors with Streams](https://softwaremill.com/replacing-akka-actors-with-akka-streams/)
+		  * [Replace actors with Streams](https://softwaremill.com/replacing-akka-actors-with-akka-streams/)
+		  * [About akka streams](https://tech.zalando.com/blog/about-akka-streams/)
+
 * Web
     * [Lift](http://liftweb.net/) web framework
     * [Play](http://www.playframework.com/) web framework (recommended by [typesafe](http://typesafe.com/))
@@ -93,14 +103,15 @@
         * [Data frames and tables in Scala](https://darrenjw.wordpress.com/2015/08/21/data-frames-and-tables-in-scala/)
         * [HOFs, closures, partial application and currying](https://darrenjw.wordpress.com/2015/11/16/hofs-closures-partial-application-and-currying-to-solve-the-function-environment-problem-in-scala/)
         * [Monads in Scala](https://darrenjw.wordpress.com/2016/04/15/first-steps-with-monads-in-scala/)
-	* [A scalable particle filter in Scala](https://darrenjw.wordpress.com/2016/07/22/a-scalable-particle-filter-in-scala/)
-	* [Working with SBML using Scala](https://darrenjw.wordpress.com/2016/12/17/working-with-sbml-using-scala/)
+        * [A scalable particle filter in Scala](https://darrenjw.wordpress.com/2016/07/22/a-scalable-particle-filter-in-scala/)
+        * [Working with SBML using Scala](https://darrenjw.wordpress.com/2016/12/17/working-with-sbml-using-scala/)
     * [Getting started in Scala](https://gist.github.com/djspiewak/cb72c41ac335a3a9b28b3307be04aa43)
     * [Scala starter kit](http://www.cakesolutions.net/teamblogs/scala-starter-kit)
     * [Scala school](http://twitter.github.com/scala_school/) (from twitter)
         * [Effective scala](http://twitter.github.io/effectivescala/) (best practices)
     * [A tour of scala](http://docs.scala-lang.org/tutorials/tour/tour-of-scala.html)
     * [The Neophyte's Guide to Scala ](http://danielwestheide.com/scala/neophytes.html)
+    * [Scala exercises](https://www.scala-exercises.org/)
     * [Learning scalaz](http://eed3si9n.com/learning-scalaz/), including a [scalaz cheatsheet](http://eed3si9n.com/learning-scalaz/scalaz-cheatsheet.html)
     * [Scala overview on stack overflow](http://stackoverflow.com/tags/scala/info)
     * [Programming in Scala](http://www.artima.com/pins1ed/) (first edition, on-line)
@@ -108,11 +119,14 @@
     * [Scala by example](http://www.scala-lang.org/docu/files/ScalaByExample.pdf) (PDF)
     * [Design patterns in scala](http://pavelfatin.com/design-patterns-in-scala/)
     * [Old design patterns in scala](http://www.lihaoyi.com/post/OldDesignPatternsinScala.html)
+    * [Implicit Design Patterns in Scala](http://www.lihaoyi.com/post/ImplicitDesignPatternsinScala.html)
     * [Pattern match generic types](http://www.cakesolutions.net/teamblogs/ways-to-pattern-match-generic-types-in-scala)
     * [Getting to know CanBuildFrom](http://blog.bruchez.name/2012/08/getting-to-know-canbuildfrom-without-phd.html)
     * [Generalised type constraints](http://blog.bruchez.name/2015/11/generalized-type-constraints-in-scala.html)
     * [Bullet proof data science in Scala](http://www.data-intuitive.com/2016/06/bullet-proof-data-analysis-in-scala/)
     * [Kafka as unix pipes](http://logallthethings.com/2015/09/15/kafka-by-example-kafka-as-unix-pipes/)
+    * [The most important Streaming abstraction](https://www.scalawilliam.com/most-important-streaming-abstraction/)
+    * [Asynchronous Programming and Scala](https://alexn.org/blog/2017/01/30/asynchronous-programming-scala.html)
     * [Scala one-liners](https://gist.github.com/mkaz/d11f8f08719d6d27bab5)
     * [FP for the average Joe - I - Validation](http://www.47deg.com/blog/fp-for-the-average-joe-part-1-scalaz-validation)
         * [II - Monad transformers](http://www.47deg.com/blog/fp-for-the-average-joe-part-2-scalaz-monad-transformers)

@@ -1,738 +1,1058 @@
-###### Bacillus lab notes
+# Bacillus lab notes
 
-##### Techniques still to learn about
 
-` * Running a gel`\
-` * Cloning`\
-`   * PCR`\
-`   * Restriction/ligation reactions`\
-`   * Making knockouts`\
-`   * Making inducible genes`\
-`   * GFP knockins`
+## Techniques still to learn about
 
-##### Basic B. Subtilis info
 
-[Gram-positive](http://en.wikipedia.org/wiki/Gram_positive "wikilink")
-rod-shaped bacterium, approx 5μm in length, and roughly 0.5 to 1um in
-diameter
+*  Running a gel
 
-#### My freezer box
+*  Cloning
+    * PCR
+    * Restriction/ligation reactions
+    * Making knockouts
+    * Making inducible genes
+    * GFP knockins
 
-` * **Strains:** 168, DS901, LH151, LH153, LH154, LH155, hag-gfp, RIK908, RIK909, RIK1003, TW20, PS258, BF2616, DegUhy`\
-` * **E. Coli strains:** ECE72, ECE73, ECE74`\
-` * **My strains:** a, b, c, d, e, f(x2), g, i, j, m, n, o, p, r, s, u, v, aa, ab, ac, ag.`\
-` * **chDNA:** RIK908(x2), RIK909, RIK1003, LH153, PS258, BFA2616(x2), DegUhy, o, FlhF, hag-gfp, TW20`\
-` * **pDNA:** ECE73 (pCm::Nm), ECE74 (pCm::Sp)`
 
-#### Strains
+## Basic B. Subtilis info
 
-` * 168 - lab strain - sequenced strain - strain used almost exclusively in ICAMB.`\
-` * PY79 - lab strain`\
-` * W23 - lab strain`\
-` * 3610 - wild strain - ancestor of PY79?`
+[Gram-positive](http://en.wikipedia.org/wiki/Gram_positive) rod-shaped bacterium, approx 5μm in length, and roughly 0.5 to 1um in diameter
 
-Lab strains typically have a frameshift mutation in
-[swrA](http://www.uniprot.org/uniprot/O32266 "wikilink") which limits
-//swarming// and motility. Swarming is when groups of cells join
-together in assemblies known as //rafts//.
 
-168 seems to feature
-[trpC](http://www.uniprot.org/uniprot/P03964 "wikilink")2 mutation
-(disrupts
-[tryptophan](http://en.wikipedia.org/wiki/Tryptophan "wikilink")
-biosynthesis), but not always. Also, more than one 168 strain... All a
-bit messy!
 
-#### Genome
 
-` * 168 - sequenced strain`\
-` * 4.2 Mbp`\
-` * 4,100 protein coding genes`\
-` * Roughly 2,500 assigned a role category`\
-` * Roughly 2,850 in `[`Uniprot`](http://www.uniprot.org/ "wikilink")\
-` * Genes starting with a "y" were unnamed at the time of sequencing. Some have since been re-named. Apparently the Japanese tend not to re-name, whereas Westerners do...`
+### My freezer box
 
-#### Basic biochemistry
 
-### Promoters
+*  **Strains:** 168, DS901, LH151, LH153, LH154, LH155, hag-gfp, RIK908, RIK909, RIK1003, TW20, PS258, BF2616, DegUhy
 
-` * `[`RNAP`](http://en.wikipedia.org/wiki/RNA_polymerase "wikilink")` binds to a transcription factor, known as a `[`sigma`
-`factor`](http://en.wikipedia.org/wiki/Sigma_factor "wikilink")`. Several sigma factors, each leading to affinity for different core `[`promoter`](http://en.wikipedia.org/wiki/Promoter "wikilink")` sequences. The RNAP-sigma factor complex then binds to the RNAP binding site (approx 34 bp upstream of the TSS) to initiate transcription`\
-` * Proximal promoter: roughly 250bp upstream of transcription start site (TSS). Can strongly regulate transcription`\
-` * Distal promoter: anything further upstream than the proximal promoter - usually has weaker effect`
+*  **E. Coli strains:** ECE72, ECE73, ECE74
 
-### Sequence information
+*  **My strains:** a, b, c, d, e, f(x2), g, i, j, m, n, o, p, r, s, u, v, aa, ab, ac, ag.
 
-` * In DNA, `[`nucleotide`](http://en.wikipedia.org/wiki/Nucleotide "wikilink")` A pairs with T and C with G. The sense strand is read from 5' to 3' end, the template strand from 3' to 5' and the mRNA transcript from 5' to 3'. During transcription, A pairs with U, so the sense strand is converted to mRNA with T going to U. The start codon is usually AUG, but can be GUG, or rarely AUA or AUU. Ribosome binding sites (RBS) upstream of the start codon are important in prokaryotes but not in eukaryotes. The bit of transcript upstream of the start codon is the 5' untranslated region (5'UTR), which in prokaryotes will contain the RBS. From the `[`genetic`
-`code`](http://en.wikipedia.org/wiki/Genetic_code "wikilink")`, AUG is `[`methionine`](http://en.wikipedia.org/wiki/Methionine "wikilink")` (Met, or M). The translated polypeptide is translated from the N-terminal to C-terminal end. Irrespective of the start codon, the N-terminal amino acid will be methionine, or in fact formylmethionine in prokaryotes. The formyl group is removed by //peptide deformylase//. The N-terminal methioinine is usually removed by prior to folding by //methionine aminopeptidase//. Eukaryotes don't have the formyl group, but typically do remove the first methionine with an aminopeptidase after synthesis (Molecular genetic of bacteria, Chap 2).  The stop codons are UAA (ochre), UAG (amber) and UGA (opal). Sequence for `[`codY`](http://www.uniprot.org/uniprot/P39779 "wikilink")` below:`
+*  **chDNA:** RIK908(x2), RIK909, RIK1003, LH153, PS258, BFA2616(x2), DegUhy, o, FlhF, hag-gfp, TW20
 
-` Sense:    5' - atg gct tta tta caa aaa aca ... tct cat taa - 3'`\
-` Template: 3' - tac cga aat aat gtt ttt tgt ... aga gta att - 5'`\
-` mRNA:     5' - aug gcu uua uua caa aaa aca ... ucu cau uaa - 3'`\
-` Polypep:  N' - Met Ala Leu Leu Gln Lys Thr ... Ser His     - C'`\
-`                 M   A   L   L   Q   K   T  ...  S   H`
+*  **pDNA:** ECE73 (pCm::Nm), ECE74 (pCm::Sp)
 
-Sequences from BioConductoR
----------------------------
 
-Can get DNA or protein sequences from within BioConductoR (using an
-internet connection):
 
-` > library(annotate)`\
-` > getSEQ("P39779")`\
-` > substr(getSEQ("U13634"),3225,4004)`
 
-See section on flow cytometry for how to install BioConductoR packages.
-The functions "toupper" and "tolower" can be used to convert case. The
-"Biostrings" package is probably useful for messing around with
-sequences:
 
-` > library(Biostrings)`\
-` > dna=substr(getSEQ("U13634"),3225,4004)`\
-` > nchar(dna)`\
-` > paste(GENETIC_CODE[substring(dna,seq(1,778,3),seq(3,780,3))],collapse="")`\
-` > toString(reverseComplement(DNAString(dna)))`
+### Strains
 
-Sequencing
-----------
 
-` * Can sequence up to 700-800 base pairs routinely (samples sent to Dundee, results in a few days, minimal cost - 3/4 pounds)`\
-` * Costs two or three grand to get a whole Bacullus genome sequenced, using the Roche FLX 454 technology down at the CfL`\
-`   * Get a load of reads of around 120 bp each. These can be assembled using the 168 sequence as a scaffold.`\
-`   * Minimum 15x coverage - should be enough to pick up a few interesting mutations`\
-`   * 30x coverage will give a more-or-less complete sequence`\
-`   * 60x coverage really safe, but a bit excessive`
+*  168 - lab strain - sequenced strain - strain used almost exclusively in ICAMB.
 
-#### Gene induction
+*  PY79 - lab strain
 
-` * Makes use of the `[`lac`
-`operon`](http://en.wikipedia.org/wiki/Lac_operon "wikilink")` mechanism`\
-` * Varying concentrations (around 1mM) of `[`IPTG`](http://en.wikipedia.org/wiki/IPTG "wikilink")` triggers transcription of the lac operon as it binds and inhibits the LacI repressor`\
-` * Stock IPTG in freezer. Stock 100mM (0.1M), so dilute 100x`\
-` * Replace lacZ with the gene to be induced...`\
-` * Pspac promoter is IPTG-inducible - this is in the plasmid pMutin2`\
-` * pMutin2 - plasmid, containing EmR cassette, and lacZ, lacI and Pspac, along with transcription terminators, etc. Idea is that without IPTG, lacI is expressed and inhibits the genes under control of the Pspac promoter. However, if IPTG is present, it binds with the lac repressor, and the Pspac promoter is turned on. See section on "Markers and antibiotics" for further details.`\
-` * Phyper-spank, often known as Phy-spank, is also IPTG-inducible somehow`
+*  W23 - lab strain
 
-##### Basic lab procedures
+*  3610 - wild strain - ancestor of PY79?
 
-` * Bugs grown up in `[`lysogeny`
-`broth`](http://en.wikipedia.org/wiki/Lysogeny_Broth "wikilink")` (LB), often incorrectly referred to as Luria-Bertani broth in liquid or on (1.5% bacto agar) solid agar plates, usually at 37°C`\
-` * Cells divide roughly every 45 minutes at 37 degrees`\
-` * SMM buffer (0.5 mol/L sucrose, 0.02 mol/L maleate and 0.02 mol/L MgCl2, pH 6.5 adjusted with NaOH?) is used as the base for a minimal media`\
-` * Sometimes cells get resuspended in `[`PBS`](http://en.wikipedia.org/wiki/Phosphate_buffered_saline "wikilink")` buffer - esp. for flow cytometry`\
-` * Just put 10-20ml in the small flasks, as they need to shake continuously`\
-` * 37 degree and 30 degree rooms with shaking racks. Usually use 37 degrees. Usually shake space - no need to book`\
-` * 4 degree and -20 degree fridges under lab benches - quite full...`\
-` * -20: top drawer is 4: my box clear, plasmids clear and also blue, buffers etc pink, chromosomal DNA purple. Also a bottle of SMM+sup - competence media. Drawer 3 is 2nd top: primers, pcr reagants, etc.`\
-` * Very pure water (monoQ H2O) and autoclave room on level 3`\
-` * -80 chest freezer in room beyond microscope rooms (cold room in there too) - source of frozen stocks - LH has boxes 1 and 19. Middle two drawers in each box are bacillus. boxes are very full...`\
-` * Disposable 5ml and 10ml pipettes `\
-` * Centrifuge in M2.023`\
-` * Microfuge in M2.024`\
-` * To spin 3 tubes, put in 1,9,17 (gaps of 7)`
+Lab strains typically have a frameshift mutation in [swrA](http://www.uniprot.org/uniprot/O32266) which limits *swarming* and motility. Swarming is when groups of cells join together in assemblies known as *rafts*.
 
-#### Inoculation from frozen stock
+168 seems to feature [trpC](http://www.uniprot.org/uniprot/P03964)2 mutation (disrupts [tryptophan](http://en.wikipedia.org/wiki/Tryptophan) biosynthesis), but not always. Also, more than one 168 strain... All a bit messy!
 
-` * Pre-prepare test tubes with 3ml of LB, possibly with antibiotic added (correct antibiotic, or the strains won't grow...)`\
-`   * eg. Cm in pink tray. Use 5ug/ml concentration. So need 15ug in 3ml. Stock 10mg/ml. So use 1.5ul (use a P2).`\
-` * Label tubes`\
-` * Take tubes, a microtube block, a P200 and some P200 tips to the freezer room to inoculate`\
-` * Work quickly. Get relevant box out of freezer. Identify correct strains and use a P200 tip on the end of a P200 pipette to scrape a very small amount of frozen stock onto the end of the tip and inoculate into the correct tube.`\
-` * Don't do more than 4 strains at a time to minimise the time out of the freezer.`\
-` * Grow culture overnight. Growing at 30 degrees rather than 37 may help to minimize sporulation. So might adding a small amount of glucose.`\
-` * Can also streak out onto plates...`
 
-#### Monitoring growth
 
-` * Starting from an overnight culture, put 20ml of LB in a flask, and add 100ul of culture to give a 200x dilution`\
-` * Typically won't include antibiotic even if this was in o/night culture, as this can affect the results`\
-` * Incubate on shaking racks at 30 or 37, and wait an hour or two before starting to monitor`\
-` * Can take 1ml per hour for analysis`
 
-#### Markers and antibiotics
+### Genome
 
-Extensive use is made of antibiotic-resistant markers for strain
-selection. There don't seem to be mutations in biosynthetic pathways of
-the lab strains like in yeast (trpC2?) - but see stuff about amyE,
-below.
 
-` * Markers: cat, tet, spec, mls (antibiotic resistant genes from other bugs)`\
-` * Antibiotics: `[`tetracycline`](http://en.wikipedia.org/wiki/Tetracycline "wikilink")` (tet), `[`spectinomycin`](http://en.wikipedia.org/wiki/Spectinomycin "wikilink")` (spec?), `[`erythromycin`](http://en.wikipedia.org/wiki/Erythromycin "wikilink")`+`[`lincomycin`](http://en.wikipedia.org/wiki/Lincomycin "wikilink")` (mls?), `[`chloramphenicol`](http://en.wikipedia.org/wiki/Chloramphenicol "wikilink")` (cat), `[`kanamycin`](http://en.wikipedia.org/wiki/Kanamycin "wikilink")` - these seem to be used in concentrations ranging from 5-100 ug/mL`\
-` * From another paper, CmR (chloramphenicol resistance), ApR (`[`ampicillin`](http://en.wikipedia.org/wiki/ampicillin "wikilink")` resistance marker) and EmR (erythromycin resistance - pMutin2?)`\
-` * Nm - `[`neomycin`](http://en.wikipedia.org/wiki/Neomycin "wikilink")` - can select for with kanamycin plates`\
-` * //`[`amyE`](http://www.uniprot.org/uniprot/P00691 "wikilink")`// is often the target of marker integration - this is because it is easy to test for integration by growing on a plate with amylose and staining with iodine(?). cells with amyE knocked out can't metabolise amylose. amyE near origin of replication, so typically 2 copies in cell.`\
-` * For strains with Campbell integration of a plasmid, important to always grow with the relevant antibiotic to select against pop-out mutations`
+*  168 - sequenced strain
 
-### Agar plates
+*  4.2 Mbp
+
+*  4,100 protein coding genes
+
+*  Roughly 2,500 assigned a role category
+
+*  Roughly 2,850 in [Uniprot](http://www.uniprot.org/)
+
+*  Genes starting with a "y" were unnamed at the time of sequencing. Some have since been re-named. Apparently the Japanese tend not to re-name, whereas Westerners do...
+
+
+
+
+
+
+
+
+
+
+
+### Basic biochemistry
+
+#### Promoters
+
+
+*  [RNAP](http://en.wikipedia.org/wiki/RNA_polymerase) binds to a transcription factor, known as a [sigma factor](http://en.wikipedia.org/wiki/Sigma_factor). Several sigma factors, each leading to affinity for different core [promoter](http://en.wikipedia.org/wiki/Promoter) sequences. The RNAP-sigma factor complex then binds to the RNAP binding site (approx 34 bp upstream of the TSS) to initiate transcription
+
+*  Proximal promoter: roughly 250bp upstream of transcription start site (TSS). Can strongly regulate transcription
+
+*  Distal promoter: anything further upstream than the proximal promoter - usually has weaker effect
+
+#### Sequence information
+
+
+*  In DNA, [nucleotide](http://en.wikipedia.org/wiki/Nucleotide) A pairs with T and C with G. The sense strand is read from 5' to 3' end, the template strand from 3' to 5' and the mRNA transcript from 5' to 3'. During transcription, A pairs with U, so the sense strand is converted to mRNA with T going to U. The start codon is usually AUG, but can be GUG, or rarely AUA or AUU. Ribosome binding sites (RBS) upstream of the start codon are important in prokaryotes but not in eukaryotes. The bit of transcript upstream of the start codon is the 5' untranslated region (5'UTR), which in prokaryotes will contain the RBS. From the [genetic code](http://en.wikipedia.org/wiki/Genetic_code), AUG is [methionine](http://en.wikipedia.org/wiki/Methionine) (Met, or M). The translated polypeptide is translated from the N-terminal to C-terminal end. Irrespective of the start codon, the N-terminal amino acid will be methionine, or in fact formylmethionine in prokaryotes. The formyl group is removed by *peptide deformylase*. The N-terminal methioinine is usually removed by prior to folding by *methionine aminopeptidase*. Eukaryotes don't have the formyl group, but typically do remove the first methionine with an aminopeptidase after synthesis (Molecular genetic of bacteria, Chap 2).  The stop codons are UAA (ochre), UAG (amber) and UGA (opal). Sequence for [codY](http://www.uniprot.org/uniprot/P39779) below:
+
+    Sense:    5' - atg gct tta tta caa aaa aca ... tct cat taa - 3'
+    Template: 3' - tac cga aat aat gtt ttt tgt ... aga gta att - 5'
+    mRNA:     5' - aug gcu uua uua caa aaa aca ... ucu cau uaa - 3'
+    Polypep:  N' - Met Ala Leu Leu Gln Lys Thr ... Ser His     - C'
+                  M   A   L   L   Q   K   T  ...  S   H
+
+##### Sequences from BioConductoR
+
+Can get DNA or protein sequences from within BioConductoR (using an internet connection):
+
+    > library(annotate)
+    > getSEQ("P39779")
+    > substr(getSEQ("U13634"),3225,4004)
+
+See section on flow cytometry for how to install BioConductoR packages. The functions "toupper" and "tolower" can be used to convert case. The "Biostrings" package is probably useful for messing around with sequences:
+
+    > library(Biostrings)
+    > dna=substr(getSEQ("U13634"),3225,4004)
+    > nchar(dna)
+    > paste(GENETIC_CODE[substring(dna,seq(1,778,3),seq(3,780,3))],collapse="")
+    > toString(reverseComplement(DNAString(dna)))
+
+##### Sequencing
+
+
+*  Can sequence up to 700-800 base pairs routinely (samples sent to Dundee, results in a few days, minimal cost - 3/4 pounds)
+
+*  Costs two or three grand to get a whole Bacullus genome sequenced, using the Roche FLX 454 technology down at the CfL
+    * Get a load of reads of around 120 bp each. These can be assembled using the 168 sequence as a scaffold.
+    * Minimum 15x coverage - should be enough to pick up a few interesting mutations
+    * 30x coverage will give a more-or-less complete sequence
+    * 60x coverage really safe, but a bit excessive
+
+### Gene induction
+
+
+*  Makes use of the [lac operon](http://en.wikipedia.org/wiki/Lac_operon) mechanism
+
+*  Varying concentrations (around 1mM) of [IPTG](http://en.wikipedia.org/wiki/IPTG) triggers transcription of the lac operon as it binds and inhibits the LacI repressor
+
+*  Stock IPTG in freezer. Stock 100mM (0.1M), so dilute 100x
+
+*  Replace lacZ with the gene to be induced...
+
+*  Pspac promoter is IPTG-inducible - this is in the plasmid pMutin2
+
+*  pMutin2 - plasmid, containing EmR cassette, and lacZ, lacI and Pspac, along with transcription terminators, etc. Idea is that without IPTG, lacI is expressed and inhibits the genes under control of the Pspac promoter. However, if IPTG is present, it binds with the lac repressor, and the Pspac promoter is turned on. See section on "Markers and antibiotics" for further details.
+
+*  Phyper-spank, often known as Phy-spank, is also IPTG-inducible somehow
+
+
+
+## Basic lab procedures
+
+
+*  Bugs grown up in [lysogeny broth](http://en.wikipedia.org/wiki/Lysogeny_Broth) (LB), often incorrectly referred to as Luria-Bertani broth in liquid or on (1.5% bacto agar) solid agar plates, usually at 37°C
+
+*  Cells divide roughly every 45 minutes at 37 degrees
+
+*  SMM buffer (0.5 mol/L sucrose, 0.02 mol/L maleate and 0.02 mol/L MgCl2, pH 6.5 adjusted with NaOH?) is used as the base for a minimal media
+
+*  Sometimes cells get resuspended in [PBS](http://en.wikipedia.org/wiki/Phosphate_buffered_saline) buffer - esp. for flow cytometry
+
+*  Just put 10-20ml in the small flasks, as they need to shake continuously
+
+*  37 degree and 30 degree rooms with shaking racks. Usually use 37 degrees. Usually shake space - no need to book
+
+*  4 degree and -20 degree fridges under lab benches - quite full...
+
+*  -20: top drawer is 4: my box clear, plasmids clear and also blue, buffers etc pink, chromosomal DNA purple. Also a bottle of SMM+sup - competence media. Drawer 3 is 2nd top: primers, pcr reagants, etc.
+
+*  Very pure water (monoQ H2O) and autoclave room on level 3
+
+*  -80 chest freezer in room beyond microscope rooms (cold room in there too) - source of frozen stocks - LH has boxes 1 and 19. Middle two drawers in each box are bacillus. boxes are very full...
+
+*  Disposable 5ml and 10ml pipettes 
+
+*  Centrifuge in M2.023
+
+*  Microfuge in M2.024
+
+*  To spin 3 tubes, put in 1,9,17 (gaps of 7)
+
+
+
+
+
+
+
+### Inoculation from frozen stock
+
+
+*  Pre-prepare test tubes with 3ml of LB, possibly with antibiotic added (correct antibiotic, or the strains won't grow...)
+    * eg. Cm in pink tray. Use 5ug/ml concentration. So need 15ug in 3ml. Stock 10mg/ml. So use 1.5ul (use a P2).
+
+*  Label tubes
+
+*  Take tubes, a microtube block, a P200 and some P200 tips to the freezer room to inoculate
+
+*  Work quickly. Get relevant box out of freezer. Identify correct strains and use a P200 tip on the end of a P200 pipette to scrape a very small amount of frozen stock onto the end of the tip and inoculate into the correct tube.
+
+*  Don't do more than 4 strains at a time to minimise the time out of the freezer.
+
+*  Grow culture overnight. Growing at 30 degrees rather than 37 may help to minimize sporulation. So might adding a small amount of glucose.
+
+*  Can also streak out onto plates...
+
+### Monitoring growth
+
+
+*  Starting from an overnight culture, put 20ml of LB in a flask, and add 100ul of culture to give a 200x dilution
+
+*  Typically won't include antibiotic even if this was in o/night culture, as this can affect the results
+
+*  Incubate on shaking racks at 30 or 37, and wait an hour or two before starting to monitor
+
+*  Can take 1ml per hour for analysis
+
+
+
+
+
+
+### Markers and antibiotics
+
+Extensive use is made of antibiotic-resistant markers for strain selection. There don't seem to be mutations in biosynthetic pathways of the lab strains like in yeast (trpC2?) - but see stuff about amyE, below.
+
+
+*  Markers: cat, tet, spec, mls (antibiotic resistant genes from other bugs)
+
+*  Antibiotics: [tetracycline](http://en.wikipedia.org/wiki/Tetracycline) (tet), [spectinomycin](http://en.wikipedia.org/wiki/Spectinomycin) (spec?), [erythromycin](http://en.wikipedia.org/wiki/Erythromycin)+[lincomycin](http://en.wikipedia.org/wiki/Lincomycin) (mls?), [chloramphenicol](http://en.wikipedia.org/wiki/Chloramphenicol) (cat), [kanamycin](http://en.wikipedia.org/wiki/Kanamycin) - these seem to be used in concentrations ranging from 5-100 ug/mL
+
+*  From another paper, CmR (chloramphenicol resistance), ApR ([ampicillin](http://en.wikipedia.org/wiki/ampicillin) resistance marker) and EmR (erythromycin resistance - pMutin2?)
+
+*  Nm - [neomycin](http://en.wikipedia.org/wiki/Neomycin) - can select for with kanamycin plates
+
+*  //[amyE](http://www.uniprot.org/uniprot/P00691)// is often the target of marker integration - this is because it is easy to test for integration by growing on a plate with amylose and staining with iodine(?). cells with amyE knocked out can't metabolise amylose. amyE near origin of replication, so typically 2 copies in cell.
+
+*  For strains with Campbell integration of a plasmid, important to always grow with the relevant antibiotic to select against pop-out mutations
+
+#### Agar plates
 
 In cold room. Look for "Errington lab" plates.
 
-\^Marking\^Feature| |none|Nutrient agar| |one red|chloramphenicol (Cm)|
-|one black|spectinomycin (Spec)| |one blue|kanamycin (Kan)| |red and
-blue| lincomycin/erythromycin (Linc/Erm) |
+ | Marking      | Feature|                          
+ | -------      | --------                          
+ | none         | Nutrient agar                      | 
+ | one red      | chloramphenicol (Cm)               | 
+ | one black    | spectinomycin (Spec)               | 
+ | one blue     | kanamycin (Kan)                    | 
+ | red and blue | lincomycin/erythromycin (Linc/Erm) | 
 
-### Antibiotics in liquid media
+#### Antibiotics in liquid media
 
-` * Leendert's dilution table:`
 
-\^ Antibiotic \^ Target (ug/ml) \^ Stock (mg/ml) \^ Dilution | \^ Ery |
-2 | 20 | 0.1e-3 | \^ Cm | 5 | 10 (34?!) | 0.5e-3 | \^ Spec | 50 | 100 |
-0.5e-3 | \^ Kan | 5 | 25 (20?!) | 0.2e-3 | \^ Tet | 10 | 10 | 1e-3 | \^
-Linc | 25 | 50 | 0.5e-3 | \^ Phlio | 0.2 | 2 | 0.1e-3 | \^ Amp | 50
-(100?) | 50 | 1e-3 |
+*  Leendert's dilution table:
 
-` * eg. for Cam, want 0.5 ul stock per ml medium, and for Erm, want 0.1 ul per ml, etc.`\
-` * Also see table in protocol document //General lab methods for sporulation//`\
-` * Antibiotic and enzyme stocks in sample boxes in the top drawer of the freezer in the middle lab (near the chemical stock shelves)`\
-` * Dima and LH recommend growing //E. Coli// containing Amp plasmids at Amp100 rather than Amp50`
+ | Antibiotic                     | Target (ug/ml) | Stock (mg/ml) | Dilution |
+ | ----------                     | -------------- | ------------- | ----------
+ | Ery | 2 | 20 | 0.1e-3 |       
+ | Cm | 5 | 10 (34?!) | 0.5e-3 | 
+ | Spec | 50 | 100 | 0.5e-3 |    
+ | Kan | 5 | 25 (20?!) | 0.2e-3 |
+ | Tet | 10  | 10 | 1e-3 |       
+ | Linc | 25 | 50 | 0.5e-3 |     
+ | Phlio | 0.2 | 2 | 0.1e-3 |    
+ | Amp | 50 (100?) | 50 | 1e-3 | 
 
-### Marker swaps
 
-` * Steinmetz and Richter (94) no DOI? `[`Pubmed`](http://www.ncbi.nlm.nih.gov/pubmed/8181761 "wikilink")` `\
-`   * Plasmids designed to alter the antibiotic resistance expressed by insertion mutations in Bacillus subtilis, through in vivo recombination`\
-`   * Describes plasmids for swapping cat to ery, spec, tet, neom and ery to cat, spec, neom. These are in the "Errington collection" (big upright freezer) with labels like ECE73 (pCm::Nm). Can select for NmR with Kan plates.`\
-`   * The plasmids in the freezer are actually //E. coli// containing the plasmid of interest, so these need to be amplified and purified - see later in the notes...`\
-`   * The plasmids contain an Amp resistance cassette that is expressed in //E. Coli//, so the strains should be grown in Amp50 or Amp100 LB overnight before doing a miniprep`
+*  eg. for Cam, want 0.5 ul stock per ml medium, and for Erm, want 0.1 ul per ml, etc.
 
-\^ Strain \^ Plasmid | | ECE72 | pCm::Er | | ECE73 | pCm::Nm | | ECE74 |
-pCm::Sp | | ECE76 | pEr::Cm | | ECE77 | pEr::Nm | | ECE79 | pEr::Sp |
+*  Also see table in protocol document *General lab methods for sporulation*
 
-### Knockouts
+*  Antibiotic and enzyme stocks in sample boxes in the top drawer of the freezer in the middle lab (near the chemical stock shelves)
 
-` * Insertion-deletion of antibiotic resistance cassette is standard procedure`\
-`   * standard plasmids for doing this`\
-`   * classically cat and ery insertions`\
-`   * **ery** knockout:`\
-`     * Horinouchi (82a) no DOI? pubmed `\
-`       * Nucleotide Sequence and Functional Map of pE194, a Plasmid That Specifies Inducible Resistance to Macrolide, Lincosamide, and Streptogramin Type B Antibiotics`\
-`   * **cat** knockout:`\
-`     * Horinouchi (82b) no DOI? pubmed `\
-`       * Nucleotide Sequence and Functional Map of pC194, a Plasmid That Specifies Inducible Chloramphenicol Resistance`\
-` * Can also knockout using pMutin plasmids`\
-`   * Vagner et al (98) no DOI? `[`pubmed`](http://www.ncbi.nlm.nih.gov/pubmed/9846745 "wikilink")` `\
-`     * A vector for systematic gene inactivation in Bacillus subtilis`
+*  Dima and LH recommend growing *E. Coli* containing Amp plasmids at Amp100 rather than Amp50
 
-#### Making agar plates
+#### Marker swaps
 
-` * Bottles of "Nutrient agar" (100ml) available from stock. `\
-`   * These will make 5 plates (roughly 20ml per plate). `\
-` * Melt agar in microwave in short bursts. `\
-`   * Let cool for 10 mins. `\
-` * Work with burner on. `\
-`   * Add any required antibiotics. `\
-`   * Shake to mix. `\
-` * Write antibiotic combination on the bottom of the plates. `\
-` * Stack plates right way up. `\
-`   * Work through plates pouring small amount of agar on each.`\
-` * If bubbles on plates, pick up the burner and quickly waft blue flame across top of each plate.`\
-` * Spread plates out on bench to cool ASAP.`\
-` * Store in bags in fridge.`
 
-#### Making frozen stock
+*  Steinmetz and Richter (94) no DOI? [Pubmed](http://www.ncbi.nlm.nih.gov/pubmed/8181761) {{hetero:steinmetz94.pdf|PDF}}
+    * Plasmids designed to alter the antibiotic resistance expressed by insertion mutations in Bacillus subtilis, through in vivo recombination
+    * Describes plasmids for swapping cat to ery, spec, tet, neom and ery to cat, spec, neom. These are in the "Errington collection" (big upright freezer) with labels like ECE73 (pCm::Nm). Can select for NmR with Kan plates.
+    * The plasmids in the freezer are actually *E. coli* containing the plasmid of interest, so these need to be amplified and purified - see later in the notes...
+    * The plasmids contain an Amp resistance cassette that is expressed in *E. Coli*, so the strains should be grown in Amp50 or Amp100 LB overnight before doing a miniprep
+
+ | Strain | Plasmid |
+ | ------ | ---------
+ | ECE72  | pCm::Er   | 
+ | ECE73  | pCm::Nm   | 
+ | ECE74  | pCm::Sp   | 
+ | ECE76  | pEr::Cm   | 
+ | ECE77  | pEr::Nm   | 
+ | ECE79  | pEr::Sp   | 
+
+
+#### Knockouts
+
+
+*  Insertion-deletion of antibiotic resistance cassette is standard procedure
+    * standard plasmids for doing this
+    * classically cat and ery insertions
+    * **ery** knockout:
+      * Horinouchi (82a) no DOI? pubmed {{hetero:horinouchi82a.pdf|PDF}}
+        * Nucleotide Sequence and Functional Map of pE194, a Plasmid That Specifies Inducible Resistance to Macrolide, Lincosamide, and Streptogramin Type B Antibiotics
+    * **cat** knockout:
+      * Horinouchi (82b) no DOI? pubmed {{hetero:horinouchi82b.pdf|PDF}}
+        * Nucleotide Sequence and Functional Map of pC194, a Plasmid That Specifies Inducible Chloramphenicol Resistance
+
+*  Can also knockout using pMutin plasmids
+    * Vagner et al (98) no DOI? [pubmed](http://www.ncbi.nlm.nih.gov/pubmed/9846745) {{hetero:vagner98.pdf|PDF}}
+      * A vector for systematic gene inactivation in Bacillus subtilis
+
+
+
+### Making agar plates
+
+
+*  Bottles of "Nutrient agar" (100ml) available from stock. 
+    * These will make 5 plates (roughly 20ml per plate). 
+
+*  Melt agar in microwave in short bursts. 
+    * Let cool for 10 mins. 
+
+*  Work with burner on. 
+    * Add any required antibiotics. 
+    * Shake to mix. 
+
+*  Write antibiotic combination on the bottom of the plates. 
+
+*  Stack plates right way up. 
+    * Work through plates pouring small amount of agar on each.
+
+*  If bubbles on plates, pick up the burner and quickly waft blue flame across top of each plate.
+
+*  Spread plates out on bench to cool ASAP.
+
+*  Store in bags in fridge.
+
+### Making frozen stock
 
 My own protocol, derived from various sources:
 
-` * Inoculate a single colony from a plate into 3ml LB`\
-` * Grow until late exponential phase at 37 degrees (around 6 hrs)`\
-` * Put 800ul of culture and 600ul of 50% glycerol in a 2ul tube`\
-` * Vortex`\
-` * Freeze`
 
-#### Spectrophotometer
+*  Inoculate a single colony from a plate into 3ml LB
 
-[Spectrophotometry](http://en.wikipedia.org/wiki/Spectrophotometer "wikilink")
-is used to measure //Bacillus// cell density in liquid medium. From a
-20ml culture take 1ml per hour to measure. Optical density at 600nm
-(OD600) is of primary interest. Seems to range from about 0 to 2. Scale
-not linear at a density of more than about 0.8 - should dilute and
-remeasure (scaling back up).
+*  Grow until late exponential phase at 37 degrees (around 6 hrs)
 
-` * In M2.022`\
-` * Select ReadyRead`\
-` * If the wavelength isn't 600nm, click on it and edit it in`\
-` * Put in blank (containing LB) and select ReadBlank`\
-` * Put in sample and select ReadSample - note the OD`\
-` * Repeat for each sample (no need to re-read blank)`
+*  Put 800ul of culture and 600ul of 50% glycerol in a 2ul tube
 
-A dense overnight culture will give a reading of around 2, but diluting
-10x in LB will give a reading of around 0.6, suggesting a "true" OD of
-around 6. A 100x dilution will give around 0.06, confirming the
-linearity.
+*  Vortex
 
-#### chDNA isolation
+*  Freeze
 
-` * Follow //Chromosomal DNA isolation (070620)// from LH`\
-` * However, this uses `[`phenol`](http://en.wikipedia.org/wiki/Phenol "wikilink")` and `[`chloroform`](http://en.wikipedia.org/wiki/Chloroform "wikilink")`, and others in the lab say it is old-fashioned and hazardous! Might be worth exploring alternatives at some stage...`\
-` * Also requires //TES buffer//, `[`lysozyme`](http://en.wikipedia.org/wiki/Lysozyme "wikilink")`, `[`pronase`](http://en.wikipedia.org/wiki/Pronase "wikilink")`, `[`sarkosyl`](http://en.wikipedia.org/wiki/Sarkosyl "wikilink")`, `[`ethanol`](http://en.wikipedia.org/wiki/Ethanol "wikilink")` (100% and 70%) and `[`RNase`](http://en.wikipedia.org/wiki/RNase "wikilink")`.`\
-` * Takes around 3 hrs, in addition to a specially prepared overnight culture`
 
-### Notes
 
-` * Sarkosyl - soap - very viscous - pipette slowly`\
-` * Lysosyme, Pronase, Rnase - in pink freezer box`\
-` * Phenol in fridge - wear gloves - centrifuge under hood?`\
-` * Phenol waste in container under hood`\
-` * When taking off the DNA, cut the end off a blue tip - just take the top layer - leave the dirty interface`
 
-#### Competence and transformation
 
-` * Follow //Transformation of competent B. subtillis cells// from LH`\
-` * Takes 6-7 hours, in addition to a specially prepared overnight culture`\
-` * Need 20ml of MM competence medium and 10ml of starvation medium per transformation`\
-` * Just about time to do chDNA isolation in parallel`
 
-### Protocol
 
-` * Inoculate strain to be transformed in 10ml MMC in a shake flask at 37 degrees overnight`\
-` * In morning, take 1ml and transfer into fresh flask of 10ml MMC`\
-` * Shake for 3 hours at 37`\
-` * Add 10ml of //pre-warmed// starvation medium (do in 37 degree room), and leave for 1 more hour`\
-` * Mix 10ul DNA with 400ul cells in an eppendorf, and shake for 45 mins to 1 hour (also do in warm room)`\
-` * Plate 200ul cells on a warm dry plate containing antibiotic being selected for. Spread using glass beads and shake by hand. Pour off beads when culture has dried into plate.`\
-` * Incubate plate at 37 overnight. Linc/erm plates may take longer.`\
-` * Streak out promising colonies on fresh (multiply) selective plates for making stock and further analysis`
+### Spectrophotometer
 
-=== MM Competence medium (= minimal medium) ===
+[Spectrophotometry](http://en.wikipedia.org/wiki/Spectrophotometer) is used to measure *Bacillus* cell density in liquid medium. From a 20ml culture take 1ml per hour to measure. Optical density at 600nm (OD600) is of primary interest. Seems to range from about 0 to 2. Scale not linear at a density of more than about 0.8 - should dilute and remeasure (scaling back up).
 
-` * Start with a 100ml bottle of SMM (Spizizen minimal medium) and add:`\
-`   * 1.25ml solution E (40% glucose)`\
-`   * 1ml tryptophane solution`\
-`   * 600ul solution F (1M MgSO4)`\
-`   * 100ul 20% CAS (or CAA)`\
-`   * 50ul 0.22% Fe-NH4-citrate`\
-` * Enough for 5 transformations`
 
-=== Starvation medium (= exhaustion medium?) ===
+*  In M2.022
 
-` * Start with a 100ml bottle of SMM and add:`\
-`   * 1.25ml solution E (40% glucose)`\
-`   * 600ul solution F (1M MgSO4)`\
-` * Enough for 10 transformations`
+*  Select ReadyRead
 
-#### Plasmid amplification
+*  If the wavelength isn't 600nm, click on it and edit it in
 
-Basic idea: transform competent //E. Coli// with the plasmid. Select for
-the //E. Coli// containing the plasmid. Grow up the //E. Coli//
-containing the plasmid. Then purify the plasmid from an //E. Coli//
-culture using a
-[miniprep](http://en.wikipedia.org/wiki/Miniprep "wikilink").
+*  Put in blank (containing LB) and select ReadBlank
 
-### Transformation of competent E. Coli
+*  Put in sample and select ReadSample - note the OD
 
-` * 200ul aliquots of frozen D5a competent cells in the freezer`\
-` * Use 80-100ul per transformation - so 2 transformations per aliquot`\
-` * LH has protocol for transforming //E. Coli// (and also for making them competent)`
+*  Repeat for each sample (no need to re-read blank)
 
-### Amplification
+A dense overnight culture will give a reading of around 2, but diluting 10x in LB will give a reading of around 0.6, suggesting a "true" OD of around 6. A 100x dilution will give around 0.06, confirming the linearity.
 
-` * Inoculate 10ml of LB with an //E. Coli// colony containing the plasmid of interest and grow overnight. Add Ampicillin (at 50ug/ml or 100ug/ml - Dima and LH both recommend 100)`
 
-### Miniprep
 
-` * Takes around 1 hour in addition to the overnight culture`\
-` * The lab uses the `[`QIAGEN`](http://www.qiagen.com "wikilink")` `[`QIAprep`
-`spin` `miniprep`
-`kit`](http://www1.qiagen.com/products/plasmid/qiaprepminiprepsystem/qiaprepspinminiprepkit.aspx "wikilink")` for this, so just follow the kit instructions`\
-` * One of the solutions (P1) is kept in the stock fridge/freezer in M2.023 as it contains RNase`\
-` * Other solutions and spin columns in cupboard in the lab`\
-` * See the `[`openwetware`
-`page`](http://openwetware.org/wiki/Miniprep/Qiagen_kit "wikilink")` and the `` for further details`\
-` * Alternatively, there are plenty of kit-free protocols on-line`
 
-#### Measuring DNA concentration
+### chDNA isolation
 
-` * Use the nano-drop spectrophotometer`\
-` * Take water (and buffer), 2ul tips and pen/paper`\
-` * Wear gloves`\
-` * Run the "nanodrop" software`\
-` * Select "Measure nucleic acid"`\
-` * Clean drop with tissue`\
-` * Wash through with water (2ul of each sample, dry top and bottom with tissue after each sample)`\
-` * Blank with water or buffer`\
-` * Measure sample`\
-` * Gives a spectrum for the sample`\
-` * Also gives an estimated DNA concentration in ng/ul (want at least 100)`\
-` * Also look at the 260/280 ratio (DNA/protein) - measure of purity - want it between 1.5 and 2.0`
 
-#### Restriction digest
+*  Follow *Chromosomal DNA isolation (070620)* from LH
 
-` * Keep everything on ice`\
-` * Enzymes and buffers in bottom drawer (#4) of freezer in middle lab`\
-` * Leave enzyme in freezer until last minute`\
-` * For a 30ul digest (in a 1.5ml eppi):`\
-`   * 20.7ul mqH2O (to make up to 30ul)`\
-`   * 3ul buffer (for a 10x buffer)`\
-`   * 5ul DNA (eg. plasmid DNA)`\
-`   * 0.3ul BSA (maybe - 100x)`\
-`   * 1ul enzyme`\
-` * Add water, then buffer, then DNA, then enzyme (& BSA)`\
-` * Keep on ice`\
-` * Mix`\
-` * Put on 37 degree block for 1 hour`\
-` * Then 65 degrees for 20 mins (to inactivate enzyme)`
+*  However, this uses [phenol](http://en.wikipedia.org/wiki/Phenol) and [chloroform](http://en.wikipedia.org/wiki/Chloroform), and others in the lab say it is old-fashioned and hazardous! Might be worth exploring alternatives at some stage...
 
-` * For EcoRI, use buffer H (red cap) - 10x`
+*  Also requires *TES buffer*, [lysozyme](http://en.wikipedia.org/wiki/Lysozyme), [pronase](http://en.wikipedia.org/wiki/Pronase), [sarkosyl](http://en.wikipedia.org/wiki/Sarkosyl), [ethanol](http://en.wikipedia.org/wiki/Ethanol) (100% and 70%) and [RNase](http://en.wikipedia.org/wiki/RNase).
 
-#### DNA ligation
+*  Takes around 3 hrs, in addition to a specially prepared overnight culture
 
-Not done this yet, but the [OWW
-protocol](http://openwetware.org/wiki/DNA_ligation "wikilink") looks
-pretty good...
 
-#### Making solutions
+#### Notes
 
-` * **TES buffer** (=Tris-EDTA-SodiumChloride?)`\
-`   * Concentrations:`\
-`     * 10 mM Tris-HCl pH 8`\
-`     * 1 mM EDTA`\
-`     * 100 mM NaCl`\
-`   * In 100 ml:`\
-`     * 1ml 1 M Tris-Hcl pH 8`\
-`     * 200 ul 0.5 M EDTA`\
-`     * 2ml 5 M NaCl`
 
-` * **0.1M calcium chloride** (stock //solution D// - so shouldn't really need to make)`\
-`   * Tub says FW=147 - this is the molecular weight. eg. 147g per mole`\
-`   * 147g in 1L for 1M`\
-`   * 14.7g in 1L for 0.1M`\
-`   * 0.73g in 50ml for 0.1M`\
-`   * Use mq H2O`
+*  Sarkosyl - soap - very viscous - pipette slowly
 
-##### Microscopy
+*  Lysosyme, Pronase, Rnase - in pink freezer box
 
-[Microscopy](http://en.wikipedia.org/wiki/Microscopy "wikilink") is used
-a lot in the lab for various things. There is now an interesting
-[microscope booking
-system](https://icamb.ncl.ac.uk/microscopes/ "wikilink"). [Microscope
-image
-processing](http://en.wikipedia.org/wiki/Microscope_image_processing "wikilink")
-is used to analyse the images, using tools like
-[ImageJ](http://en.wikipedia.org/wiki/ImageJ "wikilink"), the [python
-image library](http://www.pythonware.com/products/pil/ "wikilink")
-(PIL), [CellProfiler](http://www.cellprofiler.org/ "wikilink") and
-[CellTracer](http://www.stat.duke.edu/research/software/west/celltracer/ "wikilink").
+*  Phenol in fridge - wear gloves - centrifuge under hood?
 
-#### Slides
+*  Phenol waste in container under hood
 
-Pre-preparing agarose slides
-----------------------------
+*  When taking off the DNA, cut the end off a blue tip - just take the top layer - leave the dirty interface
 
-` * Heat (1% - 1g per 100ml) agarose. Very roughly 90s per 100ml, but do in short burts.`\
-` * Wash slides and dry with tissues`\
-` * Wipe with ethanol and dry again`\
-` * Keep cover slides on top of 12-well slides - rough side in middle`\
-` * P1000 set to 1000`\
-` * Smear agarose down middle and cover, ensuring wells are filled`\
-` * Store in damp environment at 4 degrees`
 
-Preparing slides for use
-------------------------
 
-` * Need 22x50mm cover slips`\
-` * P2 set to 0.4 ul`\
-` * Warm slide on 37 degree block`\
-` * Orient from H to E`\
-` * Glide off top cover`\
-` * Wait until "just dry"`\
-` * Pipette samples into the middle of each window and cover`\
-` * Can only use central 8 windows`
 
-DAPI staining
--------------
 
-For a simple DAPI stain (for visualising DNA and nucleoids), just take
-0.5ul of personal DAPI stock (0.1mg/ml) with 20ul cells and mix in an
-eppendorf tube before pipetting onto slide. Need to quickly make slide
-and get on to microscope - don't want to leave too long. On the 135 use
-an exposure of 500 to 3000 ms (need filter box marked with "Quad"), and
-"DAPI Narrow" OK (but can try "DAPI Broad" too). According to LH, 200ms
-should be enough. For more exotic nucleoid and membrane stains, see
-protocol sheet //Nucleoid stain//.
 
-#### Zeiss Axiovert 135 TV
+
+
+
+
+
+
+
+
+### Competence and transformation
+
+
+*  Follow *Transformation of competent B. subtillis cells* from LH
+
+*  Takes 6-7 hours, in addition to a specially prepared overnight culture
+
+*  Need 20ml of MM competence medium and 10ml of starvation medium per transformation
+
+*  Just about time to do chDNA isolation in parallel
+
+#### Protocol
+
+
+*  Inoculate strain to be transformed in 10ml MMC in a shake flask at 37 degrees overnight
+
+*  In morning, take 1ml and transfer into fresh flask of 10ml MMC
+
+*  Shake for 3 hours at 37
+
+*  Add 10ml of *pre-warmed* starvation medium (do in 37 degree room), and leave for 1 more hour
+
+*  Mix 10ul DNA with 400ul cells in an eppendorf, and shake for 45 mins to 1 hour (also do in warm room)
+
+*  Plate 200ul cells on a warm dry plate containing antibiotic being selected for. Spread using glass beads and shake by hand. Pour off beads when culture has dried into plate.
+
+*  Incubate plate at 37 overnight. Linc/erm plates may take longer.
+
+*  Streak out promising colonies on fresh (multiply) selective plates for making stock and further analysis
+
+
+
+
+
+#### MM Competence medium (= minimal medium)
+
+
+*  Start with a 100ml bottle of SMM (Spizizen minimal medium) and add:
+    * 1.25ml solution E (40% glucose)
+    * 1ml tryptophane solution
+    * 600ul solution F (1M MgSO4)
+    * 100ul 20% CAS (or CAA)
+    * 50ul 0.22% Fe-NH4-citrate
+
+*  Enough for 5 transformations
+
+#### Starvation medium (= exhaustion medium?)
+
+
+*  Start with a 100ml bottle of SMM and add:
+    * 1.25ml solution E (40% glucose)
+    * 600ul solution F (1M MgSO4)
+
+*  Enough for 10 transformations
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Plasmid amplification
+
+Basic idea: transform competent *E. Coli* with the plasmid. Select for the *E. Coli* containing the plasmid. Grow up the *E. Coli* containing the plasmid. Then purify the plasmid from an *E. Coli* culture using a [miniprep](http://en.wikipedia.org/wiki/Miniprep).
+
+#### Transformation of competent E. Coli
+
+
+*  200ul aliquots of frozen D5a competent cells in the freezer
+
+*  Use 80-100ul per transformation - so 2 transformations per aliquot
+
+*  LH has protocol for transforming *E. Coli* (and also for making them competent)
+
+#### Amplification
+
+
+*  Inoculate 10ml of LB with an *E. Coli* colony containing the plasmid of interest and grow overnight. Add Ampicillin (at 50ug/ml or 100ug/ml - Dima and LH both recommend 100)
+
+#### Miniprep
+
+
+*  Takes around 1 hour in addition to the overnight culture
+
+*  The lab uses the [QIAGEN](http://www.qiagen.com) [QIAprep spin miniprep kit](http://www1.qiagen.com/products/plasmid/qiaprepminiprepsystem/qiaprepspinminiprepkit.aspx) for this, so just follow the kit instructions
+
+*  One of the solutions (P1) is kept in the stock fridge/freezer in M2.023 as it contains RNase
+
+*  Other solutions and spin columns in cupboard in the lab
+
+*  See the [openwetware page](http://openwetware.org/wiki/Miniprep/Qiagen_kit) and the {{hetero:qiaprep_miniprep_handbook.pdf|kit manual}} for further details
+
+*  Alternatively, there are plenty of kit-free protocols on-line
+
+
+### Measuring DNA concentration
+
+
+*  Use the nano-drop spectrophotometer
+
+*  Take water (and buffer), 2ul tips and pen/paper
+
+*  Wear gloves
+
+*  Run the "nanodrop" software
+
+*  Select "Measure nucleic acid"
+
+*  Clean drop with tissue
+
+*  Wash through with water (2ul of each sample, dry top and bottom with tissue after each sample)
+
+*  Blank with water or buffer
+
+*  Measure sample
+
+*  Gives a spectrum for the sample
+
+*  Also gives an estimated DNA concentration in ng/ul (want at least 100)
+
+*  Also look at the 260/280 ratio (DNA/protein) - measure of purity - want it between 1.5 and 2.0
+
+
+
+
+
+### Restriction digest
+
+
+*  Keep everything on ice
+
+*  Enzymes and buffers in bottom drawer (#4) of freezer in middle lab
+
+*  Leave enzyme in freezer until last minute
+
+*  For a 30ul digest (in a 1.5ml eppi):
+    * 20.7ul mqH2O (to make up to 30ul)
+    * 3ul buffer (for a 10x buffer)
+    * 5ul DNA (eg. plasmid DNA)
+    * 0.3ul BSA (maybe - 100x)
+    * 1ul enzyme
+
+*  Add water, then buffer, then DNA, then enzyme (& BSA)
+
+*  Keep on ice
+
+*  Mix
+
+*  Put on 37 degree block for 1 hour
+
+*  Then 65 degrees for 20 mins (to inactivate enzyme)
+
+
+*  For EcoRI, use buffer H (red cap) - 10x
+
+### DNA ligation
+
+Not done this yet, but the [OWW protocol](http://openwetware.org/wiki/DNA_ligation) looks pretty good...
+
+
+
+### Making solutions
+
+
+*  **TES buffer** (=Tris-EDTA-SodiumChloride?)
+    * Concentrations:
+      * 10 mM Tris-HCl pH 8
+      * 1 mM EDTA
+      * 100 mM NaCl
+    * In 100 ml:
+      * 1ml 1 M Tris-Hcl pH 8
+      * 200 ul 0.5 M EDTA
+      * 2ml 5 M NaCl
+
+
+*  **0.1M calcium chloride** (stock *solution D* - so shouldn't really need to make)
+    * Tub says FW=147 - this is the molecular weight. eg. 147g per mole
+    * 147g in 1L for 1M
+    * 14.7g in 1L for 0.1M
+    * 0.73g in 50ml for 0.1M
+    * Use mq H2O
+
+
+
+
+
+
+
+
+
+
+
+## Microscopy
+
+[Microscopy](http://en.wikipedia.org/wiki/Microscopy) is used a lot in the lab for various things. There is now an interesting [microscope booking system](https///icamb.ncl.ac.uk/microscopes/). [Microscope image processing](http://en.wikipedia.org/wiki/Microscope_image_processing) is used to analyse the images, using tools like [ImageJ](http://en.wikipedia.org/wiki/ImageJ), the [python image library](http://www.pythonware.com/products/pil/) (PIL), [CellProfiler](http://www.cellprofiler.org/) and [CellTracer](http://www.stat.duke.edu/research/software/west/celltracer/).
+
+
+### Slides
+
+##### Pre-preparing agarose slides
+
+
+*  Heat (1% - 1g per 100ml) agarose. Very roughly 90s per 100ml, but do in short burts.
+
+*  Wash slides and dry with tissues
+
+*  Wipe with ethanol and dry again
+
+*  Keep cover slides on top of 12-well slides - rough side in middle
+
+*  P1000 set to 1000
+
+*  Smear agarose down middle and cover, ensuring wells are filled
+
+*  Store in damp environment at 4 degrees
+
+##### Preparing slides for use
+
+
+*  Need 22x50mm cover slips
+
+*  P2 set to 0.4 ul
+
+*  Warm slide on 37 degree block
+
+*  Orient from H to E
+
+*  Glide off top cover
+
+*  Wait until "just dry"
+
+*  Pipette samples into the middle of each window and cover
+
+*  Can only use central 8 windows
+
+##### DAPI staining
+
+For a simple DAPI stain (for visualising DNA and nucleoids), just take 0.5ul of personal DAPI stock (0.1mg/ml) with 20ul cells and mix in an eppendorf tube before pipetting onto slide. Need to quickly make slide and get on to microscope - don't want to leave too long. On the 135 use an exposure of 500 to 3000 ms (need filter box marked with "Quad"), and "DAPI Narrow" OK (but can try "DAPI Broad" too). According to LH, 200ms should be enough. For more exotic nucleoid and membrane stains, see protocol sheet *Nucleoid stain*.
+
+
+### Zeiss Axiovert 135 TV
 
 The old microscope is the "135" (a Zeiss Axiovert 135 TV)
 
-Switching on and setting up
----------------------------
+##### Switching on and setting up
 
-` * First switch on all the microscope switches (4 of them), including the fluorescent lamp if doing GFP.`\
-` * The fluorescent lamp should not be switched on and off, but should not be left on overnight.`\
-` * Then boot up PC.`\
-` * Run "MetaMorph" software`\
-` * Put plenty of microscope oil on the top of the slide, then place upside down on the microscope (but keeping the H to E orientation)`\
-` * Bottom lever out for camera (PC) and in for eye-peice`\
-` * Start with the eye-piece for initial focusing in brightfield (shutter 2)`\
-` * Pull lever out on microscope`\
-` * On PC select Aquire -> Aquire. On the Aquire tab select "Brightfield" and then "Show live". Tweak focusing.`
 
-Multidimensional image aquisition
----------------------------------
+*  First switch on all the microscope switches (4 of them), including the fluorescent lamp if doing GFP.
 
-` * Select Apps -> Multidimensional aquisition`\
-` * Set number of wavelengths to 2 for gfp and brightfield and 3 if doing DAPI as well`\
-` * Possible ordering and exposure times below`\
-` * Switch off live feed`\
-` * Click on "Aquire"`\
-` * Should give correct number of images`\
-` * To save, click image scale button, scale image, 8-bit copy. Make an 8-bit copy and then close the copy - will ask to save - save in my directory: Desktop\Darren. Name images carefully - eg. LH151-t1-i1-b.tif - use -b for brightfield, -f for gfp (fluorescence) and -d for DAPI - will make automated processing much simpler `\
-` * Possible exposure times:`\
-`   * 1. GFP - 500ms`\
-`   * 2. DAPI Narrow - 1000ms (according to LH, 200ms should be sufficient)`\
-`   * 3. Brightfield - 100ms`\
-`   * Try varying exposure times a little.`
+*  The fluorescent lamp should not be switched on and off, but should not be left on overnight.
 
-Switching off
--------------
+*  Then boot up PC.
 
-` * (Copy images onto USB stick)`\
-` * First switch off computer`\
-` * Then microscope switches`\
-` * Wipe objective with lens wipe`
+*  Run "MetaMorph" software
 
-#### DeltaVision
+*  Put plenty of microscope oil on the top of the slide, then place upside down on the microscope (but keeping the H to E orientation)
 
-Applied Precision
-[DeltaVision](http://www.api.com/lifescience/DeltaVision.html "wikilink")
-(Olympus optics).
+*  Bottom lever out for camera (PC) and in for eye-peice
 
-### Preparing slides for use on the DeltaVision
+*  Start with the eye-piece for initial focusing in brightfield (shutter 2)
 
-Need 2 clean (pref new) slides and a 125ul blue "gene frame"
-self-adhesive window. Also need some agarose - ideally "low-melting".
+*  Pull lever out on microscope
 
-Preparing the agarose growth medium
------------------------------------
+*  On PC select Aquire -> Aquire. On the Aquire tab select "Brightfield" and then "Show live". Tweak focusing.
 
-` * Prepare around 10ml (makes sums easy, and allows for additional slides - don't keep for more than a few days)`\
-` * Base can be neat LB, but probably things grow too fast - perhaps 15% LB in water will be better`\
-`   * Could also try competence medium or CH medium (recipe in lab methods protocol)`\
-` * Use 1.5% low-melting agarose (0.15g in 10ml), or maybe 1% regular`\
-` * Prepare in centrifuge tube`\
-` * Microwave in 10s bursts until dissolved`\
-` * Pipette 500ul into a microfuge tube which has stains pre-added eg.:`\
-`   * 1ul of 0.6 ug/ml FM 5-95 (membrane red) in 500ul agarose`\
-`   * DAPI (HOW MUCH??)`
+##### Multidimensional image aquisition
 
-Making the slide
-----------------
 
-` * Peel backing off gene frame and stick on clean slide and re-cover with other slide (leave top film on)`\
-` * Fill window with agarose (500ul) and squash down with top slide`\
-` * Put in 4 degree fridge for 30 minutes (probably quite important!)`\
-` * Carefully slide off top slide and use a blade to cut agar leaving two thin vertical strips surrounded by air (for two strains)`\
-` * For each strip, pipette on 2.5ul of cells (should be quite dilute - can dilute, say, 5x if quite dense) near the top`\
-` * Let drip run down strip and dry in`\
-` * Let dry for a couple of mins before removing top film and applying cover slip (don't want cells swimming around)`\
-` * If it looks good, get to the microscope quickly before things happen...`
+*  Select Apps -> Multidimensional aquisition
 
-### Using the DeltaVision to do time-lapse movies
+*  Set number of wavelengths to 2 for gfp and brightfield and 3 if doing DAPI as well
 
-Set up
-------
+*  Possible ordering and exposure times below
 
-` * Start-up and shut-down protocol in red file in room (also includes a "troubleshooting" page, which is good)`\
-` * Use the KVM to switch to windows`\
-` * Start DVIC`\
-` * Switch on big green power switch on front of computer housing`\
-` * Press F1, move objective down, press yes.`\
-` * Wait a couple of mins`\
-` * Switch to Linux`\
-` * Log in`\
-` * Switch on fluorescent lamp`\
-` * Select dichromic position 1 (filter - middle position - blocks UV - what we want)`\
-` * 63x lens is good for time-lapse`\
-` * Push in amplification lever`\
-` * Switch on halogen lamp (small green button on front of microscope)`\
-` * Start SoftWork, and make sure disk space looks OK`\
-` * Apply oil to microscope slide`
+*  Switch off live feed
 
-Setting up experiment
----------------------
+*  Click on "Aquire"
 
-` * Stick slide on microscope and bring objective up`\
-` * Data stored in /data1/ndjw1`\
-` * File -> Aquire`\
-` * FITC is the Gfp signal and RD-TR-PE is the membrane red (both EXT) - FITC/TRANS used for brightfield`\
-` * % transmission - set to 32%`\
-` * 0.1 exposure (100ms)`\
-` * Image size 1024x1024`\
-` * Set to TRANS with 100ms exposure to look for cells`\
-` * Once found and focussed, never touch the focus knob again - use computer/keypad.`\
-` * View -> Point list. Mark points, then re-visit and re-focus (replacing the point) to check OK`\
-` * Can photograph cells every 5 mins using very short exposure, but every 10 mins is better in general`\
-` * Trans/shutter dial - on front of microscope - to move between camera and eyepiece`\
-` * Navigation keypad - use medium speed`\
-`   * Use "replace point" to fix the field (which includes focus - z)`\
-`   * Switch to camera`\
-` * Click camera icon to take picture`\
-`   * Adjust focus for each point and do "replace point"`\
-`   * Go through everything again - drift early on`\
-` * Click on Experiment - give name - start with date in YYYY-MM-DD format`\
-`   * Uncheck z stacks`\
-`   * FITC 0.4 EXP (for GFP)`\
-`   * RT-TR 0.4 EXP (for membrane red)`\
-`   * FITC 0.1 TRANS (for bright)`\
-` * Time lapse`\
-`   * every 10 mins for 12 hours (say)`\
-`   * autofocus on`\
-` * Point list: 4 - 1,2,3,4 - for 2 strains and 2 fields`\
-` * Optional: edit protocol:`\
-`   * Shift down half a micron for red picture then back up - also add a 2 second delay to allow stabalisation`\
-`   * See example JWV did for syntax, etc.`\
-` * Will produce a .dv file which can be analysed in ImageJ - see below`\
-` * Start experiment`
+*  Should give correct number of images
 
-Monitoring the experiment
--------------------------
+*  To save, click image scale button, scale image, 8-bit copy. Make an 8-bit copy and then close the copy - will ask to save - save in my directory: Desktop\Darren. Name images carefully - eg. LH151-t1-i1-b.tif - use -b for brightfield, -f for gfp (fluorescence) and -d for DAPI - will make automated processing much simpler 
 
-` * Can do minor adjustments to position and focus (using "replace point") as experiment is running`\
-` * Worth doing - especially early on, as there is drift`
+*  Possible exposure times:
+    * 1. GFP - 500ms
+    * 2. DAPI Narrow - 1000ms (according to LH, 200ms should be sufficient)
+    * 3. Brightfield - 100ms
+    * Try varying exposure times a little.
 
-Clean up
---------
+##### Switching off
 
-` * If not finished do "Cancel scan"`\
-` * Close windows (except little top one)`\
-` * Run "Stop" button from desktop to terminate software properly`\
-` * Remove slide`\
-` * Switch off fluorescent lamp`\
-` * Log out of linux`\
-` * Switch back to windows`\
-` * Switch off big green power switch`\
-` * Can ftp/ssh to linux box (firecrown.ncl.ac.uk) from on-campus`\
-` * Once files copied off, move from /data1/ndjw1 to external hard drive: /media/usbdisk/Deltavision Files/data1/ndjw1/DATE/...`
 
-### Processing DeltaVision movies using ImageJ
+*  (Copy images onto USB stick)
 
-ImageJ installation and setup
------------------------------
+*  First switch off computer
 
-Recent versions of [ImageJ](http://rsbweb.nih.gov/ij/ "wikilink")
-include the DeltaVision [DV file
-opener](http://rsbweb.nih.gov/ij/plugins/track/delta.html "wikilink")
-plugin, so download and install the latest version from the ImageJ
-website. Also download and install the [MBF
-plugins](http://www.macbiophotonics.ca/imagej/ "wikilink"), as these
-contain the "RGB Gray Merge" plugin. Probably also want to follow
-instructions in the [ImageJ
-documentation](http://rsbweb.nih.gov/ij/docs/ "wikilink") for increasing
-the memory available to ImageJ, say to around 1.5G.
+*  Then microscope switches
 
-Processing a DeltaVision ".dv" file
------------------------------------
+*  Wipe objective with lens wipe
 
-` * Run ImageJ and do File -> Open. If the deltavison plugin is installed, should be able to navigate to the file and select it. It should open into an ImageJ stack. Don't worry if colours and contrasts etc. look all wrong and some images look black.`\
-` * The following assumes 96 time points and 3 channels (bright, gfp and membrane red), giving a total of 288 frames in the stack. Should be obvious how to adapt to other combinations.`\
-` * Image -> Hyperstacks -> Stack to hyperstack. Enter 3, 1, 96, Color, OK`\
-` * Image -> Color -> Split channels`\
-` * Select each stack in turn and do:`\
-`   * Image -> Adjust -> Brightness/contrast. Click Auto, then adjust to suitable values, Apply.`\
-`   * File -> Save As -> Tiff... (in case next step bombs)`\
-`   * Name files "-b.tif", "-m.tif", "-f.tif", etc. ("-d.tiff" for DAPI)`\
-` * Plugins -> Colour functions -> RGB Gray Merge. Select b, m, f, None, 0.0, and leave blend unchecked`\
-` * File -> Save As -> Tiff... - name "-merge.tif"`\
-` * Now have a Tiff stack containing all the movie images`
 
-Post-processing movies
-----------------------
+
+### DeltaVision
+
+Applied Precision [DeltaVision](http://www.api.com/lifescience/DeltaVision.html) (Olympus optics).
+
+
+#### Preparing slides for use on the DeltaVision
+
+Need 2 clean (pref new) slides and a 125ul blue "gene frame" self-adhesive window. Also need some agarose - ideally "low-melting".
+
+##### Preparing the agarose growth medium
+
+
+*  Prepare around 10ml (makes sums easy, and allows for additional slides - don't keep for more than a few days)
+
+*  Base can be neat LB, but probably things grow too fast - perhaps 15% LB in water will be better
+    * Could also try competence medium or CH medium (recipe in lab methods protocol)
+
+*  Use 1.5% low-melting agarose (0.15g in 10ml), or maybe 1% regular
+
+*  Prepare in centrifuge tube
+
+*  Microwave in 10s bursts until dissolved
+
+*  Pipette 500ul into a microfuge tube which has stains pre-added eg.:
+    * 1ul of 0.6 ug/ml FM 5-95 (membrane red) in 500ul agarose
+    * DAPI (HOW MUCH??)
+
+##### Making the slide
+
+
+*  Peel backing off gene frame and stick on clean slide and re-cover with other slide (leave top film on)
+
+*  Fill window with agarose (500ul) and squash down with top slide
+
+*  Put in 4 degree fridge for 30 minutes (probably quite important!)
+
+*  Carefully slide off top slide and use a blade to cut agar leaving two thin vertical strips surrounded by air (for two strains)
+
+*  For each strip, pipette on 2.5ul of cells (should be quite dilute - can dilute, say, 5x if quite dense) near the top
+
+*  Let drip run down strip and dry in
+
+*  Let dry for a couple of mins before removing top film and applying cover slip (don't want cells swimming around)
+
+*  If it looks good, get to the microscope quickly before things happen...
+
+#### Using the DeltaVision to do time-lapse movies
+
+##### Set up
+
+
+*  Start-up and shut-down protocol in red file in room (also includes a "troubleshooting" page, which is good)
+
+*  Use the KVM to switch to windows
+
+*  Start DVIC
+
+*  Switch on big green power switch on front of computer housing
+
+*  Press F1, move objective down, press yes.
+
+*  Wait a couple of mins
+
+*  Switch to Linux
+
+*  Log in
+
+*  Switch on fluorescent lamp
+
+*  Select dichromic position 1 (filter - middle position - blocks UV - what we want)
+
+*  63x lens is good for time-lapse
+
+*  Push in amplification lever
+
+*  Switch on halogen lamp (small green button on front of microscope)
+
+*  Start SoftWork, and make sure disk space looks OK
+
+*  Apply oil to microscope slide
+
+##### Setting up experiment
+
+
+*  Stick slide on microscope and bring objective up
+
+*  Data stored in /data1/ndjw1
+
+*  File -> Aquire
+
+*  FITC is the Gfp signal and RD-TR-PE is the membrane red (both EXT) - FITC/TRANS used for brightfield
+
+*  % transmission - set to 32%
+
+*  0.1 exposure (100ms)
+
+*  Image size 1024x1024
+
+*  Set to TRANS with 100ms exposure to look for cells
+
+*  Once found and focussed, never touch the focus knob again - use computer/keypad.
+
+*  View -> Point list. Mark points, then re-visit and re-focus (replacing the point) to check OK
+
+*  Can photograph cells every 5 mins using very short exposure, but every 10 mins is better in general
+
+*  Trans/shutter dial - on front of microscope - to move between camera and eyepiece
+
+*  Navigation keypad - use medium speed
+    * Use "replace point" to fix the field (which includes focus - z)
+    * Switch to camera
+
+*  Click camera icon to take picture
+    * Adjust focus for each point and do "replace point"
+    * Go through everything again - drift early on
+
+*  Click on Experiment - give name - start with date in YYYY-MM-DD format
+    * Uncheck z stacks
+    * FITC 0.4 EXP (for GFP)
+    * RT-TR 0.4 EXP (for membrane red)
+    * FITC 0.1 TRANS (for bright)
+
+*  Time lapse
+    * every 10 mins for 12 hours (say)
+    * autofocus on
+
+*  Point list: 4 - 1,2,3,4 - for 2 strains and 2 fields
+
+*  Optional: edit protocol:
+    * Shift down half a micron for red picture then back up - also add a 2 second delay to allow stabalisation
+    * See example JWV did for syntax, etc.
+
+*  Will produce a .dv file which can be analysed in ImageJ - see below
+
+*  Start experiment
+
+##### Monitoring the experiment
+
+
+*  Can do minor adjustments to position and focus (using "replace point") as experiment is running
+
+*  Worth doing - especially early on, as there is drift
+
+##### Clean up
+
+
+*  If not finished do "Cancel scan"
+
+*  Close windows (except little top one)
+
+*  Run "Stop" button from desktop to terminate software properly
+
+*  Remove slide
+
+*  Switch off fluorescent lamp
+
+*  Log out of linux
+
+*  Switch back to windows
+
+*  Switch off big green power switch
+
+*  Can ftp/ssh to linux box (firecrown.ncl.ac.uk) from on-campus
+
+*  Once files copied off, move from /data1/ndjw1 to external hard drive: /media/usbdisk/Deltavision Files/data1/ndjw1/DATE/...
+
+
+#### Processing DeltaVision movies using ImageJ
+
+##### ImageJ installation and setup
+
+Recent versions of [ImageJ](http://rsbweb.nih.gov/ij/) include the DeltaVision [DV file opener](http://rsbweb.nih.gov/ij/plugins/track/delta.html) plugin, so download and install the latest version from the ImageJ website. Also download and install the [MBF plugins](http://www.macbiophotonics.ca/imagej/), as these contain the "RGB Gray Merge" plugin. Probably also want to follow instructions in the [ImageJ documentation](http://rsbweb.nih.gov/ij/docs/) for increasing the memory available to ImageJ, say to around 1.5G.
+
+##### Processing a DeltaVision ".dv" file
+
+
+*  Run ImageJ and do File -> Open. If the deltavison plugin is installed, should be able to navigate to the file and select it. It should open into an ImageJ stack. Don't worry if colours and contrasts etc. look all wrong and some images look black.
+
+*  The following assumes 96 time points and 3 channels (bright, gfp and membrane red), giving a total of 288 frames in the stack. Should be obvious how to adapt to other combinations.
+
+*  Image -> Hyperstacks -> Stack to hyperstack. Enter 3, 1, 96, Color, OK
+
+*  Image -> Color -> Split channels
+
+*  Select each stack in turn and do:
+    * Image -> Adjust -> Brightness/contrast. Click Auto, then adjust to suitable values, Apply.
+    * File -> Save As -> Tiff... (in case next step bombs)
+    * Name files "-b.tif", "-m.tif", "-f.tif", etc. ("-d.tiff" for DAPI)
+
+*  Plugins -> Colour functions -> RGB Gray Merge. Select b, m, f, None, 0.0, and leave blend unchecked
+
+*  File -> Save As -> Tiff... - name "-merge.tif"
+
+*  Now have a Tiff stack containing all the movie images
+
+##### Post-processing movies
 
 To produce movies for talks, the web, etc.
 
-` * Load up the Tiff stack from above if not already open`\
-` * Close other ImageJ image stacks to free up memory`\
-` * Image -> Scale... OK (produces half-size stack)`\
-` * File -> Save As -> AVI... and enter JPEG, 80, 4.0, OK`
 
-This movie should play in most movie playing software, and should load
-up in most video editing software for conversion to other formats, etc.
+*  Load up the Tiff stack from above if not already open
+
+*  Close other ImageJ image stacks to free up memory
+
+*  Image -> Scale... OK (produces half-size stack)
+
+*  File -> Save As -> AVI... and enter JPEG, 80, 4.0, OK
+
+This movie should play in most movie playing software, and should load up in most video editing software for conversion to other formats, etc.
 
 In Linux (Ubuntu), can convert to MPEG with a command like:
 
-` ffmpeg -i file.avi -r 25 -b 256k file.mpg`
+    
+    ffmpeg -i file.avi -r 25 -b 256k file.mpg
 
-Can also include a "-s 200x200" argument to re-size, etc. The MPEG might
-play in more players and load in more editors (in Linux, it will play
-with both "totem" and "mplayer", and import into "kino" for editing),
-and has a much smaller file size than the AVI (around one fifth).
+Can also include a "-s 200x200" argument to re-size, etc. The MPEG might play in more players and load in more editors (in Linux, it will play with both "totem" and "mplayer", and import into "kino" for editing), and has a much smaller file size than the AVI (around one fifth).
 
-As a backup, probably worth having a static image "montage" of sample
-time slices to use in case the movie doesn't work. First load up the
-stack (if not already open), and do:
+As a backup, probably worth having a static image "montage" of sample time slices to use in case the movie doesn't work. First load up the stack (if not already open), and do:
 
-` * Image -> Stacks -> Make Montage..., 6, 4, 0.25, 1, 96, 4, 5, OK (as usual, adapt for different numbers of time points)`
 
-##### Flow cytometry
+*  Image -> Stacks -> Make Montage..., 6, 4, 0.25, 1, 96, 4, 5, OK (as usual, adapt for different numbers of time points)
 
-` * Next to the ice machine in the room with the -80 freezers`\
-` * `[`Partec`
-`CyFlow`](http://www.partec.com/preview/cms/front_content.php?idcat=13 "wikilink")` with FloMax software - my directory \FloMax\users\Darren`\
-` * Switch the flow cytometer on early, as it can take a couple of hours to warm up properly`\
-` * Start up and shut down protocol taped to top of machine - follow carefully - esp check waste and sheath fluid`\
-` * The blue laser is used for measuring GFP fluorescence`\
-` * Open machine settings (dials button)`\
-` * Load up machine settings - subtilis-gfp`\
-` * File->Open to load up a protocol/data file to initialise window layout`\
-` * Measure "FLI 527-30" for GFP`\
-` * Forward scatter - essentially particle size`\
-` * Side scatter - related to shape/granularity`\
-` * Run cells in 1ml of PBS in the special tubes`\
-` * First run just PBS to get a picture of the background`\
-` * For a dense culture, just use 5ul in 1ml PBS (for less dense, can use 10ul or 20ul, for example, but need to be aware of LB auto-fluorescence - worth running plain LB in PBS too)`\
-`   * Should probably keep everything (including PBS) on ice in order to minimise artifacts`\
-`   * New protocol (mine):`\
-`     * Take 1ml and measure OD`\
-`     * Transfer to eppi and short spin (1 min, in cold centrifuge) to pellet cells`\
-`     * Discard supernatant and resuspend in ODml of PBS (min 100ul max 1.4ml)`\
-`     * Add 100ul to a FC tube and add 1ml PBS`\
-` * Press tube right up into front slot until it clicks`\
-` * Wait for around 250k events to clock up before clicking "End" and then "Save as..." to save`\
-` * By default everything is saved in a binary ".FCS" file - can load these up later and export as text for reading into R`\
-` * To export data:`\
-`   * Load up data file`\
-`   * Select File->Export`\
-`   * Select Listmode table`\
-`   * Check options, including "max value 1024" (experiment with this)`\
-`   * Make a note on paper of log3/log4 setting and the gain used? (my defaults for GFP are log4/559.5)`\
-` * Alternatively (and better), use the flowCore package from R/BioConductoR to analyse the .FCS files directly...`
 
-#### flowCore/flowViz packages for R/BioConductor
 
-Installation
-------------
 
-` * First install R by downloading it from the `[`R`
-`project`](http://www.r-project.org/ "wikilink")` download sites`\
-` * Run R and make sure it works and you get a ">" command prompt`\
-` * From the R prompt:`
 
-` source("`[`http://bioconductor.org/biocLite.R`](http://bioconductor.org/biocLite.R)`")`\
-` biocLite("flowViz")`
 
-Use
----
 
-` library(flowCore)`\
-` x=read.FCS("my-file.FCS")`\
-` summary(x)`\
-` library(flowViz)`\
-` plot(x)`\
-` plot(x,c("FSC","SSC"))`\
-``  plot(transform(x,`FSC`=log(`FSC`),`SSC`=log(`SSC`)),c("FSC","SSC")) ``\
-` plot(x,c("FL1"),breaks=256,col=3)`\
-``  plot(transform(x,`FL1`=log(`FL1`)),c("FL1"),breaks=256,col=3) ``\
-` `\
-` xset=read.flowSet(pattern=glob2rx("*.FCS"))`\
-` xset`\
-` summary(xset)`\
-` summary(xset`[`1`](1 "wikilink")`)`\
-` summary(xset`[`2`](2 "wikilink")`)`
 
-Help/Docs
----------
 
-` * `[`flowCore`](http://www.bioconductor.org/packages/2.3/bioc/html/flowCore.html "wikilink")\
-` * `[`flowViz`](http://www.bioconductor.org/packages/2.3/bioc/html/flowViz.html "wikilink")
 
-`--- //`[`Darren` `Wilkinson`](people:darren "wikilink")` 2009/01/05 //`
+
+
+
+## Flow cytometry
+
+
+*  Next to the ice machine in the room with the -80 freezers
+
+*  [Partec CyFlow](http://www.partec.com/preview/cms/front_content.php?idcat=13) with FloMax software - my directory \FloMax\users\Darren
+
+*  Switch the flow cytometer on early, as it can take a couple of hours to warm up properly
+
+*  Start up and shut down protocol taped to top of machine - follow carefully - esp check waste and sheath fluid
+
+*  The blue laser is used for measuring GFP fluorescence
+
+*  Open machine settings (dials button)
+
+*  Load up machine settings - subtilis-gfp
+
+*  File->Open to load up a protocol/data file to initialise window layout
+
+*  Measure "FLI 527-30" for GFP
+
+*  Forward scatter - essentially particle size
+
+*  Side scatter - related to shape/granularity
+
+*  Run cells in 1ml of PBS in the special tubes
+
+*  First run just PBS to get a picture of the background
+
+*  For a dense culture, just use 5ul in 1ml PBS (for less dense, can use 10ul or 20ul, for example, but need to be aware of LB auto-fluorescence - worth running plain LB in PBS too)
+    * Should probably keep everything (including PBS) on ice in order to minimise artifacts
+    * New protocol (mine):
+      * Take 1ml and measure OD
+      * Transfer to eppi and short spin (1 min, in cold centrifuge) to pellet cells
+      * Discard supernatant and resuspend in ODml of PBS (min 100ul max 1.4ml)
+      * Add 100ul to a FC tube and add 1ml PBS
+
+*  Press tube right up into front slot until it clicks
+
+*  Wait for around 250k events to clock up before clicking "End" and then "Save as..." to save
+
+*  By default everything is saved in a binary ".FCS" file - can load these up later and export as text for reading into R
+
+*  To export data:
+    * Load up data file
+    * Select File->Export
+    * Select Listmode table
+    * Check options, including "max value 1024" (experiment with this)
+    * Make a note on paper of log3/log4 setting and the gain used? (my defaults for GFP are log4/559.5)
+
+*  Alternatively (and better), use the flowCore package from R/BioConductoR to analyse the .FCS files directly...
+
+### flowCore/flowViz packages for R/BioConductor
+
+##### Installation
+
+
+*  First install R by downloading it from the [R project](http://www.r-project.org/) download sites
+
+*  Run R and make sure it works and you get a ">" command prompt
+
+*  From the R prompt:
+
+    source("http://bioconductor.org/biocLite.R")
+    biocLite("flowViz")
+
+##### Use
+
+    library(flowCore)
+    x=read.FCS("my-file.FCS")
+    summary(x)
+    library(flowViz)
+    plot(x)
+    plot(x,c("FSC","SSC"))
+    plot(transform(x,`FSC`=log(`FSC`),`SSC`=log(`SSC`)),c("FSC","SSC"))
+    plot(x,c("FL1"),breaks=256,col=3)
+    plot(transform(x,`FL1`=log(`FL1`)),c("FL1"),breaks=256,col=3)
+    
+    xset=read.flowSet(pattern=glob2rx("*.FCS"))
+    xset
+    summary(xset)
+    summary(xset[1](1))
+    summary(xset[2](2))
+
+##### Help/Docs
+
+
+*  [flowCore](http://www.bioconductor.org/packages/2.3/bioc/html/flowCore.html)
+
+*  [flowViz](http://www.bioconductor.org/packages/2.3/bioc/html/flowViz.html)
+
+
+
+ --- //[Darren Wilkinson](people/darren) 2009/01/05 //
+
+
+
+

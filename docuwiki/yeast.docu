@@ -1,0 +1,84 @@
+====== Saccharomyces cerevisiae ======
+
+
+
+
+==== Yeast meetings and lab notes ====
+
+  * [[yeastmeetings|Yeast meetings]]
+  * [[yeastlabdiary|Yeast lab diary]]
+  * [[yeastlabnotes|Yeast lab notes]]
+
+
+
+
+
+==== Projects ====
+
+  * [[starterstrains|Starter strains]]
+  * [[yeastimaging|Live cell yeast imaging]]
+  * [[biomath:robot-stats|Robot stats]]
+  * [[robot:control|Single-deletion control screen]]
+
+==== General yeast links ====
+
+  * [[http://www.yeastgenome.org/|SGD]]
+    * [[http://www.yeastgenome.org/MAP/GENOMICVIEW/GenomicView.shtml|Genome view]]
+    * [[http://www.yeastgenome.org/help/yeastGeneNomenclature.shtml|Gene nomenclature]]
+    * [[http://www.yeastgenome.org/help/SystematicNamesHelp.html|Systematic names]]
+  * [[http://www.thebiogrid.org/|BioGrid]]
+    * [[http://pixie.princeton.edu/pixie/|BioPixie]]
+  * [[http://genemania.org/|GeneMania]]
+  * [[http://www.uniprot.org|Uniprot]] [[http://www.uniprot.org/docs/yeast|yeast]] ({{hetero:yeast.txt|yeast.txt}} and as {{hetero:yeast.xls|xls}})
+  * [[http://www.gmm.gu.se/YSBN/|YSBN]]
+  * [[http://www.yeastract.com/formgroupbytf.php|YEASTRACT]]
+  * [[http://www.yeastgenome.org/VL-yeast.html|Virtual library yeast page]]
+  * [[http://en.wikipedia.org/wiki/|Wikipedia]] links:
+    * [[http://en.wikipedia.org/wiki/Saccharomyces_cerevisiae|Saccharomyces cerevisiae]]
+      * [[http://en.wikipedia.org/wiki/Mating_of_yeast|Mating of yeast]]
+    * [[http://en.wikipedia.org/wiki/Microbiology|Microbiology]]
+    * [[http://en.wikipedia.org/wiki/Molecular_biology|Molecular biology]]
+    * [[http://en.wikipedia.org/wiki/Cell_biology|Cell biology]]
+    * [[http://en.wikipedia.org/wiki/Biochemistry|Biochemistry]]
+    * [[http://en.wikipedia.org/wiki/Genetics|Genetics]]
+  * [[http://clones.invitrogen.com/cloneinfo.php?clone=yeastgfp|Yeast GFP library]] - GFP fusion protein library
+  * [[http://www.biochem.northwestern.edu/hta/yeast.htm|Yeast HTP analysis]]
+  * [[http://www.nottingham.ac.uk/~plzcn/|Nieduszynski Lab]] (Nottingham)
+
+
+==== Wiki links ====
+
+  * [[yeast:yeasthome|yeast group]]
+    * [[robot:interesting|list of interesting genes]]
+    * [[biomath:yeastmicroarray|yeast microarray data analysis]]
+    * [[robot:high_throughput_data|HTP meetings]]
+    * [[robot:robot|robot working group]]
+      * [[yeast2:robotimageanalysis|robot image analysis]]
+      * [[biomath:robot-stats|robot-stats]]
+  * [[people:david|David Lydall]]
+  * [[people:steve|Steve Addinall]]
+
+==== Relevant papers ====
+
+  * [[http://www.connotea.org/user/wilkinsondarrenj/tag/yeast|My Connotea yeast papers]]
+
+
+
+==== Modelling ====
+
+  * [[http://www.ebi.ac.uk/compneur-srv/biomodels-main/publ-model.do?mid=BIOMD0000000087|Carole's telomere model]] on [[http://www.ebi.ac.uk/biomodels/|BioModels]]
+
+==== Basic yeast/biochemistry info ====
+
+Read somewhere that yeast cells are approximately 3-5μm in diameter - ought to be able to get order of magnitude from a haemocytometer slide. Yeast have 16 chromosomes labeled in roman numerals from I to XVI (and letters A to P in the systematic name). The Watson strand is the top strand (anti-sense, RNA template), and the Crick strand is the bottom strand (sense strand). Genes are transcribed from the 5' to the 3' end. (Poly)peptides have an N-terminus and C-terminus - the N-terminus is the end that is translated first. Yeast [[http://en.wikipedia.org/wiki/Telomerase|telomerase]] is a complex of the proteins [[http://www.yeastgenome.org/cgi-bin/locus.fpl?locus=EST1|Est1]], [[http://www.yeastgenome.org/cgi-bin/locus.fpl?locus=EST2|Est2]] and [[http://www.yeastgenome.org/cgi-bin/locus.fpl?locus=EST3|Est3]] and the RNA [[http://www.yeastgenome.org/cgi-bin/locus.fpl?locus=TLC1|TLC1]]. 
+
+==== Newcastle links ====
+
+  * [[http://research.ncl.ac.uk/lydallab/Welcome.html|Lydall lab]]
+  * [[http://bioinf.ncl.ac.uk/ondex/doku.php|ONDEX wiki]]
+
+
+
+ --- //[[people:darren|Darren Wilkinson]] 2008/10/09 14:07//
+
+

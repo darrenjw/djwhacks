@@ -1,0 +1,882 @@
+====== Yeast lab notes ======
+
+**Misc notes re working in the yeast labs**
+
+
+
+
+===== HTP =====
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==== Basic robot info ====
+
+=== BM3-09 (Sticky) ===
+
+[[http://www.sprobotics.com/|S&P Robotics]]
+
+Orange on the [[robot:robots|booking calendar]]
+
+Spotting/pinning/photographing robot
+
+Robot for the [[http://en.wikipedia.org/wiki/Synthetic_genetic_array|SGA]] procedure
+
+Carousel has 8 x 24 stackers (192 plates)
+
+== Setting up sticky ==
+
+  * Switch on
+  * Boot up the PC
+  * Log in to the PC
+  * Double-click RobotSoftPro icon from desktop and enter uname/passwd
+  * Red dot icon to connect to robot
+  * Home icon to home (check carrier is not in front of carousel first!)
+  * Fill baths: bottom two take 350ml of 75% ethanol, and top bath takes 100ml of 100% ethanol.
+  * Check the pin-tool - swap if necessary.
+  * Empty the waste bottle and fill the water bottle.
+  * From the PC, run the "home" procedure (check the carrier is in the right place first)
+
+Notches on plates go towards the inside of the stack
+
+== Setting up the camera ==
+
+  * Set up sticky as above (but don't fill baths if you are just taking pictures!)
+  * Switch on the camera
+  * Camera software will pop up but click straight back on robot software window
+  * Load the "camera" procedure
+  * Turn off the main light and turn on the camera light
+  * Click blue arrow to run the camera procedure
+  * Now switch to the camera software window
+  * Select "Remote shooting". Starts remote shooting. OK.
+  * Click on the "viewfinder" icon
+  * Click on the zoom slider and do Up arrow 5 times from the bottom
+  * Select "Shooting settings". Change AE mode to manual.
+  * In "Field angle/flash", set "Macro" to on.
+  * Put the focus sheet on the carrier
+  * Change viewfinder settings to lock the AF once focussed
+  * Turn the viewfinder off (click on the icon again)
+  * Click back to the robot software
+  * Remove the focus sheet!!!
+  * Blue arrow to restart procedure
+
+== Cleaning up ==
+
+  * After a big procedure involving pinning, empty baths (using vacuum), and rinse brush station and leave to dry
+  * For the vacuum, go to Manual controls, and set the General drain to On
+
+== Disaster recovery ==
+
+  * If a procedure screws up, abort it and fix things...
+  * DON'T just try to "Home" your way out of trouble
+  * First check stacker arms - get them back to a safe area away from the carousel, the carrier
+    * Manual control -> Stack1/Stack2 -> Open gripper
+    * "Home Y axis" to bring back gripper
+  * Next check carrier - get away from the carousel
+    * Can move carrier from any tab
+    * 10 mm/s
+    * Click on scroll-bar arrows to move
+  * Pin-tool - make sure it is safe
+  * Once everything looks safe, click on "Home" and home everything
+  * Then make everything right and get on with what you were supposed to be doing...
+
+
+=== Beckman FX (Runny) ===
+
+[[http://www.beckmancoulter.com/products/instrument/automatedsolutions/biomek/biomekfx_inst_dcr.asp|Beckman FX]]
+
+Green on the [[robot:robots|booking calendar]]
+
+Liquid handling robot (96 wells)
+
+Robot used for spotting procedures
+
+Cytomat has 9 x 21 stackers (189 plates)
+
+Notches on the plates go towards the front of the robot.
+
+== Setting up runny ==
+
+  * Switch on robot
+  * Check water and waste bottles
+  * Don't switch on cytomat until loaded
+  * Boot up PC
+  * Run Beckman software from desktop
+  * Select "Instrument" -> "Home all axes"
+  * If the gripper is out, do "Instrument" -> "Manual control" -> "Gripper retract"
+  * Check that the two big water bottles are over half full, and that the waste is less than a third full
+
+== Manual control ==
+
+  * Instrument -> Manual controls
+  * If you just want to move the arm, click the position over the deck that you would like to move it to (but make sure that it won't hit anything)
+  * Click on Advanced controls to do anything else: eg. turn the washes on/off to make sure that water is coming through OK (and to fill up the water bath if empty)
+  * Tip wash is WP2 and water bath is WP1
+
+
+=== Knockout library ===
+
+Original version of the library from Charlie Boone is v2 - originally 14x384-plates, but we have added plate 15. Also have a re-arranged version that we call v3. Presumably a result of the [[http://www-sequence.stanford.edu/group/yeast_deletion_project/project_desc.html|yeast gene deletion project]]. Knockouts all in the BY4741 background, and of MATa mating type. This is derived from the [[http://wiki.yeastgenome.org/index.php/Commonly_used_strains#S288C|S288C]] background (MATα [[http://www.yeastgenome.org/cgi-bin/locus.pl?locus=SUC2|SUC2]] [[http://www.yeastgenome.org/cgi-bin/locus.pl?locus=GAL2|gal2]] [[http://www.yeastgenome.org/cgi-bin/locus.pl?locus=MAL|mal]] [[http://www.yeastgenome.org/cgi-bin/locus.pl?locus=MEL|mel]] [[http://www.yeastgenome.org/cgi-bin/locus.pl?locus=FLO1|flo1]] [[http://www.yeastgenome.org/cgi-bin/locus.pl?locus=FLO8|flo8-1]] [[http://www.yeastgenome.org/cgi-bin/locus.pl?locus=YLR256W|hap1]] [[http://www.yeastgenome.org/cgi-bin/locus.pl?locus=HO|ho]] [[http://www.yeastgenome.org/cgi-bin/locus.pl?locus=BIO1|bio1]] [[http://www.yeastgenome.org/cgi-bin/locus.pl?locus=BIO6|bio6]]). The master plates definitions are {{hetero:sgav2-p15.csv|version 2+p15}} and {{hetero:sgav3.csv|version 3}}. This library has a [[http://www-sequence.stanford.edu/group/yeast_deletion_project/KanMX4.html|KanMX module]] (in place of the knocked-out gene, together with a unique tagging sequence). The KanMX marker can be selected by growing on G418. Think we may have another library with a NatMX marker instead (nourseothricin resistance), but not sure.
+
+
+=== Barcoded plates ===
+
+The 96-well plates have barcodes beginning DDY, and are of type 128-B. The omnitrays (rectangular agar plates) have barcodes beginning DLR (Dave Lydall Robots?), and appear to be 128-B printed upside-down! Bob can print barcodes in various different formats, and they all seem to read OK, but bigger is better... 
+
+
+==== Replicating the knock-out libraries ====
+
+  * Get plates from cold room.
+  * Write some basic info onto the new blank plates - library version, plate number, date, etc.
+  * Set up sticky - ensure that the 384 pintool head is loaded.
+  * Load up the procedure "384-384 replica solid".
+  * Load plates into the stackers - source in odd numbered stack and blanks into next stack.
+  * Start at the bottom and work up. Chamfered end goes in first.
+  * Take note of the "side" that the plates are loaded into.
+  * Double-check everything.
+  * Blue arrow to run.
+  * Set start "side" and the number of cycles (number of plates to copy - 15 for the full library).
+  * Then click on "Start procedure".
+  * Takes around 6 minutes per plate - 90 minutes for 15 plates.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==== Single deletion screen ====
+
+=== Overview ===
+
+  * **Re** Start by pinning - replicating the library onto 15 new labeled and barcoded agar plates in 1536 format on Sticky - need to do this just once for up to 4 screens - 3hrs
+  * Allow plates to grow up at 23 degrees for a couple of days, then store at 4 degrees
+  * **PF1** Fill 60 lidded and barcoded 96-well plates with relevant liquid media (SD/MSG+G418) on Runny (around 1.5L - 0.2ml per well) - around 3hrs
+  * **In** Pick one quadrant from agar plates for inoculation into the pre-prepared 60x96-well plates on Sticky - around 5hrs
+  * Allow the 96-well plates to grow to saturation for a couple of days
+  * **PF2** Lid 60 non-barcoded 96-well plates and fill with water on Runny (around 1.5L) - around 3hrs
+  * **Sp** Stack the 60 barcoded and 60 non-barcoded 96-well plates together with 60 (=15*NumberOfTreatments) barcoded agar plates (Synthetic complete+G418) into Runny and run the dilution and spotting procedure - around 9 hours
+  * Incubate the 4 batches of 15 agar plates at 4 different temperatures - 4 treatments
+  * **Ph** Photograph the plates once per day for 3 days on Sticky - around 2hrs each
+
+
+
+
+
+==== Pinning - replicating the library in quadruplicate in 1536 format ====
+
+Takes around 3hrs to copy 15 plates
+
+  * Exactly like replicating the knock-out library, except load the procedure "384-1536 solid quadruplicates"
+
+
+
+
+
+
+
+
+==== Plate filling ====
+
+Takes around 3 hrs to fill 60 plates (actually more like 2 hrs, but probably need around an hour for loading, unloading, etc.). Remember that you will need to lid the plates before loading the robot, and this takes time... May as well label the plates at this point too, if using barcoded plates that need to be tracked. Label "P1, Q1", "P1, Q2", "P1, Q3", "P1, Q4", "P2, Q1", etc.
+
+  * Set up runny and load the Biomek software
+  * Switch off the Cytomat to load in the plates, starting in stack 1, then stack 2, etc. Stacks are 21 high. Start at the bottom and work up. "P1, Q1", "P1, Q2", etc.
+  * Switch the Cytomat back on. It will home itself.
+  * Click the "Open method" icon and load up the "Plate filling" method. This method only works for multiples of 8 plates and 60...
+  * Click on "Cytomat" -> "Device setup" - check OK
+  * Click on "Instrument setup". Make sure that the deck (the top version) looks right. Note that the 5 reservoirs should be very full (well above the full mark) and that nothing other than the reservoirs should be lidded. This is very important! One reservoir fills 12 plates.
+  * Actually not totally sure about the overfull reservoir thing - .2*96*12 < 231 and fill mark should be 250ml...
+  * Click on "Instrument" -> "Manual control" -> "Advanced controls" -> "Wash controller" -> WP2. Switch on the wash and make sure that all the wells are clear, then switch off again.
+  * Green arrow to start.
+  * Variables: 200 (ul per well), 1 (pre-wash tips), 60 (plates)
+  * Do all the checks and let it run...
+  * For 60 plates, lids reservoirs on completion. Otherwise have to fish them out of the Cytomat!
+  * Scan barcodes into an excel sheet before putting in incubators - need these for ROD
+
+
+
+
+
+
+
+==== Inoculation ====
+
+Takes around 5 hours to inoculate 60 96-well plates from 15 solid plates.
+
+  * Set up sticky, and load the 96-pin head. Home the new head.
+  * Use the "Archived procedure": "1536 to 96 liquid" (or something like that). This is currently backwards, requiring source plates in even numbered stacks and destination plates in odd-numbered stacks. Steve will re-write at some point. 
+  * Stacks are 24 high, and need 4 96 well plates per source plate, so a full stack has 6 1536 plates and 24 96-well plates. 
+  * Start at side 1, when full, move to side 2, etc. Actually, probably don't need to start at side 1, but they do need to be in order.
+  * Start at the bottom of a stack and work up. Make sure barcodes are correctly aligned.
+  * Double-check that all of the plate labels match up correctly.
+  * Run the procedure...
+  * When finished, unload the plates, and copy the end of the log file to c:\RobotObjectDatabase\logfiles\Darren\
+  * The log file is in c:\user\robotsoftpro...\BCR\BCData1rep.txt. Just copy the relevant procedure, starting from the line beginning with asterisks - name the file so it won't get mixed up
+  * Check the log file for NOREADs, and carefully edit in any missing barcodes
+
+
+
+
+
+
+
+
+==== Dilution and spotting ====
+
+Takes around 9 hours to dilute from 60x96-well to 60x96-well and then spot onto 60 solid agar plates. Probably best to do overnight...
+
+  * Before starting, need 60 lidded but unlabelled and unbarcoded 96-well plates, and 60 labelled and barcoded agar plates with the correct media. Label: "P1, T1", "P1, T2", "P1, T3", "P1, T4", "P2, T1", etc. The unlabelled plates should be filled with water using the plate filling procedure (above).
+  * Set up Runny. If following on from the water plate filling procedure, leave the water-filled plates in the cytomat - they are already in the right place. Next load the culture plates in the next three stacks. Finally load the agar plates in the next three stacks. Load culture plates in the order "P1, Q1", "P1, Q2", "P1, Q3", "P1, Q4", "P2, Q1", etc. (starting from the bottom of stack 4, and load the agar plates in the order "P1, T1", "P1, T2", "P1, T3", "P1, T4", "P2, T1", etc., starting from the bottom of stack 7. Finish with a gap of three at the top of stack 9.
+  * Barcodes should all be facing out of the cytomat.
+  * Load the procedure "spotting 384-4 conditions". Click "Finish" - change the filename to something personal, but remember to copy the file elsewhere when the procedure is finished, lest someone overwrites it...
+  * Click on "Instrument setup" to see how the deck should be stacked.
+  * This procedure requires the brush station. This should be filled almost to the brim with 70% ethanol.
+  * Make sure that the deck is stacked correctly. Need the 2mm 96-pin tool.
+  * Run the procedure - green arrow to start.
+  * Enter "15" for plates and "200" for both volumes.
+  * Once **finished**, copy the spotlog file from the "spotting-384spotting" subfolder into the "Darren" subfolder of the "FX Reports" subfolder, and rename extension to "txt".
+  * Unload all of the plates - chuck the water plates. Temporarily stack the barcoded 96-well plates in case of barcode issues. 
+  * Stack the agar plates according to treatment. Hand scan the barcodes for each treatment into an excel sheet ready for uploading into ROD.
+  * Bag the spotted plates and stick in 4 appropriate and pre-booked incubators.
+  * Copy the spotlog to my ROD directory.
+  * Check the spotlog for NOREADs, and carefully edit in any missing barcodes.
+  * Run Conor's script to convert into old-style log files - these will be needed for ROD.
+  * Perhaps check the 96-well plates for empty wells
+
+
+
+
+
+==== Photographing plates ====
+
+  * For 60 plates it is around 90 minutes robot time, but probably should allow 2 hrs for the procedure.
+  * Set up sticky.
+  * Make sure camera is switched on and set up - if not, follow set-up procedure described above.
+  * Need an even number of plates, and these are to be spread evenly between the two stacks on a side.
+  * Load "camera" procedure.
+  * Blue arrow to run. Set the start side and the number of rows of plates. OK. Then check camera software. Go back.
+  * Re-start procedure.
+  * Short cut to photos in top corner of desktop - watch them appear. Look out for NOREADs.
+  * When finished, carefully re-name any NOREAD photos with the correct barcode.
+  * Move the photos to my personal directory, then copy to a folder on the ROD drive.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==== Loading data into ROD ====
+
+=== Overview ===
+
+  * Ensure any agar plates have been "virtually poured" by Alan
+  * Virtually pour all 96 well plates using hand-scanned barcodes
+  * Add master plates to the library
+  * Add the treatments for the agar plates
+  * Add a new screen
+     * Add subscreen (typically the full screen)
+     * Load the inoc log
+     * Load the spot log (old-style for now)
+  * Run the image analysis
+  * Load the image log
+  * Export the data
+  * Analyse the data in R
+
+=== Pouring plates ===
+
+  * Click on "Pour plates"
+  * Select the correct media - should have "LIQUID" at the end...
+  * Copy and paste barcodes from a spreadsheet into the box
+  * Click OK
+
+=== Adding treatments ===
+
+  * This one is slow, but not as slow as uploading the image log...
+  * Click on "Add treatment"
+  * Select a treatment
+  * Copy and paste the barcodes for that treatment from your spreadsheet
+  * Click OK
+
+=== Adding new master plates ===
+
+  * If you have inoculated from your own master plates, these will need to be added
+  * Even if they are in 1536 format, just pretend that they are 384 and use 384 master files
+  * Click on "New masters"
+  * Select relevant CSV file (usually sgav2-p15.csv or sgav3.csv) from the master file directory
+  * Give a good description for the masters (personalise if they are mine only)
+  * Copy and paste in relevant bar codes
+
+=== Adding a new screen ===
+
+  * Click on "New screen"
+  * Select right masters
+  * Give an appropriate (and unique) name
+  * Once screen appears in screen list, click on it once to highlight it
+  * Then click "New subscreen", and select all plates (P1-P15)
+  * Click once on the subscreen
+  * Load the inoc log
+  * Probably best to upload the spot log now as well. Need old-style logs created with Conor's python script.
+    * Copy spot log to an empty directory on the rod drive and run "logfile.py" - creates all the needed files
+  * Select all of the log files, and click on OK to upload.
+  * When it's finished it seems to say 4 times the actual number of plates (eg. 240 for 15/60 plates), but just ignore this - it's fine
+
+=== Adding an image log ===
+
+  * Requires the "Output.dat" file produced by Conor's image analysis script. Can run this myself, but takes a day or so to run on 180 photos
+    * Copy all of the photos to be processed to an empty directory on the ROD drive
+    * If it is a new experiment, talk to conor about what version of the image analysis script to run
+    * Log into a slave node such as nunode04
+    * cd into the photo directory and run the analysis with a command like:
+    * nohup python ImageAnalysis1.7.py > nohup.out &
+    * When finished check the gridded images and histograms for problems
+    * If OK, Output.dat is the file to load into ROD
+  * First copy the file to my local log file directory and re-name it to something more sensible
+  * From the ROD main menu, click on my screen (probably not necessary) and then on "Add image log"
+  * Select the file (on the local disk) and click on OK
+  * Unfortunately ROD will then just sit for around 20 minutes without doing anything, and then start echoing random text to the DOS window
+  * Takes around 3 hours to upload the log for 180 photos...
+
+=== Exporting data ===
+
+  * Allow an hour per full screen (but shouldn't take quite that long)
+  * Click on the name of the screen to export
+  * Click "Export data"
+  * Stick in the log file folder - give it the same name as the screen with a ".txt" on the end
+
+
+==== Preparing agar and liquid media for use with the robot ====
+
+Alan has a file containing recipes from Charlie Boone. eg.
+
+=== SD/MSG-Leu/Ura+G418 Plates ===
+
+  * Yeast nitrogen base without amino acids or ammonium sulfate (1.7g)
+  * MSG (L-glutaumic acid sodium salt hydroxide) (1g)
+  * Amino acids supplement powder mix (DO-Lue/Ura) (2g)
+  * Water - (100ml)
+
+Stick in a 250ml bottle and autoclave
+
+  * bacto agar (20g)
+  * Water - (850ml)
+
+Stick in a litre bottle and autoclave
+
+  * Combine autoclaved solutions then add 40% glucose (50ml). Then cool to 65 degrees and add G418 (1ml at 200mg/ml).
+
+=== Notes ===
+
+  * We use dextrose rather than glucose
+  * For fully supplemented plates use full powder rather than the deficient powder
+  * For liquid media do all in one bottle and miss out the agar
+  * Powders in pintool cupboard in the robot room
+  * G418 in 1ml aliquots in Alan's drawer in the fridge
+  * Might be better to have 200ml in small bottle and 750 in big bottle - stuff might dissolve better
+  * Combine solutions under the laminar flow hood
+  * Bottles of dextrose under the hood
+
+=== Pouring plates ===
+
+  * Need a litre of 60 degree sterile water - makes sense to autoclave with media
+  * Also need a sterile empty litre bottle
+  * Keep bottles in bath in pouring room at 60 degrees
+  * Find sterile tube (ask Kaye!)
+  * Set up pouring machine with tube and pedal
+  * Dunk uptake in sterile water and pouring end in empty sterile bottle under laminar flow hood
+  * Setup -> Prime -> Accept until water comes through, then Accept to stop
+  * Dunk updake in agar and prime again until agar comes through
+  * Use pedal to dispense fixed amount onto each plate
+  * If you get a bubble, drag to edge and then blowtorch to get rid of it
+  * 1 litre of agar makes around 25 plates
+
+
+
+==== Using the incubators ====
+
+  * If setting an incubator for a fixed temperature, just use the buttons on the main panel.
+    * Press "Set", then use arrows to set the right temperatures, then "Ent" to confirm.
+  * If setting a program for an up-down treatment, press "Set" in the program panel.
+    * Set temperature 1 to 20, and then press "Ent", then set time to 5 (hours) and then press "Ent".
+    * Should now move onto program 2 - set temp to 36 and time to 5.
+    * Have to set 3 as well - set time to 0 hours.
+    * Next have to set number of cycles before reverting back to fixed temperature - set n=3 for 3 cycles.
+    * Press "Start" to begin the programme.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+===== Low throughput =====
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==== Microscopy ====
+
+=== Nikon Eclipse 50i ===
+
+This is the best microscope in the Lydall lab. It is a [[http://www.nikoninstruments.com/Products/Microscopes/Upright-Microscopes/Biological/Eclipse-50i|Nikon Eclipse 50i]]. There is also a small microscope in the lab for having a quick check for sporulation, etc., and a microscope specifically for tetrad disection. The Nikon is the microscope I'm hoping to use for my [[hetero:yeastimaging|yeast imaging]] project. It has 20x, 40x, 60x and 100x objectives. 40x is good for general imaging work. James thinks that the 40x is better than the 60x objective. Can't do automatic multidimensional imaging with this microscope - have to manually switch filters, etc. Bummer.
+
+The 100x objective is to be used with oil. It is a Nikon Plan Fluor 100x (oil). NA=1.30. Ph3 DLL. Working distance=0.20. Use with Zeiss Immersol 518F oil with ne=1.518 @ 23degrees (refractive index?), ve=45. Works very nicely. 
+
+== Powering up ==
+
+  * Switch on microscope (switch at back on left)
+  * Switch on stage controller
+  * Switch on computer and monitor
+  * If using UV lamp:
+    * Switch on lamp
+    * Wait a couple of seconds
+    * Press and hold the ignition button for a couple of seconds
+    * Record start time and counter in the book
+  * Move stage to a convenient place, select objective and mount slide
+
+== Powering down ==
+
+  * Move stage to a convenient place and remove slide
+  * Shut down computer and switch off monitor
+  * Switch off stage controller
+  * Switch off microscope
+  * If used UV lamp:
+    * Switch off lamp
+    * Record time and counter in the book 
+
+== General use ==
+
+  * Fairly similar to other Nikon microscopes...
+  * Select filters on front at top
+  * Open and close lamp shutter at top
+  * Switch filters in and out with switch at back on right
+  * Camera/binocular switch at top
+  * Brightfield illumination controls at bottom
+
+== Using ProgResCapturePro ==
+
+  * Run ProgRes
+  * Make sure everything is working with live view - either using the "camera" or "bin plus camera" (half as bright) on the microscope
+  * Set the exposure - around 10ms is OK if the lamp is bright - 100ms will be needed if the lamp is dim
+  * Use the "Exposure" tab to fiddle with settings and test imaging
+  * Use the "Settings" tab to select the correct directory and an appropriate file name for images
+  * Currently storing images and time courses in C:\Documents and Settings\Imager\My Documents\Darren\DATE
+
+Max resolution is 1360x1024. Gives a pixel spacing of //roughly// 60nm (with the 100x objective), but would be nice to know exactly...
+
+
+== Using MicroManager ==
+
+  * Press Live/Snap/Acquire buttons randomly using a decent image appears
+  * Select "Multi-D Acquire" and fill in settings
+  * For Z-stacks, +5,-5,0.2 (51 slices) seems OK
+  * Be sure to set directory for storing images
+  * Currently storing Z-stacks and other images in C:\Microscope Images\Darren\DATE
+
+
+== Agarose slides ==
+
+For live cell imaging, use 50% YEPD, 1% agarose media on a framed slide. 500ul per frame seems about right. Recipe: 50ml YEPD, 50ml mQ H2O, 1g agarose. Cut into strips to trap air. Pipette on 2.5ul of cell culture per strip.
+
+=== Image processing with ImageJ ===
+
+Also see my Bacillus lab notes...
+
+== 3d Deconvolution of Z-stacks ==
+
+  * Load up the Z-stack - make sure it looks OK
+  * Create a PSF using Plugins -> Deconvolution -> Diffraction PSF 3D
+    * Currently using the following settings:
+    * Refractive index: 1.518
+    * NA: 1.3
+    * Wavelength: 510 (a guess...)
+    * Long. spher. Aber.: 0 (another guess)
+    * Image pixel spacing: 60 (a sort of informed guess)
+    * Slice spacing: 200 (for 0.2um slices - adjust accordingly)
+    * Width: 64
+    * Height: 64
+    * Depth: 11
+  * Deconvolve using Plugins -> Deconvolution -> Iterative 3D deconvolution
+    * Default settings are probably OK, but uses lot of RAM and CPU time...
+
+
+
+
+
+
+==== Crossing mutant strains ====
+
+=== Basic idea ===
+
+Big library of (haploid) mutant strains (mainly in the [[http://wiki.yeastgenome.org/index.php/CommunityW303.html|W303 background]]: MATa/[[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=matalpha|MATalpha]] {[[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=leu2|leu2]]-3,112 [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=trp1|trp1]]-1 [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=can1|can1]]-100 [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=ura3|ura3]]-1 [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=ade2|ade2]]-1 [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=his3|his3]]-11,15} [phi+]) in the -80°C freezers. [[http://minch-moor.ncl.ac.uk/fmi/iwp/cgi?-db=FuriousFive&-loadframes|On-line strain database]] can be searched (other databases listed on the [[yeast:yeasthome|yeast lab page]] or see the full list of [[http://minch-moor.ncl.ac.uk/fmi/iwp/res/iwp_home.html|all databases]]). Can cross a MATα strain with a MATa strain. Get a mix of haploids and diploids. But mutant strains have markers that often allow selection of diploids. Can then make the diploids sporulate and select out individual spores (tetrads), and do further selection to obtain the double mutant of interest. The new strain should be verified and added to the strain library.
+
+=== Notable strains ===
+
+Especially commonly used strains. See the [[http://minch-moor.ncl.ac.uk/fmi/iwp/cgi?-db=FuriousFive&-startsession|strain database]] for further details and other strains.
+
+^Strain number^relevant genotype^Comment|
+^DLY640|MATa|W303 background "wild type" strain|
+^DLY3001 |MATα|W303 α reference strain|
+^DLY26|MATa ade1 arg4 aro2 his7 lys5 met4 ura2|for testing mating type - can select with any of the standard 4 "missing one" plates|
+^DLY2440|MATα ade1 arg4 aro2 his7 lys5 met4 ura2|opposite mating type|
+^DLY1109 |MATa cdc13-1|cdc13-1 reference strain|
+^DLY1195 |MATα cdc13-1|cdc13-1 α reference strain|
+
+
+=== Notable plasmids ===
+
+See the [[http://minch-moor.ncl.ac.uk/fmi/iwp/cgi?-db=pDL&-startsession|plasmid database]] for further details and other plasmids.
+
+^Plasmid number^relevent transformation|
+^pDL1078|KanMX::TRP1 converter (x NotI)|
+^pDL1079|KanMX::URA3 converter (x NotI)|
+
+=== Agar plates ===
+
+Large selection of pre-prepared [[http://en.wikipedia.org/wiki/Agar_plate|agar plates]] in the "Cold room". Basic plate marked [[http://en.wikipedia.org/wiki/YEPD|YEPD]] - a rich medium including [[http://en.wikipedia.org/wiki/Yeast_extract|yeast extract]] (essentially Marmite). Other plates are labeled and marked, often lack an [[http://en.wikipedia.org/wiki/Amino_acids|amino acid]].
+
+^Marking^Feature|
+|black|[[http://en.wikipedia.org/wiki/YEPD|YEPD]]+[[http://en.wikipedia.org/wiki/Adenine|Adenine]]|
+|blue|-HIS (no [[http://en.wikipedia.org/wiki/Histidine|Histidine]])|
+|red|-URA (no [[http://en.wikipedia.org/wiki/Uracil|Uracil]])|
+|green|-LEU (no [[http://en.wikipedia.org/wiki/Leucine|Leucine]])|
+|red+blue|-TRP (no [[http://en.wikipedia.org/wiki/Tryptophan|Tryptophan]])|
+|2 red|YEPD+[[http://en.wikipedia.org/wiki/Geneticin|G418]] (Geneticin, an [[http://en.wikipedia.org/wiki/Antibiotic|antibiotic]])|
+|red+green+blue|-4 (-HIS-URA-LEU-TRP)|
+|4 blue|SD/MSG+G418 (Synthetic complete+G418)|
+
+The -4 plate can have some of the missing compounds added back on. "Wild-type" W303 strains cannot grow without all 4 of these compounds (though real "wild-type" yeast presumably can). Jars in the "Prep room" (near door), labelled, eg. "L-Histadine", "L-Lucine", "Uracil", etc. Usually a hint on the jar as to how much should be added to a plate (often 100 or 200 microlitres). Liquid can be pipetted on and then "rubbed-in" (with the tip of a 1ml pipette!) in a rather low-tech manner (ideally without trashing the agar).
+
+Plates missing compounds can be used to select for markers (see example cross below). The G418 plate can be used to select for the KanMX marker.
+
+=== Example cross ===
+
+Suppose we want a cdc13-1 mutant without oca2 or ebs1. ie. Target: cdc13-1 oca2Δ ebs1Δ. This can be made with the following two existing strains:
+
+  * DLY4205 MATα cdc13-1 oca2::LEU2 (this is a cdc13-1 mutant with oca2 replaced by wild-type LEU2, so it will be able to grow without LEU)
+  * DLY2764 MATa ebs1::URA3 (this has ebs1 replaced by wild-type URA3, so it will be able to grow without URA)
+
+If these are mixed and allowed to [[http://en.wikipedia.org/wiki/Mating_of_yeast|mate]], it will be possible to select for the diploids by growing on a plate without LEU or URA. We can make such a plate by taking a -4 plate and adding TRP and HIS.
+
+=== Patching ===
+
+If it is not possible to directly select diploids with one plate, may need to patch onto another plate (eg. from a G418 plate to a -LEU plate, or some such). Here pick a few cells (only) from many single colonies and patch onto the new plate in a stripy pattern with one stripe corresponding to each colony (need a template for this). After incubating for a few days, this should allow the identification of the required diploids.
+
+=== Sporulation ===
+
+The mixture of yeast should be streaked out on an appropriate plate and incubated for a few days at a sensible temperature (typically 20-28 degrees depending on strain and temperature sensitivity). If everything works well, the streaked out plates should have spots of single colonies. A single colony (picked with a tooth-pick) should be inoculated into 2ml of [[http://en.wikipedia.org/wiki/YEPD|YEPD]] solution (pipetted in with a big pipette and a pipette-aid) in a test tube. This should be incubated at 23 degress on a roller overnight (at least), then sporulated.
+
+  * Sporulation involves washing and centrifuging, following the lab protocol {{hetero:yp-spor.doc|Sporulation of diploids}}. After 2-3 days, end up with 1.5ml of culture in an eppendorf tube, ready for storage at 4 degrees or tetrad dissection.
+  * Before [[http://en.wikipedia.org/wiki/Tetrad_(genetics)|tetrad]] analysis, need to check sporulation has worked (10μl on a slide) on the phase contrast microscope, then wash and centrifuge, etc., following the lab protocol {{hetero:yp-tetrads.doc|Tetrad analysis}}.
+
+=== Tetrad dissection ===
+
+  * Book dissection microscope with sheet on fridge
+  * Pick at 10x mag
+  * Pick tetrad and drop on lower part of plate for dissection
+  * Place individual spores at 5mm intervals vertically on plate (eg. at 30, 35, 40, 45)
+  * Place columns of tetrads at 5mm intervals on plate (eg. 105, 110, 115, ...)
+  * Put a tick at the bottom of a column if it is OK, and a cross if not - reminder not to pick from any columns that are screwed up
+  * Don't get frustrated when the spores won't separate, as you'll end up punching a hole in the agar and losing the spores... :-(
+
+== Number of tetrads to dissect ==
+
+I've done a sample size calculation (in my green notebook) for the number of tetrads to dissect. Probabilities are a little bit complicated due to the non-independence of spores within a tetrad, but all works out nicely in the end. Essentially, if there are //m// heterozygous markers to be selected for (assumed to segregate independently), then assuming that around 80% of dissected tetrads will grow up properly, dissecting a total of 2^//m// tetrads (which is 2^{//m//+2} spores) gives a 95% chance of getting the target marker combination. Note that the number of markers, //m//, must include all markers being selected for, including mating type, and other incidental markers that are not of direct relevance to the cross, but must be selected for anyway.
+
+=== Analysing tetrad dissection plates ===
+
+Assuming that the spores form nice colonies on the tetrad dissection plates, use a toothpick to patch the single colonies in stripes on a new YEPD plate in a 11x4 pattern (need a template for this). Make sure both the original and new plates are marked up properly so that stuff can be traced back. Don't bother transferring duff tetrads from the original plates. These should be grown up for a day or two, then velvets can be used to transfer the colonies to a variety of selective plates. The results of the selective plates should show which spores correspond to the required double mutants. A separate analysis will be required to determine the mating type.
+
+=== Determining mating type ===
+
+Put 400 μl of sterile water in a small epindorf tube and use a toothpick to innoculate with the mating type strain (DLY26 and/or DLY2440). Use pipette to mix. Create a "lawn" on a YEPD plate with 150-200 μl from the tube. Rub in with 1ml pipette. Once dry, can be used as last selective plate from a velvet transfer of stripy plate. Need a clean velvet if testing against both mating type strains.
+
+Idea is that because mating type strains contain a defect in ura2, whereas W303 has a defect in ura3, only mated diploids will be able to grow on a -URA plate (because both genes are required to synthesise uracil). So these need transferring to a -URA plate after they've had a chance to mate to see if any diploids grow. This won't work if the query strain contains a URA2 marker. In this case can do the same with a -HIS plate (if the strain doesn't contain a HIS3 marker), as W303 has a his3 defect and mating strain has a his7 defect. In fact, the mating type plates work with all of the four standard "missing one" plates, so can use this trick providing that the query strain doesn't contain all four markers.
+
+DLY26 is MATa, and hence will only mate with MATα strains, so colonies which grow on the DLY26 lawn are MATα. The converse is true for DLY2440. 
+
+=== Adenine ===
+
+The W303 background strain has a defect in the ade2 gene, which means that it can't grow without adenine. This is why the YEPD stock solution and plates have adenine added. The effect of this is that the yeast strains used in the lab will gradually turn red as they accumulate a red intermediary in the adenine biosynthesis pathway. However, some of the strains in the library have wild type ADE2, which means that they will stay white. So, if you are doing a cross between a regular ade- strain and a ADE2 strain, some will be ade- (will turn red), and some ade+ (won't). Typically, we will want the ade- strains, and so this will be an extra marker to select for. The simplest way to select for it is to leave the selection plates for a couple of weeks and see which spore colonies turn red...
+
+=== Scoring tetrad colonies ===
+
+Once the 11x4 scoring plates have grown up, the growth  needs to be scored on a tetrad scoring sheet. Just go though each plate recording growth or not for each marker. Should find a 2:2 segregation of growth/not growth for each tetrad - a lack of this is sign of a problem, and probably means this tetrad shouldn't be picked. Once all plates are scored, can look along rows for combinations of growth corresponding to strains of interest. This might not be just the obvious double mutant. Other strains could also be useful, especially for controls if ultimate aim is to look for epistasis (genetic interactions). Can score mating type on same sheet. Probably useful to have both mating types in library.
+
+
+
+
+
+
+
+==== Spot tests ====
+
+Standard lab assay to compare relative growth of different strains. Seems completely insane to do this by hand in the lab when it is exactly what the robots were invented to do, but quite good fun anyway! ;-) Should write a robot program to do this at some point, and think about image and statistical analysis of the plates.
+
+Basic idea: set up serial dilutions in a 96-well plate and then transfer to one or more YEPD plates. Then grow up at relevant temperatures and image to see how strains grow relative to one another.
+
+  * 48-pin (8x6) tool for transferring to round agar plates. Typically use 6 dilutions, each 5x. Wind up with a 5^6(=15,625) dilution
+  * 96-pin (12x8) tool for transferring to the rectangular agar plates. Typically use 4 dilutions (half the plate), each 10x. Wind up with a 10^4(=10,000) dilution. Might be interesting to do 8 dilutions, each 4x. Would get a 4^8=(65,536) dilution, or 4^7(=16,384) if the first column is neat.
+  * Wells take around 200 microlitres of liquid. Can do 10x dilutions based on adding 20 microlitres to 180 microlitres, or 22.2 to 200.
+  * Always a 23 and 36 degree incubator - the rest need to be booked.
+  * 96-well plates and lids in the robot room.
+  * Use a multi-channel pipette to mix and transfer to each column in turn. Discard the right amount from the last column.
+  * Pin-tools from drawer in the lab.
+  * Flame using metal box from fume cupboard. Ethanol underneath. Wash pin-tool and flame twice. Leave standing on edge to cool. Hot pins will kill yeast!
+
+Grow plates for a couple of days, and image - perhaps image on several days to get a growth trajectory.
+
+=== Imaging plates ===
+
+Using the Alphaimager. I guess we'll be able to do this with the new robot (Snappy) soon.
+
+  * Wear gloves - potentially bad things in and around the imaging machine.
+  * Open door and pull down shelf. Put velvet on shelf for dark background, and stick plate onto that. Leave lid on for now.
+  * Load up Alphaimager software on the PC. Click on aquire image.
+  * Push button for white reflective light. Align plate and zoom.
+  * Remove lid and shut door.
+  * Check autoexpose and then click on button to do the focus/exposure.
+  * If imaging multiple plates, probably want to uncheck exposure and select an exposure manually.
+  * Click on "Aquire image" button.
+  * Save image on Drive Z: in Gerontology Users \ darrenw.
+  * When finished, put everything back as you found it.
+
+**Need to figure out how to get images off the drive**  (Maybe like [[resources:shareddrive|this]], CONOR.)
+
+
+
+==== Adding strains to the library ====
+
+Once you have a strain of verified genotype that is new, it must be added to the strain library for archiving and permanent safe-keeping.
+
+  * First streak out the strain on a new YEPD plate and grow up for a day or two. Need to have enough for a couple of big dollops on the end of a toothpick.
+  * Get a strain number for the new strain. This will be one plus the last number in the existing library. Note that this number will not match the filemaker pro record number. Check both the paper notebook and the strain database for consistency here. Will need an account to log into the strain database in order to add a new strain. Add a row for it in the book, and create a record for it in the database. Add some minimal information about it now (cross number, parental type and relevant genotype), and save the record, but go back later to fill in other details. Log out of the database.
+  * Get some cryo tubes and coloured caps from the cupboard near my bench. Need two tubes per strain (one backup). Use the same coloured cap for both tubes of each strain. Write the strain number on both the side of the cryo tube and the coloured cap.
+  * Need 1ml of 15% glycerol per tube. Use burner to keep glycerol sterile. Can just use a regular pipette (but maybe flame it).
+  * Use a toothpick to scoop a good dollop of yeast from the dense part of the plate. Inoculate into the glycerol, and give the toothpick a good swizzle to resuspend as much as possible. Put cap on and briefly vortex. Repeat for each tube.
+  * Take tubes to the -80 freezers. The end freezer is the main library source, and the middle freezer (next to it) is for the backups. Always wear the protective gloves when working with the -80 freezers. Add the strains to the relevant box in the main and backup freezers. The boxes contain 100 strains each and should be labelled.
+  * Once strains are in the freezer, go back to the database (and hard copy), and make sure that all necessary details have been added.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==== Marker swaps ====
+
+=== Basic idea ===
+
+Sometimes the mutant strains available won't have appropriate markers. For example, both strains might have a KanMX marker, which then makes it difficult to select for diploids. So in one of the strains, would like to swap the marker for something else.
+
+== Example ==
+
+Suppose we have the strain oca4::KanMX (that is, a strain with oca4 knocked out and replaced with the KanMX [[http://en.wikipedia.org/wiki/Gene_cassette|cassette]], which is used as a marker), but want to replace the KanMX marker with TRP1, so that we will instead have oca4::TRP1. This can be done using [[http://en.wikipedia.org/wiki/Plasmid|plasmids]] (DNA circles) containing the TRP1 gene (pDL1078 for KanMX). The plasmid contains two Not1 target sites which can be used to cut the plasmid DNA into two linear pieces of DNA, one of which contains the new marker. This is done with a restriction digest. The resulting DNA can be taken up by a competent yeast culture and selected for in the usual way.
+
+=== Marker swap ===
+
+  * Basic idea: grow up target yeast strain in some YEPD overnight. By morning should be in stationary phase. Check cell density using a [[http://en.wikipedia.org/wiki/Haemocytometer|haemocytometer]], and dilute down to a given cell density in fresh YEPD and allow to divide twice (2-8 hours, depending on temperature, strain, etc.). Then make competent and introduce preprepared DNA. Some of the yeast will take up the new DNA, and these can be selected by growing on a plate which selects for the required new [[http://en.wikipedia.org/wiki/Auxotroph|auxotroph]]. Also do a control which doesn't have any DNA introduced. Follow the {{hetero:yp-transform.doc|LiAc yeast transformation}} protocol.
+  * If colonies grow on the experimental plates and not on the control plate, then things look promising. In this case, use velvet to transfer to a new selective plate. This could also transfer some untransformed cells, but hopefully there will be a lot less crap on the new plate, and so this will form a much better starting point for subsequent analysis. Grow this new plate up for a day or two.
+  * At this point, probably worth picking some single colonies and transferring to a YEPD plate in a stripy pattern. Grow up and then use velvets to transfer to selective plates to find the colonies which seem to have worked.
+
+
+==== Restriction digest ====
+
+For a [[http://en.wikipedia.org/wiki/Restriction_digest|restriction digest]], first figure out what plasmid is required with the help of the [[http://ires-genomics.ncl.ac.uk/fmi/iwp/cgi?-db=pDL&-startsession|plasmid database]]. Take plasmid from freezer (in a 1.5ml epindorf tube) and stick in an ice bucket. Get buffer and enzyme and any other required reagents and make up the digest. eg. for a 30μl digest:
+
+  * DNA - 5μl (eg. plasmid)
+  * Buffer - 3μl (for a 10x buffer, which most of ours are)
+  * Enzyme - 1μl (here, NotI)
+  * Sterilised H2O 20.7μl (to make up to 30μl)
+  * [[http://en.wikipedia.org/wiki/Bovine_serum_albumin|BSA]] - 0.3μl (1:100 - makes enzyme work better)
+
+The [[http://en.wikipedia.org/wiki/Restriction_enzymes|restriction enzymes]] are in the fridge in the corner of the lab. NotI has a red stripe on the container, and this tells you which buffer to use (Number 3 - also has a red stripe). The enzyme is in glycerol - put in a cold block to keep cold. Allow buffer to defrost.
+
+  * Add water then buffer then DNA then enzyme - into a sterile epindorf tube. Use pipette to mix in the enzyme.
+  * Incubate in water bath at 37 degrees for 1 hour, then at 65 degrees for 20 minutes (to inactivate the enzyme)
+
+Test it has worked by [[http://en.wikipedia.org/wiki/Gel_electrophoresis|running a gel]] with a few μl - should get two nice stripes
+
+
+==== Running a DNA gel ====
+
+=== Old (dangerous) method - don't use any more ====
+
+  * Put paper towel down - want to catch any drips of bad stuff - use [[http://en.wikipedia.org/wiki/Ethidium_bromide|ethidium bromide]] to visualise - a carcinogen. Can stain early or late. Quicker to stain early, which Dave likes, but less safe...
+  * Ethidium bromide solution in drawer together with a measuring device - use this with [[http://en.wikipedia.org/wiki/Agarose|agarose]] powder to make gel. When measuring concentrations of solids in liquid, 1% (w/v) means 1g per 100ml (or 10mg in 1ml) - see Wikipedia page on [[http://en.wikipedia.org/wiki/Percentage_solution|percentage solution]]. For the gel, a 0.75% gel (0.75g per 100ml) is quite thin, and suitable for large DNA molecules like chromosomes, but a 1% or 1.5% gel is more typical for short DNA molecules like genes or cut plasmids.
+  * Add the liquid to the powder in a bottle and then microwave. Lid on but not tight. Use a heat glove. 40s to start, followed by 10s bursts. Keep swirling, need to just boil. Want to ensure that all of the agar is properly dissolved. Dissolves at around 85 degrees (but solidifies at much lower temp - [[http://en.wikipedia.org/wiki/Hysteresis|hysteresis]]). 
+  * Set up gel tray on the bench - and level with a spirit level.
+  * Let gel in bottle cool until you can bear in on the back of your hand for around 2 seconds.
+  * Drop in comb and pour in gel.
+  * Leave to cool.
+  * When cool, carefully remove comb and sponges from the ends
+  * Need some red loading gel. 2ul in each tube.
+  * Dilute DNA 10x in TE, then add 5ul to loading buffer.
+  * Stick the gel in the box and add an appropriate buffer (?) until it just covers the gel - wells nearest negative terminal - DNA "runs to red"...
+  * Carefully pipette all of each sample into a well in the gel
+  * Close the lid of the box
+  * Connect up the terminals to the power pack and set voltage to something appropriate (say, 80V). Can check if working by seeing if there is a reasonable current (a few mA)
+  * Takes around 30 mins to 1 hour to run
+  * Switch off power pack
+  * Unhook terminals and open lid
+  * Remove gel, dry off, and image...
+
+
+==== DNA miniprep ====
+
+Basic idea: Take some competent E. Coli and introduce plasmid. Grow up for a few days and then purify. Add back into plasmid DNA library, but now with a new number.
+
+==== Yeast genomic DNA prep ====
+
+Extract and purify DNA from a yeast culture grown up on the rack.
+
+  * Follow {{hetero:yp-yale.doc|Misha's version of the Yale protocol}}. 
+  * Will need some miniprep mix. For 1ml, use 250ul of 2M Tris base, 250ul 10% SDS and 500ul 0.5M EDTA (pH 8.5).
+  * Will also need some RNase. Aliquots in epindorfs available to help yourself to in the -80 freezers. This is 10mg/ml, so need to dilute 10x to get 1mg/ml using TE. eg. 30ul RNase and 270ul TE to get 300ul.
+
+
+
+==== PCR ====
+
+  * PCR - [[http://en.wikipedia.org/wiki/PCR|Polymerase chain reaction]] - neat method for amplifying a specific DNA fragment (eg. a gene) from a given (typically much longer) DNA sample (eg. chromosomal DNA)
+  * First need to [[http://www.humgen.nl/primer_design.html|design primers]] - James recommends [[http://frodo.wi.mit.edu/cgi-bin/primer3/primer3_www.cgi|primer3]] - and order them, say from [[http://www.sigmaaldrich.com/life-science/custom-oligos/custom-rna.html|Sigma]].
+  * The [[http://en.wikipedia.org/wiki/Primer_(molecular_biology)|primers]] are actually DNA [[http://en.wikipedia.org/wiki/Oligonucleotide|oligos]] - short DNA fragments, used to get the polymerisation reaction started.
+  * Forward primer is just a DNA sequence you want plus the start of the DNA sequence you want to amplify
+  * Reverse primer is the reverse complement of any DNA you want at the end, followed by the reverse complement of the end of the DNA you want to amplify
+  * PCR kits in the -80 freezers - thaw then stick on ice - can also use PCR reagants directly - cheaper...
+
+
+==== Pipetting ====
+
+DJW's pipettes, obtained September 2008.
+
+^Pipette^Colour^Range (μl)^Depth (mm)^Wait (s)^Serial #^Tips|
+^P20|White|2-20|2-3|1|CD54936 (4/08)|D200 (y)|
+^P200|Yellow|50-200|2-4|1|CC67535 (3/08)|D200 (y)|
+^P1000|Blue|200-1000|2-4|2-3|CD57714 (4/08)|D1000 (b)|
+
+When increasing volume, overshoot by 1/3 turn and wind back.
+
+Fit tip, select volume, press to first stop, immerse vertically, release button, move to side wall of angled receiving container, press to first stop, wait, press fully, slide up and out.
+
+Gilson links: [[http://www.gilson.com/|Gilson]], [[http://www.pipetman.com/|Pipetman]], [[http://www.anachem.co.uk/|Anachem]], [[http://en.wikipedia.org/wiki/Pipette|Pipette]] (wikipedia)
+
+
+
+
+
+
+
+
+
+
+
+
+==== Commonly used reagents ====
+
+Several of these are various kinds of [[http://en.wikipedia.org/wiki/Buffer_solution|buffer solution]]
+
+  * dH2O/ MQ H2O - [[http://en.wikipedia.org/wiki/Purified_water|purified water]]
+  * [[http://en.wikipedia.org/wiki/YEPD|YEPD]] - rich medium for yeast growth
+  * [[http://en.wikipedia.org/wiki/Ethanol|Ethanol]] - 100% and 70%
+  * LiAc - [[http://en.wikipedia.org/wiki/Lithium_acetate|Lithium acetate]] 10x is 1M and 1x is 0.1 M (100 mM). The 1x should perhaps be diluted with TE rather than water?
+  * [[http://en.wikipedia.org/wiki/TE_buffer|TE buffer]] - Tris, HCl and EDTA
+  * KOAc 1% - [[http://en.wikipedia.org/wiki/Potassium_acetate|Potassium acetate]]
+  * NaAc 3M - [[http://en.wikipedia.org/wiki/Sodium_acetate|Soduim acetate]]
+  * HCl - [[http://en.wikipedia.org/wiki/Hydrochloric_acid|Hydrochloric acid]]
+  * [[http://en.wikipedia.org/wiki/EDTA|EDTA]]
+  * [[http://en.wikipedia.org/wiki/Glycerol|Glycerol]]
+
+
+
+
+
+
+
+
+
+
+ --- //[[people:darren|Darren Wilkinson]] 2008/10/09 14:10//
+
+
+

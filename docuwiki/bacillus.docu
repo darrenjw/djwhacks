@@ -1,0 +1,82 @@
+====== Bacillus subtilis ======
+
+
+==== Bacillus meetings ====
+
+  * [[bacillusmeetings|Bacillus meetings]]
+  * [[bacilluslabdiary|Bacillus lab diary]]
+  * [[bacilluslabnotes|Bacillus lab notes]]
+
+
+
+
+
+==== Projects ====
+
+  * Modelling sporulation onset
+  * Modelling competence onset
+  * Modelling cell division decision
+  * Modelling [[motility|motility onset]]
+  * Integrated model of sporulation, competence, motility and cell division
+
+==== External links ====
+
+  * [[http://en.wikipedia.org/wiki/Bacillus_subtilis|Bacillus subtilis wikipedia page]]
+  * [[http://genolist.pasteur.fr/SubtiList/|SubtiList]] (sequence data - generally favoured resource, despite being a bit OOD)
+  * [[http://www.bgsc.org/|Bacillus genetic stock center]]
+  * [[http://www.subtiwiki.uni-goettingen.de/wiki/index.php/Main_Page|SubtiWiki]] (not exactly [[http://www.yeastgenome.org/|SGD]], but a step in the right direction!)
+  * [[http://www.uniprot.org/|Uniprot]] (seems to have good coverage of Bacillus)
+    * [[http://www.uniprot.org/docs/bacsu|Gene list, synonyms and uniprot IDs]] - list uploaded here as {{hetero:bsgenes.txt|text}} and {{hetero:bsgenes.xls|xls}}
+  * A [[http://archaea.ucsc.edu/cgi-bin/hgGateway?db=baciSubt|Bacillus subtilis genome broswer]]
+  * [[http://www.ncbi.nlm.nih.gov/pubmed/|PubMed]] (Bio literature searching)
+  * [[http://openwetware.org/wiki/Main_Page|OpenWetWare]]
+    * [[http://openwetware.org/wiki/Protocols|Protocols]]
+  * [[http://www.protocol-online.org/prot/Molecular_Biology/|molecular biology protocols]] - from protocol-online
+  * [[http://bacillus.genome.jp/|BSORF]]
+  * [[http://cmr.jcvi.org/cgi-bin/CMR/GenomePage.cgi?org=ntbs01|Bacillus 168 genome page]]
+  * [[http://dbtbs.hgc.jp/|DBTBS]] (good regulator site)
+  * [[http://locus.jouy.inra.fr/cgi-bin/genmic/madbase_home.pl|Micado]]
+  * [[http://pbil.univ-lyon1.fr/nrsub/nrsub.html|NRSub]]
+  * [[http://www.basysbio.eu/|BaSysBio]]
+  * [[http://bioinformatics.biol.rug.nl/standalone/fiva/databases.php|Fiva databases]]
+  * [[http://bioinformatics.biol.rug.nl/standalone/fiva/compiled.php|Fiva compiled]]
+  * [[http://www.ebi.ac.uk/GenomeReviews/|GenomeReviews]] (microarray data)
+  * [[http://www.ncbi.nlm.nih.gov/geo/|GEO]] (microarray data)
+  * [[http://genodb.pasteur.fr/cgi-bin/WebObjects/GenoList|GenoList]]
+  * [[http://www.lifesci.dundee.ac.uk/groups/nicola_stanley-wall/|Stanley-Wall Lab]] (Dundee)
+
+=== E. Coli links ===
+
+  * [[http://en.wikipedia.org/wiki/Escherichia_coli|E. coli wikipedia page]]
+  * [[http://ecocyc.org/|EcoCyc]]
+
+
+==== Bacillus papers ====
+
+  * [[http://www.connotea.org/user/wilkinsondarrenj/tag/Bacillus|My Bacillus papers on Connotea]]
+
+
+
+==== Newcastle links ====
+
+  * [[http://www.ncl.ac.uk/camb/|ICAMB]]
+    * [[http://icamb.ncl.ac.uk/|admin info]]
+      * [[http://icamb.ncl.ac.uk/dokuwiki/|ICT wiki]]
+  * [[http://www.ncl.ac.uk/camb/cbcb/|CBCB]]
+  * [[http://www.ncl.ac.uk/camb/staff/profile/jeff.errington|Jeff Errington]]
+  * [[http://www.ncl.ac.uk/camb/staff/profile/l.hamoen|Leendert Hamoen]]
+  * [[http://www.ncl.ac.uk/camb/staff/profile/j.w.veening|Jan-Willem Veening]]
+  * [[http://www.ncl.ac.uk/camb/staff/profile/h.strahl|Henrick Strahl]]
+
+==== Interesting genes ====
+
+  * [[http://bacillus.genome.jp/cgi-bin/BSORF_data_view.pl?ACCESSION=BG11059|BG11059]] (comK)
+  * [[http://bacillus.genome.jp/cgi-bin/BSORF_data_view.pl?ACCESSION=BG10483|BG10483]] (comGA)
+  * [[http://bacillus.genome.jp/cgi-bin/BSORF_data_view.pl?ACCESSION=BG14183|BG14183]] (sda)
+  * [[http://bacillus.genome.jp/cgi-bin/BSORF_data_view.pl?ACCESSION=BG10765|BG10765]] (spo0A)
+  * [[http://bacillus.genome.jp/cgi-bin/BSORF_data_view.pl?ACCESSION=BG10065|BG10065]] (dnaA)
+  * [[http://bacillus.genome.jp/cgi-bin/BSORF_data_view.pl?ACCESSION=BG10678|BG10678]] (lexA)
+  * [[http://bacillus.genome.jp/cgi-bin/BSORF_data_view.pl?ACCESSION=BG10055|BG10055]] (soj)
+
+
+ --- //[[people:darren|Darren Wilkinson]] 2008/10/09 14:06//

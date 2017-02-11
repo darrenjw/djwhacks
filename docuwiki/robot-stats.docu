@@ -1,0 +1,166 @@
+====== Robot Stats ======
+
+
+ 
+
+==== Statistical analysis of the data from ROD ====
+
+=== People ===
+
+  * [[people:darren|Darren Wilkinson]]
+  * [[people:steve|Steve Addinall]]
+  * [[people:jonathan|Jonathan Heydari]]
+  * [[people:conor|Conor Lawless]]
+  * [[people:david|David Lydall]]
+  * [[people:alexyoung|Alex Young]]
+  * [[people:yujiang|Yu Jiang]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+===== Basic Robot facts =====
+
+  * Robot math:
+    * 8*12=96, 16*24=384, 32*48=1536 (rows*cols)
+    * 96*4=384, 384*4=1,536 (plate to plate)
+    * 2*(16+22)=76 spots around the edge of a 384 plate
+    * 14*22=384-76=308 spots not on the edge of a 384 plate
+  * There are around 4,600 (actually 4,300?) strains in the full plate library (out of around 6,000 genes) - must be (nearly) all of the non-essential genes.
+  * Full "Boone" library on 14 plates. 384*14=5,376 spotids, but only 4,293 distinct ORFs.
+  * 16 special ORFs (occurring exactly twice in the library):
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YBL103C|YBL103C]]  (RTG3) 1-13-11+14-12-02 (plate 1, row 13, col 11 and plate 14, row 12, col 2)
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YBR020W|YBR020W]] (GAL1) 1-02-18+14-10-22
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YBR061C|YBR061C]] (TRM7) 1-08-20+14-10-20
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YBR075W|YBR075W]] (inside [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YBR074W|YBR074W]]) 1-10-16+14-10-18
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YBR082C|YBR082C]]  (UBC4) 1-10-10+14-10-16
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YBR095C|YBR095C]]  (RXT2) 1-12-14+14-10-10
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YBR115C|YBR115C]]  (LYS2) 1-14-08+14-12-22
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YBR165W|YBR165W]]  (UBS1) 1-06-09+14-12-18
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YDL074C|YDL074C]]  (BRE1) 2-14-06+14-12-12
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YDR483W|YDR483W]]  (KRE2) 4-09-18+14-14-10
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YJR109C|YJR109C]]  (CPA2) 8-03-12+11-07-11
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YLR455W|YLR455W]]  (no name) 10-09-22+14-08-03
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YMR119W|YMR119W]]  (ASI1) 10-10-02+14-10-05
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YOR300W|YOR300W]]  (overlaps [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YOR299W|YOR299W]], BUD7) 13-13-02+14-12-21
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YOR306C|YOR306C]]  (MCH5) 13-15-12+14-12-19
+    * [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YOR309C|YOR309C]]  (overlaps [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YOR310C|YOR310C]], NOP58) 13-15-06+14-12-17
+  * <html>Excerpt from e-mail from Renee Brost in Charlie Boone's laboratory <font color=purple>"In all cases with the exception of CPA2, you may have noticed that the second copy of these duplicate genes are on Plate 14.  They were included to ensure plate 14 was completely filled since empty spaces can cause noise in our analysis.  Genes for which there are duplicates were randomly chosen by Amy Tong.  I believe the addition of CPA2 twice was likely just an accidental duplication that occurred during array construction."</font></html>
+  * Also [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YOR202W|YOR202W]] (His3) - around the edge of each plate. This occurs 1,068 times in the library, but 76x14=1,064, so round the edge of each plate and then 4 other places in the library (13-03-20, 14-15-03, 14-15-05, 14-15-07). These 4 His3 spots can be used as a reasonable "control", since the yeast strains actually have another copy of the His3 gene elsewhere in their genome (it's all part of the way that the synthetic genetic array (SGA) procedure works).
+  * Discounting "special" orfs, there are 4,276 "regular" orfs (occurring exactly once). Total spotids is: 4,276+16x2+1,068=5,376
+  * 308*14=4,312 spots not around the edge in the 14 plate library
+  * **Now plate 15** - mainly containing repeats of strains already in the library - very useful for checking consistency, etc. However, one new knockout introduced on plate 15 - [[http://db.yeastgenome.org/cgi-bin/locus.pl?locus=YNL250W|YNL250W]] (Rad50) - a Boone "slow-grower" - so 4,294 distinct ORFs in the 15 plate version of the library
+  * Now also **version 3** of the library (Boone library referred to as version 2) - same spots on each plate, but re-arranged, to help correct for location effects
+  * Images in cisbclust:/data/rod/Images (''smb:cisbclust/rod'')
+  * Subversion path for ROD stats: http://metagenome.ncl.ac.uk/subversion/cisban/robot-stats/trunk
+  * Some [[http://picasaweb.google.com/lydall.robots/CONT1280120081418?authkey=BNJk6IlkRRI|example images]] are available as part of the [[http://picasaweb.google.com/lydall.robots|Lydall lab public gallery]] on [[http://picasaweb.google.com/home|picasa]]
+  * A "robot stats starter pack" is available as a {{biomath:robot-stats.zip|zip file}} for anyone wanting to have a play with the R code. Just do 'source("yku70.R")' at the R command prompt. You might need to install a couple of R packages, but it will tell you which ones, and is very easy. eg. 'install.packages("car")'.
+  * Subversion directory for the latest hitlists: http://metagenome.ncl.ac.uk/subversion/cisban/robot-stats/trunk/hitlists 
+  * [[https://basis1.ncl.ac.uk/basis/Robot/|Robot Screen Image Browser]]
+
+===== Relevant papers, software, etc. =====
+
+== Papers ==
+
+
+  * {{biomath:manipnas2008.pdf|Mani et al (2008)}} - paper discussing the notion of genetic interaction, fundamental to these screens
+  * {{robot:aylorplosgenetics2008.pdf|Aylor & Zeng (2008)}} - from classical genetics to quantitative genetics to systems biology: Modeling Epistasis
+  * {{robot:phillipsnaturerevgenetics2008.pdf|Phillips (2008)}} - review of epistatis in Nat Rev Gen
+  * {{biomath:collins07.pdf|Collins et al (2007)}} - Functional dissection of protein complexes involved in yeast chromosome biology using a genetic interaction map
+
+== Software ==
+
+  * [[http://www.r-project.org/|R]] - the statistical programming language
+    * [[http://www.bioconductor.org/|BioConductoR]] - suite of R packages for bioinformatics
+      * [[http://bioconductor.org/packages/2.2/bioc/html/SLGI.html|SLGI]] - synthetic lethal genetic interactions (BioC package)
+
+== Other ==
+
+  * [[http://tyerslab.bio.ed.ac.uk/wikiworld/sga/index.php/Synthetic_Genetic_Analysis|Tyers lab stuff on SGA]]
+  * Darren's talk on {{biomath:epi.pdf|genetic interaction}} for CISBAN altogether
+  * Darren's {{biomath:djw-neff-talk.pdf|NEFF talk}}
+  * Darren's {{biomath:djw-sbsb-talk-09.pdf|talk for SBSB}}
+  * Our [[robot:discussion_about_hit_scoring|discussion about hit scoring]] is also very relevant...
+  * [[robot:interesting|Interesting yeast genes]] - genes to include/look out for in analyses
+  * Darren's [[multipletesting|introduction to multiple testing]]
+  * Darren's guide to [[overrep|testing for over-representation]] (hyper-geometric test)
+
+
+
+===== Experiments =====
+
+  * [[robot:cdc13-1 Steve|CDC13-1 partial screen]]
+  * [[robot:yku70|YKU70 deletion full genome screen]]
+  * [[robot:temperature_sensitive_and_up-down_controls|TS and Up-Down]]
+  * [[robot:cdc13-1 Kaye|CDC13-1 full screen]]
+  * [[robot:tmpyp4|TMPyP4 screen]]
+  * [[robot:cdc13-1-1536|CDC13-1 1536/384 comparison]]
+  * [[robot:control|TS/UD control screen]]
+  * [[robot:passage|Passage timecourse]]
+  * [[robot:pombe|Pombe zinc arsenite]]
+  * [[robot:rad9|cdc13-1 rad9Δ screen]]
+  * [[robot:passage-full|Full genome 1536 passage time course]]
+  * [[robot:passage-est1-g1|EST1-G1 passage experiment]]
+  * [[robot:yku70-steve|Steve's new YKU70 screen]]
+  * [[robot:amanda|Amanda's cdc13-1 screen minus edges]]
+  * [[robot:sdl|Steve's new single deletion control screen]]
+  * [[robot:yku1536|Steve's YKU70 experiment in 1536]]
+  * [[robot:sdl1536|Steve's SDL control in 1536]]
+  * [[robot:csga|Control SGA screen]]
+  * [[robot:cdc131-new|Adam's new CDC13-1 screen]]
+  * [[yeast2:OELib|Adam's Overexpression library]]
+  * [[yeast2:bir1-17|Adam's bir1-17 screen]]
+  * [[yeast2:exo1cdc13|Greg's exo1D cdc13-1 xyzD screen]]
+
+
+
+===== Meta-analyses =====
+
+  * [[robot:meta-cdc-ku|CDC131-1/YKU70 Meta-analysis]]
+  * [[robot:Boone-Lydall|Comparing Boone mega-experiment with our screens]]
+  * [[yeast2:ManchesterValidation|Comparing our SGA experiment with some simulations from the Manchester CISB]]
+
+
+
+===== Other relevant wiki links =====
+
+  * [[robot:robot|robot working group]]
+  * [[robot:high_throughput_data|HTP data meetings]]
+  * [[hetero:hetero|heterogeneity]]
+  * [[biomath|biomath working group]]
+  * [[yeast:yeasthome|yeast group]]
+  * [[insilico:insilicohome|insilico group]]
+
+===== Relevant external links =====
+
+  * Lots of useful yeast info from the  [[http://www.yeastgenome.org/|SGD]]
+  * Also see the wikipedia page for [[http://en.wikipedia.org/wiki/Saccharomyces_cerevisiae|Saccharomyces cerevisiae]]
+  * [[http://www.thebiogrid.org/|BioGrid]] may also be useful
+
+
+
+===== Statistical issues todo list =====
+
+  * lighting correction
+  * think carefully about **scaling the data** - sqrt(area) vs log(greyscale) etc. - what is the "best" measure to use?
+  * random effects modelling
+  * Bayesian modelling
+
+
+
+--- //[[people:darren|Darren Wilkinson]] 2008/10/09 14:01//
+
+

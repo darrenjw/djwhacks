@@ -15,7 +15,7 @@ $(FILE).dvi: $(FILE).tex
 	latex $(FILE)
 
 view: $(FILE).pdf
-	acroread $(FILE).pdf &
+	xdg-open $(FILE).pdf &
 
 edit:
 	gedit $(FILE).tex &

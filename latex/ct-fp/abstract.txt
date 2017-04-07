@@ -1,9 +1,7 @@
 Category theory and functional programming for scalable statistical modelling and computational inference
 
 
-This short article considers both the theoretical and computational requirements for scalable statistical modelling and computation. Here, ``scalable" could refer to data size, model size, or algorithmic complexity. It will be argued that strongly functional programming languages are ideally suited to the development of scalable statistical algorithms, and that the mathematical subject of category theory provides the necessary theoretical underpinnings for rigorous analysis and reasoning about functional algorithms, their correctness, and their scalability.
-
-
+This talk considers both the theoretical and computational requirements for scalable statistical modelling and computation. It will be argued that programming languages typically used for statistical computing do not naturally scale, and that functional programming languages by contrast are ideally suited to the development of scalable statistical algorithms. The mathematical subject of category theory provides the necessary theoretical underpinnings for rigorous analysis and reasoning about functional algorithms, their correctness, and their scalability. Used in conjunction with other tools from theoretical computer science, such as recursion schemes, these approaches narrow the gap between statistical theory and computational implementation, providing numerous benefits, not least automatic parallelisation and distribution of algorithms.
 
 https://t.co/VoZUIIPl82
 

@@ -30,8 +30,18 @@ plot(g, layout = layout.fruchterman.reingold)
 plot(g, layout = layout.circle)
 m=get.adjacency(g)
 image(as.matrix(m))
-cluster_fast_greedy(g)
 
+gu=as.undirected(g)
+mu=as.matrix(get.adjacency(gu))
+image(mu)
+cl=cluster_fast_greedy(gu)
+## cl=cluster_edge_betweenness(gu)
+image(mu[order(cl$membership),order(cl$membership)])
+plot(cl,gu)
+
+cl=cluster_spinglass(gu)
+image(mu[order(cl$membership),order(cl$membership)])
+plot(cl,gu)
 
 
 

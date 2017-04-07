@@ -19,7 +19,18 @@ plot(df$Predicted,df$Actual)
 
 sub=df[df$Interaction != "No interaction",]
 dim(sub)
+sub=sub[sub$ORF1 != sub$ORF2,] # strip double deletions
+dim(sub)
 plot(sub$Predicted,sub$Actual)
+
+library(igraph)
+g=graph_from_data_frame(sub)
+plot(g)
+plot(g, layout = layout.fruchterman.reingold)
+plot(g, layout = layout.circle)
+m=get.adjacency(g)
+image(as.matrix(m))
+cluster_fast_greedy(g)
 
 
 

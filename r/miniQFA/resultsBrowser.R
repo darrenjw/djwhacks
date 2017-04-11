@@ -18,11 +18,12 @@ df=data.frame(ORF1=rt[,1],ORF2=rt[,2],Pair=rt[,3],logdg=as.numeric(rt[,4]),gamma
 pdf("mqfa-all.pdf",5,5)
 plot(df$Predicted,df$Actual,pch=19,col=2,cex=0.2)
 dev.off()
+print(dim(df))
 
 sub=df[df$Interaction != "No interaction",]
 dim(sub)
 sub=sub[sub$ORF1 != sub$ORF2,] # strip double deletions
-dim(sub)
+print(dim(sub))
 pdf("mqfa-int.pdf",5,5)
 plot(sub$Predicted,sub$Actual,pch=19,col=2,cex=0.2)
 dev.off()

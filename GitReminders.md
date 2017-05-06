@@ -11,13 +11,14 @@
 
 ## Common commands
 
-* `git pull`       (update)
-* `git add file.c` (add a file to the repo)
-* `git commit -a`  (commit locally)
-* `git push`       (push local commits back to github)
-* `git log`        (commit log)
-* `git tag`        (list of tagged commits)
-* `git tag v0.3`   (tag a version)
+* `git pull`             (update)
+* `git add file.c`       (add a file to the repo)
+* `git commit -a`        (commit locally)
+* `git push`             (push local commits back to github)
+* `git log`              (commit log)
+* `git tag`              (list of tagged commits)
+* `git tag v0.3`         (tag a version)
+* `git push origin v0.3` (push tag to remote)
 
 ## Changing upstream
 

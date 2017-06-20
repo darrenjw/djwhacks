@@ -5,8 +5,6 @@
 \usecolortheme{rose}
 \usepackage{amsmath,verbatim}
 \usepackage{listings}
-\usepackage{algorithmicx}
-\usepackage{algpseudocode}
 \usepackage[english]{babel}
 %\usepackage{media9} % package for genuine embedding of movies
 %\usepackage{multimedia} % beamer package for calling external files and players
@@ -68,18 +66,14 @@ col, set,start,end,deltat,zip},
 
 \lstMakeShortInline[language=scala]|
 
-
-\newcommand*\Let[2]{\State #1 $\gets$ #2}
-\newcommand*\Draw[2]{\State \textbf{draw} #1 $\sim$ #2}
-
 \begin{document}
 
 \title[CT and FP for scalable statistical computing]{An introduction to category theory and functional programming for scalable statistical modelling and computation}
-\author[Darren Wilkinson --- INI, SINW01 ??/7/17]{\textbf{\large Darren Wilkinson} \\
+\author[Darren Wilkinson --- Statistics seminar, 3/2/17]{\textbf{\large Darren Wilkinson} \\
 \url{@darrenjw}\\
 \alert{\url{tinyurl.com/darrenjw}}\\
 School of Mathematics \& Statistics\\Newcastle University, UK}
-\date{SINW01: Scalable statistical inference,\\ INI, Cambridge\\??? July 2017}
+\date{Statistics Seminar, Newcastle University\\3rd February 2017}
 
 
 \frame{\titlepage}
@@ -102,8 +96,6 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 
 \subsection{What's the problem?}
 
-\begin{comment}
-  
 \frame{
   \frametitle{What's up with statistical computing?}
   \begin{itemize}
@@ -120,62 +112,18 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \end{itemize}
   }
 
-\end{comment}
-
 \frame{
   \frametitle{Pre-historic programming languages}
   \begin{itemize}
-  \item All of the programming languages commonly used for scientific and statistical computing were designed 30-50 years ago, in the dawn of the computing age, and haven't significantly changed
+  \item The fundamental problem is that all of the programming languages commonly used for scientific and statistical computing were designed 30-50 years ago, in the dawn of the computing age, and haven't significantly changed
     \begin{itemize}
-  \item Compare with how much computing \alert{hardware} has changed in the last 40 years!
+  \item Think how much computing \alert{hardware} has changed in the last 40 years!
   \item But the language you are using was designed for that hardware using the knowledge of programming languages that existed at that time
-  \item Think about how much \alert{statistical methodology} has changed in the last 40 years --- you wouldn't use 40 year old methodology --- why use 40 year old languages to implement it?!
+  \item Think about how much statistical methodology has changed in the last 40 years --- you wouldn't use 40 year old methodology --- why use 40 year old languages to implement it?!
     \end{itemize}
     \end{itemize}
 }
-
-\begin{frame}[fragile]
-  \frametitle{Imperative pseudo--code}
-  \begin{minipage}{5.5cm}
-  \begin{algorithmic}[1]
-    \Function{MonteC}{$n$}
-    \Let{$x$}{$0$}
-    \For{$i \gets 1 \textrm{ to } n$}
-    \Draw{$u$}{$U(0,1)$}
-    \Draw{$v$}{$U(0,1)$}
-    \If{$u^2+v^2<1$}
-    \Let{$x$}{$x+1$}
-    \EndIf
-    \EndFor
-    \State \Return{$4x/n$}
-    \EndFunction
-  \end{algorithmic}
-  \end{minipage}
-%\end{frame}
-%\begin{frame}[fragile]
-%  \frametitle{Imperative pseudo--code}
-  \begin{minipage}{5cm}
-  \begin{algorithmic}[1]
-    \Function{Metrop}{$n,\eps$}
-    \Let{$x$}{$0$}
-    \For{$i \gets 1 \textrm{ to } n$}
-    \Draw{$z$}{$U(-\eps,\eps)$}
-    \Let{$x'$}{$x+z$}
-    \Let{$A$}{$\phi(x')/\phi(x)$}
-    \Draw{$u$}{$U(0,1)$}
-    \If{$u<A$}
-    \Let{$x$}{$x'$}
-    \EndIf
-    \EndFor
-    \State \Return{$x$}
-    \EndFunction
-  \end{algorithmic}
-  \end{minipage}
-
-  \bigskip
-  Not obvious that one of these is naturally parallel\ldots
-\end{frame}
-
+    
 \frame{
   \frametitle{Modern programming language design}
   \begin{itemize}
@@ -444,13 +392,9 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \end{itemize}
 \end{frame}
 
-\begin{comment}
-
 \begin{frame}
 \centerline{\includegraphics[height=0.9\textheight]{monad-is}}
 \end{frame}
-
-\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Kleisli category}
@@ -469,13 +413,9 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \end{itemize}
 \end{frame}
 
-\begin{comment}
-
 \begin{frame}
 \centerline{\includegraphics[height=0.9\textheight]{say-monad}}
 \end{frame}
-
-\end{comment}
 
 \subsection{Scalable modelling and computation}
 
@@ -652,8 +592,6 @@ Again, completely parallelisation--agnostic...
 
 \section{Summary and conclusions}
 
-\begin{comment}
-
 \subsection{Summary}
 
 \begin{frame}
@@ -670,8 +608,6 @@ Again, completely parallelisation--agnostic...
   \end{itemize}
 \end{frame}
 
-\end{comment}
-
 \subsection{Conclusions}
 
 \frame{
@@ -683,35 +619,12 @@ Again, completely parallelisation--agnostic...
     \item \alert{Strongly statically typed}
     \item \alert{Compiled}
     \item \alert{Functional}
-      \item and support \alert{concurrency}, \alert{parallelism}, \alert{typeclasses} and \alert{higher-kinded types}
+      \item and support \alert{typeclasses} and \alert{higher-kinded types}
     \end{itemize}
-  \item \alert{Scala} and \alert{Spark} provide a nice illustration of the power of this approach, but there are other interesting languages, including: Haskell, Idris, OCaml, Frege, Eta, ...
+  \item \alert{Scala} and \alert{Spark} provide a nice illustration of the power of this approach, but there are other interesting languages, including: Haskell, (S)ML, OCaml, Frege, Eta, ...
+    \item For more about Scala: \alert{\url{darrenjw.wordpress.com}}
   \end{itemize}
   }
-
-\begin{frame}
-  \frametitle{References}
-  \begin{thebibliography}{}
-
-    \scriptsize
-    
-   \bibitem{} Meijer E., Fokkinga M., Paterson R. (1991) \alert{Functional programming with bananas, lenses, envelopes and barbed wire}. In: Hughes J. (eds) \emph{Functional Programming Languages and Computer Architecture}. FPCA 1991. Lecture Notes in Computer Science, vol 523. Springer.
-
-  \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A., Ghahramani, Z. and Gordon, A. D. (2015) \alert{Practical probabilistic programming with monads}, \emph{Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell}, 165--176.
-
-     \bibitem{} Wadler P. (1995) \alert{Monads for functional programming}. In: Jeuring J., Meijer E. (eds) \emph{Advanced Functional Programming}. AFP 1995. Lecture Notes in Computer Science, vol 925. Springer.
-    
-\beamertemplatebookbibitems
-
-\bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} Barr, M. and Wells, C. (1990) \alert{Category Theory for Computing Science}, Prentice Hall.
-    
-  \end{thebibliography}
-
-  
-For more about Scala: \alert{\url{darrenjw.wordpress.com}}
-
-\end{frame}
-
 
 
 \end{document}

@@ -9,6 +9,9 @@ $(FILE).pdf: $(FILE).tex $(DIAFIGS)
 	pdflatex $(FILE)
 	pdflatex $(FILE)
 
+$(FILE)-nup.pdf: $(FILE).pdf
+	pdfnup --nup 4x4 $(FILE).pdf
+
 1d.pdf: 1d.dia
 	dia --export=1d.eps 1d.dia
 	epstopdf 1d.eps

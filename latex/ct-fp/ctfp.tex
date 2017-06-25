@@ -75,11 +75,11 @@ col, set,start,end,deltat,zip},
 \begin{document}
 
 \title[CT and FP for scalable statistical computing]{An introduction to category theory and functional programming for scalable statistical modelling and computation}
-\author[Darren Wilkinson --- INI, SINW01 ??/7/17]{\textbf{\large Darren Wilkinson} \\
+\author[Darren Wilkinson --- INI, SINW01 4/7/17]{\textbf{\large Darren Wilkinson} \\
 \url{@darrenjw}\\
 \alert{\url{tinyurl.com/darrenjw}}\\
 School of Mathematics \& Statistics\\Newcastle University, UK}
-\date{SINW01: Scalable statistical inference,\\ INI, Cambridge\\??? July 2017}
+\date{SINW01: Scalable statistical inference,\\ INI, Cambridge\\3rd--7th July 2017}
 
 
 \frame{\titlepage}
@@ -257,6 +257,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \end{itemize}
 \end{frame}
 
+\begin{comment}
+
 \begin{frame}[fragile]
   \frametitle{Other monadic types: Option}
   \begin{itemize}
@@ -275,6 +277,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     \end{itemize}
 \end{frame}
 
+\end{comment}
+
 \begin{frame}[fragile]
   \frametitle{Composing monadic functions}
   \begin{itemize}
@@ -287,6 +291,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \end{itemize}
 \end{frame}
 
+\begin{comment}
+
 \begin{frame}[fragile]
   \frametitle{Other monadic types: Future}
   \begin{itemize}
@@ -297,6 +303,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     \item |Future|s are a powerful method for developing parallel and concurrent programs in a modular, composable way
   \end{itemize}
 \end{frame}
+
+\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Other monadic types: Prob/Rand}
@@ -337,6 +345,22 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]
+  \frametitle{Log-likelihood calculation for iid model}
+Given a log--likelihood for a single observation, can create a function to evaluate the full log-liklihood that is completely \alert{parallelisation--agnostic}
+\begin{lstlisting}[language=scala]
+def lli(th: Param,x: Obs): Double = ???
+
+def ll(x: GenSeq[Obs])(th: Param): Double =
+  x map (lli(th,_)) reduce (_+_)
+\end{lstlisting}
+\begin{itemize}
+\item If |ll| is initialised with a serial collection containing the observations, then the likelihood will be evaluated sequentially
+\item If |ll| is initialised with a parallel collection, the likelihood will be evaluated in parallel on all available cores
+\end{itemize}
+\end{frame}
+
+
 
 \subsection{Category Theory}
 
@@ -367,6 +391,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \end{itemize}
 \end{frame}
 
+\begin{comment}
+
 \begin{frame}[fragile]
   \frametitle{\textbf{Set} and \textbf{Hask}}
   \begin{itemize}
@@ -394,6 +420,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     \item Again, we see that it is the morphisms that really matter, and that these can be used to ``probe'' the ``internal structure'' of an object...
   \end{itemize}
 \end{frame}
+
+\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Functors}
@@ -503,7 +531,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     \item However, re-writing this as:
       \begin{itemize}
       \item |rdd map (g compose f) reduce op|
-        \item would eliminate an intermediate collection, but is equivalent due to the 2nd functor law
+        \item would eliminate an intermediate collection, but is equivalent due to the 2nd functor law (\alert{map fusion})
       \end{itemize}
       \item Category theory \alert{laws} often correspond to \alert{optimisations} that can be applied to code without affecting results --- Spark can do these optimisations \alert{automatically} due to lazy evaluation
   \end{itemize}
@@ -613,6 +641,18 @@ def pFilter[S: State, O: Observation,
 Again, completely parallelisation--agnostic...
 \end{frame}
 
+\begin{frame}
+  \frametitle{Recursion schemes}
+  \begin{itemize}
+  \item A \alert{fold} over a sequential data structure is an example of a recursion scheme known more formally as a \alert{catamorphism}
+  \item The generation of a sequential stream of values from a seed and a generation function (eg. the generation of an MCMC chain) is an example of an \alert{unfold} operation, more formally known as an \alert{anamorphism}
+    \item Generating and then consuming a data structure (eg. simulating an MCMC chain and then computing summary statistics from the iterations) is an example of a \alert{refold}, known formally as a \alert{hylomorphism}
+  \end{itemize}
+  Again, category theory provides the theoretical underpinning and functional programming languages provide frameworks and abstractions for simple implementation of these algorithmic processes
+\end{frame}
+
+
+
 \begin{frame}[fragile]
   \frametitle{Scalable statistical modelling}
   \begin{itemize}
@@ -626,7 +666,7 @@ Again, completely parallelisation--agnostic...
 \begin{frame}[fragile]
   \frametitle{Composing random variables with the probability monad}
   \begin{itemize}
-  \item The \alert{probability monad} provides a foundation for describing random variables in a pure functional way
+  \item The \alert{probability monad} provides a foundation for describing random variables in a pure functional way (cf. \alert{Giry monad})
   \item We can build up joint distributions from marginal and conditional distributions using \alert{monadic composition}
   \item For example, consider an exponential mixture of Poissons (marginally negative binomial): we can think of an exponential distribution parametrised by a rate as a function |Exponential: Double => Rand[Double]| and a Poisson parametrised by its mean as a function |Poisson: Double => Rand[Int]|
     \item Those two functions don't directly compose, but do in the Kleisli category of the |Rand| monad, so |Exponential(3) flatMap {Poisson(_)}| will return a |Rand[Int]| which we can draw samples from if required
@@ -652,9 +692,20 @@ Again, completely parallelisation--agnostic...
 
 \section{Summary and conclusions}
 
-\begin{comment}
-
 \subsection{Summary}
+
+\begin{frame}
+  \frametitle{Summary}
+  \begin{itemize}
+  \item Mathematicians and theoretical computer scientists have been thinking about models of (scalable) computation for decades
+  \item Functional programming languages modelled on cartesian closed categories provide a sensible foundation for algorithm implementation with appropriate levels of abstraction
+  \item Concepts from category theory, such as functors, monads, natural transformations and recursion schemes provide an appropriate array of tools for scalable data modelling and algorithm construction
+    \item There is \alert{nothing special} about computations associated with statistical inference which somehow makes these ideas, tools and techniques irrelevant
+  \end{itemize}
+\end{frame}
+
+
+\begin{comment}
 
 \begin{frame}
   \frametitle{Summary}
@@ -694,12 +745,16 @@ Again, completely parallelisation--agnostic...
   \begin{thebibliography}{}
 
     \scriptsize
+
+  \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \alert{ICFP 2017}, in press. \texttt{conal.net}
     
-   \bibitem{} Meijer E., Fokkinga M., Paterson R. (1991) \alert{Functional programming with bananas, lenses, envelopes and barbed wire}. In: Hughes J. (eds) \emph{Functional Programming Languages and Computer Architecture}. FPCA 1991. Lecture Notes in Computer Science, vol 523. Springer.
+    \bibitem{} Meijer, E., Fokkinga, M., Paterson, R. (1991) \alert{Functional programming with bananas, lenses, envelopes and barbed wire}. In: Hughes J. (eds) \emph{Functional Programming Languages and Computer Architecture}. FPCA 1991. Lecture Notes in Computer Science, vol 523. Springer.
+
+    \bibitem{} Park, S., Pfenning, F., Thrun, S. (2008) \alert{A probabilistic language based on sampling functions}, \emph{TOPLAS}, \textbf{31}(1):4.
 
   \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A., Ghahramani, Z. and Gordon, A. D. (2015) \alert{Practical probabilistic programming with monads}, \emph{Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell}, 165--176.
 
-     \bibitem{} Wadler P. (1995) \alert{Monads for functional programming}. In: Jeuring J., Meijer E. (eds) \emph{Advanced Functional Programming}. AFP 1995. Lecture Notes in Computer Science, vol 925. Springer.
+     \bibitem{} Wadler, P. (1995) \alert{Monads for functional programming}. In: Jeuring J., Meijer E. (eds) \emph{Advanced Functional Programming}. AFP 1995. Lecture Notes in Computer Science, vol 925. Springer.
     
 \beamertemplatebookbibitems
 

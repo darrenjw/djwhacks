@@ -341,18 +341,18 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \item For now we will think of a monoid as a \alert{set} of elements with a \alert{binary relation} $\star$ which is \alert{closed} and \alert{associative}, and having an \alert{identity} element wrt the binary relation
   \item You can think of it as a \alert{semi-group} with an identity or a \alert{group} without an inverse
   \item |fold|s, |scan|s and |reduce| operations can be computed in parallel using \alert{tree reduction}, reducing time from $O(n)$ to $O(\log n)$ (on infinite parallel hardware)
-  \item ``\alert{map--reduce}'' is just the pattern of processing large amounts of data in an immutable collection by first \alert{map}ping the data (in parallel) into a monoid and then tree-\alert{reduc}ing the result (in parallel)
+  \item ``\alert{map--reduce}'' is just the pattern of processing large amounts of data in an immutable collection by first \alert{map}ping the data (in parallel) into a monoid and then tree-\alert{reduc}ing the result (in parallel), sometimes called |foldMap|
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Log-likelihood calculation for iid model}
-Given a log--likelihood for a single observation, can create a function to evaluate the full log-liklihood that is completely \alert{parallelisation--agnostic}
+Given a log--likelihood for a single observation, one can create a function to evaluate the full log-liklihood that is completely \alert{parallelisation--agnostic}
 \begin{lstlisting}[language=scala]
-def lli(th: Param,x: Obs): Double = ???
+def lli(th: Param, x: Obs): Double = ???
 
 def ll(x: GenSeq[Obs])(th: Param): Double =
-  x map (lli(th,_)) reduce (_+_)
+  x map (lli(th, _)) reduce (_+_)
 \end{lstlisting}
 \begin{itemize}
 \item If |ll| is initialised with a serial collection containing the observations, then the likelihood will be evaluated sequentially
@@ -644,11 +644,11 @@ Again, completely parallelisation--agnostic...
 \begin{frame}
   \frametitle{Recursion schemes}
   \begin{itemize}
-  \item A \alert{fold} over a sequential data structure is an example of a recursion scheme known more formally as a \alert{catamorphism}
+  \item A \alert{fold} over a sequential data structure is an example of a recursion scheme known more formally as a \alert{catamorphism} (eg. sums and AD)
   \item The generation of a sequential stream of values from a seed and a generation function (eg. the generation of an MCMC chain) is an example of an \alert{unfold} operation, more formally known as an \alert{anamorphism}
     \item Generating and then consuming a data structure (eg. simulating an MCMC chain and then computing summary statistics from the iterations) is an example of a \alert{refold}, known formally as a \alert{hylomorphism}
   \end{itemize}
-  (glossing over \alert{F-algebras}, \alert{coalgebras}, ADTs and fixed point types)
+  (glossing over \alert{F-algebras}, \alert{coalgebras}, \alert{ADTs} and \alert{fixed point types})
   \medskip
   
   Again, category theory provides the theory and FP languages provide frameworks and abstractions for implementation
@@ -689,9 +689,31 @@ Again, completely parallelisation--agnostic...
   yield ((mu,tau,obs))
 \end{lstlisting}
   \item We can use a regular probability monad for building forward models this way, and even for building models with simple Bayesian inference procedures allowing conditioning
-    \item For sophisticated probabilistic sampling algorithms (eg. SMC, MCMC, pMCMC, HMC, ...) it is better to build models like this using a \alert{free monad} which can be \alert{interpreted} in different ways
+    \item For sophisticated probabilistic sampling algorithms (eg. SMC, MCMC, pMCMC, HMC, ...) and hybrid compositions, it is better to build models like this using a \alert{free monad} which can be \alert{interpreted} in different ways
   \end{itemize}
 \end{frame}
+
+\begin{frame}[fragile]
+\frametitle{MCMC as a Stream}
+\begin{itemize}
+\item Impure:
+\begin{lstlisting}[language=scala]
+def nextState(oldState: State): State = ???
+
+Stream.iterate(initialState)(nextState).
+  drop(1000).thin(10).take(10000)
+\end{lstlisting}
+Note that |iterate| is to |unfold| as |reduce| is to |fold|
+\item Pure:
+\begin{lstlisting}[language=scala]
+def kernel(oldState: State): Rand[State] = ???
+
+MarkovChain(initialState)(kernel).steps.
+  drop(1000).thin(10).take(10000)
+\end{lstlisting}  
+\end{itemize}
+\end{frame}
+
 
 \section{Summary and conclusions}
 
@@ -701,7 +723,7 @@ Again, completely parallelisation--agnostic...
   \frametitle{Summary}
   \begin{itemize}
   \item Mathematicians and theoretical computer scientists have been thinking about models of (scalable) computation for decades
-  \item Functional programming languages modelled on cartesian closed categories provide a sensible foundation for algorithm implementation with appropriate levels of abstraction
+  \item Functional programming languages based on cartesian closed categories provide a sensible foundation for computational modelling with appropriate levels of abstraction
   \item Concepts from category theory, such as functors, monads, natural transformations and recursion schemes provide an appropriate array of tools for scalable data modelling and algorithm construction
     \item There is \alert{nothing special} about computations associated with statistical inference which somehow makes these ideas, tools and techniques irrelevant
   \end{itemize}

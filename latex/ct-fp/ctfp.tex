@@ -347,7 +347,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 
 \begin{frame}[fragile]
   \frametitle{Log-likelihood calculation for iid model}
-Given a log--likelihood for a single observation, one can create a function to evaluate the full log-liklihood that is completely \alert{parallelisation--agnostic}
+Given a log--likelihood for a single observation, one can create a function to evaluate the full log-likelihood that is completely \alert{parallelisation--agnostic}
 \begin{lstlisting}[language=scala]
 def lli(th: Param, x: Obs): Double = ???
 
@@ -604,22 +604,42 @@ and then define instances for standard collections (eg. |Vector|), parallel coll
 Single--observation update of a bootstrap particle filter:
 \begin{lstlisting}[language=scala]
 def update[S: State, O: Observation,
-                        C[_]: GenericColl](
-    dataLik: (S, O) => LogLik, stepFun: S => S
-       )(x: C[S], o: O): (LogLik, C[S]) = {
-  val xp = x map (stepFun(_))
-  val lw = xp map (dataLik(_, o))
-  val max = lw reduce (math.max(_, _))
-  val rw = lw map (lwi => math.exp(lwi - max))
-  val srw = rw reduce (_ + _)
-  val l = rw.length
-  val z = rw zip xp
-  val rx = z flatMap (p => Vector.fill(
-            Poisson(p._1 * l / srw).draw)(p._2))
-  (max + math.log(srw / l), rx)
-}  
+  C[_]: GenericColl](
+    dataLik: (S, O) => LogLik, stepFun: S => S,
+    resample: (C[(Double, S)], Double, Int) => C[S]
+  )( x: C[S], o: O): (LogLik, C[S] ) = {
+    val xp = x map (stepFun(_))
+    val lw = xp map (dataLik(_, o))
+    val max = lw reduce (math.max(_, _))
+    val rw = lw map (lwi => exp(lwi - max))
+    val srw = rw reduce (_ + _)
+    val l = rw.length
+    val z = rw zip xp
+    val rx = resample(z, srw, l)
+    (max + log(srw / l), rx)
+  }
 \end{lstlisting}
 \end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Resampling}
+Poisson resampling (for simplicity):
+\begin{lstlisting}[language=scala]
+def resamplePoisson[S: State, C[_]: GenericColl](
+    zc: C[(Double,S)],
+    srw: Double,
+    l: Int
+  ): C[S] = {
+    zc flatMap {case (rwi, xpi) =>
+      Vector.fill(Poisson(rwi * l / srw).draw)(xpi)
+    }
+  }
+\end{lstlisting}
+Resampling exploits the monadic nature of the collection (via |flatMap|)
+
+Again, completely parallelisation--agnostic...
+\end{frame}
+
 
 \begin{frame}[fragile]
   \frametitle{Filtering as a functional fold}
@@ -638,7 +658,7 @@ def pFilter[S: State, O: Observation,
   })
 }
 \end{lstlisting}
-Again, completely parallelisation--agnostic...
+|foldLeft| is fundamentally sequential, but the |updater| is parallelisation-agnostic
 \end{frame}
 
 \begin{frame}
@@ -723,7 +743,7 @@ MarkovChain(initialState)(kernel).steps.
   \frametitle{Summary}
   \begin{itemize}
   \item Mathematicians and theoretical computer scientists have been thinking about models of (scalable) computation for decades
-  \item Functional programming languages based on cartesian closed categories provide a sensible foundation for computational modelling with appropriate levels of abstraction
+  \item Functional programming languages based on Cartesian closed categories provide a sensible foundation for computational modelling with appropriate levels of abstraction
   \item Concepts from category theory, such as functors, monads, natural transformations and recursion schemes provide an appropriate array of tools for scalable data modelling and algorithm construction
     \item There is \alert{nothing special} about computations associated with statistical inference which somehow makes these ideas, tools and techniques irrelevant
   \end{itemize}

@@ -643,20 +643,21 @@ Again, completely parallelisation--agnostic...
 
 \begin{frame}[fragile]
   \frametitle{Filtering as a functional fold}
-  \begin{itemize}
-  \item Once we have a function for executing one step of a particle filter, we can produce a function for particle filtering as a functional fold over a sequence of observations:
-  \end{itemize}
+ Once we have a function for executing one step of a particle filter, we can produce a function for particle filtering as a functional fold over a sequence of observations:
 \begin{lstlisting}[language=scala]
 def pFilter[S: State, O: Observation,
-    C[_]: GenericColl, D[O] <: GenTraversable[O]](
-    x0: C[S], data: D[O], dataLik: (S, O) => LogLik,
-    stepFun: S => S ): (LogLik, C[S]) = {
-  val updater = update[S, O, C](dataLik, stepFun) _
-  data.foldLeft((0.0, x0))((prev, o) => {
-    val next = updater(prev._2, o)
-    (prev._1 + next._1, next._2)
-  })
-}
+  C[_]: GenericColl, D[O] <: GenTraversable[O]](
+  x0: C[S], data: D[O], dataLik: (S, O) => LogLik,
+    stepFun: S => S,
+    resample: (C[(Double, S)], Double, Int) => C[S]
+  ): (LogLik, C[S]) = {
+    val updater = update[S, O, C](dataLik,
+      stepFun, resample) _
+    data.foldLeft((0.0, x0))((prev, o) => {
+      val (oll, ox) = prev
+      val (ll, x) = updater(ox, o)
+      (oll + ll, x)
+    })}
 \end{lstlisting}
 |foldLeft| is fundamentally sequential, but the |updater| is parallelisation-agnostic
 \end{frame}

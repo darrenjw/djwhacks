@@ -600,6 +600,28 @@ and then define instances for standard collections (eg. |Vector|), parallel coll
 \end{frame}
 
 \begin{frame}[fragile]
+\frametitle{Scalable ABC}
+\begin{itemize}
+\item Simulate a collection of parameters, |pars|, from a prior and store in a collection belonging to the generic collection typeclass
+\item Define essential features of the ABC model:
+\begin{lstlisting}[language=scala]
+pars: C[Param]
+realData: Data    
+simModel: Param => Data
+summ: Data => SS
+dist: (SS, SS) => Double
+\end{lstlisting}
+\item Then scalable (parallelism--agnostic) ABC is as simple as:
+\begin{lstlisting}[language=scala]
+pars.map(summ compose simModel).
+  filter(dist(_,realData) < eps)
+\end{lstlisting}
+using map--fusion to avoid constructing a collection of synthetic datasets
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
   \frametitle{A scalable particle filter}
 Single--observation update of a bootstrap particle filter:
 \begin{lstlisting}[language=scala]

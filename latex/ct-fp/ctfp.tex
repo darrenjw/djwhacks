@@ -662,6 +662,25 @@ Resampling exploits the monadic nature of the collection (via |flatMap|)
 Again, completely parallelisation--agnostic...
 \end{frame}
 
+\begin{frame}[fragile]
+  \frametitle{Systematic resampling}
+  Main body of systematic resampling algorithm:
+\begin{lstlisting}[language=scala]
+val W = w.scan(0.0)(_+_)
+val rw = W map (_ * (l.toDouble / srw))
+val u = Uniform(0,1).draw
+val cumCount = rw map (x => {
+  val f = math.floor(x).toInt
+  if (u < x-f) (f+1) else f
+})
+val counts = diff(cumCount)
+val cx = counts zip x
+cx flatMap {case (ci, xi) => Vector.fill(ci)(xi)}
+\end{lstlisting}
+Again, no $\mathcal{O}(n)$ operations for parallel collections...
+\end{frame}
+
+
 
 \begin{frame}[fragile]
   \frametitle{Filtering as a functional fold}

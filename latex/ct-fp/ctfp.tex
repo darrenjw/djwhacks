@@ -686,19 +686,12 @@ Again, no $\mathcal{O}(n)$ operations for parallel collections...
   \frametitle{Filtering as a functional fold}
  Once we have a function for executing one step of a particle filter, we can produce a function for particle filtering as a functional fold over a sequence of observations:
 \begin{lstlisting}[language=scala]
-def pFilter[S: State, O: Observation,
-  C[_]: GenericColl, D[O] <: GenTraversable[O]](
-  x0: C[S], data: D[O], dataLik: (S, O) => LogLik,
-    stepFun: S => S,
-    resample: (C[(Double, S)], Double, Int) => C[S]
-  ): (LogLik, C[S]) = {
-    val updater = update[S, O, C](dataLik,
-      stepFun, resample) _
-    data.foldLeft((0.0, x0))((prev, o) => {
-      val (oll, ox) = prev
-      val (ll, x) = updater(ox, o)
-      (oll + ll, x)
-    })}
+val updater = update(dataLik, stepFun, resample) _
+data.foldLeft((0.0, x0))((prev, o) => {
+  val (oll, ox) = prev
+  val (ll, x) = updater(ox, o)
+  (oll + ll, x)
+})
 \end{lstlisting}
 |foldLeft| is fundamentally sequential, but the |updater| is parallelisation-agnostic
 \end{frame}

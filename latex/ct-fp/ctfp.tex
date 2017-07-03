@@ -468,7 +468,7 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
     \end{itemize}
   \item The associativity law says that the two ways of \alert{flattening} $T(T(T(x)))$ to $T(x)$ are the same
   \item The identity law says that the two ways of \alert{lifting} $T(x)$ to $T(T(x))$ and then flattening back to $T(x)$ both get back to the original $T(x)$
-    \item In FP, we often use |M| (for monad) rather than $T$ (for triple), and say that there are three monad laws --- the additional law corresponds to the naturality of $\mu$
+    \item In FP, we often use |M| (for monad) rather than $T$ (for triple), and say that there are three monad laws --- the identity law is considered to be two separate laws
   \end{itemize}
 \end{frame}
 
@@ -746,7 +746,8 @@ MarkovChain(initialState)(kernel).steps.
   \item Mathematicians and theoretical computer scientists have been thinking about models of (scalable) computation for decades
   \item Functional programming languages based on Cartesian closed categories provide a sensible foundation for computational modelling with appropriate levels of abstraction
   \item Concepts from category theory, such as functors, monads, natural transformations and recursion schemes provide an appropriate array of tools for scalable data modelling and algorithm construction
-    \item There is \alert{nothing special} about computations associated with statistical inference which somehow makes these ideas, tools and techniques irrelevant
+    \item Expressing algorithms in FP languages using category theory abstractions narrows the gap between theory and implementation
+%    \item There is \alert{nothing special} about computations associated with statistical inference which somehow makes these ideas, tools and techniques irrelevant
   \end{itemize}
 \end{frame}
 

@@ -594,7 +594,7 @@ trait GenericColl[C[_]] {
   def length[A](ca: C[A]): Int
 }
 \end{lstlisting}
-and then define instances for standard collections (eg. |Vector|), parallel collections (eg. |ParVector|), and distributed parallel collections (eg. |RDD|)
+and then define instances for standard (serial) collections (eg. |Vector|), parallel collections (eg. |ParVector|), and distributed parallel collections (eg. |RDD|)
 \item We can then write code that is completely \alert{parallelisation--agnostic}
   \end{itemize}
 \end{frame}

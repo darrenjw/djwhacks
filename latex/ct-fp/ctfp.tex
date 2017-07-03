@@ -602,10 +602,9 @@ and then define instances for standard (serial) collections (eg. |Vector|), para
 \begin{frame}[fragile]
 \frametitle{Scalable ABC}
 \begin{itemize}
-\item Simulate a collection of parameters, |pars|, from a prior and store in a collection belonging to the generic collection typeclass
+\item Simulate a collection of parameters, |pars: C[Param]|, from a prior and store in a generic collection
 \item Define essential features of the ABC model:
 \begin{lstlisting}[language=scala]
-pars: C[Param]
 realData: Data    
 simModel: Param => Data
 summ: Data => SS
@@ -613,8 +612,9 @@ dist: (SS, SS) => Double
 \end{lstlisting}
 \item Then scalable (parallelism--agnostic) ABC is as simple as:
 \begin{lstlisting}[language=scala]
+val realSS = summ(realData)
 pars.map(summ compose simModel).
-  filter(dist(_,realData) < eps)
+  filter(dist(_, realSS) < eps)
 \end{lstlisting}
 using map--fusion to avoid constructing a collection of synthetic datasets
 \end{itemize}

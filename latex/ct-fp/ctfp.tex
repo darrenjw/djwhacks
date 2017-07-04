@@ -587,9 +587,9 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \begin{lstlisting}[language=scala]
 trait GenericColl[C[_]] {
   def map[A,B](ca: C[A])(f: A => B): C[B]
-  def reduce[A](ca: C[A])(f: (A, A) => A): A
   def flatMap[A,B,D[B] <: GenTraversable[B]](
                  ca: C[A])(f: A => D[B]): C[B]
+  def reduce[A](ca: C[A])(f: (A, A) => A): A
   def zip[A,B](ca: C[A])(cb: C[B]): C[(A, B)]
   def length[A](ca: C[A]): Int
 }

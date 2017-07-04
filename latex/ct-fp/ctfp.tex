@@ -592,6 +592,7 @@ trait GenericColl[C[_]] {
   def reduce[A](ca: C[A])(f: (A, A) => A): A
   def zip[A,B](ca: C[A])(cb: C[B]): C[(A, B)]
   def length[A](ca: C[A]): Int
+  ...
 }
 \end{lstlisting}
 and then define instances for standard (serial) collections (eg. |Vector|), parallel collections (eg. |ParVector|), and distributed parallel collections (eg. |RDD|)
@@ -683,7 +684,7 @@ Again, no $\mathcal{O}(n)$ operations for parallel collections...
 
 
 \begin{frame}[fragile]
-  \frametitle{Filtering as a functional fold}
+  \frametitle{Particle filtering as a functional fold}
  Once we have a function for executing one step of a particle filter, we can produce a function for particle filtering as a functional fold over a sequence of observations:
 \begin{lstlisting}[language=scala]
 val updater = update(dataLik, stepFun, resample) _

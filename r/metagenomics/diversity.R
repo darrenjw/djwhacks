@@ -1,33 +1,70 @@
 ## diversity.R
+## Generate diversity information offline for a project
 
+
+##############
+## TODO - remove this and run direct from relevant project directory
+setwd("./zip/nfs/production/interpro/metagenomics/results/2017/05/DRP003216/")
+##############
+
+## Drop into directory containing the run folders
+setwd("version_3.0")
+
+## Load required libraries
 library(ebimetagenomics)
-
-## ps = getProjectSummary("SRP047083") # Microbiome QC
-## ps = getProjectSummary("ERP003634") # Tara
-ps = getProjectSummary("ERP009703") # OSD
-
-samples = projectSamples(ps)
-otu = getSampleOtu(ps,samples[1])
-dim(otu)
-plotOtu(otu)
-tad = convertOtuTad(otu)
-dim(tad)
-head(tad)
-
 library(vegan)
-estimateR(otu$Count)
-
 library(breakaway)
-breakaway(tad)
 
-## simulated data
-set.seed(123)
-comm = rsad(S=1000,frac=0.01,sad="lnorm",coef=list(meanlog=5,sdlog=2))
-length(comm)
-sum(comm)
+## Function definitions
+otuSummary = function(otu,label,plot=TRUE) {
+    ns = dim(otu)[1]
+    ni = sum(otu$Count)
+    sh = diversity(otu$Count)
+    fa = fisher.alpha(otu$Count)
+    er = estimateR(otu$Count)
+    lne = veiledspec(prestondistr(otu$Count))
+    tad = convertOtuTad(otu)
+    br = breakaway(tad,print=FALSE,answers=TRUE)
+    if (plot) {
+        svg(paste(label,"svg",sep="."))
+        plot(octav(otu$Count),main=paste("Preston plot for",label))
+        dev.off()
+    }
+    c(
+        "S.obs" = ns,
+        "N.obs" = ni,
+        "Shannon.index" = sh,
+        "Fisher.alpha" = fa,
+        er["S.chao1"],
+        er["se.chao1"],
+        er["S.ACE"],
+        er["se.ACE"],
+        "S.break" = br$est,
+        "se.break" = br$se,
+        "S.ln" = unname(lne[1])
+    )
+}
 
-estimateR(comm)
-
+## Run on a project
+## Assuming current directory contains run folders...
+dirlist = grep("??R??????_FASTQ",list.dirs(recursive=FALSE),value=TRUE)
+tab = NULL
+for (dir in dirlist) {
+    dirname = strsplit(dir,.Platform$file.sep)[[1]][-1]
+    run = strsplit(dirname,'_')[[1]][1]
+    message(run)
+    otufile = file.path(dirname,"cr_otus",
+                        paste(dirname,"otu_table.txt",sep="_"))
+    otu = read.otu.tsv(otufile)
+    summ = otuSummary(otu,run)
+    tab = rbind(tab,summ)
+    rownames(tab)[dim(tab)[1]] = run
+    file.rename(from=paste(run,"svg",sep="."),
+                to=file.path(dirname,"charts","preston.svg"))
+}
+df=data.frame("Run"=rownames(tab),tab)
+write.table(df,file.path("project-summary","diversity.tsv"),
+            sep="\t",row.names=FALSE)
 
 
 

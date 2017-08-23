@@ -16,27 +16,33 @@ setwd("version_3.0")
 ## Load required libraries
 library(ebimetagenomics)
 
-## Run on a project
-## Assuming current directory contains run folders...
-dirlist = grep("??R??????_FASTQ",list.dirs(recursive=FALSE),value=TRUE)
+## Read in Sample->Run mapping file
+pathbits = strsplit(getwd(),'/')[[1]]
+project = pathbits[length(pathbits)-1]
+mapping = read.delim(file.path("project-summary",paste(project,"txt",sep=".")),
+                     as.is=TRUE)
+rownames(mapping) = mapping$run_id
+samples = unique(sort(mapping$sample_id))
+
+## Analyse samples
 tab = NULL
-for (dir in dirlist) {
-    dirname = strsplit(dir,.Platform$file.sep)[[1]][-1]
-    run = strsplit(dirname,'_')[[1]][1]
-    message(run)
-    otufile = file.path(dirname,"cr_otus",
-                        paste(dirname,"otu_table.txt",sep="_"))
-    otu = read.otu.tsv(otufile)
-    svg(paste(run,"svg",sep="."))
+for (sample in samples) {
+    message(sample)
+    runs = mapping$run_id[mapping$sample_id==sample]
+    rundirs = paste(runs,"FASTQ",sep="_")
+    otufiles = file.path(rundirs,"cr_otus",
+                         paste(rundirs,"otu_table.txt",sep="_"))
+    otus = lapply(otufiles,read.otu.tsv)
+    otu = Reduce(mergeOtu, otus)
+    plotname = paste(paste(sample,"tad",sep="-"),"svg",sep=".")
+    svg(file.path("project-summary",plotname))
     summ = analyseOtu(otu)
     dev.off()
     tab = rbind(tab,summ)
-    rownames(tab)[dim(tab)[1]] = run
-    file.rename(from=paste(run,"svg",sep="."),
-                to=file.path(dirname,"charts","tad-plots.svg"))
+    rownames(tab)[dim(tab)[1]] = sample
 }
-df=data.frame("Run"=rownames(tab),tab)
-write.table(df,file.path("project-summary","diversity.tsv"),
+df=data.frame("Sample"=rownames(tab),tab)
+write.table(df,file.path("project-summary","diversity-sample.tsv"),
             sep="\t",row.names=FALSE)
 
 

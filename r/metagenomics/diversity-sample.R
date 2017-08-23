@@ -1,12 +1,14 @@
-## diversity.R
+## diversity-sample.R
 ## Generate diversity information offline for a EMG project
-
 
 ##############
 ## TODO - remove this and run direct from relevant project directory
 setwd("~/src/git/djwhacks/r/metagenomics/zip/nfs/production/interpro/metagenomics/results/2017/05/DRP003216")
 ##############
 
+##########
+## Assuming that a Sample->Run mapping file is available
+##########
 
 ## Drop into directory containing the run folders
 setwd("version_3.0")

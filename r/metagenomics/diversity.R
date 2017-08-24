@@ -1,12 +1,10 @@
 ## diversity.R
 ## Generate diversity information offline for a EMG project
 
-
-##############
-## TODO - remove this and run direct from relevant project directory
-setwd("~/src/git/djwhacks/r/metagenomics/zip/nfs/production/interpro/metagenomics/results/2017/05/DRP003216")
-##############
-
+## Simple check that we are in a project directory
+currentdir = tail(strsplit(getwd(),'/')[[1]],n=1)
+if ((nchar(currentdir) != 9) | (substr(currentdir,3,3) != "P"))
+    stop("This script must be run from a project directory")
 
 ## Drop into directory containing the run folders
 setwd("version_3.0")
@@ -37,8 +35,6 @@ df=data.frame("Run"=rownames(tab),tab)
 write.table(df,file.path("project-summary","diversity.tsv"),
             sep="\t",row.names=FALSE)
 
-
-## warnings()
 
 ## eof
 

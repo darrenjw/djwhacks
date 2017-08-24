@@ -1,17 +1,17 @@
 ## comparisons-sample.R
 
 ##########
-## TODO: delete this. Run script from project directory
-setwd("~/src/git/djwhacks/r/metagenomics/zip/nfs/production/interpro/metagenomics/results/2017/05/DRP003216")
-##########
-
-##########
 ## Assuming that a Sample->Run mapping file is available
 ##########
 
 ## Load required BIOCONDUCTOR libraries
 library(phyloseq)
 library(DESeq2)
+
+## Simple check that we are in a project directory
+currentdir = tail(strsplit(getwd(),'/')[[1]],n=1)
+if ((nchar(currentdir) != 9) | (substr(currentdir,3,3) != "P"))
+    stop("This script must be run from a project directory")
 
 ## Drop into the directory containing the runs folders
 setwd("version_3.0")

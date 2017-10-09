@@ -22,6 +22,8 @@ studyURLs = paste(startURL,1:lastPage,sep="")
 studyPages = lapply(studyURLs,function(x) fromJSON(x)$data$id)
 studies = Reduce(c,studyPages)
 studies
+## N.B. For full "pages" can use "rbind_pages" to assemble...
+
 
 ## list of samples for a study
 myStudy = "SRP047083"

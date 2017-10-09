@@ -33,7 +33,7 @@ samples$id
 
 ## list of runs for a sample
 mySample = "SRS711891"
-runsURL = paste(baseURL,paste("runs?page_size=1000&sample_accession=",mySample,sep=""),sep="/")
+runsURL = paste(baseURL,paste("runs?sample_accession=",mySample,sep=""),sep="/")
 runs = combinePages(runsURL)
 runs$id
 runs$links

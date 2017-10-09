@@ -13,6 +13,16 @@ studies
 studies$data$id
 studies$data$links
 
+## list of studies - query and assemble multiple pages...
+studiesURL = paste(baseURL,"studies",sep="/")
+studies = fromJSON(studiesURL)
+lastPage = studies$meta$pagination$pages
+startURL = paste(baseURL,"studies?page=",sep="/")
+studyURLs = paste(startURL,1:lastPage,sep="")
+studyPages = lapply(studyURLs,function(x) fromJSON(x)$data$id)
+studies = Reduce(c,studyPages)
+studies
+
 ## list of samples for a study
 myStudy = "SRP047083"
 samplesURL = paste(baseURL,paste("samples?page_size=1000&study_accession=",myStudy,sep=""),sep="/")

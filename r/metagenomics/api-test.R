@@ -26,14 +26,14 @@ studies$id
 
 ## list of samples for a study
 myStudy = "SRP047083"
-samplesURL = paste(baseURL,paste("samples?study_accession=",myStudy,sep=""),sep="/")
+samplesURL = paste(baseURL,paste0("samples?study_accession=",myStudy),sep="/")
 samples = combinePages(samplesURL)
 samples
 samples$id
 
 ## list of runs for a sample
 mySample = "SRS711891"
-runsURL = paste(baseURL,paste("runs?sample_accession=",mySample,sep=""),sep="/")
+runsURL = paste(baseURL,paste0("runs?sample_accession=",mySample),sep="/")
 runs = combinePages(runsURL)
 runs$id
 runs$links

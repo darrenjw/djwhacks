@@ -47,6 +47,11 @@ getStudies("search=16S")$id
 getStudies("centre_name=BioProject")$id
 getStudies("centre_name=BioProject","search=16S")$id
 
+## study
+getStudy = function(study){
+    
+    }
+
 ## list of samples for a study
 myStudy = "SRP047083"
 samplesURL = paste(baseURL,paste0("samples?study_accession=",myStudy),sep="/")

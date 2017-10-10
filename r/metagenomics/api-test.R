@@ -2,16 +2,20 @@
 ## test of the EBI metagemomics API (v0.2)
 
 library(jsonlite)
+
+
+#### DEBUG
+##fromJSON = function(url) {
+##    message(url)
+##    jsonlite::fromJSON(url)
+##    }
+#### END DEBUG
+
+
+## R Client for new API
+
 baseURL = "https://www.ebi.ac.uk/metagenomics/api/v0.2"
 
-## DEBUG
-fromJSON = function(url) {
-    message(url)
-    jsonlite::fromJSON(url)
-    }
-## END DEBUG
-
-## abstract out page combination
 combinePages = function(url,ps=80) {
     if (grepl('?',url,fixed=TRUE))
         sep = "&"
@@ -30,7 +34,6 @@ combinePages = function(url,ps=80) {
     }
 }
 
-## list of studies
 getStudies = function(...) {
     url1 = paste(baseURL,"studies",sep="/")
     dotList = list(...)
@@ -40,31 +43,46 @@ getStudies = function(...) {
         url2 = paste(url1,paste(...,sep="&"),sep="?")
     combinePages(url2)
 }
-## examples
+
+getStudy = function(study){
+    fromJSON(paste(baseURL,"studies",study,sep="/"))$data
+}
+
+getSamples = function(study) {
+    samplesURL = paste(baseURL,paste0("samples?study_accession=",study),sep="/")
+    combinePages(samplesURL)
+}
+
+getRunsBySample = function(sample) {
+    runsURL = paste(baseURL,paste0("runs?sample_accession=",sample),sep="/")
+    combinePages(runsURL)
+}
+
+
+
+## Examples
+
 studies = getStudies()
 studies$id
 getStudies("search=16S")$id
 getStudies("centre_name=BioProject")$id
 getStudies("centre_name=BioProject","search=16S")$id
 
-## study
-getStudy = function(study){
-    
-    }
-
-## list of samples for a study
 myStudy = "SRP047083"
-samplesURL = paste(baseURL,paste0("samples?study_accession=",myStudy),sep="/")
-samples = combinePages(samplesURL)
+study = getStudy(myStudy)
+study$id
+
+samples = getSamples(myStudy)
 samples
 samples$id
 
-## list of runs for a sample
 mySample = "SRS711891"
-runsURL = paste(baseURL,paste0("runs?sample_accession=",mySample),sep="/")
-runs = combinePages(runsURL)
+runs = getRunsBySample(mySample)
 runs$id
 runs$links
+
+
+
 
 
 ## eof

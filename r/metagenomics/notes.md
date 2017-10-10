@@ -1,5 +1,10 @@
 # Notes on metagenomics
 
+This directory mainly consists of R scripts for metagenomics analysis, for potential integration into the EBI metagenomics pipeline.
+
+Also tests for the new metagenomics API in `api-test.R` and `rjsonapi-test.R`
+
+
 ## Interesting projects
 
 OSD: ERP009703

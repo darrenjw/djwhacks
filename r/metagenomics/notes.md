@@ -1,7 +1,5 @@
 # Notes on metagenomics
 
-Chaps,
-
 Attached are 4 R scripts designed to be run on a project at the end of the pipeline. They are currently tuned to work on version 3 and will need modifying for each new pipeline version. They are currently fairly minimal and will probably want a bit of tweaking before deploying in production. It would obviously be convenient to have a way of jointly developing these scripts. If you want, I can create a little public github repo to put them in, or you could incorporate them into your repo and give me read access to it so I can submit pull requests, or whatever. Note that I'm not a big graphics person, so if you need fancy colourful ggplot graphics or interactive javascript plots, I'll need some help on that.
 
 All scripts are designed to be run (only) from a project directory, which is assumed to have a directory called "version_3.0" as a subdirectory. They can easily be tweaked for starting from other directories. They produce TSV and SVG files which you could pick up from your web front end in some way.
@@ -28,18 +26,12 @@ This is an alternative version of the diversity.R script which pools together al
 comparisons-sample.R
 This is an alternative version of the comparisons.R script which uses sample information. Here the PCA plot is identical except that runs are coloured according to sample, which makes it much more useful as a diagnostic - eg. to spot runs which are different to other runs in a sample. The heatmaps are also based on samples rather than runs. This is important not only because we are typically more interested in differences between samples than runs, but also because it is easier to more robustly estimate fold-chance when within-sample replication information is available.
 
-Have a play with these and let me know how you want to take things forward.
-
-Cheers,
-
-Darren
+# Notes
 
 
+This directory mainly consists of R scripts for metagenomics analysis, for potential integration into the EBI metagenomics pipeline.
 
-
-
-
-
+Also tests for the new metagenomics API in `api-test.R` and `rjsonapi-test.R`
 
 ## Interesting projects
 

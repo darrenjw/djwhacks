@@ -12,6 +12,10 @@ Blah
 
 $$E = mc^2$$
 
+```scala
+val E = m * c * c
+```
+
 # Slide 2
 
 ## Subheading

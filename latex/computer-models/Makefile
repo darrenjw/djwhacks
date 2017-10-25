@@ -18,7 +18,7 @@ sim1.pdf: gp.R
 
 
 view: talk.pdf
-	acroread talk.pdf &
+	xdg-open talk.pdf &
 
 edit:
 	gedit Makefile talk.tex *.R &

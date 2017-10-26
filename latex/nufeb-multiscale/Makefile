@@ -9,6 +9,7 @@ view: djw-nufeb.pdf
 
 
 djw-nufeb.pdf: djw-nufeb.tex content.tex
+	cd figs; make
 	pdflatex djw-nufeb
 	pdflatex djw-nufeb
 

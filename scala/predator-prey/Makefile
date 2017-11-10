@@ -9,7 +9,7 @@ docs: FORCE
 	git add docs/api
 
 edit:
-	emacs src/main/scala/*.scala src/test/scala/*.scala build.sbt Makefile README.md &
+	emacs *.R src/main/scala/*.scala src/test/scala/*.scala build.sbt Makefile README.md &
 
 
 

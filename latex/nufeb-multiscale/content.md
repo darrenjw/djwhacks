@@ -158,7 +158,7 @@ containing two parameters: an asymptotic variance, $\sigma^2$, and a correlation
 
 # Sequential updating of a GP emulator
 
-![GP conditioning](figs/emu1){height=60%}
+![GP conditioning](figs/emu1.pdf){height=60%}
 
 # Sequential updating of a GP emulator
 

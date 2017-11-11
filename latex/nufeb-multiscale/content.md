@@ -82,9 +82,34 @@ We also have a pilot plant facility for experiments at the macro-scale
 
 ![Overview of microscale IB model](figs/jaya-004.png){height=60%}
 
+# Biological/mechanical modelling
+
+* Each bacterial cell is an agent within an individual based model of cell growth, division, death and mechanical interactions
+* First order growth kinetics, solved numerically using an explicit Euler scheme
+* Growth rates depend on the nutrient environment of the agent, and nutrients are taken up from the fluid during growth
+* Cell division occurs when cells reach a critical size --- stochastic elements in the division process
+* EPS grows initially as a shell around appropriate cells, then excretes as a discrete particle/agent (placed randomly)
+* Mechanical relaxation is required due to cell growth and division --- a discrete element method (DEM) is used, solving for each particle in the Lagrangian framework --- springs and dashpot model --- using LAMMPS
+* The net force on each agent is the sum of contact, adhesion, and fluid forces
+
 # Mechanics
 
 ![Mechanical interactions](figs/jaya-008.png){height=60%}
+
+# Physical/chemical modelling
+
+* Nutrient mass-balance --- advection--diffusion--reaction equation, for each nutrient, $S$:
+$$\frac{\partial S}{\partial t} + \vec{U}\cdot\nabla S = \nabla\cdot(D_e\nabla S) + R$$
+* $\vec{U}$ is fluid velocity, $D_e$ effective diffusion coefficient, and $R$ nutrient uptake rate
+* Rectangular computational domain and discretisation
+* Temporal derivatives forward Euler
+* Spatial derivatives central finite differences
+* Due to time scale separation between physical and biological processes, we typically solve to steady state within each biological time step
+
+# Computational domain
+
+![Computational domain](figs/olu-005.png){height=60%}
+
 
 # Interaction of multiple bacterial species
 
@@ -93,6 +118,10 @@ We also have a pilot plant facility for experiments at the macro-scale
 # Nutrient abundance and diffusion
 
 ![Biofilm growth under differing nutrient conditions](figs/jaya-015.png){height=60%}
+
+# Flocs and biofilms
+
+![Floc and biofilm growth under differing nutrient conditions](figs/olu-004.png){height=60%}
 
 # Varying boundary conditions
 
@@ -106,18 +135,85 @@ We also have a pilot plant facility for experiments at the macro-scale
 
 ![Shear flow deformation, streamers, detachment](figs/jaya-026.png){height=60%}
 
-# Flocs and biofilms
+# Statistical emulation of complex computer models
 
-![Floc and biofilm growth under differing nutrient conditions](figs/olu-004.png){height=60%}
+* The micro-scale model is very computationally intensive --- approx 1 CPU day to simulate 5 real days
+* There now exists a large literature on the use of statistical model *emulators* in the design and anlysis of computer experiments
+* Emulators essentially provide a fast approximate surrogate for the true model, with properly quantified uncertainty, but have a number of different possible uses, including:
+1. History matching (finding inputs which give output consistent with data)
+2. Calibration (finding parameter settings most consistent with data)
+3. Model validation (deciding whether the model is a good fit to reality)
+4. Design (finding inputs leading to a desirable output)
 
-# Computational domain
+# Gaussian process emulation
 
-![Computational domain](figs/olu-005.png){height=60%}
+* A GP is a probability distribution on functions defined so that the marginal distribution of any finite number of points always has a multivariate normal (MVN) distribution
+* Points close together in input space are typically more highly correlated than points far away
+* Stationary GPs are defined by a *covariance function* --- many different possible choices --- a Gaussian kernel is popular
+$$
+\operatorname{Cov}[f(\mathbf{x}),f(\mathbf{x}')] = K(\mathbf{x},\mathbf{x}') = \sigma^2\exp\left\{-\left(\frac{\Vert \mathbf{x}-\mathbf{x}'\Vert_2}{r}\right)^2\right\},
+$$
+containing two parameters: an asymptotic variance, $\sigma^2$, and a correlation length scale, $r$.
+* A GP conditioned on observations is also a GP (*Kriging*)
+
+# Sequential updating of a GP emulator
+
+![GP conditioning](figs/emu1){height=60%}
+
+# Sequential updating of a GP emulator
+
+![GP conditioning](figs/emu2){height=60%}
+
+# Sequential updating of a GP emulator
+
+![GP conditioning](figs/emu3){height=60%}
+
+# Sequential updating of a GP emulator
+
+![GP conditioning](figs/emu4){height=60%}
+
+# Sequential updating of a GP emulator
+
+![GP conditioning](figs/emu5){height=60%}
+
+# Sequential updating of a GP emulator
+
+![GP conditioning](figs/emu6){height=60%}
 
 
+# Samples from a GP posterior distribution
+
+![GP samples](figs/sample1){height=60%}
+
+# Samples from a GP posterior distribution
+
+![GP samples](figs/sample10){height=60%}
+
+# Samples from a GP posterior distribution
+
+![GP samples](figs/sample10){height=60%}
+
+# Design of computer experiments
+
+* To build a ``good" emulator, we want residual uncertainty to be small. In 1d this is easy, but in higher dimensions we need to choose *design points* to *fill space* efficiently so that there aren't big gaps in parameter space for which we don't have a simulator run
+* The naive approach to this problem is to construct a *Cartesian product design* where many levels of each variable are considered in turn, but this approach becomes unworkable in more than 2 or 3 dimensions
+* *Latin hypercube designs* (LHDs) are a good way to choose design points to fill space in an efficient way
+* In more than 2 dimensions, Cartesian product designs are a very inefficient way of covering the design space, and LHDs are much better. In other words, naive *parameter scans are bad --- don't do them!*
+
+# A 2D Latin hypercube design
+
+![2D LHD](figs/lhd){height=60%}
 
 # Statistical emulation of the microscale model
 
+* We typically emulate important univariate summary statistics arising from the analysis of the raw computer model output
+
+
+# Emulation results
+
+# Emulation strategy
+
+![Emulation for upscaling](figs/olu-008.png){height=60%}
 
 # Mesoscale modelling
 
@@ -127,22 +223,12 @@ We also have a pilot plant facility for experiments at the macro-scale
 
 
 
-
-
-
-# Figure
-
-![Emulation for upscaling](figs/olu-008.png){height=60%}
-
-
-
-
 # Acknowledgements 1: Funders and collaborators
 EPSRC, NWL, Mott?
 
 Be:Wise! `research.ncl.ac.uk/bewise`
 
-Logos!
+**Logos!**
 
 # Acknowledgements 2: Newcastle People
 
@@ -153,7 +239,7 @@ Logos!
 * Computing: Steve McGough, Paolo Zuliani, Anil Wipat
 * Biology: Steve Rushton
 
-## RAs
+## Modelling RAs
 
 * Engineering: *Pahala Jayathilake*, Prashant Gupta, Ben Allen, Andrew Coughtree, Rebeca Gonzales-Cabaleiro
 * Maths & Stats: *Oluwole Oyebamiji*

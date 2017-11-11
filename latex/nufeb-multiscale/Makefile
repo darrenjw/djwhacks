@@ -13,6 +13,9 @@ djw-nufeb.pdf: djw-nufeb.tex content.tex
 	pdflatex djw-nufeb
 	pdflatex djw-nufeb
 
+djw-nufeb-nup.pdf: djw-nufeb.pdf
+	pdfnup --nup 3x3 djw-nufeb.pdf
+
 content.tex: content.md
 	pandoc -t beamer -Vtheme:Luebeck -Vcolortheme:seahorse content.md -o content.tex
 

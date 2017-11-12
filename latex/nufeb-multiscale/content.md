@@ -191,11 +191,11 @@ containing two parameters: an asymptotic variance, $\sigma^2$, and a correlation
 
 # Samples from a GP posterior distribution
 
-![GP samples](figs/sample10){height=60%}
+![GP samples](figs/sample100){height=60%}
 
 # Design of computer experiments
 
-* To build a ``good" emulator, we want residual uncertainty to be small. In 1d this is easy, but in higher dimensions we need to choose *design points* to *fill space* efficiently so that there aren't big gaps in parameter space for which we don't have a simulator run
+* To build a "good" emulator, we want residual uncertainty to be small. In 1d this is easy, but in higher dimensions we need to choose *design points* to *fill space* efficiently so that there aren't big gaps in parameter space for which we don't have a simulator run
 * The naive approach to this problem is to construct a *Cartesian product design* where many levels of each variable are considered in turn, but this approach becomes unworkable in more than 2 or 3 dimensions
 * *Latin hypercube designs* (LHDs) are a good way to choose design points to fill space in an efficient way
 * In more than 2 dimensions, Cartesian product designs are a very inefficient way of covering the design space, and LHDs are much better. In other words, naive *parameter scans are bad --- don't do them!*
@@ -206,8 +206,29 @@ containing two parameters: an asymptotic variance, $\sigma^2$, and a correlation
 
 # Statistical emulation of the microscale model
 
-* We typically emulate important univariate summary statistics arising from the analysis of the raw computer model output
+* We typically emulate important univariate summary statistics arising from the analysis of the raw computer model output (eg. Floc diameter, floc mass, biofilm height, surface roughness, community diversity index, ...) based on numerous inputs (covariates)
+* Consider output $y$ for input $\mathbf{x}$ as a deterministic function
+$$y = f(\mathbf{x})$$
+* Outputs $y_i$ at $n$ design points $\mathbf{x}_i$ statistically modelled as
+$$ \mathbf{y} \sim \mathcal{N}(\mathsf{H}\boldsymbol{\beta},\mathsf{A}) $$
+where $\mathsf{H}$ is a design matrix where the $i$th row of $\mathsf{H}$ is a (deterministic) function of $\mathbf{x}_i$, and $\mathsf{A}$ is the matrix of covariances determined by the Gaussian kernel described earlier
 
+# Multivariate emulation
+
+* Univariate emulation ignores correlation between multiple outputs --- often better to jointly model
+* Covariance matrix for $p$ outputs a $p\times p$ matrix $\Sigma$
+* Assuming separability of the two covariance matrices, we get a matrix normal distribution for $n\times p$ output matrix $\mathsf{Y}$
+$$ \mathsf{Y} \sim \mathcal{MN}(\mathsf{H}\mathsf{B},\mathsf{A},\Sigma) $$
+* ie. $\operatorname{Var}(\boldsymbol{\operatorname{vec}} Y) = \Sigma \otimes \mathsf{A}$
+
+# Dynamic emulation
+
+* Our simulation model is a time evolving dynamical system
+* Often desirable to emulate dynamical behaviour over time steps (much larger than the simulation time steps)
+* Regard the simulator as a dynamic function
+$$ \mathbf{y}_t = f(\mathbf{x}_t,\mathbf{y}_{t-1}) $$
+where $\mathbf{y}_t$ is a state vector and $\mathbf{x}_t$ represents the model inputs at time $t$
+* Statistically model and emulate $f(\cdot,\cdot)$
 
 # Emulation results
 
@@ -225,6 +246,8 @@ containing two parameters: an asymptotic variance, $\sigma^2$, and a correlation
 
 # Acknowledgements 1: Funders and collaborators
 EPSRC, NWL, Mott?
+
+NU!
 
 Be:Wise! `research.ncl.ac.uk/bewise`
 
@@ -248,14 +271,14 @@ Be:Wise! `research.ncl.ac.uk/bewise`
 
 # References
 
-* Jaya's paper
-* OO's paper
-* OO's shearing paper
+## Papers
 
-* NUFEB web link
+* Pahala Gedara, J. *et al.* (2017) A mechanistic individual-based model of microbial communities, *PLoS ONE*, **12**(8):e0181965.
+* Oyebamiji, O. *et al.* (2017) Gaussian process emulation of an individual-based model simulation of microbial communities, *Journal of Computational Science*, **22**: 69-84.
+* Oyebamiji, O. *et al.* (2017) A surrogate-based approach to modelling the impact of hydrodynamic shear stress on biofilm deformation, in submission.
 
+## Web
 
-
-
-
+* http://research.ncl.ac.uk/nufeb
+* http://tinyurl.com/darrenjw
 

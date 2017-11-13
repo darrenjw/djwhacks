@@ -135,10 +135,32 @@ $$\frac{\partial S}{\partial t} + \vec{U}\cdot\nabla S = \nabla\cdot(D_e\nabla S
 
 ![Shear flow deformation, streamers, detachment](figs/jaya-026.png){height=60%}
 
+# NUFEB IB Models
+
+## NUFEB 1
+
+* The NUFEB 1 model is free open source software on GitHub, built on top of LAMMPS: https://github.com/nufeb/NUFEB
+
+## NUFEB 2
+
+* The NUFEB 2 model is in use internally, and will be released on publication
+* Microbes and nutrients: many microbial species, gas and liquid nutrients
+* Biological features: Monod-based growth, energy-based growth, cell division, EPS production, cell death
+* Chemical features: pH, gas-liquid transfer, thermodynamics
+* Physical features: nutrient mass balance (diffusion), EPS adhesion, shear force, contact force, viscous force
+
+# Scaling up
+
+* The model can run up to order $10^6$ bacteria
+* Typically run for cubic volumes with side 200um (though particle numbers are the main limiting factor)
+* Current collaboration with Oak Ridge National Laboratory (ORNL, www.ornl.gov) on parallelisation of the code to run effectively on the ORNL supercomputer (and also some wet lab work for model validation)
+* Regardless, unlikely to scale to more than $10^8$ or $10^9$ bacteria in practice
+* Still a long way off the $10^{18}$ bacteria in a typical full-scale WTP...
+
 # Statistical emulation of complex computer models
 
 * The micro-scale model is very computationally intensive --- approx 1 CPU day to simulate 5 real days
-* There now exists a large literature on the use of statistical model *emulators* in the design and anlysis of computer experiments
+* There now exists a large literature on the use of statistical model *emulators* in the design and analysis of computer experiments
 * Emulators essentially provide a fast approximate surrogate for the true model, with properly quantified uncertainty, but have a number of different possible uses, including:
 1. History matching (finding inputs which give output consistent with data)
 2. Calibration (finding parameter settings most consistent with data)
@@ -232,17 +254,34 @@ where $\mathbf{y}_t$ is a state vector and $\mathbf{x}_t$ represents the model i
 
 # Emulation results
 
+![Emulation for flocs](figs/olu-009.png){height=60%}
+
+# Emulation results
+
+![Emulation for biofilm](figs/olu-011.png){height=60%}
+
 # Emulation strategy
 
 ![Emulation for upscaling](figs/olu-008.png){height=60%}
 
 # Mesoscale modelling
 
+* Not quite ready to model a full-scale WTP or even our pilot plant
+* Want to start with modelling experiments with bench-scale experiments within the pilot plant facility (with real wastewater)
+* Replicate flow cells consisting of channels approx 2cm wide and 40cm long
+* Waste water pulsed through them as slowly as practical for 2 weeks
+* Monitor biofilm formation and composition and wastewater composition over time
+* Develop a continuum computational model of this experiment
+
 # Emulation as an upscaling strategy
-n
 
-
-
+* Discretise continuum model in 2d, covering bottom of flow cell (eg. squares with side 200um)
+* Model flow velocity, $\mathbf{u}(\mathbf{x},t)$, water height $H(\mathbf{x},t)$, biofilm height, $h(\mathbf{x},t)$ and composition $\boldsymbol{\theta}(\mathbf{x},t)$, nutrient concentrations, $\boldsymbol{\phi}(\mathbf{x},t)$, etc.
+* In order to implement this model, many rates of change and numerical derivatives are required
+* eg. the rate of growth of the biofilm given its current composition and (nutrient) environment
+* These rates can be provided by an emulator trained on runs from the individual-based model
+* Embedding fast approximate/stochastic emulators into the continuum model provides a natural bridge from the fine-scale information provided by the IB model to the next scale up
+* Work in progress...
 
 # Acknowledgements 1: Funders and collaborators
 
@@ -254,9 +293,15 @@ n
 .
 
 ![Newcastle University](figs/Newcastle_Master_Col){height=10%}
- . . . 
-![NWL](figs/NWL){height=10%}
+ . . . . . . 
+![ORNL](figs/ornl){height=10%} 
 
+.
+
+.
+
+![NWL](figs/NWL){height=10%} . . . . . . .
+![MM](figs/mm){height=10%}
 
 # Acknowledgements 2: Newcastle People
 

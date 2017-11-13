@@ -239,19 +239,24 @@ where $\mathbf{y}_t$ is a state vector and $\mathbf{x}_t$ represents the model i
 # Mesoscale modelling
 
 # Emulation as an upscaling strategy
-
+n
 
 
 
 
 # Acknowledgements 1: Funders and collaborators
-EPSRC, NWL, Mott?
 
-NU!
+![NUFEB](figs/NUFEB){height=20%}
+![EPSRC](figs/epsrc){height=30%}
 
-Be:Wise! `research.ncl.ac.uk/bewise`
+.
 
-**Logos!**
+.
+
+![Newcastle University](figs/Newcastle_Master_Col){height=10%}
+ . . . 
+![NWL](figs/NWL){height=10%}
+
 
 # Acknowledgements 2: Newcastle People
 

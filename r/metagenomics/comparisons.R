@@ -1,5 +1,8 @@
 ## comparisons.R
 
+message("Starting comparisons.R")
+system("date")
+
 ## Load required BIOCONDUCTOR libraries
 library(phyloseq)
 library(DESeq2)
@@ -35,13 +38,25 @@ sdtab = data.frame(Run=sample_names(kpps),
 sdps = sample_data(sdtab)
 pseq = phyloseq(kpps,sdps)
 dedat = phyloseq_to_deseq2(pseq,~Run)
+
+message("Calling DESeq")
+system("date")
+
 defit = DESeq(dedat, test="Wald", fitType="parametric")
+
+message("DESeq call returned")
+system("date")
+
 fchm <- function(base,all=sample_names(kpps)){
+    message(paste("fchm",base))
+    system("date")
     comp = all[all != base]
     mat = sapply(comp,
                  function(x){
+                     message(paste(x,""),appendLF=FALSE)
                      results(defit,c("Run",base,x),cooksCutoff=FALSE)$log2FoldChange
                  })
+    message("")
     rownames(mat) = rownames(kpps)
     mat = cbind(rep(1,dim(mat)[1]),mat)
     colnames(mat)[1] = base
@@ -52,7 +67,15 @@ fchm <- function(base,all=sample_names(kpps)){
                                        "charts","fold-change.svg"))
     invisible(mat)
 }
+
+message("Doing fold change heatmaps")
+system("date")
+
+message(paste(length(sample_names(kpps)),"samples"))
 lapply(sample_names(kpps),fchm)
+
+message("Finished comparisons.R")
+system("date")
 
 
 ## eof

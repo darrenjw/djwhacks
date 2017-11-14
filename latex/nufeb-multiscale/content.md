@@ -8,7 +8,7 @@
 * Statistical emulation of the microscale model
 * Mesoscale modelling and emulation as an upscaling strategy
 
-## The NUFEB project ##
+# The NUFEB project
 
 * NUFEB: *Newcastle University Frontiers in Engineering Biology*
 * `research.ncl.ac.uk/nufeb/`

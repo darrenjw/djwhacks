@@ -8,7 +8,7 @@
 * Statistical emulation of the microscale model
 * Mesoscale modelling and emulation as an upscaling strategy
 
-# The NUFEB project
+## The NUFEB project ##
 
 * NUFEB: *Newcastle University Frontiers in Engineering Biology*
 * `research.ncl.ac.uk/nufeb/`
@@ -29,8 +29,8 @@
 * Wastewater treatment plants (WTPs) are an ideal example of a multi-scale open engineered biological system
 * There are roughly $10^{18}$ individual bacteria in a typical plant
 * Macro-scale characteristics of WTPs are the consequence of micro-scale features of a vast number of individual bacteria acting together in complex ecological communities
-* The properties of cells at the micro-scale level dictate the behaviour of a WTP at the macro scale
-* Need to model and understand the interaction of microbes at a fine scale to accurately capture micro-scale responses
+* The properties of cells at the microscale level dictate the behaviour of a WTP at the macroscale
+* Need to model and understand the interaction of microbes at a fine scale to accurately capture macroscale responses
 * Need to transfer this fine-scale information to the engineered macroscale process in a computationally efficient way
 
 # Two different water treatment technologies
@@ -69,6 +69,7 @@ We also have a pilot plant facility for experiments at the macro-scale
 
 * Pilot plant facility for model validation and testing
 * The largest wastewater treatment research facility in Europe, developing innovations for sustainable wastewater treatment
+* Located at a WTP run by Northumbrian Water
 * Funded by a £1.2 million grant from the EPSRC, and with funding from Newcastle University and Northumbrian Water, BE:WISE is an international centre of research excellence and demonstration for wastewater management technology
 * The BE:WISE facility is made available to academic researchers worldwide.
 * `research.ncl.ac.uk/bewise`
@@ -266,7 +267,7 @@ where $\mathbf{y}_t$ is a state vector and $\mathbf{x}_t$ represents the model i
 
 # Mesoscale modelling
 
-* Not quite ready to model a full-scale WTP or even our pilot plant
+* Not quite ready to model a full-scale WTP or even our pilot plant --- how big do we need to go before we can simply "multiply up" a representative volume?
 * Want to start with modelling experiments with bench-scale experiments within the pilot plant facility (with real wastewater)
 * Replicate flow cells consisting of channels approx 2cm wide and 40cm long
 * Waste water pulsed through them as slowly as practical for 2 weeks
@@ -282,6 +283,25 @@ where $\mathbf{y}_t$ is a state vector and $\mathbf{x}_t$ represents the model i
 * These rates can be provided by an emulator trained on runs from the individual-based model
 * Embedding fast approximate/stochastic emulators into the continuum model provides a natural bridge from the fine-scale information provided by the IB model to the next scale up
 * Work in progress...
+
+# Summary and conclusions
+
+## Exemplar application
+
+* We have a very good IB model of bacterial communities in fluid and biofilm allowing detailed study of fine-scale properties and characteristics
+* We have successfully developed accurate and well-calibrated statistical emulators of the fine-scale model
+* We can use the emulator for model validation and calibration against small-scale experimental data
+* We are developing continuum models for understanding system behaviour at larger spatial and temporal scales
+* Fine-scale characteristics determine macro-scale behaviour by using emulators to couple scales in a computationally efficient way
+
+# Summary and conclusions
+
+## General
+
+* Spatially explicit IB models are an invaluable tool for understanding the stochasticity and heterogeneity of complex biological system behaviour
+* Developing realistic models of open biological systems in active fluid environments is challenging but possible
+* Statistical emulators have many applications in the design and analysis of complex computer experiments
+* Emulators are a promising tools for coupling scales in multi-scale modelling problems
 
 # Acknowledgements 1: Funders and collaborators
 

@@ -13,6 +13,11 @@ plot(df$Day,df$Virus,type="l",col=2,ylim=c(10,4.0e09),main="Virus")
 plot(df$Day,df$AOB,type="l",col=3,ylim=c(10,8.0e07),main="AOB")
 par(op)
 
+## read in the MCMC output
+out = read.csv("LvPmmh.csv")
+library(smfsb)
+mcmcSummary(out[,1:6])
+
 
 
 ## eof

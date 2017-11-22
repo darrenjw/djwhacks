@@ -16,7 +16,8 @@ par(op)
 ## read in the MCMC output
 out = read.csv("LvPmmh.csv")
 library(smfsb)
-mcmcSummary(out[,1:6])
+mcmcSummary(out[,1:8])
+mcmcSummary(log(out[,1:8]))
 
 
 

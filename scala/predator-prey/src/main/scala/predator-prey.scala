@@ -97,8 +97,8 @@ object PredatorPrey {
       p.m*exp(Gaussian(0.0,tune).draw),
       p.vx*exp(Gaussian(0.0,tune).draw),
       p.vv*exp(Gaussian(0.0,tune).draw),
-      p.nvx,//*exp(Gaussian(0.0,tune).draw),
-      p.nvv//*exp(Gaussian(0.0,tune).draw)
+      p.nvx*exp(Gaussian(0.0,tune).draw),
+      p.nvv*exp(Gaussian(0.0,tune).draw)
     )
     val pll = mll(prop)
     val logA = pll - ll

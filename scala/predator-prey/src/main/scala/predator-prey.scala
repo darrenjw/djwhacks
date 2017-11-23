@@ -137,13 +137,25 @@ object PredatorPrey {
     }
   }
 
+  def mllVar(mll: LvParam => LogLik,n: Int, p: LvParam): Double = {
+    println(s"Testing mll variance with $n evaluations")
+    val x = DenseVector.fill(n)(mll(p))
+    import breeze.stats._
+    val tup = meanAndVariance(x)
+    val m = tup.mean
+    val v = tup.variance
+    println(s"Mean is $m")
+    println(s"Variance is $v")
+    v
+  }
+
   import montescala.BPFilter._
 
   def main(args: Array[String]): Unit = {
     println("LV PMMH")
     if (args.length != 4) {
       println("From SBT: run <its> <parts> <thin> <tune>")
-      println("eg. run 10000 1000 10 0.1")
+      println("eg. run 10000 2000 10 0.1")
     } else {
       val its = args(0).toInt // Number of MCMC iterations (AFTER thinning)
       val N = args(1).toInt // Number of particles for BPFilter
@@ -152,7 +164,7 @@ object PredatorPrey {
       val dt = 0.1 //  for Euler Maruyama
       val timeStep = 1.0 // inter-observation time
       //val p0 = LvParam(1.0,1.0e-10,1.0e-5,1.0,100.0,1000.0,1000000000.0,10000000000.0)
-      val p0 = LvParam(7.80694833417206E-6,3.897012617233552E-6,1.0480467947369056E-6,7.805615962181213E-6,98.11664993234797,1072.4828203147456,1.3363877677407935E9,1.5410451175700403E11)
+      val p0 = LvParam(2.7469308811785737E-18,1.718976050048558E-7,3.925654816893526E-7,4.6106978575414945E-9,0.23194120259335774,1.493782273169831E8,2.6201296710794494E14,1.323939710580486E15)
       println(s"its: $its, N: $N, thin: $thin, tune: $tune")
       val raw = readData()
       //plotData(raw)
@@ -165,6 +177,7 @@ object PredatorPrey {
       (zc: ParVector[(Double, LvState)], srw: Double, l: Int) =>
       resampleSys(zc,srw,l),
         data)
+      //mllVar(mll,100,p0)
       import Thinnable.ops._
       val pmmh = Stream.iterate((p0,Double.MinValue))(nextIter(mll,tune))
       println("Running PMMH MCMC now...")

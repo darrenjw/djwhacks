@@ -71,7 +71,7 @@ object PredatorPrey {
       Gaussian(0.0,math.sqrt(p.vx*s.x*dt)).draw
       val newV = s.v + (p.delta*s.x*s.v - p.m*s.v)*dt +
       Gaussian(0.0,math.sqrt(p.vv*s.v*dt)).draw
-      stepLV(dt)(p)(LvState(math.max(0.0,newX),math.max(0.0,newV)),deltat-dt)
+      stepLV(dt)(p)(LvState(math.max(1000.0,newX),math.max(1000.0,newV)),deltat-dt)
     }
   }
 

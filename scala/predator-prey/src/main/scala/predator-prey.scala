@@ -151,8 +151,9 @@ object PredatorPrey {
       val tune = args(3).toDouble // M-H tuning parameter
       val dt = 0.1 //  for Euler Maruyama
       val timeStep = 1.0 // inter-observation time
-      val p0 = LvParam(1.0e-5,1.0e-5,1.0e-5,1.0e-5,100.0,1000.0,1000000000.0,10000000000.0)
-      println(s"its: $its, N: $N, tune: $tune, thin: $thin")
+      //val p0 = LvParam(1.0e-5,1.0e-5,1.0e-5,1.0e-5,100.0,1000.0,1000000000.0,10000000000.0)
+      val p0 = LvParam(7.80694833417206E-6,3.897012617233552E-6,1.0480467947369056E-6,7.805615962181213E-6,98.11664993234797,1072.4828203147456,1.3363877677407935E9,1.5410451175700403E11)
+      println(s"its: $its, N: $N, thin: $thin, tune: $tune")
       val raw = readData()
       //plotData(raw)
       //plotTs(s0,100)(stepLV(dt)(p0)(_,timeStep))

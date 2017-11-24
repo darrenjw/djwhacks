@@ -14,12 +14,13 @@ plot(df$Day,df$AOB,type="l",col=3,ylim=c(10,8.0e07),main="AOB")
 par(op)
 
 ## read in the MCMC output
-#out = read.csv("LvPmmh.csv")
-out = read.csv("LvPmmh-100k.csv.gz")
+out = read.csv("LvPmmh.csv")
+#out = read.csv("LvPmmh-t10.csv.gz")
 library(smfsb)
-mcmcSummary(out[,c(1:6,9)])
+mcmcSummary(out[,c(1:4,9)])
 mcmcSummary(log(out[,1:8]))
-
+accepts = length(unique(out[,9]))
+message("Acceptance rate: ",accepts/length(out[,9]))
 
 
 ## eof

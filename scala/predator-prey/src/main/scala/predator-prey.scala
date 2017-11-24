@@ -155,7 +155,7 @@ object PredatorPrey {
     println("LV PMMH")
     if (args.length != 4) {
       println("From SBT: run <its> <parts> <thin> <tune>")
-      println("eg. run 10000 2000 10 0.1")
+      println("eg. run 10000 2000 10 0.2")
     } else {
       val its = args(0).toInt // Number of MCMC iterations (AFTER thinning)
       val N = args(1).toInt // Number of particles for BPFilter
@@ -164,7 +164,7 @@ object PredatorPrey {
       val dt = 0.1 //  for Euler Maruyama
       val timeStep = 1.0 // inter-observation time
       //val p0 = LvParam(1.0,1.0e-10,1.0e-5,1.0,100.0,1000.0,1000000000.0,10000000000.0)
-      val p0 = LvParam(2.7469308811785737E-18,1.718976050048558E-7,3.925654816893526E-7,4.6106978575414945E-9,0.23194120259335774,1.493782273169831E8,2.6201296710794494E14,1.323939710580486E15)
+      val p0 = LvParam(1.1759901045861118E-13,2.648856704875679E-16,5.300859372778663E-9,5.403097752142039E-15,3.541423926650488E-5,9.888975290213405E7,2.589286544012544E14,6.210777797309068E15)
       println(s"its: $its, N: $N, thin: $thin, tune: $tune")
       val raw = readData()
       //plotData(raw)

@@ -110,6 +110,12 @@ object PredatorPrey {
     Gaussian(s.v,math.sqrt(p.nvv)).logPdf(o.v)
   }
 
+  val minParam = 1.0e-15
+
+  def isValid(p: LvParam): Boolean = (
+    (p.mu > minParam) && (p.phi > minParam) && (p.delta > minParam) && (p.m > minParam) && (p.vx > minParam) && (p.vv > minParam) && (p.nvx > minParam) && (p.nvv > minParam)
+  )
+
   import math.exp
   import breeze.stats.distributions.Uniform
   def nextIter(mll: LvParam => LogLik,tune: Double)(tup: (LvParam, LogLik)): (LvParam, LogLik) = {
@@ -127,7 +133,7 @@ object PredatorPrey {
     val pll = mll(prop)
     val logA = pll - ll
     //println(pll,ll,logA)
-    if (math.log(Uniform(0.0,1.0).draw) < logA) {
+    if (isValid(prop) && (math.log(Uniform(0.0,1.0).draw) < logA)) {
       //println("Accept")
       (prop, pll)
     }
@@ -164,7 +170,7 @@ object PredatorPrey {
       val dt = 0.1 //  for Euler Maruyama
       val timeStep = 1.0 // inter-observation time
       //val p0 = LvParam(1.0,1.0e-10,1.0e-5,1.0,100.0,1000.0,1000000000.0,10000000000.0)
-      val p0 = LvParam(1.1759901045861118E-13,2.648856704875679E-16,5.300859372778663E-9,5.403097752142039E-15,3.541423926650488E-5,9.888975290213405E7,2.589286544012544E14,6.210777797309068E15)
+      val p0 = LvParam(1.1759901045861118E-13,1.0E-14,5.300859372778663E-9,1.0E-14,3.541423926650488E-5,9.888975290213405E7,2.589286544012544E14,6.210777797309068E15)
       println(s"its: $its, N: $N, thin: $thin, tune: $tune")
       val raw = readData()
       //plotData(raw)

@@ -174,7 +174,7 @@ object PredatorPrey {
       println(s"its: $its, N: $N, thin: $thin, tune: $tune")
       val raw = readData()
       //plotData(raw)
-      plotTs(s0,100)(stepLV(dt)(p0)(_,timeStep))
+      //plotTs(s0,100)(stepLV(dt)(p0)(_,timeStep))
       val data = (0 until raw.rows) map (r => LvObs(raw(r,3),raw(r,2)))
       val mll = pfMll(
       simPrior(N),

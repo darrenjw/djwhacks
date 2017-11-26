@@ -170,11 +170,11 @@ object PredatorPrey {
       val dt = 0.1 //  for Euler Maruyama
       val timeStep = 1.0 // inter-observation time
       //val p0 = LvParam(1.0,1.0e-10,1.0e-5,1.0,100.0,1000.0,1000000000.0,10000000000.0)
-      val p0 = LvParam(1.1759901045861118E-13,1.0E-14,5.300859372778663E-9,1.0E-14,3.541423926650488E-5,9.888975290213405E7,2.589286544012544E14,6.210777797309068E15)
+      val p0 = LvParam(2.664662007004367E-11,1.0407442929184285E-12,1.0216394661768682E-10,5.8971462269015E-13,5787334.243841605,3.2687200652293317E7,3.373932185750761E12,8.6864383170127936E16)
       println(s"its: $its, N: $N, thin: $thin, tune: $tune")
       val raw = readData()
       //plotData(raw)
-      //plotTs(s0,100)(stepLV(dt)(p0)(_,timeStep))
+      plotTs(s0,100)(stepLV(dt)(p0)(_,timeStep))
       val data = (0 until raw.rows) map (r => LvObs(raw(r,3),raw(r,2)))
       val mll = pfMll(
       simPrior(N),

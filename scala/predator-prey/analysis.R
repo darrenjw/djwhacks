@@ -15,7 +15,7 @@ par(op)
 
 ## read in the MCMC output
 out = read.csv("LvPmmh.csv")
-#out = read.csv("LvPmmh-t10.csv.gz")
+#out = read.csv("LvPmmh-t15.csv.gz")
 library(smfsb)
 mcmcSummary(out[,c(1:4,9)])
 mcmcSummary(log(out[,1:8]))

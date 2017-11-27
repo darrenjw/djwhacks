@@ -11,6 +11,7 @@ object PredatorPrey {
   import montescala.TypeClasses._
   import scala.collection.parallel.immutable.ParVector
   import scala.collection.immutable.{Vector => IVec}
+  import math.{exp,log}
 
   type DMD = DenseMatrix[Double]
   type DVD = DenseVector[Double]
@@ -100,8 +101,8 @@ object PredatorPrey {
 
   def simPrior(n: Int)(p: LvParam): ParVector[LvState] = {
     IVec.fill(n)(LvState(
-      Gaussian(s0.x,100000.0).draw,
-      Gaussian(s0.v,10000000.0).draw
+      math.max(1.0,Gaussian(s0.x,100000.0).draw),
+      math.max(1.0,Gaussian(s0.v,100000000.0).draw)
     )).par
   }
 
@@ -112,15 +113,17 @@ object PredatorPrey {
 
   val minParam = 1.0e-15
 
-  def isValid(p: LvParam): Boolean = (
+  def isValidP(p: LvParam): Boolean = (
     (p.mu > minParam) && (p.phi > minParam) && (p.delta > minParam) && (p.m > minParam) && (p.vx > minParam) && (p.vv > minParam) && (p.nvx > minParam) && (p.nvv > minParam)
   )
 
-  import math.exp
-  import breeze.stats.distributions.Uniform
-  def nextIter(mll: LvParam => LogLik,tune: Double)(tup: (LvParam, LogLik)): (LvParam, LogLik) = {
-    val (p, ll) = tup
-    val prop = LvParam(
+  def isValid(p: LvParam): Boolean = (
+    (p.vx > minParam) && (p.vv > minParam) && (p.nvx > minParam) && (p.nvv > minParam)
+  )
+
+  // all parameters constrained to be positive
+  def genPropP(p: LvParam,tune: Double): LvParam = 
+    LvParam(
       p.mu*exp(Gaussian(0.0,tune).draw),
       p.phi*exp(Gaussian(0.0,tune).draw),
       p.delta*exp(Gaussian(0.0,tune).draw),
@@ -130,17 +133,28 @@ object PredatorPrey {
       p.nvx*exp(Gaussian(0.0,tune).draw),
       p.nvv*exp(Gaussian(0.0,tune).draw)
     )
+
+  // all parameters constrained to be positive
+  def genProp(p: LvParam,tune: Double): LvParam = 
+    LvParam(
+      p.mu+Gaussian(0.0,tune).draw,
+      p.phi+Gaussian(0.0,tune).draw,
+      p.delta+Gaussian(0.0,tune).draw,
+      p.m+Gaussian(0.0,tune).draw,
+      p.vx*exp(Gaussian(0.0,0.1).draw),
+      p.vv*exp(Gaussian(0.0,0.1).draw),
+      p.nvx*exp(Gaussian(0.0,0.1).draw),
+      p.nvv*exp(Gaussian(0.0,0.1).draw)
+    )
+
+  import breeze.stats.distributions.Uniform
+  def nextIter(mll: LvParam => LogLik,tune: Double)(tup: (LvParam, LogLik)): (LvParam, LogLik) = {
+    val (p, ll) = tup
+    val prop = genProp(p,tune)
     val pll = mll(prop)
     val logA = pll - ll
-    //println(pll,ll,logA)
-    if (isValid(prop) && (math.log(Uniform(0.0,1.0).draw) < logA)) {
-      //println("Accept")
-      (prop, pll)
-    }
-    else {
-      //println("Reject")
-      tup
-    }
+    if (isValid(prop) && (log(Uniform(0.0,1.0).draw) < logA))
+      (prop, pll) else tup
   }
 
   def mllVar(mll: LvParam => LogLik,n: Int, p: LvParam): Double = {
@@ -170,11 +184,12 @@ object PredatorPrey {
       val dt = 0.1 //  for Euler Maruyama
       val timeStep = 1.0 // inter-observation time
       //val p0 = LvParam(1.0,1.0e-10,1.0e-5,1.0,100.0,1000.0,1000000000.0,10000000000.0)
-      val p0 = LvParam(2.664662007004367E-11,1.0407442929184285E-12,1.0216394661768682E-10,5.8971462269015E-13,5787334.243841605,3.2687200652293317E7,3.373932185750761E12,8.6864383170127936E16)
+      //val p0 = LvParam(2.664662007004367E-11,1.0407442929184285E-12,1.0216394661768682E-10,5.8971462269015E-13,5787334.243841605,3.2687200652293317E7,3.373932185750761E12,8.6864383170127936E16)
+      val p0 = LvParam(7.276942592064431E-11,2.8037248823457517E-12,3.023401013096419E-14,3.3045320532467586E-9,6737221.730463532,5.4780112186472796E7,1.8361470791833276E11,5.1738807080971672E16)
       println(s"its: $its, N: $N, thin: $thin, tune: $tune")
       val raw = readData()
       //plotData(raw)
-      plotTs(s0,100)(stepLV(dt)(p0)(_,timeStep))
+      //plotTs(s0,100)(stepLV(dt)(p0)(_,timeStep))
       val data = (0 until raw.rows) map (r => LvObs(raw(r,3),raw(r,2)))
       val mll = pfMll(
       simPrior(N),

@@ -13,12 +13,14 @@ plot(df$Day,df$Virus,type="l",col=2,ylim=c(10,4.0e09),main="Virus")
 plot(df$Day,df$AOB,type="l",col=3,ylim=c(10,8.0e07),main="AOB")
 par(op)
 
+summary(df)
+
 ## read in the MCMC output
-#out = read.csv("LvPmmh.csv")
-out = read.csv("LvPmmh-t30.csv.gz")
+out = read.csv("LvPmmh.csv")
+#out = read.csv("LvPmmh-t30.csv.gz")
 library(smfsb)
 mcmcSummary(out[,c(1:4,9)])
-mcmcSummary(log(out[,1:8]))
+mcmcSummary(log(out[,6:8]))
 accepts = length(unique(out[,9]))
 message("Acceptance rate: ",accepts/length(out[,9]))
 

@@ -8,6 +8,7 @@ object PredatorPrey {
   import java.io.{File,PrintWriter}
   import breeze.linalg._
   import breeze.plot._
+  import breeze.stats.distributions.{Gaussian, Uniform}
   import montescala.TypeClasses._
   import scala.collection.parallel.immutable.ParVector
   import scala.collection.immutable.{Vector => IVec}
@@ -60,7 +61,6 @@ object PredatorPrey {
   case class LvObs(x: Double, v: Double)
   implicit val lvObs = new Observation[LvObs] {}
 
-  import breeze.stats.distributions.Gaussian
   @annotation.tailrec
   def stepLV(dt: Double)(
     p: LvParam
@@ -113,10 +113,12 @@ object PredatorPrey {
 
   val minParam = 1.0e-15
 
+  // all parameters constrained to be positive
   def isValidP(p: LvParam): Boolean = (
     (p.mu > minParam) && (p.phi > minParam) && (p.delta > minParam) && (p.m > minParam) && (p.vx > minParam) && (p.vv > minParam) && (p.nvx > minParam) && (p.nvv > minParam)
   )
 
+  // noise parameters (only) constrained to be positive
   def isValid(p: LvParam): Boolean = (
     (p.vx > minParam) && (p.vv > minParam) && (p.nvx > minParam) && (p.nvv > minParam)
   )
@@ -134,7 +136,7 @@ object PredatorPrey {
       p.nvv*exp(Gaussian(0.0,tune).draw)
     )
 
-  // all parameters constrained to be positive
+  // noise parameters (only) constrained to be positive
   def genProp(p: LvParam,tune: Double): LvParam = 
     LvParam(
       p.mu+Gaussian(0.0,tune).draw,
@@ -147,7 +149,6 @@ object PredatorPrey {
       p.nvv*exp(Gaussian(0.0,0.1).draw)
     )
 
-  import breeze.stats.distributions.Uniform
   def nextIter(mll: LvParam => LogLik,tune: Double)(tup: (LvParam, LogLik)): (LvParam, LogLik) = {
     val (p, ll) = tup
     val prop = genProp(p,tune)
@@ -204,10 +205,10 @@ object PredatorPrey {
       println("Running PMMH MCMC now...")
       val s = new PrintWriter(new File("LvPmmh.csv"))
       s.write("mu,phi,delta,m,vx,vv,nvx,nvv,ll\n")
-      pmmh.thin(thin).take(its).foreach{tup => {
+      pmmh.thin(thin).take(its).foreach(tup => {
         print(".")
         s.write(tup._1.toCsv+","+tup._2+"\n")
-      }}
+      })
       println("\nMCMC Done.")
       s.close
       println("Bye...")

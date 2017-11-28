@@ -140,7 +140,7 @@ object PredatorPrey {
       p.mu+Gaussian(0.0,tune).draw,
       p.phi+Gaussian(0.0,tune).draw,
       p.delta+Gaussian(0.0,tune).draw,
-      p.m+Gaussian(0.0,tune).draw,
+      p.m+Gaussian(0.0,4.0*tune).draw, // boost variance of m proposal
       p.vx*exp(Gaussian(0.0,0.1).draw),
       p.vv*exp(Gaussian(0.0,0.1).draw),
       p.nvx*exp(Gaussian(0.0,0.1).draw),
@@ -185,7 +185,7 @@ object PredatorPrey {
       val timeStep = 1.0 // inter-observation time
       //val p0 = LvParam(1.0,1.0e-10,1.0e-5,1.0,100.0,1000.0,1000000000.0,10000000000.0)
       //val p0 = LvParam(2.664662007004367E-11,1.0407442929184285E-12,1.0216394661768682E-10,5.8971462269015E-13,5787334.243841605,3.2687200652293317E7,3.373932185750761E12,8.6864383170127936E16)
-      val p0 = LvParam(7.276942592064431E-11,2.8037248823457517E-12,3.023401013096419E-14,3.3045320532467586E-9,6737221.730463532,5.4780112186472796E7,1.8361470791833276E11,5.1738807080971672E16)
+      val p0 = LvParam(3.718792068332797E-12,1.430788978108719E-11,-1.3306417869347798E-10,5.560371094820542E-9,7320141.707961543,5.978856231765036E7,1.2828110376132417E12,3.2545757491941356E16)
       println(s"its: $its, N: $N, thin: $thin, tune: $tune")
       val raw = readData()
       //plotData(raw)

@@ -19,6 +19,9 @@ setwd("version_3.0")
 kptab = read.table("project-summary/phylum_taxonomy_abundances_v3.0.tsv",as.is=TRUE,header=TRUE)
 rownames(kptab) = paste(kptab[,1],kptab[,2],sep=";")
 kptab = kptab[,-(1:2)]
+numRuns = dim(kptab[2])
+
+if (numRuns > 1) {
 
 ## PCA
 colsums = apply(kptab,2,sum)
@@ -26,9 +29,11 @@ normtab = sweep(kptab,2,colsums,"/")
 pca = prcomp(t(normtab))
 svg("project-summary/pca.svg")
 plot(pca$x[,1],pca$x[,2],pch=19,col="red",xlab="PCA1",ylab="PCA2",
-     main="PCA for runs (based on phylum proportions)")
+     main=paste(currentdir," PCA for runs (based on phylum proportions)",sep=":"))
 text(pca$x[,1],pca$x[,2],rownames(pca$x),pos=3,cex=0.6)
 dev.off()
+
+if (numRuns < 8) {
 
 ## Phyloseq analysis for differential expression...
 kpps = otu_table(kptab,taxa_are_rows=TRUE)
@@ -42,7 +47,7 @@ dedat = phyloseq_to_deseq2(pseq,~Run)
 message("Calling DESeq")
 system("date")
 
-defit = DESeq(dedat, test="Wald", fitType="parametric")
+defit = DESeq(dedat, test="Wald", fitType="parametric", parallel=TRUE)
 
 message("DESeq call returned")
 system("date")
@@ -73,6 +78,10 @@ system("date")
 
 message(paste(length(sample_names(kpps)),"samples"))
 lapply(sample_names(kpps),fchm)
+
+}
+
+}
 
 message("Finished comparisons.R")
 system("date")

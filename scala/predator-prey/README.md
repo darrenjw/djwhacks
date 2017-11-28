@@ -11,7 +11,9 @@ sbt "run 10000 10000 5 1.0e-11"
 Analyse the results with:
 
 ```bash
-Rscript analysis.R
+Rscript analysis.R LvPmmh.csv
 ```
+
+Note that passing the name of a gzipped MCMC file is fine.
 
 #### eof

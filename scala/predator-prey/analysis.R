@@ -1,5 +1,12 @@
 ## analysis.R
-## R code for looking at the data, etc.
+## R code for looking at the data, analysing MCMC results, etc.
+
+args=commandArgs(trailingOnly=TRUE)
+if (length(args)!=1)
+    stop("Requires exactly one argument to run")
+fileName=args[1]
+if (!file.exists(fileName))
+    stop(paste("File: ",fileName,"does not exist"))
 
 df=read.csv("raw-data.csv")
 
@@ -16,8 +23,7 @@ par(op)
 summary(df)
 
 ## read in the MCMC output
-out = read.csv("LvPmmh.csv")
-#out = read.csv("LvPmmh-ut5.csv.gz")
+out = read.csv(fileName)
 library(smfsb)
 mcmcSummary(out[,c(1:4,9)])
 mcmcSummary(log(out[,6:8]))

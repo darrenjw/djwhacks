@@ -2,7 +2,7 @@
 
 ## Small app to do PMMH for a noisy predator prey model
 
-10k iters with 1k particles a thin of 20 and a tuning param of 0.1:
+10k iters with 10k particles a thin of 5 and a tuning param of 10^(-11):
 
 ```bash
 sbt "run 10000 10000 5 1.0e-11"

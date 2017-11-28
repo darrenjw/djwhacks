@@ -26,7 +26,7 @@ summary(df)
 out = read.csv(fileName)
 library(smfsb)
 mcmcSummary(out[,c(1:4,9)])
-mcmcSummary(log(out[,6:8]))
+mcmcSummary(log(out[,5:8]))
 accepts = length(unique(out[,9]))
 message("Acceptance rate: ",accepts/length(out[,9]))
 

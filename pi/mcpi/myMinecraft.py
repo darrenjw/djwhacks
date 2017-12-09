@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import minecraft
-import block
+from mcpi import minecraft
+from mcpi import block
 import math
 
 mc=minecraft.Minecraft.create()

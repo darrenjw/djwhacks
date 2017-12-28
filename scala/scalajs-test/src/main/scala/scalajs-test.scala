@@ -50,6 +50,7 @@ object ScalaJsTest {
     def run = {
       val sq = sqrs.head
       sqrs = sqrs.tail
+      //println("hi")
       clear
       sq map (_.render(ctx))
     }
@@ -60,3 +61,32 @@ object ScalaJsTest {
 
 }
 
+import org.scalajs.dom.raw.HTMLInputElement
+
+@JSExportTopLevel("JsFun")
+object JsFunction {
+
+  @JSExport
+  def factor(form: html.Form): Boolean = {
+    val facfield = form("factorfield").asInstanceOf[HTMLInputElement]
+    val numS = facfield.value
+    val num = numS.toInt
+    val fac = factor(num)
+    if (num == fac)
+      dom.window.alert(s"$numS is prime!")
+    else {
+      val facS = fac.toString
+      val rem = num / fac
+      facfield.value = rem.toString
+      dom.window.alert(s"Smallest factor of $numS is: $facS")
+    }
+    false
+  }
+
+  @annotation.tailrec
+  def factor(n: Int, f: Int = 2): Int =
+    if (n % f == 0) f
+    else if (f >= n) n
+    else factor(n,f+1)
+
+}

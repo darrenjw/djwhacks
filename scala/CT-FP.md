@@ -53,6 +53,8 @@
 * [Recursion schemes](http://blog.sumtypeofway.com/an-introduction-to-recursion-schemes/)
 * [Why Do Monads Matter?](https://cdsmith.wordpress.com/2012/04/18/why-do-monads-matter/)
 * [Comonads as Spaces](http://blog.functorial.com/posts/2016-08-07-Comonads-As-Spaces.html)
+* [Data and codata](https://www.tac-tics.net/blog/data-vs-codata)
+* [Profunctor optics](https://github.com/hablapps/DontFearTheProfunctorOptics)
 * [Awesome Recursion Schemes](https://github.com/passy/awesome-recursion-schemes)
 * [Probability monad](http://jelv.is/talks/probability-monad/)
 * [J Tobin blog](https://jtobin.io/)
@@ -78,6 +80,7 @@
 * [Scala comonad tutorial](http://blog.higher-order.com/blog/2015/06/23/a-scala-comonad-tutorial/)
 * [Monads in the category theory](https://medium.com/@sinisalouc/2f0a6d370eff)
 * [Advanced FP in Scala](https://gist.github.com/jdegoes/97459c0045f373f4eaf126998d8f65dc)
+* [Adjunctions](http://blog.higher-order.com/assets/AdjunctionsSbtBExtended.pdf)
 * [Higher-kinded types: the difference between giving up, and moving forward](http://typelevel.org/blog/2016/08/21/hkts-moving-forward.html)
 * [Beautiful Folds In Scala](https://softwaremill.com/beautiful-folds-in-scala/)
 * Recursion schemes

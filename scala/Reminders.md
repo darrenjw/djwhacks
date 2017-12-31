@@ -39,6 +39,10 @@ Supports TAB completion - useful with "test" and "testOnly"
 
 Put "ensime" plugin line in: ~/.sbt/0.13/plugins/plugins.sbt: addSbtPlugin("org.ensime" % "sbt-ensime" % "1.12.4")
 
+* `java -cp $(cat .cp || sbt 'export runtime:fullClasspath' | tail -n1 | tee .cp) <main-class>
+`
+
+
 ## Ensime
 
 From sbt run "ensimeConfig" to create ensime project file.

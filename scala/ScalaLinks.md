@@ -13,7 +13,10 @@
     * [ScalaTest](http://www.scalatest.org/user_guide)
 	* [ScalaCheck](http://www.scalacheck.org/)
 	  * [Intro to property based testing with ScalaCheck](https://blog.codecentric.de/en/2015/11/introduction-to-property-based-testing-using-scalacheck-2)
+	  * [Random data generation](
+https://speakerdeck.com/danielasfregola/random-data-generation-with-scalacheck-scalar-2017)
     * [ScalaIDE](http://scala-ide.org/) for Eclipse
+    * [ScalaFX](http://www.scalafx.org/)
     * [SBT](http://www.scala-sbt.org/) - the scala build tool ([sbt on wikipedia](http://en.wikipedia.org/wiki/SBT_(software)))
 	  * [sbt: the missing tutorial](https://github.com/shekhargulati/52-technologies-in-2016/blob/master/02-sbt/README.md)
 	  * [Improving workflow with local SBT files](http://www.cakesolutions.net/teamblogs/improving-workflow-with-local-sbt-files)
@@ -27,6 +30,7 @@
         * [documentation](http://typelevel.org/cats/)
         * [herding cats](http://eed3si9n.com/herding-cats/) - tutorials
 	* [dogs](https://github.com/stew/dogs) - functional data structures
+	* [FreeStyle](http://frees.io/)
 	* [FS2](https://github.com/functional-streams-for-scala/fs2) - functional streams in Scala
 	  * [From Scalaz Streams to FS2](https://partialflow.wordpress.com/2016/07/17/from-scalaz-streams-to-fs2/)
 	* [shapeless](https://github.com/milessabin/shapeless) - generic programming extensions to core scala (combinators, hlists, etc.)
@@ -37,6 +41,7 @@
 	  * [Solving problems generically with shapeless](http://www.cakesolutions.net/teamblogs/solving-problems-in-a-generic-way-using-shapeless)
 	  * [Not a tutorial: Part 1](http://kanaka.io/blog/2015/11/09/shapeless-not-a-tutorial-part-1.html)
 	  * [Not a tutorial: Part 2](http://kanaka.io/blog/2015/11/10/shapeless-not-a-tutorial-part-2.html)
+	  * [Type class derivation with Shapeless](http://www.lyh.me/automatic-type-class-derivation-with-shapeless.html)
 * Scientific and statistical
     * [Breeze](https://github.com/scalanlp/breeze/) on github (which supercedes [scalala](https://github.com/scalala/Scalala))
     * [Wisp](http://quantifind.com/blog/2015/01/wisp-is-scala-plotting/) - Scala plotting library (web/js)
@@ -79,6 +84,7 @@
 		  * [A first look at Akka Streams](http://rnduja.github.io/2016/03/25/a_first_look_to_akka_stream/)
 		  * [Replace actors with Streams](https://softwaremill.com/replacing-akka-actors-with-akka-streams/)
 		  * [About akka streams](https://tech.zalando.com/blog/about-akka-streams/)
+		  * [Colin Breck blog](http://blog.colinbreck.com/)
 
 * Web
     * [Lift](http://liftweb.net/) web framework
@@ -119,6 +125,8 @@
     * [Scala by example](http://www.scala-lang.org/docu/files/ScalaByExample.pdf) (PDF)
     * [Design patterns in scala](http://pavelfatin.com/design-patterns-in-scala/)
     * [Old design patterns in scala](http://www.lihaoyi.com/post/OldDesignPatternsinScala.html)
+	* [Uniting Church and State](
+http://underscore.io/blog/posts/2017/06/02/uniting-church-and-state.html)
     * [Implicit Design Patterns in Scala](http://www.lihaoyi.com/post/ImplicitDesignPatternsinScala.html)
     * [Pattern match generic types](http://www.cakesolutions.net/teamblogs/ways-to-pattern-match-generic-types-in-scala)
     * [Getting to know CanBuildFrom](http://blog.bruchez.name/2012/08/getting-to-know-canbuildfrom-without-phd.html)
@@ -127,12 +135,16 @@
     * [Kafka as unix pipes](http://logallthethings.com/2015/09/15/kafka-by-example-kafka-as-unix-pipes/)
     * [The most important Streaming abstraction](https://www.scalawilliam.com/most-important-streaming-abstraction/)
     * [Asynchronous Programming and Scala](https://alexn.org/blog/2017/01/30/asynchronous-programming-scala.html)
+	* [Existential types](http://www.cakesolutions.net/teamblogs/existential-types-in-scala)
+	* [Course on dependent types](https://stepik.org/course/ThCS-Introduction-to-programming-with-dependent-types-in-Scala-2294/)
     * [Scala one-liners](https://gist.github.com/mkaz/d11f8f08719d6d27bab5)
+	* [Stackless function composition](https://mpilquist.github.io/blog/2017/03/11/stackless-function-composition/)
     * [FP for the average Joe - I - Validation](http://www.47deg.com/blog/fp-for-the-average-joe-part-1-scalaz-validation)
         * [II - Monad transformers](http://www.47deg.com/blog/fp-for-the-average-joe-part-2-scalaz-monad-transformers)
         * [III - Free monads](http://www.47deg.com/blog/fp-for-the-average-joe-part3-free-monads)
     * [Continuous Delivery for Scala with TravisCI](http://timperrett.com/2016/10/02/continuous-delivery-for-scala-with-travisci/)
     * [Overcoming type erasure in Scala](https://medium.com/byte-code/overcoming-type-erasure-in-scala-8f2422070d20)
+	* [Scala 99 puzzles](http://aperiodic.net/phil/scala/s-99/)
     * [Best Gitter channels on: Scala](https://medium.freecodecamp.com/best-gitter-channels-on-scala-ee1e209844d5)
 * MOOCs
     * [Functional programming](https://www.coursera.org/course/progfun) Scala course on Coursera
@@ -140,5 +152,6 @@
     * [Principles of reactive programming](https://www.coursera.org/course/reactive) Follow-up Scala course on Coursera 
 * Books
     * [Functional programming in scala](http://www.manning.com/bjarnason/) (non-free p-book, with bundled DRM-free PDF and e-books) - and associated [github repo](https://github.com/fpinscala/fpinscala)
+
 
 

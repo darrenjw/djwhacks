@@ -11,3 +11,5 @@ A few links for Haskell programming...
 * [Haskell for Scala programmers](http://tech.ovoenergy.com/scala/haskell/2016/03/29/Tour-of-haskell-for-scala.html)
 * [Hackage](https://hackage.haskell.org/)
   * [Kalman](https://hackage.haskell.org/package/kalman-1.0.0.2)
+* [Hamiltonian dynamics in Haskell](https://blog.jle.im/entry/hamiltonian-dynamics-in-haskell.html)
+* [Data Haskell](http://www.datahaskell.org/)

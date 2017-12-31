@@ -54,26 +54,35 @@
 * [Why Do Monads Matter?](https://cdsmith.wordpress.com/2012/04/18/why-do-monads-matter/)
 * [Comonads as Spaces](http://blog.functorial.com/posts/2016-08-07-Comonads-As-Spaces.html)
 * [Awesome Recursion Schemes](https://github.com/passy/awesome-recursion-schemes)
+* [Probability monad](http://jelv.is/talks/probability-monad/)
 * [J Tobin blog](https://jtobin.io/)
+  * [Monad foundations](https://jtobin.io/giry-monad-foundations)
+  * [Giry monad](https://jtobin.io/giry-monad-implementation)
+  * [Giry applicative](https://jtobin.io/giry-monad-applicative)
+  * [Recursive stoch proc](https://jtobin.io/recursive-stochastic-processes)
+  * [AD via recursion schemes](https://jtobin.io/ad-via-recursion-schemes)
+
 
 ### Scala
 
 * [Cats](http://typelevel.org/cats/)
   * [Herding Cats](http://eed3si9n.com/herding-cats/)
-  * [Overview of Cats Free Monad](http://blog.scalac.io/2016/06/02/overview-of-free-monad-in-cats.html)
-  * [Free monad](http://typelevel.org/cats/datatypes/freemonad.html)
 * [Learning Scalaz](http://eed3si9n.com/learning-scalaz/)
 * [A Beginner-Friendly Tour through Functional Programming in Scala](http://degoes.net/articles/easy-monads?utm_content=43961744)
 * [Free objects](http://engineering.wingify.com/posts/Free-objects/)
-* [Free monad](http://underscore.io/blog/posts/2015/04/23/deriving-the-free-monad.html)
-* [On free monads](http://perevillega.com/understanding-free-monads)
+  * [Overview of Cats Free Monad](http://blog.scalac.io/2016/06/02/overview-of-free-monad-in-cats.html)
+  * [Free monad](http://typelevel.org/cats/datatypes/freemonad.html)
+  * [Free monad](http://underscore.io/blog/posts/2015/04/23/deriving-the-free-monad.html)
+  * [On free monads](http://perevillega.com/understanding-free-monads)
 * [The underrated applicative functor](https://softwaremill.com/applicative-functor/)
 * [Scala comonad tutorial](http://blog.higher-order.com/blog/2015/06/23/a-scala-comonad-tutorial/)
 * [Monads in the category theory](https://medium.com/@sinisalouc/2f0a6d370eff)
 * [Advanced FP in Scala](https://gist.github.com/jdegoes/97459c0045f373f4eaf126998d8f65dc)
-* [Beautiful Folds In Scala](https://softwaremill.com/beautiful-folds-in-scala/)
 * [Higher-kinded types: the difference between giving up, and moving forward](http://typelevel.org/blog/2016/08/21/hkts-moving-forward.html)
-
+* [Beautiful Folds In Scala](https://softwaremill.com/beautiful-folds-in-scala/)
+* Recursion schemes
+  * [Peeling the banana](http://slides.com/zainabali_/peeling_the_banana#/)
+  * [Matryoshka intro](http://akmetiuk.com/posts/2017-03-10-matryoshka-intro.html)
 
 
 

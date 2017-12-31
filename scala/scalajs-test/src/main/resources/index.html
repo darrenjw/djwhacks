@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scala JS test</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body style="margin: 0px">
+
+  <div>
+    <h2>Simple canvas app</h2>
+    <canvas style="display: block" id="canvas" width="512" height="512"/>
+</div>
+<script type="text/javascript" src="../scalajsexampleapp-fastopt.js"></script>
+<script>
+    JsApp.main(document.getElementById('canvas'));
+</script>
+
+<div>
+<h3>Find the smallest prime factor of an integer</h3>
+<form id="myForm">
+<input type="text" name="factorfield">
+<input type="button" value="Factor" onclick="JsFun.factor(document.getElementById('myForm'))">
+</form>
+</div>
+
+</body>
+</html>

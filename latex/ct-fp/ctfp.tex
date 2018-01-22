@@ -74,12 +74,12 @@ col, set,start,end,deltat,zip},
 
 \begin{document}
 
-\title[CT and FP for scalable statistical computing]{Category theory and functional programming for scalable statistical modelling and computational inference}
-\author[Darren Wilkinson --- INI, SINW01 4/7/17]{\textbf{\large Darren Wilkinson} \\
+\title[A compositional approach to scalable statistical computation]{A compositional approach to scalable statistical modelling and computation}
+\author[Darren Wilkinson --- Amazon 25/1/18]{\textbf{\large Darren Wilkinson} \\
 \url{@darrenjw}\\
 \alert{\url{tinyurl.com/darrenjw}}\\
 School of Mathematics \& Statistics\\Newcastle University, UK}
-\date{SINW01: Scalable statistical inference,\\ INI, Cambridge\\3rd--7th July 2017}
+\date{Amazon Research,\\Cambridge\\25th January 2018}
 
 
 \frame{\titlepage}
@@ -504,6 +504,21 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \end{frame}
 
 \end{comment}
+
+\begin{frame}[fragile]
+  \frametitle{Comonads}
+  \begin{itemize}
+    \item The comonad is the categorical dual of the monad, obtained by ``reversing the arrows'' for the definition of a monad
+  \item A \alert{comonad} on a category $\mathcal{C}$ is an endofunctor $W: \mathcal{C}\longrightarrow\mathcal{C}$ together with two natural transformations $\eps: W \longrightarrow \operatorname{Id}_\mathcal{C}$ (\alert{counit}) and $\delta: W\longrightarrow W^2$ (\alert{comultiplication}) fulfilling the \alert{comonad laws}:
+    \begin{itemize}
+    \item \alert{Associativity}: $\delta_W \circ \delta = W\delta \circ \delta$, as transformations $W\longrightarrow W^3$
+      \item \alert{Identity}: $\eps_W \circ \delta = W\eps \circ \delta = 1_W$, as transformations $W\longrightarrow W$
+    \end{itemize}
+  \item The associativity law says that the two ways of \alert{duplicating} a $W(x)$ duplicated to a $W(W(x))$ to a $W(W(W(x)))$ are the same
+  \item The identity law says that the two ways of \alert{extracting} a $W(x)$ from a $W(x)$ duplicated to a $W(W(x))$ are the same
+  \end{itemize}
+\end{frame}
+
 
 \subsection{Scalable modelling and computation}
 

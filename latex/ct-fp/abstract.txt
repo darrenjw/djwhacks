@@ -6,3 +6,13 @@ This talk considers both the theoretical and computational requirements for scal
 https://t.co/VoZUIIPl82
 
 
+New version:
+
+Talk Title:
+
+A compositional approach to scalable statistical modelling and computation
+
+Abstract:
+
+In statistics, and in life, we typically solve big problems by (recursively) breaking them down into smaller problems that we can solve more easily, and then compose the solutions of the smaller problems to provide a solution to the big problem that we are really interested in. This "divide and conquer" approach is necessary for the development of genuinely scalable models and algorithms. It is therefore unfortunate that statistical models and algorithms are not usually formulated in a composable way, and that the programming languages typically used for scientific and statistical computing also fail to naturally support composition of models, data and computation. The mathematical subject of category theory is in many ways the mathematical study of composition, and provides significant insight into the development of more compositional models of computation. Functional programming languages which are strongly influenced by category theory turn out to be much better suited to the development of scalable statistical algorithms than the imperative programming languages more commonly used. Expressing algorithms in a functional/categorical way is not only more elegant, concise and less error-prone, but provides numerous more tangible benefits, such as automatic parallelisation and distribution of algorithms. I will illustrate the concepts using examples such as the statistical analysis of streaming data, image analysis, numerical integration of PDEs, particle filtering, Gibbs sampling, and probabilistic programming, using concepts from category theory such as functors, monads and comonads. Illustrative code snippets will given using the Scala programming language
+

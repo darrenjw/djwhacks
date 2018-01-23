@@ -79,7 +79,7 @@ col, set,start,end,deltat,zip},
 \url{@darrenjw}\\
 \alert{\url{tinyurl.com/darrenjw}}\\
 School of Mathematics \& Statistics\\Newcastle University, UK}
-\date{Amazon Research,\\Cambridge\\25th January 2018}
+\date{Amazon Research\\Cambridge\\25th January 2018}
 
 
 \frame{\titlepage}
@@ -88,6 +88,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 
 \subsection{Outline}
 
+\begin{comment}
+  
 \frame{
 \frametitle{Talk outline}
 \begin{itemize}
@@ -100,7 +102,20 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \end{itemize}
 }
 
-\subsection{What's the problem?}
+\end{comment}
+
+\frame{
+\frametitle{Talk outline}
+\begin{itemize}
+\item Compositionality in statistical modelling and computation
+\item Category theory (CT) as a framework for composable modelling and computation
+\item Advantages of functional programming (FP) and its relation to CT
+\item How can we use CT and FP to make statistical computing more scalable?
+\item Some examples
+\end{itemize}
+}
+
+\subsection{Compositionality}
 
 \begin{comment}
   
@@ -120,8 +135,6 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \end{itemize}
   }
 
-\end{comment}
-
 \frame{
   \frametitle{Pre-historic programming languages}
   \begin{itemize}
@@ -132,6 +145,16 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \item Think about how much \alert{statistical methodology} has changed in the last 40 years --- you wouldn't use 40 year old methodology --- why use 40 year old languages to implement it?!
     \end{itemize}
     \end{itemize}
+}
+
+\end{comment}
+
+
+\frame{
+\frametitle{Compositionality}
+\begin{itemize}
+  \item blah
+\end{itemize}
 }
 
 \begin{frame}[fragile]
@@ -315,7 +338,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \item |map| is used to transform one random quantity into another
   \item |flatMap| is used to chain together stochastic functions to create joint and/or marginal random variables, or to \alert{propagate uncertainty} through a computational work-flow or pipeline
     \item Probability monads form the basis for the development of \alert{probabilistic programming languages} using FP
-    \item The probability monad is typically implemented as a \alert{State monad}, the mechanism for handling mutable state using FP
+    %\item The probability monad is typically implemented as a \alert{State monad}, the mechanism for handling mutable state using FP
   \end{itemize}
 \end{frame}
 
@@ -574,23 +597,25 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 
 
 \begin{frame}[fragile]
-  \frametitle{Typeclasses for Monoid, Functor and Monad}
-  \begin{itemize}
-  \item In Scala, we can define typeclasses for |Monoid|, |Functor| and |Monad| (using parametric and higher-kinded types):
-  \end{itemize}
+  \frametitle{Typeclasses for Monoid, Functor, Monad and Comonad}
+%  \begin{itemize}
+%  \item In Scala, we can define typeclasses for |Monoid|, |Functor| and |Monad| (using parametric and higher-kinded types):
+%  \end{itemize}
   \begin{lstlisting}[language=scala]
   trait Monoid[A] {
     def combine(a1: A, a2: A): A
     def id: A
   }
-    
   trait Functor[F[_]] {
     def map[A,B](fa: F[A])(f: A => B): F[B]
   }
-
   trait Monad[M[_]] extends Functor[M] {
-    def unit[A](a: A): M[A]
+    def pure[A](a: A): M[A]
     def flatMap[A,B](ma: M[A])(f: A => M[B]): M[B]
+  }
+  trait Comonad[W[_]] extends Functor[W] {
+    def extract[A](wa: W[A]): A
+    def coflatMap[A,B](wa: W[A])(f: W[A] => B): W[B] 
   }
 \end{lstlisting}
 \end{frame}
@@ -696,8 +721,6 @@ cx flatMap {case (ci, xi) => Vector.fill(ci)(xi)}
 Again, no $\mathcal{O}(n)$ operations for parallel collections...
 \end{frame}
 
-
-
 \begin{frame}[fragile]
   \frametitle{Particle filtering as a functional fold}
  Once we have a function for executing one step of a particle filter, we can produce a function for particle filtering as a functional fold over a sequence of observations:
@@ -711,6 +734,49 @@ data.foldLeft((0.0, x0))((prev, o) => {
 \end{lstlisting}
 |foldLeft| is fundamentally sequential, but the |updater| is parallelisation-agnostic
 \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Comonads for statistical computation}
+  \begin{itemize}
+  \item Monads are good for operations that can be carried out on data points independently
+    \item For computations requiring knowledge of some kind of local neighbourhood structure, \alert{Comonads} are a better fit
+  \item |coflatMap| will take a function representing a \alert{local computation} producing one value for the new structure, and then extend this to generate all values associated with the comonad
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Linear filters for Streams and Images}
+\begin{itemize}
+\item
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Gibbs sampling (an Ising model)}
+\begin{itemize}
+\item
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{}
+\begin{itemize}
+\item
+\end{itemize}
+\end{frame}
+
+
 
 \begin{frame}
   \frametitle{Recursion schemes}

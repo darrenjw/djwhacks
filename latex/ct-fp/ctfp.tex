@@ -111,7 +111,9 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \item Category theory (CT) as a framework for composable modelling and computation
 \item Advantages of functional programming (FP) and its relation to CT
 \item How can we use CT and FP to make statistical computing more scalable?
-\item Some examples
+\item Examples of composable algorithms
+\item Examples of composable models
+\item Wrap-up
 \end{itemize}
 }
 
@@ -151,9 +153,22 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 
 
 \frame{
-\frametitle{Compositionality}
+\frametitle{Compositionality and modelling}
 \begin{itemize}
-  \item blah
+\item We typically solve big problems by (recursively) breaking them down into smaller problems that we can solve more easily, and then compose the solutions of the smaller problems to provide a solution to the big problem that we are really interested in
+\item This "divide and conquer" approach is necessary for the development of genuinely scalable models and algorithms
+\item Statistical models and algorithms are not usually formulated in a composable way
+\item Category theory is in many ways the mathematical study of composition, and provides significant insight into the development of more compositional models of computation
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Compositionality and programming}
+\begin{itemize}
+\item The programming languages typically used for scientific and statistical computing also fail to naturally support composition of models, data and computation
+\item Functional programming languages which are strongly influenced by category theory turn out to be much better suited to the development of scalable statistical algorithms than the imperative programming languages more commonly used
+\item Expressing algorithms in a functional/categorical way is not only more elegant, concise and less error-prone, but provides numerous more tangible benefits, such as automatic parallelisation and distribution of algorithms
 \end{itemize}
 }
 
@@ -199,6 +214,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   Not obvious that one of these is naturally parallel\ldots
 \end{frame}
 
+\begin{comment}
+
 \frame{
   \frametitle{Modern programming language design}
   \begin{itemize}
@@ -208,6 +225,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     \item Modern functional programming languages are emerging as better suited to modern hardware
     \end{itemize}
   }
+
+\end{comment}
 
 \section{FP and CT}
 
@@ -244,6 +263,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \end{itemize}
 \end{frame}
 
+\begin{comment}
+  
 \frame{
   \frametitle{Ideal languages for statistical computing}
   \begin{itemize}
@@ -260,8 +281,10 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \end{itemize}
   }
 
+\end{comment}
+
 \begin{frame}[fragile]
-  \frametitle{Monadic collections}
+  \frametitle{Monadic collections (in Scala)}
   \begin{itemize}
   \item A collection of type |M[T]| can contain (multiple) values of type~|T|
   \item If the collection supports a higher-order function\\
@@ -382,7 +405,6 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \item If |ll| is initialised with a parallel collection, the likelihood will be evaluated in parallel on all available cores
 \end{itemize}
 \end{frame}
-
 
 
 \subsection{Category Theory}
@@ -703,6 +725,8 @@ Resampling exploits the monadic nature of the collection (via |flatMap|)
 Again, completely parallelisation--agnostic...
 \end{frame}
 
+\begin{comment}
+
 \begin{frame}[fragile]
   \frametitle{Systematic resampling}
   Main body of systematic resampling algorithm:
@@ -721,6 +745,8 @@ cx flatMap {case (ci, xi) => Vector.fill(ci)(xi)}
 Again, no $\mathcal{O}(n)$ operations for parallel collections...
 \end{frame}
 
+\end{comment}
+
 \begin{frame}[fragile]
   \frametitle{Particle filtering as a functional fold}
  Once we have a function for executing one step of a particle filter, we can produce a function for particle filtering as a functional fold over a sequence of observations:
@@ -735,6 +761,45 @@ data.foldLeft((0.0, x0))((prev, o) => {
 |foldLeft| is fundamentally sequential, but the |updater| is parallelisation-agnostic
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{Composable time series models}
+\begin{itemize}
+\item \alert{\url{git.io/statespace}} (Student: Jonny Law)
+\item Scala library for nonlinear statespace modelling in continuous time for irregularly spaced observations on intractable Markov processes using particle filtering
+  \item Compositional API for modelling building and use on-line with a streaming API based on Akka Streams
+\end{itemize}
+\begin{lstlisting}[language=scala]
+val sde = Sde.brownianMotion(1)
+val negBinModel = Model.negativeBinomial(sde)
+val sde2 = Sde.ouProcess(8)
+val composedMod = negBinModel |+|
+  Model.seasonal(24, 4, sde2)
+\end{lstlisting}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Composable time series models}
+\begin{itemize}
+\item \alert{\url{git.io/dlm}} (Student: Jonny Law)
+\item Library for more conventional discrete time DLMs and DGLMs with efficient filtering algorithms
+\item Algebraic compositional structure to the API 
+\end{itemize}
+\begin{lstlisting}[language=scala]
+val linear = Dlm.polynomial(1)
+val seasonal = Dlm.seasonal(period=24, harmonics=3)
+val regression = Dlm.regression(x=myTimeSeriesData)
+val seasonalTrend = linear |+| seasonal
+// model for a bivariate time series (cartesian)
+val multivariateModel = linear |*| seasonalTrend
+// model for 30 seemingly unrelated time series
+val sutse = List.fill(30)(linear).reduce(_ |*| _)
+// DGLMs
+val poisson = Dglm.poisson(linear)
+\end{lstlisting}
+\end{frame}
+
+
 
 \begin{frame}[fragile]
   \frametitle{Comonads for statistical computation}
@@ -746,36 +811,62 @@ data.foldLeft((0.0, x0))((prev, o) => {
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Linear filters for Streams and Images}
+\frametitle{Linear filters for Streams and Images}  
+Let's start with writing a function to compute the weighted average of values at the start of an infinite data |Stream|
+\begin{lstlisting}[language=scala]
+def linFilter(weights: Stream[Double])(
+  s: Stream[Double]): Double =
+  (weights, s).parMapN(_*_).sum    
+\end{lstlisting}
+We can extend this \alert{local computation} to the entire |Stream| using |coflatMap|
+\begin{lstlisting}[language=scala]
+s.coflatMap(linFilter(Stream(0.25,0.5,0.25)))
+\end{lstlisting}
+resulting in a new infinite |Stream| containing the filtered values
 \begin{itemize}
-\item
-\end{itemize}
+\item  Note that the method |extract| will return the value at the head of the |Stream|
+  \end{itemize}
 \end{frame}
 
-
 \begin{frame}[fragile]
-\frametitle{}
+\frametitle{Filtering an Image}
 \begin{itemize}
-\item
+\item For a 2D Image, the relevant context for local computation is less clear, so to become comonadic, the Image class needs to be ``pointed'', by augmenting it with a ``cursor'' pointing to the current pixel of interest
+\item For the pointed image class, |extract| returns the value of the pixel at the cursor
+\item We filter using functions which compute a value on the basis of the ``neighbourhood'' of the cursor
+\item |map| and |coflatMap| operations will automatically parallelise if the image is backed with a parallel data structure
 \end{itemize}
+\begin{lstlisting}[language=scala]
+def fil(pi: PImage[Double]):Double = (2*pi.extract+
+  pi.up.extract+pi.down.extract+
+  pi.left.extract+pi.right.extract)/6.0
+val filteredImage = pim0.coflatMap(fil)  
+def pims = Stream.iterate(pim0)(_.coflatMap(fil))
+\end{lstlisting}
 \end{frame}
 
 
 \begin{frame}[fragile]
 \frametitle{Gibbs sampling (an Ising model)}
-\begin{itemize}
-\item
-\end{itemize}
+\begin{lstlisting}[language=scala]
+def gibbsKernel(pi: PImage[Int]): Int = {
+   val sum = pi.up.extract+pi.down.extract+
+     pi.left.extract+pi.right.extract
+   val p1 = math.exp(beta*sum)
+   val p2 = math.exp(-beta*sum)
+   val probplus = p1/(p1+p2)
+   if (new Bernoulli(probplus).draw) 1 else -1
+}
+def oddKernel(pi: PImage[Int]): Int =
+  if ((pi.x+pi.y) % 2 != 0) pi.extract else
+    gibbsKernel(pi)
+def evenKernel(pi: PImage[Int]): Int =
+  if ((pi.x+pi.y) % 2 == 0) pi.extract else
+    gibbsKernel(pi)
+def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
+  coflatMap(evenKernel))
+\end{lstlisting}
 \end{frame}
-
-
-\begin{frame}[fragile]
-\frametitle{}
-\begin{itemize}
-\item
-\end{itemize}
-\end{frame}
-
 
 
 \begin{frame}
@@ -847,9 +938,12 @@ def kernel(oldState: State): Rand[State] = ???
 
 MarkovChain(initialState)(kernel).steps.
   drop(1000).thin(10).take(10000)
-\end{lstlisting}  
+\end{lstlisting}
 \end{itemize}
 \end{frame}
+
+
+
 
 
 \section{Summary and conclusions}
@@ -861,7 +955,7 @@ MarkovChain(initialState)(kernel).steps.
   \begin{itemize}
   \item Mathematicians and theoretical computer scientists have been thinking about models of (scalable) computation for decades
   \item Functional programming languages based on Cartesian closed categories provide a sensible foundation for computational modelling with appropriate levels of abstraction
-  \item Concepts from category theory, such as functors, monads, natural transformations and recursion schemes provide an appropriate array of tools for scalable data modelling and algorithm construction
+  \item Concepts from category theory, such as functors, monads, comonads, natural transformations and recursion schemes provide an appropriate array of tools for scalable data modelling and algorithm construction
     \item Expressing algorithms in FP languages using category theory abstractions narrows the gap between theory and implementation
 %    \item There is \alert{nothing special} about computations associated with statistical inference which somehow makes these ideas, tools and techniques irrelevant
   \end{itemize}
@@ -899,7 +993,7 @@ MarkovChain(initialState)(kernel).steps.
     \item \alert{Functional}
       \item and support \alert{concurrency}, \alert{parallelism}, \alert{typeclasses} and \alert{higher-kinded types}
     \end{itemize}
-  \item \alert{Scala} and \alert{Spark} provide a nice illustration of the power of this approach, but there are other interesting languages, including: Haskell, Idris, OCaml, Frege, Eta, ...
+  \item \alert{Scala} and \alert{Spark} provide a nice illustration of the power of this approach, but there are other interesting languages, including: Haskell, Idris, OCaml, Frege, Eta, PureScript, \ldots
   \end{itemize}
   }
 
@@ -911,7 +1005,7 @@ MarkovChain(initialState)(kernel).steps.
 
   \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, in press. \texttt{conal.net}
 
-    \bibitem{} Law, J., Wilkinson, D. J. (2016) \alert{Composable models for online Bayesian analysis of streaming data}, \texttt{arxiv.org/abs/1609.00635}
+    \bibitem{} Law, J., Wilkinson, D. J. (2018) \alert{Composable models for online Bayesian analysis of streaming data}, \emph{Statistics and Computing}, in press (online early).
     
     \bibitem{} Meijer, E., Fokkinga, M., Paterson, R. (1991) \alert{Functional programming with bananas, lenses, envelopes and barbed wire}. In: Hughes J. (eds) \emph{Functional Programming Languages and Computer Architecture}. FPCA 1991. Lecture Notes in Computer Science, vol 523. Springer.
 

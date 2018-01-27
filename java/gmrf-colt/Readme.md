@@ -1,15 +1,8 @@
 # Readme.md
 
-## GMRF simulation app
+## GMRF simulation app - Parallel COLT version
 
-This is actually very simple to build by going right into the source directory containing the `.java` files and then doing:
-
-```bash
-javac *.java
-java MrfApp
-```
-
-However, it's also set up to be build using Maven, from this directory, with something like:
+This is simplest to set up to be build using Maven, from this directory, with something like:
 
 ```bash
 mvn package

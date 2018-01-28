@@ -6,10 +6,14 @@ class MrfApp {
     throws IOException
     {
     Mrf mrf;
+    int n = 1000;
+    int w = 800;
+    int h = 600;
     System.out.println("started program");
-    mrf=new Mrf(800,600);
+    System.out.println(String.format("Simulating %d iterations on a %dx%d grid",n,w,h));
+    mrf=new Mrf(w,h);
     System.out.println("created mrf object");
-    mrf.update(1000);
+    mrf.update(n);
     System.out.println("done updates");
     mrf.saveImage("mrf.png");
     System.out.println("finished program");

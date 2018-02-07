@@ -17,7 +17,6 @@
 
 \newcommand{\trans}{\ensuremath{{}^\mathrm{T}}}
 \newcommand{\eps}{\varepsilon}
-\newcommand{\reals}{\mathbb{R}}
 \newcommand*{\approxdist}{\mathrel{\vcenter{\offinterlineskip
 \vskip-.25ex\hbox{\hskip.55ex$\cdot$}\vskip-.25ex\hbox{$\sim$}
 \vskip-.5ex\hbox{\hskip.55ex$\cdot$}}}}
@@ -76,12 +75,11 @@ col, set,start,end,deltat,zip},
 \begin{document}
 
 \title[A compositional approach to scalable statistical computation]{A compositional approach to scalable statistical modelling and computation}
-\author[Darren Wilkinson --- Cambridge 8/2/18]{\textbf{\large Darren Wilkinson} \\
+\author[Darren Wilkinson --- Amazon 25/1/18]{\textbf{\large Darren Wilkinson} \\
 \url{@darrenjw}\\
 \alert{\url{tinyurl.com/darrenjw}}\\
 School of Mathematics \& Statistics\\Newcastle University, UK}
-\date{INI STS Seminar\\Cambridge\\8th February 2018}
-
+\date{Amazon Research\\Cambridge\\25th January 2018}
 
 
 \frame{\titlepage}
@@ -685,25 +683,6 @@ using map--fusion to avoid constructing a collection of synthetic datasets
 \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]
-\frametitle{A scalable particle filter}
-\begin{itemize}
-  \item We can write a scalable particle filter by first writing a generic (parallel--agnostic) function to update a cloud of particles using a single observation, and then apply this to a sequence of observations
-\end{itemize}
-\begin{lstlisting}[language=scala]
-  type PFState = GenericColl[State]
-
-  val update: (PFState, Obs) => PFState = ???
-
-  val data: Foldable[Obs] = ???
-  val pi0: PFState = ???
-
-  val piN = data.foldLeft(pi0)(update)
-\end{lstlisting}
-\end{frame}
-
-
-\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{A scalable particle filter}
@@ -746,6 +725,7 @@ Resampling exploits the monadic nature of the collection (via |flatMap|)
 Again, completely parallelisation--agnostic...
 \end{frame}
 
+\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{Systematic resampling}
@@ -765,6 +745,8 @@ cx flatMap {case (ci, xi) => Vector.fill(ci)(xi)}
 Again, no $\mathcal{O}(n)$ operations for parallel collections...
 \end{frame}
 
+\end{comment}
+
 \begin{frame}[fragile]
   \frametitle{Particle filtering as a functional fold}
  Once we have a function for executing one step of a particle filter, we can produce a function for particle filtering as a functional fold over a sequence of observations:
@@ -778,8 +760,6 @@ data.foldLeft((0.0, x0))((prev, o) => {
 \end{lstlisting}
 |foldLeft| is fundamentally sequential, but the |updater| is parallelisation-agnostic
 \end{frame}
-
-\end{comment}
 
 \begin{frame}[fragile]
 \frametitle{Composable time series models}
@@ -795,10 +775,8 @@ val sde2 = Sde.ouProcess(8)
 val composedMod = negBinModel |+|
   Model.seasonal(24, 4, sde2)
 \end{lstlisting}
-Another library: \alert{\url{git.io/dlm}} for more conventional linear state space modelling
 \end{frame}
 
-\begin{comment}
 
 \begin{frame}[fragile]
 \frametitle{Composable time series models}
@@ -821,7 +799,7 @@ val poisson = Dglm.poisson(linear)
 \end{lstlisting}
 \end{frame}
 
-\end{comment}
+
 
 \begin{frame}[fragile]
   \frametitle{Comonads for statistical computation}
@@ -943,8 +921,6 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
   \end{itemize}
 \end{frame}
 
-\begin{comment}
-
 \begin{frame}[fragile]
 \frametitle{MCMC as a Stream}
 \begin{itemize}
@@ -966,97 +942,6 @@ MarkovChain(initialState)(kernel).steps.
 \end{itemize}
 \end{frame}
 
-\end{comment}
-
-\begin{frame}
-  \frametitle{Probability monad foundations}
-  Mathematically, what \alert{exactly} is a probability monad $P$\,?
-
-  Standard answer:
-  
-  \begin{itemize}
-  \item \alert{Giry monad} --  measurable functions and spaces
-    \begin{itemize}
-      \item Defined on the category \textbf{Meas} of measurable spaces, $P$ sends $X$ to the space of probability measures on $X$
-      \item $\eta$ is a dirac measure ($\eta(x) = \delta_x$) and $\mu$ is defined as marginalisation using Lebesgue integration
-        \[
-\mu_X(\rho)(A) = \int_{P(X)} \tau_A(d\rho)
-        \]
-      \item Provides a solid foundation matching up closely with conventional probability theory, but isn't as compositional as we'd like (eg. \textbf{Meas} is not cartesian closed)
-        \item Awkward for (higher--order) probabilistic programming languages
-    \end{itemize}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Alternative probability monad foundations}
-  \begin{itemize}
-\item \alert{Quasi-Borel spaces}
-    \begin{itemize}
-    \item A modification of the measure space approach which is cartesian closed (eg. $\reals^\reals = \mathbf{QBS}(\reals,\reals)$)
-      \item Good for the denotational semantics of (higher--order) probabilistic programming languages where we want to define probability distributions over functions
-    \end{itemize}
-  \item \alert{Kantorovich monad} -- built on (complete) metric spaces
-    \begin{itemize}
-\item Provides an alternative, more composible foundation for probability theory, less tightly linked to measure theory
-    \end{itemize}
-  \item \alert{Expectation monad} -- directly define an expectation monad
-    \begin{itemize}
-      \item A forumulation in which expectation is primitive and probability is a derived concept (cf. de Finetti)
-    \end{itemize}
-  \end{itemize}
-And several others...
-\end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{Probability monads for uncertainty quantification (UQ)}
-  \begin{itemize}
-  \item Suppose we have a \alert{computer model}, $f$, mapping inputs (or parameters) $x\in X$ to output $y\in Y$:
-    \[
-    f: X \longrightarrow Y
-    \]
-  \item Suppose further that we are uncertain about the ``correct'' inputs to use, and encapsulate our uncertainty in a probability distribution $p_X \in P(X)$, where $P$ denotes a probability monad
-  \item We can't apply $f$ to $p_X$ (the types don't match), but we can use the fact that $P$ is a functor to ``lift'' $f$ into the monad (|px map f|):
-    \[
-    P(f): P(X) \longrightarrow P(Y),
-    \]
-    inducing a probability distribution on the output.
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}[fragile]
-  \frametitle{UQ for stochastic computer models}
-  \begin{itemize}
-  \item Suppose now that we have a stochastic (non-deterministic) computer model:
-    \[
-g: X \longrightarrow P(Y),
-\]
-so that for an given fixed input $x\in X$, the output is a probability distribution over $Y$
-\item If we have additional uncertainty for the input $x\in X$, then we lift $g$ into the Kleisli category of the monad (|px flatMap g|):
-  \[
-  \mu_Y\circ P(g): P(X) \longrightarrow P(Y),
-  \]
-  effectively just marginalising over our uncertainty about $x$
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}
-  \frametitle{}
-  \begin{itemize}
-  \item
-  \end{itemize}
-\end{frame}
-
-
-\begin{frame}
-  \frametitle{}
-  \begin{itemize}
-  \item
-  \end{itemize}
-\end{frame}
 
 
 
@@ -1118,20 +1003,16 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
 
     \scriptsize
 
-  \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
+  \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, in press. \texttt{conal.net}
 
     \bibitem{} Law, J., Wilkinson, D. J. (2018) \alert{Composable models for online Bayesian analysis of streaming data}, \emph{Statistics and Computing}, in press (online early).
     
-%    \bibitem{} Meijer, E., Fokkinga, M., Paterson, R. (1991) \alert{Functional programming with bananas, lenses, envelopes and barbed wire}. In: Hughes J. (eds) \emph{Functional Programming Languages and Computer Architecture}. FPCA 1991. Lecture Notes in Computer Science, vol 523. Springer.
+    \bibitem{} Meijer, E., Fokkinga, M., Paterson, R. (1991) \alert{Functional programming with bananas, lenses, envelopes and barbed wire}. In: Hughes J. (eds) \emph{Functional Programming Languages and Computer Architecture}. FPCA 1991. Lecture Notes in Computer Science, vol 523. Springer.
 
     \bibitem{} Park, S., Pfenning, F., Thrun, S. (2008) \alert{A probabilistic language based on sampling functions}, \emph{TOPLAS}, \textbf{31}(1):4.
 
   \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A., Ghahramani, Z. and Gordon, A. D. (2015) \alert{Practical probabilistic programming with monads}, \emph{Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell}, 165--176.
 
-  \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A. et al (2018) \alert{Denotational validation of higher-order Bayesian inference}, \emph{Proceeding of the ACM on Programming Languages}, \textbf{2}(POPL): 60.
-
-
-    
      \bibitem{} Wadler, P. (1995) \alert{Monads for functional programming}. In: Jeuring J., Meijer E. (eds) \emph{Advanced Functional Programming}. AFP 1995. Lecture Notes in Computer Science, vol 925. Springer.
     
 %\beamertemplatebookbibitems
@@ -1140,9 +1021,8 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
     
   \end{thebibliography}
 
-  \vspace*{1ex}
   
-For more about Scala and FP: \alert{\url{darrenjw.wordpress.com}}
+For more about Scala: \alert{\url{darrenjw.wordpress.com}}
 
 \end{frame}
 

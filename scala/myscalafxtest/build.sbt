@@ -6,10 +6,15 @@ version := "0.1-SNAPSHOT"
 
 scalaVersion := "2.12.1"
 
+scalacOptions += "-Ypartial-unification"
+
 libraryDependencies ++= Seq(
+"org.typelevel" %% "cats-core" % "1.0.1",
   "org.scalafx"   %% "scalafx"   % "8.0.102-R11",
   "org.scalatest" %% "scalatest" % "3.0.1" % "test" //http://www.scalatest.org/download
 )
+
+
 
 shellPrompt := { state => System.getProperty("user.name") + "> " }
 

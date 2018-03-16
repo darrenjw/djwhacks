@@ -20,9 +20,9 @@ do
     echo
     echo
     # Rscript ~/src/git/djwhacks/r/metagenomics/comparisons.R
-    # Rscript ~/src/git/ebi-metagenomics-stats/comparison/comparisons.R
-    Rscript ~/src/git/djwhacks/r/metagenomics/diversity.R
-    # Rscript ~/src/git/ebi-metagenomics-stats/comparison/diversity.R
+    Rscript ~/src/git/ebi-metagenomics-stats/comparison/comparisons.R
+    # Rscript ~/src/git/djwhacks/r/metagenomics/diversity.R
+    # Rscript ~/src/git/ebi-metagenomics-stats/diversity/diversity.R
     cd ..
 done
 

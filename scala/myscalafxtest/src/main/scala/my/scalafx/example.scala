@@ -4,6 +4,8 @@ import scalafx.scene.image.WritableImage
 import scalafx.scene.paint._
 
 import cats._
+import cats.syntax._
+import cats.data._
 import cats.implicits._
 
 object IsingModel {
@@ -83,7 +85,9 @@ object IsingModel {
     val beta = 0.45
 
     val pim0 = PImage(0, 0, Image(w, h, Vector.fill(w * h)(if (math.random > 0.5) 1 else -1).par))
-    def pims = Stream.iterate(pim0)(_.coflatMap(oddKernel(beta)).coflatMap(evenKernel(beta)))
+    val cokl = Cokleisli(oddKernel(beta)) andThen Cokleisli(evenKernel(beta))
+    //def pims = Stream.iterate(pim0)(_ coflatMap cokl.run)
+    def pims = Stream.iterate(pim0)(_ coflatMap oddKernel(beta) coflatMap evenKernel(beta))
     def sfxis = pims map (pi => I2SFXWI(pi.image))
 
     ScalaView(sfxis, 1, true, false)

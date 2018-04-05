@@ -20,16 +20,25 @@ for (dir in dirlist) {
     dirname = strsplit(dir,.Platform$file.sep)[[1]][-1]
     run = strsplit(dirname,'_')[[1]][1]
     message(run)
-    otufile = file.path(dirname,"cr_otus",
-                        paste(dirname,"otu_table.txt",sep="_"))
-    otu = read.otu.tsv(otufile)
-    svg(paste(run,"svg",sep="."))
-    summ = analyseOtu(otu)
-    dev.off()
-    tab = rbind(tab,summ)
-    rownames(tab)[dim(tab)[1]] = run
-    file.rename(from=paste(run,"svg",sep="."),
-                to=file.path(dirname,"charts","tad-plots.svg"))
+    try({
+        otufile = file.path(dirname,"cr_otus",
+                            paste(dirname,"otu_table.txt",sep="_"))
+        otu = read.otu.tsv(otufile)
+        numTaxa = dim(otu)[1]
+        numInd = sum(otu$Count)
+        message(paste("Number of distinct taxa: ",numTaxa,"- Total individuals: ",numInd))
+        if ((numTaxa >= 20)&&(numInd >= 40)) {
+            svg(paste(run,"svg",sep="."))
+            summ = analyseOtu(otu)
+            dev.off()
+            tab = rbind(tab,summ)
+            rownames(tab)[dim(tab)[1]] = run
+            file.rename(from=paste(run,"svg",sep="."),
+                        to=file.path(dirname,"charts","tad-plots.svg"))
+        } else {
+            message("Too few species/individuals: SKIPPING")
+            }
+        })
 }
 df=data.frame("Run"=rownames(tab),tab)
 write.table(df,file.path("project-summary","diversity.tsv"),

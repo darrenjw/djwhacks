@@ -15,6 +15,7 @@
 * `git add file.c`       (add a file to the repo)
 * `git commit -a`        (commit locally)
 * `git push`             (push local commits back to github)
+* `git status`           (useful info)
 * `git log`              (commit log)
 * `git tag`              (list of tagged commits)
 * `git tag v0.3`         (tag a version)
@@ -56,6 +57,7 @@ git push
 
 ## Branching and merging
 
+Create a new branch and switch to it
 ```bash
 git checkout -b my-branch
 ```
@@ -66,7 +68,14 @@ git branch my-branch
 git checkout my-branch
 ```
 
-Commit changes before switching branches. Switch back to `master` with:
+Commit changes before switching branches.
+Push new branch back to GitHub with:
+```bash
+git push origin my-branch
+```
+Can then do a pull request (on GitHub) for merging into master.
+
+Switch back to `master` with:
 ```bash
 git checkout master
 ```
@@ -87,12 +96,21 @@ git checkout master
 git merge good-branch
 ```
 
+## Undo a commit
+
+If you commit a change you regret and you haven't yet pushed it, you can undo it with:
+```bash
+git reset --hard HEAD^
+```
+Note that you shouldn't do this if you've already pushed, as things will get out of sync.
+
 
 ## Web links
 
 * [Pro Git](https://git-scm.com/book/en/v2/) (book)
   * [Basic branching and merging](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging) (including conflict resolution)
 * [Learn Git in 30 Minutes](http://tutorialzine.com/2016/06/learn-git-in-30-minutes/)
+* [Git on the command line](http://dont-be-afraid-to-commit.readthedocs.io/en/latest/git/commandlinegit.html)  
 * [Getting Git Right](https://www.atlassian.com/git/)
 * [Lesser known Git commands](https://hackernoon.com/lesser-known-git-commands-151a1918a60)
 * [Git from the inside out](https://codewords.recurse.com/issues/two/git-from-the-inside-out)

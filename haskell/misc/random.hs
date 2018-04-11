@@ -31,13 +31,27 @@ rdl = take 5 $ randoms r :: [Double]
 sr = take 10 $ randomRs ('a','z') r :: [Char]  
 
 
+-- function to roll a dice
 rollDice :: StdGen -> (Int, StdGen)
---rollDice :: State StdGen Int
 rollDice r = randomR (1,6) r :: (Int, StdGen)
 
--- getStdGen :: IO StdGen -> randomly seed generator at start of a main do block
 
+-- monadic version, using the State monad
+rollDiceM :: State StdGen Int
+rollDiceM = state (\r -> randomR (1,6) r :: (Int, StdGen)) 
 
+-- function to roll two dice, using a do block
+roll2dice :: State StdGen (Int, Int)
+roll2dice = do
+  roll1 <- rollDiceM
+  roll2 <- rollDiceM
+  return (roll1, roll2)
+  
+-- main function to run the dice generator
+main :: IO ()
+main = do
+  rr <- getStdGen -- randomly seed generator at start of a main do block
+  print (fst (runState roll2dice rr))
 
 
 -- eof

@@ -1,6 +1,9 @@
 # Idris Reminders
 
 ```bash
+cabal update; cabal install idris
+
+
 idris
 :load hello.idr
 

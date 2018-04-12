@@ -7,6 +7,11 @@ Debian (including Raspbian) or Ubuntu:
 apt-get install haskell-platform
 ```
 
+Get Stack on Ubuntu with:
+```bash
+apt-get install haskell-stack
+```
+
 ## Using GHC
 
 ```bash

@@ -2,7 +2,7 @@
 
 ## Installation
 
-Debian or Ubuntu:
+Debian (including Raspbian) or Ubuntu:
 ```bash
 apt-get install haskell-platform
 ```

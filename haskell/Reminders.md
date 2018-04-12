@@ -2,8 +2,9 @@
 
 ## Installation
 
+Debian or Ubuntu:
 ```bash
-apt-get install ghc
+apt-get install haskell-platform
 ```
 
 ## Using GHC

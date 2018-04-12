@@ -2,15 +2,24 @@
 
 ## Versions
 
-* Scala: 2.11.7 (for Java 6/7, or Spark), or 2.12.1 for Java 8
-* Sbt: 0.13.8
-* Breeze: 0.12 or "latest.integration" for 0.13 snapshot
-* Cats: 0.9.0
+* Scala: 2.11.8 (for Java 6/7, or Spark), or 2.12.4 for Java 8
+* Sbt: 0.13.16
+* Breeze: 0.13
+* Cats: 1.0.1
 * Ensime: 1.12.4
+
 
 ## SBT
 
-sbt -h # for help info
+### SBT/Giter8 templates
+
+* `sbt new underscoreio/cats-seed.g8`
+* `sbt new darrenjw/breeze.g8`
+* `sbt new darrenjw/scala-glm.g8`
+
+### Sbt commands
+
+`sbt -h` # for help info
 
 * help
 * tasks
@@ -35,12 +44,11 @@ sbt -h # for help info
 * publish (to maven repo)
 * assembly (requires assembly plugin)
 
-Supports TAB completion - useful with "test" and "testOnly"
+### Misc
 
-Put "ensime" plugin line in: ~/.sbt/0.13/plugins/plugins.sbt: addSbtPlugin("org.ensime" % "sbt-ensime" % "1.12.4")
-
-* `java -cp $(cat .cp || sbt 'export runtime:fullClasspath' | tail -n1 | tee .cp) <main-class>
-`
+* Supports TAB completion - useful with "test" and "testOnly"
+* Put "ensime" plugin line in: `~/.sbt/0.13/plugins/plugins.sbt`: `addSbtPlugin("org.ensime" % "sbt-ensime" % "1.12.4")`
+* `java -cp $(cat .cp || sbt 'export runtime:fullClasspath' | tail -n1 | tee .cp) <main-class>`
 
 
 ## Ensime

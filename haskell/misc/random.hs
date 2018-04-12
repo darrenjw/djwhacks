@@ -52,6 +52,7 @@ main :: IO ()
 main = do
   rr <- getStdGen -- randomly seed generator at start of a main do block
   print (fst (runState roll2dice rr))
+  print (evalState roll2dice rr) -- evalState ditches the state (like runA in Scala/Cats)
 
 
 -- eof

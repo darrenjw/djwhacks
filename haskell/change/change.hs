@@ -17,17 +17,15 @@ ghc -o change change.hs
 -}
 
 changeCoins :: Int -> [Int] -> Int
-changeCoins = \x c -> if (x==0) then 1 else
-  if (length c == 0) then 0 
-    else let first = head c
-             rest = tail c
-         in if (first > x) then changeCoins x rest else
-      (changeCoins (x - first) c) + (changeCoins x rest) 
+changeCoins 0 c = 1
+changeCoins x [] = 0
+changeCoins x (f : r) = if (f > x) then changeCoins x r else
+      (changeCoins (x - f) (f : r)) + (changeCoins x r) 
 
 coins = [200,100,50,20,10,5,2,1]
 
 change :: Int -> Int
-change = \x -> changeCoins x coins
+change x = changeCoins x coins
 
 main = do
   putStrLn "Enter an amount of money (in pence)"

@@ -8,6 +8,15 @@ idris hello.idr -o hello
 
 module Main
 
-main : IO ()
-main = putStrLn "Hello world"
 
+main : IO ()
+main = do
+  putStrLn "Enter your name"
+  name <- getLine
+  putStr "Hello, " 
+  putStrLn name
+
+
+
+
+-- eof

@@ -21,6 +21,9 @@ coins = [200, 100, 50, 20, 10, 5, 2, 1]
 change : Int -> Int
 change x = changeCoins x coins
 
+extractInt : Maybe Int -> Int
+extractInt Nothing = -1
+extractInt (Just x) = x
 
 main : IO ()
 main = do
@@ -28,11 +31,10 @@ main = do
   amount <- getLine
   let val = parseInteger amount
   let chm = map change val
+  let ch = extractInt chm 
   putStr ("Number of ways of making " ++ amount ++ "p is: ")
-  --let ch = case chm of
-  --  Just c => c
-  --  Nothing => -1
-  printLn chm
+  printLn ch
+  
 
 
 

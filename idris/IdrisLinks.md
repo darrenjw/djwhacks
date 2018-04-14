@@ -13,7 +13,8 @@
   * [base](http://www.idris-lang.org/docs/current/base_doc)
   * [contrib](http://www.idris-lang.org/docs/current/contrib_doc)
   * [effects](http://www.idris-lang.org/docs/current/effects_doc)
-* [10 things...](https://deque.blog/2017/06/14/10-things-idris-improved-over-haskell/)
+* Blog posts, etc.
+  * [10 things...](https://deque.blog/2017/06/14/10-things-idris-improved-over-haskell/)
 
 
 

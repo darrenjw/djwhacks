@@ -1,9 +1,11 @@
 # Idris Reminders
 
 ```bash
+# install
 sudo apt-get install haskell-platform
 cabal update; cabal install idris
 
+# make sure ~/.cabal/bin is in path
 
 idris
 :load hello.idr
@@ -18,6 +20,10 @@ idris -o hello hello.idr
 
 # load the effects package
 idris -p effects
+
+
+# generate javascript
+idris -o change.js change.idr --codegen javascript
 
 
 ```

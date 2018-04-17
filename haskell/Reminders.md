@@ -5,11 +5,13 @@
 Debian (including Raspbian) or Ubuntu:
 ```bash
 apt-get install haskell-platform
+cabal update
 ```
 
 Get Stack on Ubuntu with (but should now be part of haskell-platform):
 ```bash
 apt-get install haskell-stack
+stack update
 ```
 
 ## Using GHC

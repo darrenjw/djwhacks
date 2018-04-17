@@ -28,7 +28,19 @@ pairSum (x,y) = x+y
 x2: Vect 4 Int
 x2 = map pairSum xx
 
+x3: Vect 4 Int
+x3 = zipWith (+) x x
 
+m: Vect 3 (Vect 4 Int)
+m = [ [1,2,3,4], [5,6,7,8], [9,10,11,12] ]
+
+createEmpties : Vect n (Vect 0 elem)
+createEmpties {n = Z} = []
+createEmpties {n = (S k)} = [] :: createEmpties
+
+transposem : Vect m (Vect n a) -> Vect n (Vect m a)
+transposem Nil = createEmpties
+transposem (x :: xs) = zipWith (::) x (transposem xs)
 
 
 

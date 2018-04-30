@@ -37,9 +37,9 @@ object UnbiasedMcmc {
 
   def couplingTest: Unit = {
     //val c = couple(Gamma(10,0.1), Gamma(10,0.1))
-    //val c = couple(Gamma(10,0.1), Gamma(20,0.1))
+    val c = couple(Gamma(10,0.1), Gamma(20,0.1))
     //val c = couple(Gaussian(5,2), Gaussian(4,3))
-    val c = couple(Gaussian(0,1),Gaussian(1,1))
+    //val c = couple(Gaussian(0,1),Gaussian(1,1))
     //val c = couple(Uniform(0,2),Uniform(1,4))
     val cs = c.sample(10000)
     val x = cs map (_._1)
@@ -82,14 +82,14 @@ object UnbiasedMcmc {
 
     import breeze.plot._
     import breeze.linalg._
-    val fig = Figure("Metropolis chain")
+    val fig = Figure("Pair of coupled Metropolis chains")
     val p0 = fig.subplot(0)
     p0 += plot(linspace(1,x.length,x.length),x)
     p0 += plot(linspace(1,y.length,y.length),y)
   }
 
   def main(args: Array[String]): Unit = {
-    //couplingTest
+    couplingTest
     //metropTest
     coupledMetropTest
   }

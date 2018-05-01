@@ -89,7 +89,7 @@ object UnbiasedMcmc {
   }
 
   def main(args: Array[String]): Unit = {
-    couplingTest
+    //couplingTest
     //metropTest
     coupledMetropTest
   }

@@ -72,7 +72,7 @@ object UnbiasedMcmc {
   }
 
   def coupledMetropTest: Unit = {
-    val chain = MarkovChain((10.0,-10.0))(coupledMetKernel((x: Double) => Uniform(x-0.5, x+0.5))(x => Gaussian(0.0,1.0).logPdf(x))).
+    val chain = MarkovChain((5.0,-5.0))(coupledMetKernel((x: Double) => Uniform(x-0.5, x+0.5))(x => Gaussian(0.0,1.0).logPdf(x))).
       steps.
       sliding(2).
       takeWhile(ps => ps.head._1 != ps.head._2).
@@ -87,6 +87,7 @@ object UnbiasedMcmc {
     p0 += plot(linspace(1, x.length, x.length), x)
     p0 += plot(linspace(1, y.length, y.length), y)
   }
+
 
 
   def main(args: Array[String]): Unit = {

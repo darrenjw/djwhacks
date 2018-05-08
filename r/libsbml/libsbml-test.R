@@ -23,7 +23,7 @@ if (errors > 0) {
     }
 
 ## extract model and print some basics
-m = SBMLDocument_getModel(d)
+m = d$getModel()
 
 level   = SBase_getLevel  (d)
 version = SBase_getVersion(d)
@@ -50,16 +50,15 @@ cat( "\n" )
 
 
 ## Now walk through model extracting key modelling info
-cat(Model_getId(m))
-cat("\n")
+cat(m$getId(),"\n")
 
 ## Species and initial amounts
-ns = Model_getNumSpecies(m)
+ns = m$getNumSpecies()
 cat(paste(ns,"species:\n"))
 for (i in 0:(ns-1)) {
-    s = Model_getSpecies(m,i)
-    cat(Species_getId(s))
-    a = Species_getInitialAmount(s)
+    s = m$getSpecies(i)
+    cat(s$getId())
+    a = s$getInitialAmount()
     cat(paste(" =",a))
     cat("\n")
 }
@@ -68,38 +67,38 @@ for (i in 0:(ns-1)) {
 ## TODO
 
 ## Reactions
-nr = Model_getNumReactions(m)
+nr = m$getNumReactions()
 cat(paste(nr,"reactions:\n"))
 for (i in 0:(nr-1)) {
-    r = Model_getReaction(m,i)
-    cat(Reaction_getId(r),": ")
-    nPre = Reaction_getNumReactants(r)
+    r = m$getReaction(i)
+    cat(r$getId(),": ")
+    nPre = r$getNumReactants()
     if (nPre>0) {
         for (j in 0:(nPre-1)) {
             if (j>0) cat(" + ")
-            sr = Reaction_getReactant(r,j)
-            cat(SpeciesReference_getStoichiometry(sr))
-            ##cat(SpeciesReference_getSpecies(sr))
+            sr = r$getReactant(j)
+            cat(sr$getStoichiometry(),"")
+            cat(sr$getSpecies())
         }
     }
     cat(" -> ")
-    nPost = Reaction_getNumProducts(r)
+    nPost = r$getNumProducts()
     if (nPost>0) {
         for (j in 0:(nPost-1)) {
             if (j>0) cat(" + ")
-            sr = Reaction_getProduct(r,j)
-            cat(SpeciesReference_getStoichiometry(sr))
-            ##cat(SpeciesReference_getSpecies(sr))
+            sr = r$getProduct(j)
+            cat(sr$getStoichiometry(),"")
+            cat(sr$getSpecies())
         }
     }
     cat(" ; ")
-    kl = Reaction_getKineticLaw(r)
-    cat(formulaToString(KineticLaw_getMath(kl)),"; ")
-    nparm = KineticLaw_getNumLocalParameters(kl)
+    kl = r$getKineticLaw()
+    cat(formulaToString(kl$getMath()),"; ")
+    nparm = kl$getNumLocalParameters()
     if (nparm>0) {
         for (j in 0:(nparm-1)) {
-            parm = KineticLaw_getLocalParameter(kl,j)
-            cat(Parameter_getId(parm),"=",Parameter_getValue(parm))
+            parm = kl$getLocalParameter(j)
+            cat(parm$getId(),"=",parm$getValue())
         }
     }
     cat("\n")

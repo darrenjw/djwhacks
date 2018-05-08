@@ -3,7 +3,8 @@
 
 source("sbml2spn.R")
 
-filename = "autoreg-3-1.xml"
+##filename = "autoreg-3-1.xml"
+filename = "AutoReg-glo.xml"
 N = sbml2spn(filename)
 
 ## Now see if we can use P to do a simulation...

@@ -11,9 +11,7 @@ object EvilPlotTest {
   import com.cibo.evilplot.colors._
   import com.cibo.evilplot.plot.aesthetics.DefaultTheme._
   import com.cibo.evilplot.numeric.Point
-  import java.awt.image.BufferedImage
   import java.awt.Image.SCALE_SMOOTH
-  import scalafx.embed.swing.SwingFXUtils
   import scalaview.Utils._
 
   def simpleScatter: Unit = {
@@ -52,7 +50,7 @@ object EvilPlotTest {
     }
     val dataStream = data.toStream
     val cumulStream = dataStream.scanLeft(Nil: List[Point])((l,p) => p :: l).drop(1)
-    def dataToImage(data: List[Point]): BufferedImage = {
+    def dataToImage(data: List[Point]) = {
       val plot = LinePlot.series(data, "Line graph", HSL(210, 100, 56))
         .xAxis()
         .yAxis()
@@ -69,7 +67,7 @@ object EvilPlotTest {
   def main(args: Array[String]): Unit = {
     println("Hi")
     //simpleScatter
-    //simpleLineGraph
+    simpleLineGraph
     simplePlotStream
     println("Bye")
   }

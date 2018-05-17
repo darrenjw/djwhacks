@@ -21,7 +21,7 @@ StepGillespie1D <- function(N,d) {
             h0 = hrss + hdss
             if (h0 < 1e-10)
                 t = 1e+99
-            else if (h0 > 1e+06) {
+            else if (h0 > 1e+07) {
                 t = 1e+99
                 warning("Hazard too big - terminating!")
             } else
@@ -84,12 +84,24 @@ x0=matrix(0,nrow=2,ncol=N)
 rownames(x0)=c("x1","x2")
 x0[,round(N/2)]=c(10,5)
 data(spnModels)
-stepLV1D = StepGillespie1D(LV,c(0.2,0.1))
-xx = simTs1D(x0,0,T,1,stepLV1D,verb=TRUE)
-op=par(mfrow=c(2,1))
-image(xx[1,,])
-image(xx[2,,])
+stepLV1D = StepGillespie1D(LV,c(0.6,0.6))
+xx = simTs1D(x0,0,T,0.2,stepLV1D,verb=TRUE)
+cat("max pop is",max(xx),"\n")
+op=par(mfrow=c(1,2))
+image(xx[1,,],main="Prey",xlab="Space",ylab="Time")
+image(xx[2,,],main="Predator",xlab="Space",ylab="Time")
 par(op)
+
+library(grid)
+r = xx[2,,]/max(xx[2,,])
+g = xx[2,,]*0
+b = xx[1,,]/max(xx[1,,])
+col = rgb(r,g,b)
+dim(col)=dim(r)
+grid.newpage()
+grid.raster(col,interpolate=FALSE)
+
+
 
 ## eof
 

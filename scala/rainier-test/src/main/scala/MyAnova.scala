@@ -10,7 +10,6 @@ import com.stripe.rainier.compute._
 import com.stripe.rainier.core._
 import com.stripe.rainier.sampler._
 import com.stripe.rainier.repl._
-//import com.stripe.rainier.report._
 
 object MyAnova {
 
@@ -30,7 +29,7 @@ object MyAnova {
     val prior = for {
       mu <- Normal(0, 100).param
       sigD <- LogNormal(0, 10).param
-      sigE <- LogNormal(0, 10).param
+      sigE <- LogNormal(1, 5).param
     } yield Map("Mu" -> mu, "sigD" -> sigD, "sigE" -> sigE)
 
     def addGroup(current: RandomVariable[Map[String, Real]], i: Int) =
@@ -45,45 +44,62 @@ object MyAnova {
     implicit val rng = RNG.default
 
     println("Model built. Sampling now...")
-    //val out = model.sample()
-    //val out = model.sample(Emcee(5000, 2000, 200))
-    val out =
-      model.sample(HMC(10), 10000, 20000)
+    val its = 10000
+    val thin = 1000
+    //val out = model.sample(Walkers(1000), 100000, its)
+    val out = model.sample(HMC(10), 50000, its*thin, thin)
     println("Sampling finished.")
 
-    println(out.take(20))
-    println("Iterates: " + out.length)
-    println(s"Mu (true value $mu):")
-    println(DensityPlot().plot1D(out map (_("Mu"))).mkString("\n"))
-    println(s"sigE (true value $sigE):")
-    println(DensityPlot().plot1D(out map (_("sigE"))).mkString("\n"))
-    println(s"sigD (true value $sigD):")
-    println(DensityPlot().plot1D(out map (_("sigD"))).mkString("\n"))
-    println("Scatter of sigE against Mu")
-    println(
-      DensityPlot()
-        .plot2D(out map { r =>
-          (r("Mu"), r("sigE"))
-        })
-        .mkString("\n"))
-    println("Scatter of sigD against Mu")
-    println(
-      DensityPlot()
-        .plot2D(out map { r =>
-          (r("Mu"), r("sigD"))
-        })
-        .mkString("\n"))
-    println("Scatter of sigE against sigD")
-    println(
-      DensityPlot()
-        .plot2D(out map { r =>
-          (r("sigD"), r("sigE"))
-        })
-        .mkString("\n"))
-    //new Report(List(out)).printReport()
-    //Report.printReport(model,
-    //                 Hamiltonian(10000, 2000, 100, 10, SampleHMC, 4, 0.001))
-    //Report.printReport(model, Emcee(5000, 2000, 200))
+    println(out.take(5))
+    println("Iterates (requested): " + its)
+    println("Iterates (actual): " + out.length)
+
+    import breeze.plot._
+    import breeze.linalg._
+    val fig = Figure("MCMC Diagnostics")
+    fig.height = 1000
+    fig.width = 1400
+    val p0 = fig.subplot(5,2,0)
+    p0 += plot(linspace(1,its,its),out map (_("Mu")))
+    p0.title = s"mu (true value $mu):"
+    val p1 = fig.subplot(5,2,1)
+    p1 += hist(out map (_("Mu")))
+    p1 += plot(linspace(mu,mu,2),linspace(0,p1.ylim._2,2))
+    val p2 = fig.subplot(5,2,2)
+    p2 += plot(linspace(1,its,its),out map (_("sigE")))
+    p2.title = s"sigE (true value $sigE):"
+    val p3 = fig.subplot(5,2,3)
+    p3 += hist(out map (_("sigE")))
+    p3 += plot(linspace(sigE,sigE,2),linspace(0,p3.ylim._2,2))
+    val p4 = fig.subplot(5,2,4)
+    p4 += plot(linspace(1,its,its),out map (_("sigD")))
+    p4.title = s"sigD (true value $sigD):"
+    val p5 = fig.subplot(5,2,5)
+    p5 += hist(out map (_("sigD")))
+    p5 += plot(linspace(sigD,sigD,2),linspace(0,p5.ylim._2,2))
+    val p6 = fig.subplot(5,2,6)
+    p6 += plot(out map (_("Mu")),out map (_("sigE")),'.')
+    p6.xlabel = "Mu"
+    p6.ylabel = "sigE"
+    p6.title = "sigE against Mu"
+    p6 += plot(linspace(mu,mu,2),linspace(p6.ylim._1,p6.ylim._2,2))
+    p6 += plot(linspace(p6.xlim._1,p6.xlim._2,2),linspace(sigE,sigE,2))
+    val p7 = fig.subplot(5,2,7)
+    p7 += plot(out map (_("Mu")),out map (_("sigD")),'.')
+    p7.xlabel = "Mu"
+    p7.ylabel = "sigD"
+    p7.title = "sigD against Mu"
+    p7 += plot(linspace(mu,mu,2),linspace(p7.ylim._1,p7.ylim._2,2))
+    p7 += plot(linspace(p7.xlim._1,p7.xlim._2,2),linspace(sigD,sigD,2))
+    val p8 = fig.subplot(5,2,8)
+    p8 += plot(out map (_("sigE")),out map (_("sigD")),'.')
+    p8.xlabel = "sigE"
+    p8.ylabel = "sigD"
+    p8.title = "sigD against sigE"
+    p8 += plot(linspace(sigE,sigE,2),linspace(p8.ylim._1,p8.ylim._2,2))
+    p8 += plot(linspace(p8.xlim._1,p8.xlim._2,2),linspace(sigD,sigD,2))
+
+
 
   }
 

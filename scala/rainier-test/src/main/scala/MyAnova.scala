@@ -32,22 +32,23 @@ object MyAnova {
       sigE <- LogNormal(1, 5).param
     } yield Map("Mu" -> mu, "sigD" -> sigD, "sigE" -> sigE)
 
-    def addGroup(current: RandomVariable[Map[String, Real]], i: Int) =
-      for {
-        map <- current
-        gm <- Normal(map("Mu"), map("sigE")).param
-        _ <- Normal(gm, map("sigD")).fit(data(i))
-      } yield map //.updated(f"M$i%02d", gm)
+    def addGroup(current: Map[String, Real], i: Int) = for {
+        gm <- Normal(current("Mu"), current("sigE")).param
+        _ <- Normal(gm, current("sigD")).fit(data(i))
+      } yield gm 
 
-    val model = (0 until n).foldLeft(prior)(addGroup(_, _))
+    val model = for {
+      current <- prior
+      _ <- RandomVariable.traverse((0 until n) map (addGroup(current, _)))
+    } yield current
 
     implicit val rng = RNG.default
 
     println("Model built. Sampling now...")
     val its = 10000
-    val thin = 1000
+    val thin = 100
     //val out = model.sample(Walkers(1000), 100000, its)
-    val out = model.sample(HMC(10), 50000, its*thin, thin)
+    val out = model.sample(HMC(10), 150000, its*thin, thin)
     println("Sampling finished.")
 
     println(out.take(5))

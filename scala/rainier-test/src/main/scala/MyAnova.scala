@@ -3,7 +3,6 @@ MyAnova.scala
 
 Try doing a one-way ANOVA with random effects model using Rainier
 
-
  */
 
 import com.stripe.rainier.compute._
@@ -13,10 +12,31 @@ import com.stripe.rainier.repl._
 
 object MyAnova {
 
+  import scala.language.higherKinds
+  trait Thinnable[F[_]] {
+    def thin[T](f: F[T], th: Int): F[T]
+  }
+
+  implicit class ThinnableSyntax[T,F[T]](value: F[T]) {
+    def thin(th: Int)(implicit inst: Thinnable[F]): F[T] =
+      inst.thin(value,th)
+  }
+
+  implicit val streamThinnable: Thinnable[Stream] =
+    new Thinnable[Stream] {
+      def thin[T](s: Stream[T],th: Int): Stream[T] = {
+        val ss = s.drop(th-1)
+        if (ss.isEmpty) Stream.empty else
+                                       ss.head #:: thin(ss.tail, th)
+      }
+    }
+
+
+
   def main(args: Array[String]): Unit = {
 
     // first simulate some data from an ANOVA model
-    val r = new scala.util.Random
+    val r = new scala.util.Random(0)
     val n = 50 // groups
     val N = 250 // obs per group
     val mu = 5.0 // overall mean
@@ -42,13 +62,16 @@ object MyAnova {
       _ <- RandomVariable.traverse((0 until n) map (addGroup(current, _)))
     } yield current
 
-    implicit val rng = RNG.default
+    implicit val rng = ScalaRNG(3)
 
     println("Model built. Sampling now...")
     val its = 10000
-    val thin = 100
+    val thin = 1000
     //val out = model.sample(Walkers(1000), 100000, its)
-    val out = model.sample(HMC(10), 150000, its*thin, thin)
+    //val out = model.sample(HMC(5), 1000000, its*thin, thin)
+    val outs = model.toStream(HMC(5),1000000)
+    println("Warmed up. Now sampling.")
+    val out = outs.thin(thin).take(its).map(_()).toList
     println("Sampling finished.")
 
     println(out.take(5))

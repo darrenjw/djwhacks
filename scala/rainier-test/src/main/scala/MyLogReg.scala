@@ -29,7 +29,7 @@ object MyLogReg {
   def main(args: Array[String]): Unit = {
 
     // first simulate some data from a logistic regression model
-    val r = new scala.util.Random
+    val r = new scala.util.Random(0)
     val N = 1000
     val beta0 = 0.1
     val beta1 = 0.3
@@ -47,22 +47,22 @@ object MyLogReg {
     val model = for {
       beta0 <- Normal(0, 5).param
       beta1 <- Normal(0, 5).param
-      _ <- Predictor
-        .from { x: Double =>
+      _ <- Predictor.from{x: Double =>
           {
             val theta = beta0 + beta1 * x
             val p = Real(1.0) / (Real(1.0) + (Real(0.0) - theta).exp)
             //Bernoulli(p)
             Binomial(p,1)
           }
-        }
-        .fit(x zip y)
+        }.fit(x zip y)
     } yield (beta0, beta1)
 
-    implicit val rng = RNG.default
+    //implicit val rng = RNG.default
+    implicit val rng = ScalaRNG(3)
     val its = 10000
+    val thin = 5
     //val out = model.sample(Walkers(100), 10000, its)
-    val out = model.sample(HMC(5), 10000, its)
+    val out = model.sample(HMC(5), 10000, its*thin, thin)
     //val out = model.toStream(HMC(5), 1000).take(its).map(_()).toArray
     println(out.take(10))
 

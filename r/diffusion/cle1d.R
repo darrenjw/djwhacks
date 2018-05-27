@@ -55,7 +55,7 @@ LVTest <- function() {
     x0=matrix(0,nrow=2,ncol=N)
     rownames(x0)=c("x1","x2")
     x0[,round(N/2)]=LV$M
-    stepLV1D = StepCLE1D(LV,c(0.6,0.6))
+    stepLV1D = StepCLE1D(LV,c(0.6,0.6),dt=0.001)
     xx = simTs1D(x0,0,T,0.2,stepLV1D,verb=TRUE)
     op=par(mfrow=c(1,2))
     image(xx[1,,],main="Prey",xlab="Space",ylab="Time")

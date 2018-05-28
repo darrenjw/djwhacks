@@ -75,6 +75,8 @@ object MyLogReg {
     println(DensityPlot().plot2D(out).mkString("\n"))
      */
 
+
+    /*
     import breeze.plot._
     import breeze.linalg._
     val fig = Figure("MCMC diagnostics")
@@ -101,6 +103,36 @@ object MyLogReg {
     p4.ylim = (-1,1)
     p4 += plot(linspace(beta0,beta0,2),linspace(-1,1,2))
     p4 += plot(linspace(-1,1,2),linspace(beta1,beta1,2))
+     */
+
+
+    import com.cibo.evilplot.plot._
+    import com.cibo.evilplot.colors._
+    import com.cibo.evilplot.plot.aesthetics.DefaultTheme._
+    import com.cibo.evilplot.numeric.Point
+
+    val data = out.map(_._1).zipWithIndex.map(p => Point(p._2,p._1))
+    val trace = LinePlot.series(data, "Line graph", HSL(210, 100, 56)).
+      xAxis().yAxis().frame().hline(beta0).
+      xLabel("Iteration").yLabel("b0").title("Trace plot")
+    val hist = Histogram(out.map(_._1),30).xAxis().yAxis().frame().
+      xLabel("b0").yLabel("Frequency").vline(beta0)
+    val data1 = out.map(_._2).zipWithIndex.map(p => Point(p._2,p._1))
+    val trace1 = LinePlot.series(data1, "Line graph", HSL(210, 100, 56)).
+      xAxis().yAxis().frame().hline(beta1).
+      xLabel("Iteration").yLabel("b1").title("Trace plot")
+    val hist1 = Histogram(out.map(_._2),30).xAxis().yAxis().frame().
+      xLabel("b1").yLabel("Frequency").vline(beta1)
+    val scatter = ScatterPlot(out.map(p => Point(p._1,p._2))).
+      xAxis().yAxis().frame().vline(beta0).hline(beta1).
+      xLabel("b0").yLabel("b1")
+    val contour = ContourPlot(out.map(p => Point(p._1,p._2))).
+      xAxis().yAxis().frame().vline(beta0).hline(beta1).
+      xLabel("b0").yLabel("b1")
+    val plot = Facets(Seq(Seq(trace,hist),Seq(trace1,hist1),Seq(scatter,contour)))
+    javax.imageio.ImageIO.write(plot.render().asBufferedImage, "png",
+      new java.io.File("traceplot.png"))
+
 
   }
 

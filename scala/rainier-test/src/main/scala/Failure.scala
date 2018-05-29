@@ -44,6 +44,7 @@ object Failing {
     val thin = 1000
     val out = model.sample(HMC(5), 1000000, its*thin, thin)
     println("Sampling finished.")
+    println(out.take(10))
 
   }
 

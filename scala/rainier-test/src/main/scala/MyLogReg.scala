@@ -42,6 +42,8 @@ object MyLogReg {
     def expit(x: Double): Double = 1.0 / (1.0 + math.exp(-x))
     val p = theta map expit
     val y = p map (pi => if (r.nextDouble < pi) 1 else 0)
+    println(y.take(10))
+    println(x.take(10))
 
     // now build and fit model
     val model = for {

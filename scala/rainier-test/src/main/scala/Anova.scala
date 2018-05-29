@@ -1,5 +1,5 @@
 /*
-MyAnova.scala
+Anova.scala
 
 Try doing a one-way ANOVA with random effects model using Rainier
 
@@ -10,7 +10,7 @@ import com.stripe.rainier.core._
 import com.stripe.rainier.sampler._
 import com.stripe.rainier.repl._
 
-object MyAnova {
+object Anova {
 
   import scala.language.higherKinds
   trait Thinnable[F[_]] {

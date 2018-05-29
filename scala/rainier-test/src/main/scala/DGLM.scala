@@ -1,5 +1,5 @@
 /*
-MyDGLM.scala
+DGLM.scala
 
 Try doing a DGLM - AR(1) latent state and Poisson observations
 
@@ -11,7 +11,7 @@ import com.stripe.rainier.core._
 import com.stripe.rainier.sampler._
 import com.stripe.rainier.repl._
 
-object MyDGLM {
+object DGLM {
 
   implicit val rng = RNG.default
 

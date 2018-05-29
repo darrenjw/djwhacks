@@ -1,5 +1,5 @@
 /*
-MyDLM.scala
+DLM.scala
 
 Try doing a DLM - AR(1) latent state and Gaussian observations
 
@@ -10,7 +10,7 @@ import com.stripe.rainier.core._
 import com.stripe.rainier.sampler._
 import com.stripe.rainier.repl._
 
-object MyDLM {
+object DLM {
 
   def main(args: Array[String]): Unit = {
 

@@ -1,5 +1,5 @@
 /*
-MyLogReg.scala
+LogReg.scala
 
 Try doing a logistic regression model using Rainier
 
@@ -24,7 +24,7 @@ case class Bernoulli(p: Real) extends Distribution[Int] {
 
 }
 
-object MyLogReg {
+object LogReg {
 
   def main(args: Array[String]): Unit = {
 

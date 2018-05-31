@@ -16,11 +16,10 @@ object DLM {
 
     // first simulate some data from a DLM model
     val r = new scala.util.Random
-    val n = 250 // time points
-    //val n = 1000 // time points
+    val n = 20 // time points
     val mu = 3.0 // AR(1) mean
     val a = 0.95 // auto-regressive parameter
-    val sig = 2.0 // AR(1) SD
+    val sig = 1.0 // AR(1) SD
     val sigD = 3.0 // observational SD
     val state = Stream
       .iterate(0.0)(x => mu + (x - mu) * a + sig * r.nextGaussian)
@@ -63,8 +62,8 @@ object DLM {
 
     println("Model built. Sampling now...")
     //val out = model.sample()
-    val out = model.sample(Walkers(100), 1000, 2000)
-    //val out = model.sample(HMC(10), 1000, 2000)
+    //val out = model.sample(Walkers(100), 1000, 2000)
+    val out = model.sample(HMC(5), 2000, 10000)
     println("Sampling finished.")
 
     println("Iterates: " + out.length)
@@ -85,7 +84,6 @@ object DLM {
           (r("mu"), r("sig"))
         })
         .mkString("\n"))
-    //Report.printReport(model, Emcee(5000, 2000, 200))
 
   }
 

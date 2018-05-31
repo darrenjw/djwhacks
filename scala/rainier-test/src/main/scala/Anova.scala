@@ -66,12 +66,9 @@ object Anova {
 
     println("Model built. Sampling now...")
     val its = 10000
-    val thin = 1000
+    val thin = 10000
     //val out = model.sample(Walkers(1000), 100000, its)
     val out = model.sample(HMC(5), 1000000, its*thin, thin)
-    //val outs = model.toStream(HMC(5),1000000)
-    //println("Warmed up. Now sampling.")
-    //val out = outs.thin(thin).take(its).map(_()).toList
     println("Sampling finished.")
 
     println(out.take(10))

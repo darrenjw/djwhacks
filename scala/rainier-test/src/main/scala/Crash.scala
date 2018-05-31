@@ -1,8 +1,6 @@
 /*
-DLM.scala
-
-Try doing a DLM - AR(1) latent state and Gaussian observations
-
+Crash.scala
+Crashes Rainier
  */
 
 import com.stripe.rainier.compute._
@@ -10,7 +8,7 @@ import com.stripe.rainier.core._
 import com.stripe.rainier.sampler._
 import com.stripe.rainier.repl._
 
-object DLM {
+object Crash {
 
   def main(args: Array[String]): Unit = {
 
@@ -61,48 +59,8 @@ object DLM {
     implicit val rng = ScalaRNG(4)
 
     println("Model built. Sampling now...")
-    val thin=1
-    val out = model.sample(HMC(5), 5000, 10000*thin,thin)
+    val out = model.sample(HMC(5), 5000, 10000)
     println("Sampling finished.")
-
-    println("Iterates: " + out.length)
-    println("First 20:")
-    println(out.take(20))
-    println(s"Mu (true value $mu):")
-    println(DensityPlot().plot1D(out map (_("mu"))).mkString("\n"))
-    println(s"a (true value $a):")
-    println(DensityPlot().plot1D(out map (_("a"))).mkString("\n"))
-    println(s"sig (true value $sig):")
-    println(DensityPlot().plot1D(out map (_("sig"))).mkString("\n"))
-    println(s"sigD (true value $sigD):")
-    println(DensityPlot().plot1D(out map (_("sigD"))).mkString("\n"))
-    println("Scatter of sig against mu")
-    println(
-      DensityPlot()
-        .plot2D(out map { r =>
-          (r("mu"), r("sig"))
-        })
-        .mkString("\n"))
-
-    // now some EvilPlots
-    import com.cibo.evilplot.plot._
-    import com.cibo.evilplot.geometry.Extent
-    import com.cibo.evilplot.plot.aesthetics.DefaultTheme._
-
-    val traceplots = Facets(
-      EvilTraceplots.traces(out, Map("mu"->mu,"a"->a,"sig"->sig,"sigD"->sigD))
-    )
-    javax.imageio.ImageIO.write(traceplots.render(Extent(1200,1400)).asBufferedImage,
-      "png", new java.io.File("traceplots.png"))
-    val pairs = Facets(
-      EvilTraceplots.pairs(out, Map("mu"->mu,"a"->a,"sig"->sig,"sigD"->sigD))
-    )
-    javax.imageio.ImageIO.write(pairs.render(Extent(1400,1400)).asBufferedImage,
-      "png", new java.io.File("pairs.png"))
-
-    // plots written out to file
-
-
 
   }
 

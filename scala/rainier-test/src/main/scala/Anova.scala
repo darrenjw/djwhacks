@@ -47,8 +47,8 @@ object Anova {
     println("Model built. Sampling now (will take a long time)...")
     val its = 10000
     val thin = 10000
-    //val out = model.sample(HMC(5), 1500000, its*thin, thin)
-    val out = model.sample(HMC(5), 10000, its*10, 10)
+    val out = model.sample(HMC(5), 1500000, its*thin, thin)
+    //val out = model.sample(HMC(5), 10000, its*10, 10)
     println("Sampling finished.")
 
     // process output

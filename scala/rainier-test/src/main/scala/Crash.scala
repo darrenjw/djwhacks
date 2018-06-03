@@ -14,7 +14,7 @@ object Crash {
 
     // first simulate some data from a DLM model
     val r = new scala.util.Random(0)
-    val n = 20 // time points
+    val n = 50 // time points
     val mu = 3.0 // AR(1) mean
     val a = 0.95 // auto-regressive parameter
     val sig = 1.0 // AR(1) SD

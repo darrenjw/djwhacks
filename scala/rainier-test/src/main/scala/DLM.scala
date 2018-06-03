@@ -16,7 +16,7 @@ object DLM {
 
     // first simulate some data from a DLM model
     val r = new scala.util.Random(0)
-    val n = 20 // time points
+    val n = 40 // time points
     val mu = 3.0 // AR(1) mean
     val a = 0.95 // auto-regressive parameter
     val sig = 1.0 // AR(1) SD
@@ -60,9 +60,9 @@ object DLM {
 
     implicit val rng = ScalaRNG(4)
 
-    println("Model built. Sampling now...")
+    println("Model built. Sampling now (will take a long time)...")
     val thin=1
-    val out = model.sample(HMC(5), 5000, 10000*thin,thin)
+    val out = model.sample(HMC(5), 10000, 10000*thin,thin)
     println("Sampling finished.")
 
     println("Iterates: " + out.length)
@@ -90,18 +90,17 @@ object DLM {
     import com.cibo.evilplot.plot.aesthetics.DefaultTheme._
 
     val traceplots = Facets(
-      EvilTraceplots.traces(out, Map("mu"->mu,"a"->a,"sig"->sig,"sigD"->sigD))
+      EvilTraceplots.traces(out, Map("mu"->mu,"a"->a,"sigD"->sigD,"sig"->sig,"SP"->state(0)))
     )
     javax.imageio.ImageIO.write(traceplots.render(Extent(1200,1400)).asBufferedImage,
       "png", new java.io.File("traceplots.png"))
     val pairs = Facets(
-      EvilTraceplots.pairs(out, Map("mu"->mu,"a"->a,"sig"->sig,"sigD"->sigD))
+      EvilTraceplots.pairs(out, Map("mu"->mu,"a"->a,"sigD"->sigD,"sig"->sig,"SP"->state(0)))
     )
     javax.imageio.ImageIO.write(pairs.render(Extent(1400,1400)).asBufferedImage,
       "png", new java.io.File("pairs.png"))
 
     // plots written out to file
-
 
 
   }

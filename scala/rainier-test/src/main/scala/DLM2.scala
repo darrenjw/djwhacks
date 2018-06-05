@@ -32,7 +32,7 @@ object DLM2 {
     // build and fit model
     val prior = for {
       mu <- Normal(5, 10).param
-      a <- Uniform(0.8,1).param//Normal(1, 0.2).param
+      a <- Normal(1, 0.2).param
       sig <- LogNormal(0,2).param
       sigD <- LogNormal(1,4).param
       sp <- Normal(0, 50).param

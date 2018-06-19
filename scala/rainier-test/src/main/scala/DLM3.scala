@@ -8,15 +8,14 @@ object DLM3 {
 
     // first simulate some data from a DLM model
     implicit val rng = ScalaRNG(1)
-    val n = 75 // number of observations/time points
+    val n = 60 // number of observations/time points
     val mu = 3.0 // AR(1) mean
     val a = 0.95 // auto-regressive parameter
-    val sig = 1.0 // AR(1) SD
+    val sig = 0.2 // AR(1) SD
     val sigD = 3.0 // observational SD
-    val state = Stream
-      .iterate(0.0)(x => mu + (x - mu) * a + sig * rng.standardNormal)
-      .take(n)
-      .toVector
+    val state = Stream.
+      iterate(0.0)(x => mu + (x - mu) * a + sig * rng.standardNormal).
+      take(n).toVector
     val obs = state.map(_ + sigD * rng.standardNormal)
 
     // build and fit model
@@ -58,28 +57,18 @@ object DLM3 {
     // sampling
     println("Model built. Sampling now (will take a long time)...")
     val thin = 500
-    val out = model.sample(HMC(4), 100000, 10000 * thin, thin)
+    val out = model.sample(HMC(3), 100000, 10000 * thin, thin)
     println("Sampling finished.")
 
     // some diagnostic plots
     import com.cibo.evilplot.geometry.Extent
     import com.stripe.rainier.plot.EvilTracePlot._
 
-    render(traces(out,
-                  truth = Map("mu" -> mu,
-                              "a" -> a,
-                              "sigD" -> sigD,
-                              "sig" -> sig,
-                              "SP" -> state(0))),
-           "traceplots.png",
+    val truth = Map("mu" -> mu, "a" -> a, "sigD" -> sigD,
+      "sig" -> sig, "SP" -> state(0))
+    render(traces(out, truth), "traceplots.png",
            Extent(1200, 1400))
-    render(pairs(out,
-                 truth = Map("mu" -> mu,
-                             "a" -> a,
-                             "sigD" -> sigD,
-                             "sig" -> sig,
-                             "SP" -> state(0))),
-           "pairs.png")
+    render(pairs(out, truth), "pairs.png")
     println("Diagnostic plots written to disk")
 
   }

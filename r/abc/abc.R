@@ -131,11 +131,11 @@ cat("Now ABC-SMC\n")
 rprior <- function() { runif(3, -5, 3) }
 dprior <- function(x, ...) { sum(dunif(x, -5, 3, ...)) }
 rmodel <- function(th) { simTs(c(50,100), 0, 30, 2, stepLVc, exp(th)) }
-rperturb <- function(th){th + rnorm(3, 0, 0.2)}
-dperturb <- function(thOld, thNew, ...){sum(dnorm(thNew, thOld, 0.2, ...))}
+rperturb <- function(th){th + rnorm(3, 0, 0.5)}
+dperturb <- function(thOld, thNew, ...){sum(dnorm(thNew, thOld, 0.5, ...))}
 
 out = abcSmc(10000, rprior, dprior, rdist, rperturb,
-             dperturb, verb=TRUE, steps=6)
+             dperturb, verb=TRUE, steps=8)
 
 print(summary(out))
 

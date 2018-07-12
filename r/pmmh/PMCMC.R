@@ -3,8 +3,7 @@
 ## make sure the package is loaded
 require(smfsb)
 
-#require(parallel)
-#options(mc.cores=4)
+require(parallel)
 
 ## code to factor out
 ppfMLLik = function (n, simx0, t0, stepFun, dataLik, data) 
@@ -13,29 +12,18 @@ ppfMLLik = function (n, simx0, t0, stepFun, dataLik, data)
     deltas = diff(times)
     return(function(...) {
         xmat = simx0(n, t0, ...)
-        xl = split(xmat,row(xmat))
-        xl = Map(function(x) {
-            names(x) = colnames(xmat)
-            x }, xl)
-        #print(xl)
         ll = 0
         for (i in 1:length(deltas)) {
-            print(i)
-            xlp = Map(stepFun, xl, t0 = times[i], deltat = deltas[i], 
-                     ...)
-            print(xlp)
-            lw = Map(dataLik, xlp, t = times[i + 1],
-                       y = data[i,], log = TRUE, ...)
-            lw = sapply(lw,identity)
-            print(lw)
+            xmat = t(parApply(cl, xmat, 1, stepFun, t0 = times[i],
+                             deltat = deltas[i], ...))
+            lw = parRapply(cl, xmat, dataLik, t = times[i + 1],
+                           y = data[i,], log = TRUE, ...)
             m = max(lw)
             rw = lw - m
             sw = exp(rw)
-            #print(sw)
             ll = ll + m + log(mean(sw))
             rows = sample(1:n, n, replace = TRUE, prob = sw)
-            xl = Map(function(r){ xlp[[r]] }, as.list(rows))
-            #print(xl)
+            xmat = xmat[rows,]
         }
         ll
     })
@@ -97,7 +85,11 @@ th=c(th1 = 1, th2 = 0.005, th3 = 0.6)
 #th=c(th1 = 1, th2 = 0.005, th3 = 0.6, sd=10)
 p = length(th)
 rprop = function(th, tune=0.01) { th*exp(rnorm(p,0,tune)) }
-thmat = metropolisHastings(th,mLLik1,rprop,iters=100,thin=1)
+
+cl = makeCluster(4)
+clusterExport(cl,c("noiseSD"))
+thmat = metropolisHastings(th,mLLik1,rprop,iters=1000,thin=10)
+stopCluster(cl)
 
 ## Dump MCMC output matrix to disk
 save(thmat,file="LV.RData")

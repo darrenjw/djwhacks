@@ -63,7 +63,7 @@ abcSmcStep <- function(dprior, priorSample, priorLW, rdist, rperturb,
 
 data(LVdata)
 
-rprior <- function() { exp(runif(3, -5, 3)) }
+rprior <- function() { exp(c(runif(1, -3, 3),runif(1,-8,-2),runif(1,-4,2))) }
 rmodel <- function(th) { simTs(c(50,100), 0, 30, 2, stepLVc, th) }
 ## Compare to LVperfect...
 sumStats <- identity
@@ -84,9 +84,12 @@ print(summary(accepted))
 print(summary(log(accepted)))
 
 op=par(mfrow=c(3,1))
-hist(log(accepted[,1]))
-hist(log(accepted[,2]))
-hist(log(accepted[,3]))
+hist(log(accepted[,1]),xlim=c(-3,3))
+abline(v=log(1),col=2,lwd=2)
+hist(log(accepted[,2]),xlim=c(-8,-2))
+abline(v=log(0.005),col=2,lwd=2)
+hist(log(accepted[,3]),xlim=c(-4,2))
+abline(v=log(0.6),col=2,lwd=2)
 par(op)
 pairs(log(accepted))
 
@@ -104,8 +107,9 @@ ssi <- function(ts)
 }
 
 cat("Pilot run\n")
-out = abcRun(10000, rprior, function(th) { ssi(rmodel(th)) })
+out = abcRun(100000, rprior, function(th) { ssi(rmodel(th)) })
 sds = apply(out$dist, 2, sd)
+print(sds)
 
 cat("Main run with calibrated summary stats\n")
 sumStats <- function(ts) { ssi(ts)/sds }
@@ -119,17 +123,21 @@ print(summary(accepted))
 print(summary(log(accepted)))
 
 op=par(mfrow=c(3,1))
-hist(log(accepted[,1]))
-hist(log(accepted[,2]))
-hist(log(accepted[,3]))
+hist(log(accepted[,1]),xlim=c(-3,3))
+abline(v=log(1),col=2,lwd=2)
+hist(log(accepted[,2]),xlim=c(-8,-2))
+abline(v=log(0.005),col=2,lwd=2)
+hist(log(accepted[,3]),xlim=c(-4,2))
+abline(v=log(0.6),col=2,lwd=2)
 par(op)
 pairs(log(accepted))
 
 
 cat("Now ABC-SMC\n")
 ## Do prior on log space now...
-rprior <- function() { runif(3, -5, 3) }
-dprior <- function(x, ...) { sum(dunif(x, -5, 3, ...)) }
+rprior <- function() { c(runif(1, -3, 3), runif(1, -8, -2), runif(1, -4, 2)) }
+dprior <- function(x, ...) { dunif(x[1], -3, 3, ...) + 
+		dunif(x[2], -8, -2, ...) + dunif(x[3], -4, 2, ...) }
 rmodel <- function(th) { simTs(c(50,100), 0, 30, 2, stepLVc, exp(th)) }
 rperturb <- function(th){th + rnorm(3, 0, 0.5)}
 dperturb <- function(thOld, thNew, ...){sum(dnorm(thNew, thOld, 0.5, ...))}
@@ -140,9 +148,12 @@ out = abcSmc(10000, rprior, dprior, rdist, rperturb,
 print(summary(out))
 
 op=par(mfrow=c(3,1))
-hist(out[,1])
-hist(out[,2])
-hist(out[,3])
+hist(out[,1],xlim=c(-3,3))
+abline(v=log(1),col=2,lwd=2)
+hist(out[,2],xlim=c(-8,-2))
+abline(v=log(0.005),col=2,lwd=2)
+hist(out[,3],xlim=c(-4,2))
+abline(v=log(0.6),col=2,lwd=2)
 par(op)
 pairs(out)
 

@@ -28,7 +28,7 @@ rdist <- function(th) { distance(sumStats(rmodel(th))) }
 
 cat("Now ABC-SMC\n")
 rperturb <- function(th){th + rnorm(3, 0, 0.5)}
-dperturb <- function(thOld, thNew, ...){sum(dnorm(thNew, thOld, 0.5, ...))}
+dperturb <- function(thNew, thOld, ...){sum(dnorm(thNew, thOld, 0.5, ...))}
 out = abcSmc(2000, rprior, dprior, rdist, rperturb,
              dperturb, verb=TRUE, steps=8, factor=5)
 print(summary(out))

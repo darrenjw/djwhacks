@@ -1,3 +1,10 @@
+# Outline
+
+* Streaming data
+* State space models
+* Composable and on-line models
+* The Urban Observatory
+
 # Streaming data
 
 * blah
@@ -19,4 +26,7 @@
 
 
 # Functional models of on-line algorithms and PPLs
+
+
+# The Urban Observatory
 

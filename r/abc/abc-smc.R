@@ -31,6 +31,9 @@ rperturb <- function(th){th + rnorm(3, 0, 0.5)}
 dperturb <- function(thNew, thOld, ...){sum(dnorm(thNew, thOld, 0.5, ...))}
 out = abcSmc(2000, rprior, dprior, rdist, rperturb,
              dperturb, verb=TRUE, steps=8, factor=5)
+
+
+
 print(summary(out))
 
 op=par(mfrow=c(3,1))

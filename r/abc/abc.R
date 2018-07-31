@@ -1,7 +1,7 @@
 ## abc.R
 
 library(smfsb)
-options(mc.cores=4)
+#options(mc.cores=4)
 data(LVdata)
 
 rprior <- function() { exp(c(runif(1, -3, 3),runif(1,-8,-2),runif(1,-4,2))) }

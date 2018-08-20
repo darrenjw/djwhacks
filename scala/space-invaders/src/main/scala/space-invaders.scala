@@ -1,6 +1,6 @@
 /*
-Stub.scala
-Stub for Scala Breeze code
+space-invaders.scala
+Simple space invaders kata
 */
 
 object Stub {
@@ -52,7 +52,7 @@ object Stub {
     (0 until width).foreach(x => print("-"))
     println("")
     println("")
-    Thread.sleep(1000)
+    Thread.sleep(500)
     }
 
   def main(args: Array[String]): Unit = {

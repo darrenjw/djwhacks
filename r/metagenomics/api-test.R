@@ -112,5 +112,12 @@ str(otu)
 barplot(otu$count)
 
 
+taxcsv=read.csv(paste(taxURL,"format=csv",sep="?"),stringsAsFactors=FALSE)
+taxcsv
+str(taxcsv)
+dim(taxcsv)
+taxcsv[,c(4,3)]
+
+
 ## eof
 

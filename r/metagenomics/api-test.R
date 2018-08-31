@@ -100,7 +100,14 @@ analyses$relationships$taxonomy
 analyses$relationships$"taxonomy-ssu"
 analyses$relationships$"taxonomy-lsu"
 
-## taxsURL = as.character(analyses$relationships$"taxonomy-ssu"[[1]])
+
+analysisURL = paste(baseURL,"runs",myRun,"analyses",sep="/")
+analysisURL
+analcsv = read.csv(paste(analysisURL,"format=csv",sep="?"),stringsAsFactors=FALSE)
+analcsv
+analysisID = analcsv$accession
+
+
 taxURL = as.character(analyses$relationships$taxonomy[[1]])
 taxURL
 tax = combinePages(taxURL)
@@ -110,6 +117,7 @@ otu = getOtuByRun(myRun)
 dim(otu)
 str(otu)
 barplot(otu$count)
+
 
 
 taxcsv=read.csv(paste(taxURL,"format=csv",sep="?"),stringsAsFactors=FALSE)

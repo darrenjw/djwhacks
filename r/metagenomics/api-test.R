@@ -14,7 +14,7 @@ library(jsonlite)
 
 ## R Client for new API
 
-baseURL = "https://www.ebi.ac.uk/metagenomics/api/v0.2"
+baseURL = "https://www.ebi.ac.uk/metagenomics/api/v1"
 
 combinePages = function(url,ps=80) {
     if (grepl('?',url,fixed=TRUE))
@@ -58,6 +58,17 @@ getRunsBySample = function(sample) {
     combinePages(runsURL)
 }
 
+getAnalysesByRun = function(run) {
+    analysisURL = paste(baseURL,"runs",run,"analyses",sep="/")
+    combinePages(analysisURL)
+    }
+
+getOtuByRun = function(run) {
+    analyses = getAnalysesByRun(run)
+    taxURL = as.character(analyses$relationships$taxonomy[[1]])
+    tax = combinePages(taxURL)
+    tax$attributes[,1:2]
+    }
 
 
 ## Examples
@@ -80,9 +91,25 @@ mySample = "SRS711891"
 runs = getRunsBySample(mySample)
 runs$id
 runs$links
+runs
 
+myRun = "SRR1589748"
+analyses = getAnalysesByRun(myRun)
+analyses
+analyses$relationships$taxonomy
+analyses$relationships$"taxonomy-ssu"
+analyses$relationships$"taxonomy-lsu"
 
+## taxsURL = as.character(analyses$relationships$"taxonomy-ssu"[[1]])
+taxURL = as.character(analyses$relationships$taxonomy[[1]])
+taxURL
+tax = combinePages(taxURL)
+tax$attributes[,1:2]
 
+otu = getOtuByRun(myRun)
+dim(otu)
+str(otu)
+barplot(otu$count)
 
 
 ## eof

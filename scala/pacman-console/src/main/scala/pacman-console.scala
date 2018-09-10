@@ -17,11 +17,11 @@ object PacmanApp {
 *....*..*..*....*
 ****.*.***.*.****
     ...* *...    
-****.*.* *.*.****
-*....*.....*....*
-*.**.*.***.*.**.*
+******.* *.******
 *...............*
-*.**.**.*.**.**.*
+*.**.*.***.*.**.*
+*....*..*..*....*
+*.**.*..*..*.**.*
 *p......*......p*
 *****************
 
@@ -36,8 +36,8 @@ object PacmanApp {
   case object Empty extends Block
   case object Pill extends Block
   case object PowerPill extends Block
-  case object Ghost extends Block
-  case object Pacman extends Block
+  case object GhostBlock extends Block
+  case object PacmanBlock extends Block
 
   type Maze = Vector[Vector[Block]]
 
@@ -53,8 +53,8 @@ object PacmanApp {
     case Pill => '.'
     case PowerPill => 'p'
     case Empty => ' '
-    case Ghost => 'M'
-    case Pacman => '@'
+    case GhostBlock => 'M'
+    case PacmanBlock => '@'
   }
 
   val maze0 = mazeLines.toVector.map(_.toVector).map(v => v.map(char2block))
@@ -63,17 +63,79 @@ object PacmanApp {
     case Pill => 1
     case _ => 0
   }).sum).sum
-  
-  def renderMaze(maze: Maze): Unit =
-    maze.map(l => l.map(block2char)).map(_.mkString).foreach(println)
 
+  sealed trait Direction {
+    def rand: Direction = {
+      val u = math.random
+      if (u<0.25) Up
+      else if (u<0.5) Down
+      else if (u<0.75) Left
+      else Right
+    }
+  }
+  case object Up extends Direction
+  case object Down extends Direction
+  case object Left extends Direction
+  case object Right extends Direction
 
+  case class Position(x: Int, y: Int) {
+    def move(d: Direction): Position = d match {
+      case Up => Position(x,y-1)
+      case Down => Position(x,y+1)
+      case Left => if (x > 0) Position(x-1,y) else Position(width-1,y)
+      case Right => if (x < width-1) Position(x+1,y) else Position(0,y)
+    }
+  }
+
+  sealed class Sprite(pos: Position, dir: Direction)
+  case class Ghost(pos: Position, dir: Direction) extends
+      Sprite(pos: Position, dir: Direction)
+  case class Pacman(pos: Position, dir: Direction) extends
+      Sprite(pos: Position, dir: Direction)
+
+  def updateGhost(m: Maze,g: Ghost): Ghost = {
+    val newPos = g.pos.move(g.dir)
+    if (m(newPos.y)(newPos.x) == Wall)
+      Ghost(g.pos,g.dir.rand)
+    else
+      Ghost(newPos,g.dir)
+  }
+
+  def updatePacman(gs: GameState): GameState = {
+    val newPos = gs.pm.pos.move(gs.pm.dir)
+    val newPacman = if (gs.m(newPos.y)(newPos.x) == Wall)
+      Pacman(gs.pm.pos,gs.pm.dir.rand)
+    else
+      Pacman(newPos,gs.pm.dir)
+    GameState(gs.m,gs.ghosts,newPacman)
+  }
+
+  val ghost0 = Ghost(Position(8,7),Up)
+  val ghosts0 = Vector.fill(4)(ghost0)
+  val pm0 = Pacman(Position(8,3),Down)
+
+  case class GameState(m: Maze, ghosts: Vector[Ghost], pm: Pacman)
+
+  def updateState(gs: GameState): GameState = {
+    val newGhosts = gs.ghosts.map(g => updateGhost(gs.m,g))
+    updatePacman(GameState(gs.m,newGhosts,gs.pm))
+  }
+
+  def renderGame(gs: GameState): Unit = {
+    val mazeWithGhosts = gs.ghosts.foldLeft(gs.m)((m,g) => m.updated(g.pos.y,m(g.pos.y).updated(g.pos.x,GhostBlock)))
+    val completeMaze = mazeWithGhosts.updated(gs.pm.pos.y,gs.m(gs.pm.pos.y).updated(gs.pm.pos.x,PacmanBlock))
+    println("\n\n\n\n\n\nPill count: "+pillCount(gs.m)+"\n")
+    completeMaze.map(l => l.map(block2char)).map(_.mkString).foreach(println)
+    Thread.sleep(200)
+  }
 
 
   def main(args: Array[String]): Unit = {
     println(height+" x "+width+" game grid")
     println(pillCount(maze0)+" pills initially")
-    renderMaze(maze0)
+    val gs0 = GameState(maze0,ghosts0,pm0)
+    val gameStream = Stream.iterate(gs0)(updateState _)
+    gameStream.foreach(renderGame)
   }
 
 }

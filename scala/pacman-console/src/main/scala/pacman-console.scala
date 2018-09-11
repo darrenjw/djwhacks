@@ -102,12 +102,16 @@ object PacmanApp {
   }
 
   def updatePacman(gs: GameState): GameState = {
+    val newMaze = gs.m(gs.pm.pos.y)(gs.pm.pos.x) match {
+      case Pill => gs.m.updated(gs.pm.pos.y, gs.m(gs.pm.pos.y).updated(gs.pm.pos.x, Empty))
+      case _ => gs.m
+    }
     val newPos = gs.pm.pos.move(gs.pm.dir)
     val newPacman = if (gs.m(newPos.y)(newPos.x) == Wall)
-      Pacman(gs.pm.pos,gs.pm.dir.rand)
+      Pacman(gs.pm.pos, gs.pm.dir.rand)
     else
-      Pacman(newPos,gs.pm.dir)
-    GameState(gs.m,gs.ghosts,newPacman)
+      Pacman(newPos, gs.pm.dir)
+    GameState(newMaze, gs.ghosts, newPacman)
   }
 
   val ghost0 = Ghost(Position(8,7),Up)

@@ -49,9 +49,9 @@ object PacmanApp {
   }
 
   def block2char(b: Block): Char = b match {
-    case Wall => '*'
+    case Wall => '#'
     case Pill => '.'
-    case PowerPill => 'p'
+    case PowerPill => 'o'
     case Empty => ' '
     case GhostBlock => 'M'
     case PacmanBlock => '@'
@@ -101,16 +101,23 @@ object PacmanApp {
       Ghost(newPos,g.dir)
   }
 
-  def updatePacman(gs: GameState): GameState = {
+  def updatePacman(gs: GameState, key: Int): GameState = {
     val newMaze = gs.m(gs.pm.pos.y)(gs.pm.pos.x) match {
       case Pill => gs.m.updated(gs.pm.pos.y, gs.m(gs.pm.pos.y).updated(gs.pm.pos.x, Empty))
       case _ => gs.m
     }
-    val newPos = gs.pm.pos.move(gs.pm.dir)
+    val newDir = key match {
+      case 97 => Up
+      case 122 => Down
+      case 44 => Left
+      case 46 => Right
+      case _ => gs.pm.dir
+    }
+    val newPos = gs.pm.pos.move(newDir)
     val newPacman = if (gs.m(newPos.y)(newPos.x) == Wall)
-      Pacman(gs.pm.pos, gs.pm.dir.rand)
+      Pacman(gs.pm.pos, newDir)
     else
-      Pacman(newPos, gs.pm.dir)
+      Pacman(newPos, newDir)
     GameState(newMaze, gs.ghosts, newPacman)
   }
 
@@ -120,9 +127,9 @@ object PacmanApp {
 
   case class GameState(m: Maze, ghosts: Vector[Ghost], pm: Pacman)
 
-  def updateState(gs: GameState): GameState = {
+  def updateState(gs: GameState,key: Int): GameState = {
     val newGhosts = gs.ghosts.map(g => updateGhost(gs.m,g))
-    updatePacman(GameState(gs.m,newGhosts,gs.pm))
+    updatePacman(GameState(gs.m,newGhosts,gs.pm),key)
   }
 
   def renderGame(gs: GameState): Unit = {
@@ -130,7 +137,6 @@ object PacmanApp {
     val completeMaze = mazeWithGhosts.updated(gs.pm.pos.y,gs.m(gs.pm.pos.y).updated(gs.pm.pos.x,PacmanBlock))
     println("\n\n\n\n\n\nPill count: "+pillCount(gs.m)+"\n")
     completeMaze.map(l => l.map(block2char)).map(_.mkString).foreach(println)
-    Thread.sleep(200)
   }
 
 
@@ -138,8 +144,18 @@ object PacmanApp {
     println(height+" x "+width+" game grid")
     println(pillCount(maze0)+" pills initially")
     val gs0 = GameState(maze0,ghosts0,pm0)
-    val gameStream = Stream.iterate(gs0)(updateState _)
-    gameStream.foreach(renderGame)
+
+    val con = new jline.console.ConsoleReader
+    val is = con.getInput
+    val nbis = new jline.internal.NonBlockingInputStream(is,true)
+    val charStream = Stream.iterate(0)(x => nbis.read(200))
+
+    charStream.foldLeft(gs0)((gs,key) => {
+      val ns = updateState(gs,key)
+      renderGame(gs)
+      ns
+    })
+
   }
 
 }

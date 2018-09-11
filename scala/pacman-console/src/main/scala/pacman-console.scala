@@ -138,11 +138,8 @@ object PacmanApp {
   case class GameState(m: Maze, ghosts: Vector[Ghost], pm: Pacman)
 
   def updateState(gs: GameState,key: Int): GameState = {
-    val gs1 = updateGhost(gs,0)
-    val gs2 = updateGhost(gs1,1)
-    val gs3 = updateGhost(gs2,2)
-    val gs4 = updateGhost(gs3,3)
-    updatePacman(gs4,key)
+    val gsu = (0 until 4).foldLeft(gs)((g,i) => updateGhost(g,i))
+    updatePacman(gsu,key)
   }
 
   def renderGame(gs: GameState): Unit = {

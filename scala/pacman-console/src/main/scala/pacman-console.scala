@@ -138,6 +138,10 @@ object PacmanApp {
     val pillsLeft = pillCount(gs.m)
     println("\n\n\n\n\n\nPills left: "+pillsLeft+"\n")
     completeMaze.map(l => l.map(block2char)).map(_.mkString).foreach(println)
+    if (pillsLeft == 0) {
+      println("\n\n\n *** YOU WIN! ***\n\n\n")
+      System.exit(0)
+    }
   }
 
 

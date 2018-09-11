@@ -107,10 +107,10 @@ object PacmanApp {
       case _ => gs.m
     }
     val newDir = key match {
-      case 97 => Up
-      case 122 => Down
-      case 44 => Left
-      case 46 => Right
+      case 97 => Up // A
+      case 122 => Down // Z
+      case 44 => Left  // ,
+      case 46 => Right // .
       case _ => gs.pm.dir
     }
     val newPos = gs.pm.pos.move(newDir)
@@ -134,8 +134,9 @@ object PacmanApp {
 
   def renderGame(gs: GameState): Unit = {
     val mazeWithGhosts = gs.ghosts.foldLeft(gs.m)((m,g) => m.updated(g.pos.y,m(g.pos.y).updated(g.pos.x,GhostBlock)))
-    val completeMaze = mazeWithGhosts.updated(gs.pm.pos.y,gs.m(gs.pm.pos.y).updated(gs.pm.pos.x,PacmanBlock))
-    println("\n\n\n\n\n\nPill count: "+pillCount(gs.m)+"\n")
+    val completeMaze = mazeWithGhosts.updated(gs.pm.pos.y,mazeWithGhosts(gs.pm.pos.y).updated(gs.pm.pos.x,PacmanBlock))
+    val pillsLeft = pillCount(gs.m)
+    println("\n\n\n\n\n\nPills left: "+pillsLeft+"\n")
     completeMaze.map(l => l.map(block2char)).map(_.mkString).foreach(println)
   }
 

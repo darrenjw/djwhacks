@@ -111,7 +111,7 @@ object PacmanApp {
   }
 
   def updatePacman(gs: GameState, key: Int): GameState = {
-    val newPower = if (gs.m(gs.pm.pos.y)(gs.pm.pos.x) == PowerPill) 100 else gs.pm.power
+    val newPower = if (gs.m(gs.pm.pos.y)(gs.pm.pos.x) == PowerPill) 50 else gs.pm.power
     val newMaze = gs.m(gs.pm.pos.y)(gs.pm.pos.x) match {
       case Pill => gs.m.updated(gs.pm.pos.y, gs.m(gs.pm.pos.y).updated(gs.pm.pos.x, Empty))
       case PowerPill => gs.m.updated(gs.pm.pos.y, gs.m(gs.pm.pos.y).updated(gs.pm.pos.x, Empty))
@@ -159,8 +159,6 @@ object PacmanApp {
 
 
   def main(args: Array[String]): Unit = {
-    println(height+" x "+width+" game grid")
-    println(pillCount(maze0)+" pills initially")
     val gs0 = GameState(maze0,ghosts0,pm0)
 
     val con = new jline.console.ConsoleReader

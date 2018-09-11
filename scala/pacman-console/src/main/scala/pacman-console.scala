@@ -90,24 +90,31 @@ object PacmanApp {
   sealed class Sprite(pos: Position, dir: Direction)
   case class Ghost(pos: Position, dir: Direction) extends
       Sprite(pos: Position, dir: Direction)
-  case class Pacman(pos: Position, dir: Direction) extends
+  case class Pacman(pos: Position, dir: Direction, power: Int) extends
       Sprite(pos: Position, dir: Direction)
 
   def updateGhost(gs: GameState, g: Ghost): Ghost = {
     val newPos = g.pos.move(g.dir)
-    if ((g.pos == gs.pm.pos)|(newPos == gs.pm.pos)) {
-      println("\n\n\n *** YOU LOSE! ***\n\n\n")
-      System.exit(0)
-    }
-    if (gs.m(newPos.y)(newPos.x) == Wall)
+    val newGhost = if (gs.m(newPos.y)(newPos.x) == Wall)
       Ghost(g.pos,g.dir.rand)
     else
       Ghost(newPos,g.dir)
+    if ((g.pos == gs.pm.pos)|(newPos == gs.pm.pos)) {
+      if (gs.pm.power > 0) {
+        ghost0
+      } else {
+        println("\n\n\n *** YOU LOSE! ***\n\n\n")
+        System.exit(0)
+        newGhost
+      }
+    } else newGhost
   }
 
   def updatePacman(gs: GameState, key: Int): GameState = {
+    val newPower = if (gs.m(gs.pm.pos.y)(gs.pm.pos.x) == PowerPill) 100 else gs.pm.power
     val newMaze = gs.m(gs.pm.pos.y)(gs.pm.pos.x) match {
       case Pill => gs.m.updated(gs.pm.pos.y, gs.m(gs.pm.pos.y).updated(gs.pm.pos.x, Empty))
+      case PowerPill => gs.m.updated(gs.pm.pos.y, gs.m(gs.pm.pos.y).updated(gs.pm.pos.x, Empty))
       case _ => gs.m
     }
     val newDir = key match {
@@ -119,15 +126,15 @@ object PacmanApp {
     }
     val newPos = gs.pm.pos.move(newDir)
     val newPacman = if (gs.m(newPos.y)(newPos.x) == Wall)
-      Pacman(gs.pm.pos, newDir)
+      Pacman(gs.pm.pos, newDir, newPower-1)
     else
-      Pacman(newPos, newDir)
+      Pacman(newPos, newDir, newPower-1)
     GameState(newMaze, gs.ghosts, newPacman)
   }
 
   val ghost0 = Ghost(Position(8,7),Up)
   val ghosts0 = Vector.fill(4)(ghost0)
-  val pm0 = Pacman(Position(8,3),Down)
+  val pm0 = Pacman(Position(8,3),Down,-1)
 
   case class GameState(m: Maze, ghosts: Vector[Ghost], pm: Pacman)
 
@@ -140,7 +147,9 @@ object PacmanApp {
     val mazeWithGhosts = gs.ghosts.foldLeft(gs.m)((m,g) => m.updated(g.pos.y,m(g.pos.y).updated(g.pos.x,GhostBlock)))
     val completeMaze = mazeWithGhosts.updated(gs.pm.pos.y,mazeWithGhosts(gs.pm.pos.y).updated(gs.pm.pos.x,PacmanBlock))
     val pillsLeft = pillCount(gs.m)
-    println("\n\n\n\n\n\nPills left: "+pillsLeft+"\n")
+    println("\n\n\n\n\n\nPills left: "+pillsLeft)
+    if (gs.pm.power > 0) println("Power: "+gs.pm.power)
+    println("")
     completeMaze.map(l => l.map(block2char)).map(_.mkString).foreach(println)
     if (pillsLeft == 0) {
       println("\n\n\n *** YOU WIN! ***\n\n\n")

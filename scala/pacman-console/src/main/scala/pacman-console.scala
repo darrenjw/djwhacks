@@ -93,9 +93,13 @@ object PacmanApp {
   case class Pacman(pos: Position, dir: Direction) extends
       Sprite(pos: Position, dir: Direction)
 
-  def updateGhost(m: Maze,g: Ghost): Ghost = {
+  def updateGhost(gs: GameState, g: Ghost): Ghost = {
     val newPos = g.pos.move(g.dir)
-    if (m(newPos.y)(newPos.x) == Wall)
+    if ((g.pos == gs.pm.pos)|(newPos == gs.pm.pos)) {
+      println("\n\n\n *** YOU LOSE! ***\n\n\n")
+      System.exit(0)
+    }
+    if (gs.m(newPos.y)(newPos.x) == Wall)
       Ghost(g.pos,g.dir.rand)
     else
       Ghost(newPos,g.dir)
@@ -128,7 +132,7 @@ object PacmanApp {
   case class GameState(m: Maze, ghosts: Vector[Ghost], pm: Pacman)
 
   def updateState(gs: GameState,key: Int): GameState = {
-    val newGhosts = gs.ghosts.map(g => updateGhost(gs.m,g))
+    val newGhosts = gs.ghosts.map(g => updateGhost(gs,g))
     updatePacman(GameState(gs.m,newGhosts,gs.pm),key)
   }
 

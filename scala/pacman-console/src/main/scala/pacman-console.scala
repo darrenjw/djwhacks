@@ -3,6 +3,8 @@ pacman-console.scala
 
 Simple console version of pacman
 
+Pretty much pure functional. Well, no "vars", anyway... ;-)
+
 */
 
 object PacmanApp {
@@ -142,6 +144,9 @@ object PacmanApp {
     updatePacman(gsu,key)
   }
 
+
+  // Here be dragons...
+
   def renderGame(gs: GameState): Unit = {
     val mazeWithGhosts = gs.ghosts.foldLeft(gs.m)((m,g) => m.updated(g.pos.y,m(g.pos.y).updated(g.pos.x,GhostBlock)))
     val completeMaze = mazeWithGhosts.updated(gs.pm.pos.y,mazeWithGhosts(gs.pm.pos.y).updated(gs.pm.pos.x,PacmanBlock))
@@ -164,12 +169,12 @@ object PacmanApp {
 
   def main(args: Array[String]): Unit = {
     val gs0 = GameState(maze0,ghosts0,pm0)
-
+    // use "jline" to construct a stream of key presses
     val con = new jline.console.ConsoleReader
     val is = con.getInput
     val nbis = new jline.internal.NonBlockingInputStream(is,true)
     val charStream = Stream.iterate(0)(x => nbis.read(200))
-
+    // run the game by folding the game state with the key presses
     charStream.foldLeft(gs0)((gs,key) => {
       val ns = updateState(gs,key)
       renderGame(gs)

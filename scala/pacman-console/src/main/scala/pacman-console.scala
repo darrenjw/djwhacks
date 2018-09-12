@@ -158,10 +158,12 @@ object PacmanApp {
     completeMaze.map(l => l.map(block2char)).map(_.mkString).foreach(println)
     if (pillsLeft == 0) {
       println("\n\n\n *** YOU WIN! ***\n\n\n")
+      Thread.sleep(5000)	
       System.exit(0)
     }
     if (gs.pm.lives == 0) {
       println("\n\n\n *** YOU LOSE! ***\n\n\n")
+      Thread.sleep(5000)
       System.exit(0)
     }
   }

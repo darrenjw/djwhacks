@@ -907,7 +907,6 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
   Again, category theory provides the theory and FP languages provide frameworks and abstractions for implementation
 \end{frame}
 
-\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Scalable statistical modelling}
@@ -918,6 +917,8 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
     \item It turns out that \alert{monads}, and especially \alert{free monads}, can give us a different (better?) perspective on building and inferring probabilistic models
   \end{itemize}
 \end{frame}
+
+\end{comment}
 
 \section{Probability monads}
 
@@ -1084,31 +1085,53 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
     \end{itemize}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{\texttt{RandomVariable} for Bayesian HMC sampling}
   \begin{itemize}
-    \item blah
-    \item Rainier ...
+  \item Rather than using a probability monad to represent samples or methods for sampling, one can instead use them to represent the (joint, log) density of the variables
+    \item |flatMap| just multiplies the (conditional) densities
+    \item Again, conditioning is easy (multiplication), so this forms a good basis for Bayesian PPLs
+    \item Can use the joint posterior for simple MH algorithms (and Gibbs, if dependencies are tracked), but for Langevin and HMC algorithms, also need to keep track of gradients, using automatic differentiation (AD)
+      \item OK, because (reverse-mode) AD on a compute graph is also monadic!
+    \item \alert{Rainier} is a Scala library for HMC sampling of monadic random variables (using a static compute graph, for efficiency)
     \end{itemize}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
   \frametitle{Representation independence using the \emph{free} monad}
   \begin{itemize}
-    \item blah
+  \item However you implement your probability monad, the semantics of your probabilistic program are (essentially) the same
+  \item It would be nice to be able to define and compose probabilistic programmes independently of concerns about implementation, and then to \alert{interpret} the programme with a particular implementation later
+  \item Building a probability monad on top of the \alert{free monad} allows this --- implementation of |pure| and |flatMap| is ``suspended'' in a way that allows subsequent interpretation with concrete implementations later
+    \item In principle, this potentially allows different interpretation of different parts of the model, enabling the composition of different inference algorithms
     \end{itemize}
 \end{frame}
 
 
 
-\begin{frame}
-  \frametitle{Example model}
-  \begin{itemize}
-    \item blah
-    \end{itemize}
+\begin{frame}[fragile]
+\frametitle{Example --- logistic regression in Rainier}
+\begin{lstlisting}[language=scala]
+val model = for {
+      beta0 <- Normal(0, 5).param
+      beta1 <- Normal(0, 5).param
+      _ <- Predictor.fromDouble { x =>
+          {
+            val theta = beta0 + beta1 * x
+            val p = Real(1.0) / (Real(1.0) +
+                (Real(0.0) - theta).exp)
+            Categorical.boolean(p)
+          }
+        }.fit(x zip y)
+} yield Map("b0" -> beta0, "b1" -> beta1)
+
+val out = model.sample(HMC(5), 1000, 10000*10, 10)
+\end{lstlisting}
 \end{frame}
 
 
+\begin{comment}
+  
 \begin{frame}
   \frametitle{Bayesian hierarchical models, graphical models and probabilistic programs}
   \begin{itemize}
@@ -1119,6 +1142,7 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
   \end{itemize}
 \end{frame}
 
+\end{comment}
 
 \begin{frame}
   \frametitle{Compositionality of inference algorithms}
@@ -1142,7 +1166,7 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
   \item Mathematicians and theoretical computer scientists have been thinking about models of (scalable) computation for decades
   \item Functional programming languages based on Cartesian closed categories provide a sensible foundation for computational modelling with appropriate levels of abstraction
   \item Concepts from category theory, such as functors, monads, comonads, natural transformations and recursion schemes provide an appropriate array of tools for scalable data modelling and algorithm construction
-    \item Expressing models and algorithms in FP languages using category theory abstractions narrows the gap between theory and implementation
+    \item Expressing models and algorithms in FP languages using category theory abstractions leads to elegant, composable PPLs ``for free'', doing away with the need to manually construct and parse custom DSLs
 %    \item There is \alert{nothing special} about computations associated with statistical inference which somehow makes these ideas, tools and techniques irrelevant
   \end{itemize}
 \end{frame}
@@ -1164,7 +1188,6 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
   \end{itemize}
 \end{frame}
 
-\end{comment}
 
 \subsection{Conclusions}
 
@@ -1182,6 +1205,8 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
   \item \alert{Scala} and \alert{Spark} provide a nice illustration of the power of this approach, but there are other interesting languages, including: Haskell, Idris, OCaml, Frege, Eta, PureScript, \ldots
   \end{itemize}
   }
+
+\end{comment}
 
 \begin{frame}
   \frametitle{References}

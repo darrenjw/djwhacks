@@ -75,22 +75,23 @@ col, set,start,end,deltat,zip},
 
 \begin{document}
 
-\title[A compositional approach to scalable statistical computation]{A compositional approach to scalable statistical modelling and computation}
-\author[Darren Wilkinson --- Cambridge 8/2/18]{\textbf{\large Darren Wilkinson} \\
-\url{@darrenjw}\\
-\alert{\url{tinyurl.com/darrenjw}}\\
-School of Mathematics \& Statistics\\Newcastle University, UK}
-\date{INI STS Seminar\\Cambridge\\8th February 2018}
-
+\title{Monads for probabilistic programming}
+\author[Darren Wilkinson --- Newcastle 26/10/18]{\textbf{\large Darren Wilkinson} \\
+  \url{@darrenjw}\\
+  \alert{\url{tinyurl.com/darrenjw}}\\
+%School of Mathematics, Statistics and Physics\\
+Newcastle University, UK\\and\\The Alan Turing Institute}
+\date{Statstics Research Group Seminar\\Newcastle University\\26th October 2018}
 
 
 \frame{\titlepage}
 
-\section{Introduction}
-
-\subsection{Outline}
+\section{FP and CT}
 
 \begin{comment}
+
+  \subsection{Outline}
+
   
 \frame{
 \frametitle{Talk outline}
@@ -104,7 +105,6 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \end{itemize}
 }
 
-\end{comment}
 
 \frame{
 \frametitle{Talk outline}
@@ -118,6 +118,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \item Wrap-up
 \end{itemize}
 }
+
+\end{comment}
 
 \subsection{Compositionality}
 
@@ -164,7 +166,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \end{itemize}
 }
 
-
+\begin{comment}
+  
 \frame{
 \frametitle{Compositionality and programming}
 \begin{itemize}
@@ -216,7 +219,6 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   Not obvious that one of these is naturally parallel\ldots
 \end{frame}
 
-\begin{comment}
 
 \frame{
   \frametitle{Modern programming language design}
@@ -230,7 +232,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 
 \end{comment}
 
-\section{FP and CT}
+%\section{FP and CT}
 
 \subsection{Functional Programming}
 
@@ -243,6 +245,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     \item \alert{Statically--typed} FP languages (such as \alert{Haskell}) are arguably more scalable, corresponding to the \alert{simply--typed Lambda--calculus}, closely related to \alert{Cartesian closed categories}...
   \end{itemize}
   }
+
+\begin{comment}
 
 \frame{
   \frametitle{Functional programming}
@@ -265,7 +269,6 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
   \end{itemize}
 \end{frame}
 
-\begin{comment}
   
 \frame{
   \frametitle{Ideal languages for statistical computing}
@@ -355,7 +358,7 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
 \end{comment}
 
 \begin{frame}[fragile]
-  \frametitle{Other monadic types: Prob/Rand}
+  \frametitle{Other monadic types: Prob/Gen/Rand}
   \begin{itemize}
   \item The \alert{Probability monad} is another important monad with obvious relevance to statistical computing
   \item A |Rand[T]| represents a random quantity of type |T|
@@ -366,6 +369,8 @@ School of Mathematics \& Statistics\\Newcastle University, UK}
     %\item The probability monad is typically implemented as a \alert{State monad}, the mechanism for handling mutable state using FP
   \end{itemize}
 \end{frame}
+
+\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{Parallel monadic collections}
@@ -408,6 +413,7 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \end{itemize}
 \end{frame}
 
+\end{comment}
 
 \subsection{Category Theory}
 
@@ -550,7 +556,6 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \centerline{\includegraphics[height=0.9\textheight]{say-monad}}
 \end{frame}
 
-\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Comonads}
@@ -619,6 +624,7 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
+\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Typeclasses for Monoid, Functor, Monad and Comonad}
@@ -643,6 +649,8 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   }
 \end{lstlisting}
 \end{frame}
+
+\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{A generic collection typeclass}
@@ -702,8 +710,6 @@ using map--fusion to avoid constructing a collection of synthetic datasets
 \end{lstlisting}
 \end{frame}
 
-
-\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{A scalable particle filter}
@@ -779,7 +785,6 @@ data.foldLeft((0.0, x0))((prev, o) => {
 |foldLeft| is fundamentally sequential, but the |updater| is parallelisation-agnostic
 \end{frame}
 
-\end{comment}
 
 \begin{frame}[fragile]
 \frametitle{Composable time series models}
@@ -798,7 +803,6 @@ val composedMod = negBinModel |+|
 Another library: \alert{\url{git.io/dlm}} for more conventional linear state space modelling
 \end{frame}
 
-\begin{comment}
 
 \begin{frame}[fragile]
 \frametitle{Composable time series models}
@@ -821,7 +825,6 @@ val poisson = Dglm.poisson(linear)
 \end{lstlisting}
 \end{frame}
 
-\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Comonads for statistical computation}
@@ -904,7 +907,7 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
   Again, category theory provides the theory and FP languages provide frameworks and abstractions for implementation
 \end{frame}
 
-
+\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Scalable statistical modelling}
@@ -915,6 +918,10 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
     \item It turns out that \alert{monads}, and especially \alert{free monads}, can give us a different (better?) perspective on building and inferring probabilistic models
   \end{itemize}
 \end{frame}
+
+\section{Probability monads}
+
+\subsection{Composing random variables}
 
 \begin{frame}[fragile]
   \frametitle{Composing random variables with the probability monad}
@@ -1008,6 +1015,7 @@ MarkovChain(initialState)(kernel).steps.
 And several others...
 \end{frame}
 
+\subsection{Monads for UQ}
 
 \begin{frame}[fragile]
   \frametitle{Probability monads for uncertainty quantification (UQ)}
@@ -1040,6 +1048,64 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
   \]
   effectively just marginalising over our uncertainty about $x$
   \end{itemize}
+\end{frame}
+
+\subsection{Implementations of probability monads}
+
+\begin{frame}[fragile]
+  \frametitle{\texttt{Rand} for forward simulation}
+  \begin{itemize}
+    \item Whilst the semantics of probability monads should be reasonably clear, there are many different ways to implement them, depending on the intended use-case
+  \item The simplest probability monad implementations typically provide a |draw| method, which can be used (with a uniform random number generator) to generate draws from the distribution of interest
+  \item For |x: Rand[X]|, monadic bind |x flatMap (f: X => Rand[Y])| returns |y: Rand[Y]|
+    \item |f| represents a conditional distribution and |y| represents the marginalisation of this distribution over |x|
+    \item The |draw| method for |y| first calls |draw| on |x| (which it holds a reference to), feeds this in to |f| and then calls |draw| on the result
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\texttt{Gen} for property-based testing}
+  \begin{itemize}
+  \item It turns out that monads representing non-determinism are widely used for software testing in FP languages
+  \item Property-based testing is an alternative to unit testing, and is concerned with specifying the properties that your function should satisfy rather than focusing on specific test cases
+  \item Having specified the properties, the testing library then randomly generates test cases for stress-testing functions to ensure correct behaviour
+  \item While not representing a true probability monad (distributional properties are unspecified), these generators have much in common with forward simulation probability monads
+    \item \texttt{ScalaCheck} in Scala and \texttt{QuickCheck} in Haskell are well-known examples of property-based testing libraries
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{\texttt{Dist} for Bayesian conditioning via SMC}
+  \begin{itemize}
+  \item Rather than providing a |draw| method for generating individual values from the distribution of interest, you can define a monad whose values represent large (weighted) random samples from a distribution --- an empirical distribution
+  \item |flatMap| is then essentially just the same |flatMap| you would have on any other collection, but here will typically be combined with a random thinning of the result set to prevent an explosion in the number of particles with deep chaining
+  \item One advantage of this representation is that it then easy to introduction a |condition| method which uses importance (re)sampling to condition on observations
+    \item This can be used to implement a simple SMC-based Bayesian PPL with very little code, but it won't cope well with large or complex models
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{\texttt{RandomVariable} for Bayesian HMC sampling}
+  \begin{itemize}
+    \item blah
+    \item Rainier ...
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Representation independence using the \emph{free} monad}
+  \begin{itemize}
+    \item blah
+    \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Example model}
+  \begin{itemize}
+    \item blah
+    \end{itemize}
 \end{frame}
 
 
@@ -1123,9 +1189,11 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
 
     \scriptsize
 
-  \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
+%  \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
 
-    \bibitem{} Law, J., Wilkinson, D. J. (2018) \alert{Composable models for online Bayesian analysis of streaming data}, \emph{Statistics and Computing}, in press (online early).
+   \bibitem{} Fritz, T., Perrone, P. (2017) \alert{A Probability Monad as the Colimit of Finite Powers}, \emph{arXiv:1712.05363}.
+    
+    \bibitem{} Law, J., Wilkinson, D. J. (2018) \alert{Composable models for online Bayesian analysis of streaming data}, \emph{Statistics and Computing}, \textbf{28}(6):1119-1137.
     
 %    \bibitem{} Meijer, E., Fokkinga, M., Paterson, R. (1991) \alert{Functional programming with bananas, lenses, envelopes and barbed wire}. In: Hughes J. (eds) \emph{Functional Programming Languages and Computer Architecture}. FPCA 1991. Lecture Notes in Computer Science, vol 523. Springer.
 

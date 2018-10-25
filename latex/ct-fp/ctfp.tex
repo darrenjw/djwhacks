@@ -16,6 +16,7 @@
 %\newcommand{\includemovie}[3]{\includemedia[width=#1,height=#2,activate=pagevisible,deactivate=pageclose,addresource=#3,flashvars={src=#3 &autoPlay=true &loop=true &controlBarAutoHideTimeout=0 }]{}{VPlayer.swf}}
 
 \newcommand{\trans}{\ensuremath{{}^\mathrm{T}}}
+
 \newcommand{\eps}{\varepsilon}
 \newcommand{\reals}{\mathbb{R}}
 \newcommand*{\approxdist}{\mathrel{\vcenter{\offinterlineskip
@@ -160,7 +161,7 @@ Newcastle University, UK\\and\\The Alan Turing Institute}
 \frametitle{Compositionality and modelling}
 \begin{itemize}
 \item We typically solve big problems by (recursively) breaking them down into smaller problems that we can solve more easily, and then compose the solutions of the smaller problems to provide a solution to the big problem that we are really interested in
-\item This "divide and conquer" approach is necessary for the development of genuinely scalable models and algorithms
+\item This ``divide and conquer'' approach is necessary for the development of genuinely scalable models and algorithms
 \item Statistical models and algorithms are not usually formulated in a composable way
 \item Category theory is in many ways the mathematical study of composition, and provides significant insight into the development of more compositional models of computation
 \end{itemize}
@@ -1097,16 +1098,6 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
     \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]
-  \frametitle{Representation independence using the \emph{free} monad}
-  \begin{itemize}
-  \item However you implement your probability monad, the semantics of your probabilistic program are (essentially) the same
-  \item It would be nice to be able to define and compose probabilistic programmes independently of concerns about implementation, and then to \alert{interpret} the programme with a particular implementation later
-  \item Building a probability monad on top of the \alert{free monad} allows this --- implementation of |pure| and |flatMap| is ``suspended'' in a way that allows subsequent interpretation with concrete implementations later
-    \item In principle, this potentially allows different interpretation of different parts of the model, enabling the composition of different inference algorithms
-    \end{itemize}
-\end{frame}
-
 
 
 \begin{frame}[fragile]
@@ -1127,6 +1118,16 @@ val model = for {
 
 val out = model.sample(HMC(5), 1000, 10000*10, 10)
 \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Representation independence using the \emph{free} monad}
+  \begin{itemize}
+  \item However you implement your probability monad, the semantics of your probabilistic program are (essentially) the same
+  \item It would be nice to be able to define and compose probabilistic programmes independently of concerns about implementation, and then to \alert{interpret} the programme with a particular implementation later
+  \item Building a probability monad on top of the \alert{free monad} allows this --- implementation of |pure| and |flatMap| is ``suspended'' in a way that allows subsequent interpretation with concrete implementations later
+    \item In principle, this potentially allows different interpretation of different parts of the model, enabling the composition of different inference algorithms
+    \end{itemize}
 \end{frame}
 
 

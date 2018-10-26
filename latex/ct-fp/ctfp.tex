@@ -82,7 +82,7 @@ col, set,start,end,deltat,zip},
   \alert{\url{tinyurl.com/darrenjw}}\\
 %School of Mathematics, Statistics and Physics\\
 Newcastle University, UK\\and\\The Alan Turing Institute}
-\date{Statstics Research Group Seminar\\Newcastle University\\26th October 2018}
+\date{Statistics Research Group Seminar\\Newcastle University\\26th October 2018}
 
 
 \frame{\titlepage}
@@ -1124,7 +1124,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \frametitle{Representation independence using the \emph{free} monad}
   \begin{itemize}
   \item However you implement your probability monad, the semantics of your probabilistic program are (essentially) the same
-  \item It would be nice to be able to define and compose probabilistic programmes independently of concerns about implementation, and then to \alert{interpret} the programme with a particular implementation later
+  \item It would be nice to be able to define and compose probabilistic programs independently of concerns about implementation, and then to \alert{interpret} the program with a particular implementation later
   \item Building a probability monad on top of the \alert{free monad} allows this --- implementation of |pure| and |flatMap| is ``suspended'' in a way that allows subsequent interpretation with concrete implementations later
     \item In principle, this potentially allows different interpretation of different parts of the model, enabling the composition of different inference algorithms
     \end{itemize}
@@ -1217,8 +1217,10 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 
 %  \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
 
-   \bibitem{} Fritz, T., Perrone, P. (2017) \alert{A Probability Monad as the Colimit of Finite Powers}, \emph{arXiv:1712.05363}.
-    
+   \bibitem{} Fritz, T., Perrone, P. (2017) \alert{A probability monad as the colimit of finite powers}, \emph{arXiv:1712.05363}.
+
+  \bibitem{} Heunen, C., Kammar, O., Staton, S., Yang, H. (2017) \alert{A convenient category for higher-order probability thoery}, \emph{32nd Annual ACM/IEEE Symposium on Logic in Computer Science (LICS).}
+     
     \bibitem{} Law, J., Wilkinson, D. J. (2018) \alert{Composable models for online Bayesian analysis of streaming data}, \emph{Statistics and Computing}, \textbf{28}(6):1119-1137.
     
 %    \bibitem{} Meijer, E., Fokkinga, M., Paterson, R. (1991) \alert{Functional programming with bananas, lenses, envelopes and barbed wire}. In: Hughes J. (eds) \emph{Functional Programming Languages and Computer Architecture}. FPCA 1991. Lecture Notes in Computer Science, vol 523. Springer.
@@ -1228,10 +1230,8 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A., Ghahramani, Z. and Gordon, A. D. (2015) \alert{Practical probabilistic programming with monads}, \emph{Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell}, 165--176.
 
   \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A. et al (2018) \alert{Denotational validation of higher-order Bayesian inference}, \emph{Proceeding of the ACM on Programming Languages}, \textbf{2}(POPL): 60.
-
-
     
-     \bibitem{} Wadler, P. (1995) \alert{Monads for functional programming}. In: Jeuring J., Meijer E. (eds) \emph{Advanced Functional Programming}. AFP 1995. Lecture Notes in Computer Science, vol 925. Springer.
+  %   \bibitem{} Wadler, P. (1995) \alert{Monads for functional programming}. In: Jeuring J., Meijer E. (eds) \emph{Advanced Functional Programming}. AFP 1995. Lecture Notes in Computer Science, vol 925. Springer.
     
 %\beamertemplatebookbibitems
 %

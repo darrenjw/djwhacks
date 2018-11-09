@@ -43,40 +43,550 @@ col, set,start,end,deltat,zip},
 
 \begin{document}
 
-\title[Spatially distributed stochastic kinetic models]{Spatially distributed stochastic kinetic models: Lotka--Volterra in Space!}
-\author[Darren Wilkinson --- Statistics seminar, 5/2/16]{\textbf{\large Darren Wilkinson} \\
+\title{Scalable algorithms for Markov process parameter inference}
+\author[Darren Wilkinson --- Banff, 12/11/18]{\textbf{\large Darren Wilkinson} \\
 \url{@darrenjw}\\
 \alert{\url{tinyurl.com/darrenjw}}\\
-School of Mathematics \& Statistics\\Newcastle University, UK}
-\date{Statistics Seminar\\Newcastle University\\5th February 2016}
+Newcastle University, U.K.\\ and\\
+The Alan Turing Institute, U.K.}
+\date{BIRS Workshop 18w5144\\Banff, Alberta, Canada\\12th November 2018}
 
 \frame{\titlepage}
 
-\section{Introduction}
 
-\subsection{Outline}
 
 \frame{
-\frametitle{Talk outline}
+\frametitle{Overview}
 \begin{itemize}
-\item Chemical reaction networks
-\item Discrete mass-action stochastic kinetics
-\item Diffusion and the well-mixed assumption
-\item Stochastic diffusion in 1d
-\item Stochastic reaction-diffusion in 1d
-\item Stochastic diffusion and reaction-diffusion in 2d
-%\item Filtering stochastic reaction-diffusion models?!
+%\item Stochastic reaction networks: Modelling, simulation and inference
+\item Stochastic reaction networks, stochastic simulation and partially observed Markov process (POMP) models
+%\item Likelihood-free MCMC for POMP models
+\item Likelihood-free (PMMH) pMCMC --- exact fully Bayesian joint inference for the model state and static parameters
+%\item Efficient (PMMH) pMCMC for diffusion processes
+%\item Efficient (PMMH) pMCMC for Markov jump processes
+\item (Adaptive) ABC(--SMC)
+%\item Comparing pMCMC and ABC
+  %\item Hybrid ABC/pMCMC approaches
+\item Functional programming approaches for scalable scientific and statistical computing 
+\end{itemize}
+%Some joint work with \alert{Jamie Owen} and \alert{Colin Gillespie}
+}
+
+\subsection{Modelling and simulation}
+
+\frame{
+\frametitle{Example --- genetic auto-regulation}
+%\includegraphics[width=12cm,clip=true]{figs/auto-reg}
+\centerline{\includegraphics[width=8cm,clip=true]{figs/ch01-auto-reg}}
+}
+
+
+
+
+\frame{
+\frametitle{Simulated realisation of the auto-regulatory network}
+\centerline{\includegraphics[height=9cm,clip=true,angle=90]{figs/ch07-ar-stochastic}}
+}
+
+\frame{
+\frametitle{Multi-scale simulation issues}
+\begin{itemize}
+\item Although not a huge model, this is actually rather challenging, for both simulation and inference
+\item Some species have very low copy number (predominantly zero or one), making the diffusion approximation unappealing, and some have fairly high copy number (several hundred)
+\item The high and low copy-number species are tightly coupled, leading to very discrete bursty stochastic behaviour even in the high copy-number species
+\item There are also two pairs of fast binding/unbinding reactions, making the problem difficult for time-stepping methods such as $\tau$-leaping
+\item A rather sophisticated hybrid multi-scale algorithm would be required to simulate this process very accurately and very fast... 
 \end{itemize}
 }
 
-\subsection{Chemical reaction networks}
+\subsection{Modularity}
+
+\frame{
+\frametitle{Modularity: decoupling models from simulation algorithms}
+\begin{itemize}
+\item For forward modelling, there are clear and considerable benefits to \alert{separating} the \alert{representation} of the model from the algorithm used to \alert{simulate} realisations from it:
+ \begin{itemize}
+   \item There are numerous exact and approximate simulation algorithms, as well as algorithms for static model analysis --- by decoupling the models from the algorithms, it is easy to apply any algorithm to any model of interest --- improvements in simulation algorithms automatically apply to all models of interest
+   \item \alert{Modifying} a model representation will typically be much easier than modifying an algorithm to simulate that model
+   \item When assembling large models from smaller model components, it is often more straightforward to \alert{compose} model representations than associated simulation algorithms
+ \end{itemize}
+\item Few disadvantages: limit to flexibility of representation, slight inefficiencies, more sophisticated programming required
+\end{itemize}
+}
+
+\section{Bayesian inference}
+
+\subsection{Overview of Bayesian methodology for stochastic dynamic models}
+
+\frame{
+\frametitle{Parameter inference}
+\begin{itemize}
+\item The auto-regulatory network model contains 5 species and 8 reactions
+\item Each reaction has an associated \alert{rate constant} --- these 8 rate constants may be subject to uncertainty
+\item The \alert{initial state} of the model (5 species levels) may also be uncertain/unknown
+\item There could also be uncertainty about the \alert{structure of the reaction network} itself --- eg. presence/absence of particular reactions --- this can be embedded into the parameter inference problem, but is often considered separately, and is not the subject of this talk
+\item We will focus here on using \alert{time course data} on some aspect of one (or more) realisations of the underlying stochastic process in order to make inferences for any unknown parameters of the model
+\end{itemize}
+}
+
+\frame{
+\frametitle{Partial, noisy data on the auto-reg model}
+\centerline{\includegraphics[height=0.9\textheight]{figs/ar/AR-Data}}
+}
+
+
+
+\frame{
+\frametitle{Classes of Bayesian Monte Carlo algorithms}
+In this context there are 3 main classes of MC algorithms:
+\begin{itemize}
+\item \alert{ABC algorithms} (likelihood--free)
+ \begin{itemize}
+ \item Completely general (in principle) ``global'' Approximate Bayesian Computation algorithms, so just require a forward simulator, and don't rely on (eg.) Markov property, but typically very inefficient and approximate
+ \end{itemize}
+\item \alert{POMP algorithms} (likelihood--free)
+ \begin{itemize}
+ \item Typically ``local'' (particle) MCMC-based algorithms for Partially Observed Markov Processes, again only requiring a forward simulator, but using the Markov property of the process for improved computational efficiency and ``exactness''
+ \end{itemize}
+\item \alert{Likelihood-based MCMC algorithms}
+ \begin{itemize}
+ \item More efficient (exact) MCMC algorithms for POMP models, working directly with the model representation, not using a forward simulator, and requiring the evaluation of likelihoods associated with the \alert{sample paths} of the stochastic process
+ \end{itemize}
+\end{itemize}
+}
+
+\frame{
+\frametitle{Modularity and model decoupling for inference}
+\small
+\begin{itemize}
+\item Decoupling the model from the inference algorithm is just as important as separation of the model from a forward simulation algorithm
+\item The key characteristic of \alert{likelihood-free} (or ``plug-and-play'') algorithms is that they separate inference algorithms from the forward simulator completely --- this strong decoupling has many advantages, with the main disadvantage being the relative inefficiency of the inferential algorithms
+\item The likelihood-free algorithms rely heavily on forward simulation, so can immediately benefit from improvements in exact and approximate simulation technology
+\item There is no reason why efficient likelihood-based MCMC algorithms can't also be decoupled from the model representation, but doing so for a reasonably large and flexible class of models seems to be beyond the programming skills of most statisticians...
+\end{itemize}
+}
+
+\subsection{POMP Models}
+
+\frame{
+\frametitle{Partially observed Markov process (POMP) models}
+\begin{itemize}
+\item Continuous-time Markov process: $\mathbf{X}=\{X_s|s\geq 0\}$ (for now, we
+  suppress dependence on parameters, $\theta$)
+\item Think about integer time observations (extension to arbitrary
+  times is trivial): for $t\in \mathbb{N},\quad
+  \mathbf{X}_t=\{X_s|t-1<s\leq t\} $
+\item Sample-path likelihoods such as $\pi(\mathbf{x}_t|x_{t-1})$ can
+  often (but not always) be computed (but are often computationally
+  difficult), but discrete time transitions such as $\pi(x_t|x_{t-1})$
+  are typically intractable
+\item Partial observations: $\mathcal{Y}=\{y_t|t=1,2,\ldots,T\}$ where
+\[
+y_t|X_t=x_t \sim \pi(y_t|x_t), \qquad t=1,\ldots,T,
+\]
+where we assume that $\pi(y_t|x_t)$ can be evaluated directly (simple
+measurement error model)
+\end{itemize}
+}
+
+\frame{
+\frametitle{Bayesian inference for latent process models}
+\begin{itemize}
+\item Vector of \alert{model parameters}, $\theta$, the object of inference
+\item Prior probability distribution on $\theta$, denoted $\pi(\theta)$
+\item Conditional on $\theta$, we can simulate realisation of the \alert{stochastic process} $\mathbf{X}$, with probability model $\pi(\mathbf{x}|\theta)$, which may be intractable
+\item \alert{Observational data} $\mathcal{Y}$, determined from $\mathbf{x}$ and $\theta$ by a the probability model $\pi(\mathcal{Y}|\mathbf{x},\theta)$ --- for ``exact'' algorithms we typically require that this model is tractable, but for ABC, we only need to be able to simulate from it
+\item Joint model $\pi(\theta,\mathbf{x},\mathcal{Y}) = \pi(\theta)\pi(\mathbf{x}|\theta)\pi(\mathcal{Y}|\mathbf{x},\theta)$
+\item \alert{Posterior distribution} $\pi(\theta,\mathbf{x}|\mathcal{Y}) \propto \pi(\theta,\mathbf{x},\mathcal{Y})$
+\item If using Monte Carlo methods, easy to marginalise out $\mathbf{x}$ from samples from the posterior to get samples from the parameter posterior $\pi(\theta|\mathcal{Y})$
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Likelihood-free PMMH pMCMC}
+\begin{itemize}
+\item \alert{Particle Markov chain Monte Carlo} (pMCMC) methods are a powerful tool for parameter inference in POMP models
+\item In the variant known as \alert{particle marginal Metropolis Hastings} (PMMH), a (random walk) MH MCMC algorithm is used to explore parameter space, but at each iteration, a (bootstrap) particle filter (SMC algorithm) is run to calculate terms required in the acceptance probability
+\item The ``magic'' of pMCMC is that despite the fact that the particle filters are ``approximate'', pMCMC algorithms nevertheless have the ``exact'' posterior distribution of interest (either  $\pi(\theta|\mathcal{Y})$ or $\pi(\theta,\mathbf{x}|\mathcal{Y})$) as their target
+\item If a sophisticated particle filter is used, pMCMC can be a reasonably efficient likelihood-based MCMC method --- however, when a simple ``bootstrap'' particle filter is used, the entire process is ``likelihood-free'', but still ``exact''
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Particle MCMC (pMCMC)}
+\begin{itemize}
+\item pMCMC is the only obvious practical
+  option for constructing a global likelihood-free MCMC algorithm for POMP models which
+  is exact (\alert{\href{http://dx.doi.org/10.1111/j.1467-9868.2009.00736.x}{Andrieu et al, 2010}})
+\item Start by considering a basic marginal MH MCMC scheme with target
+  $\pi(\theta|\mathcal{Y})$ and proposal $f(\theta^\star|\theta)$ ---
+  the acceptance probability is $\min\{1,A\}$ where
+\[
+A = \frac{\pi(\theta^\star)}{\pi(\theta)}\times
+\frac{f(\theta|\theta^\star)}{f(\theta^\star|\theta)}\times \frac{\pi(\mathcal{Y}|\theta^\star)}{\pi(\mathcal{Y}|\theta)}
+\]
+\item We can't evaluate the final terms, but if we had a way to
+  construct a Monte Carlo estimate of the likelihood,
+  $\hat\pi(\mathcal{Y}|\theta)$, we could just plug this in and hope
+  for the best:
+\[
+A = \frac{\pi(\theta^\star)}{\pi(\theta)}\times
+\frac{f(\theta|\theta^\star)}{f(\theta^\star|\theta)}\times \frac{\hat\pi(\mathcal{Y}|\theta^\star)}{\hat\pi(\mathcal{Y}|\theta)}
+\]
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{``Exact approximate'' MCMC (the pseudo-marginal approach)}
+\begin{itemize}
+\item
+Remarkably, provided only that
+$\operatorname{E}[\hat\pi(\mathcal{Y}|\theta)]=\pi(\mathcal{Y}|\theta)$,
+the stationary distribution of the Markov chain will be
+\alert{exactly} correct (\alert{\href{http://www.genetics.org/cgi/content/abstract/164/3/1139}{Beaumont, 2003}}, \alert{\href{http://dx.doi.org/10.1214/07-AOS574}{Andrieu \& Roberts, 2009}})
+\item
+Putting $W=\hat\pi(\mathcal{Y}|\theta)/\pi(\mathcal{Y}|\theta)$ and
+augmenting the state space of the chain to include $W$, we find that
+the target of the chain must be
+\[
+\propto \pi(\theta)\hat\pi(\mathcal{Y}|\theta)\pi(w|\theta) \propto
+\pi(\theta|\mathcal{Y})w\pi(w|\theta)
+\]
+and so then the above ``unbiasedness'' property implies that
+$\operatorname{E}(W|\theta)=1$, which
+guarantees that the marginal for $\theta$ is exactly
+$\pi(\theta|\mathcal{Y})$
+%\item Blog post: \alert{\url{http://tinyurl.com/6ex4xqw}}
+\end{itemize} 
+}
+
+
+
+\frame{
+\frametitle{Particle marginal Metropolis-Hastings (PMMH)}
+\begin{itemize}
+\item Likelihood estimates constructed via importance sampling typically have
+  this ``unbiasedness'' property, as do estimates constructed using a
+  particle filter
+\item If a particle filter is used to construct the Monte Carlo
+  estimate of likelihood to plug in to the acceptance probability, we
+  get (a simple version of) the particle Marginal Metropolis Hastings
+  (PMMH) pMCMC algorithm
+\item The full PMMH algorithm also uses the particle filter to
+  construct a proposal for $\mathbf{x}$, and has target
+  $\pi(\theta,\mathbf{x}|\mathcal{Y})$ --- not just
+  $\pi(\theta|\mathcal{Y})$
+\item The (bootstrap) particle filter relies only on the ability to
+  forward simulate from the process, and hence the entire procedure is
+  ``likelihood-free''
+\end{itemize} 
+% Blog post: \alert{\url{http://bit.ly/kvznmq}}
+See \alert{Golightly and W (2011)} for further details
+}
+
+
+
+
+\frame{
+\frametitle{PMMH inference results}
+\centerline{\includegraphics[height=0.9\textheight]{figs/ar/AR-Pmmh100k-240-t-tr}}
+}
+
+\begin{comment}
+  
+\frame{
+\frametitle{PMMH inference results}
+\centerline{\includegraphics[height=0.9\textheight]{figs/ar/AR-Pmmh100k-240-t-log-tr}}
+}
+
+\frame{
+\frametitle{PMMH inference results}
+\centerline{\includegraphics[height=0.9\textheight]{figs/ar/AR-Pmmh100k-240-t-log-sc}}
+}
+
+\end{comment}
+
+\frame{
+\frametitle{``Sticking'' and tuning of PMMH}
+\begin{itemize}
+\item As well as tuning the $\theta$ proposal variance, it is
+  necessary to tune the number of particles, $N$ in the particle filter ---
+  need enough to prevent the chain from sticking, but computational
+  cost roughly linear in $N$
+\item
+Number of particles necessary depends on $\theta$, but don't know
+$\theta$ \emph{a priori}
+\item Initialising the sampler is non-trivial, since much of parameter
+  space is likely to lead to likelihood estimates which are dominated by noise --- how to move around when you don't know which way is ``up''?!
+\item Without careful tuning and initialisation, burn-in, convergence
+  and mixing can all be very problematic, making algorithms painfully slow...
+\end{itemize}
+}
+
+
+\begin{comment}
+  
+\frame{
+\frametitle{General SIR particle filter}
+\begin{itemize}
+\item At time $t$, we have (after resampling) an equally weighted sample from $\pi(x_t|y_{1:t})$
+\item At time $t+1$, we want a weighted sample from $\pi(x_{t+1}|y_{1:t+1})$, though in fact useful to construct a sample from $\pi(x_{t+1},x_t|y_{1:t+1})$, and then marginalise down as required
+\item Target $\propto \pi(y_{t+1}|x_{t+1})\pi(x_{t+1}|x_t)\pi(x_t|y_{1:t})$ and proposal is $f(x_{t+1}|x_t,y_{t+1})\pi(x_t|y_{1:t})$, for some $f(\cdot)$, leading to unnormalised weight
+\[
+w_{t+1}= \frac{\pi(y_{t+1}|x_{t+1})\pi(x_{t+1}|x_t)}{f(x_{t+1}|x_t,y_{t+1})}
+\]
+\item LF choice is $f(x_{t+1}|x_t,y_{t+1})=\pi(x_{t+1}|x_t)$, otherwise need to evaluate the discrete time transition density
+\end{itemize}
+}
+
+\frame{
+\frametitle{Weights and RN derivatives}
+\begin{itemize}
+\item For Markov processes with intractable kernels, make the target $\pi(\mathbf{x}_{t+1},x_t|y_{1:t+1})$ and then marginalise down to $\pi(x_{t+1}|y_{1:t+1})$ if required
+\item The proposal path will be of the form $f(\mathbf{x}_{t+1}|x_t,y_{t+1})\pi(x_t|y_{1:t})$, leading to weight
+\[
+w_{t+1} = \pi(y_{t+1}|x_{t+1})\frac{\pi(\mathbf{x}_{t+1}|x_t)}{f(\mathbf{x}_{t+1}|x_t,y_{t+1})}
+\]
+\item The expected weight is $\pi(y_{t+1}|y_{1:t})$, as needed for pseudo-marginal MCMC
+\item Formally,
+\[
+w_{t+1}= \pi(y_{t+1}|x_{t+1})\frac{d\mathbb{P}}{d\mathbb{Q}}(\mathbf{x}_{t+1}|x_t),
+\]
+the RN derivative of the true (unconditioned) diffusion wrt the proposal process
+\end{itemize}
+}
+
+\end{comment}
+
+% \subsection{ABC approaches}
+
+
+%\subsection{ABC}
+
+
+\frame{
+\frametitle{Alternative: approximate Bayesian computation (ABC)}
+\begin{itemize}
+\item Since
+  $\pi(\theta,\mathbf{x},\mathcal{Y})=\pi(\theta)\pi(\mathbf{x}|\theta)\pi(\mathcal{Y}|\theta,\mathbf{x})$, it is trivial to generate samples from $\pi(\theta,\mathbf{x},\mathcal{Y})$ and to marginalise these down to $\pi(\theta,\mathcal{Y})$ 
+\item Exact rejection algorithm: generate
+  $(\theta^\star,\mathcal{Y}^\star)$ from $\pi(\theta,\mathcal{Y})$
+  and keep provided that $\mathcal{Y}=\mathcal{Y}^\star$ otherwise
+  reject and try again
+\item This gives exact realisations from $\pi(\theta|\mathcal{Y})$,
+  but in practice the acceptance rate will be very small (or zero)
+\item ABC: Define a metric on the sample space, $\rho(\cdot,\cdot)$,
+  and accept $(\theta^\star,\mathcal{Y}^\star)$ if
+  $\rho(\mathcal{Y},\mathcal{Y}^\star)<\eps$
+\item  This gives exact realisations from
+  $\pi(\theta|\rho(\mathcal{Y},\mathcal{Y}^\star)<\eps)$, which tends
+  to the true posterior as $\eps\longrightarrow 0$
+\item Still problematic if there is a large discrepancy between the
+  prior and posterior...
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Summary statistics}
+\begin{itemize}
+\item The choice of metric $\rho(\cdot,\cdot)$ is very important to the overall efficiency and performance of ABC methods
+\item Using a naive Euclidean distance on the raw data $\rho(\mathcal{Y},\mathcal{Y}^\star)=\Vert\mathcal{Y}-\mathcal{Y}^\star\Vert$ is likely to perform poorly in practice --- even with a perfect choice of parameters, it is extremely unlikely that you will ``hit'' the data
+\item Ideally, we would use a vector of \alert{sufficient statistics}, $s(\mathcal{Y})$ of the \alert{likelihood model} associated with the process, to summarise the important aspects of the data relevant to parameter inference, and then define a metric on $s(\cdot)$
+\item In practice, for complex models we don't know the sufficient statistics (and they probably don't exist), but we nevertheless form a vector of \alert{summary statistics}, which we hope capture the important aspects of the process and ignore the irrelevant noise in each realisation
+\end{itemize}
+}
+
+\frame{
+\frametitle{Summary statistics for POMP models}
+\begin{itemize}
+\item For time series data, obvious summary statistics for each univariate component include the sample \alert{mean}, (log-)\alert{variance}, and the \alert{lag 1 and 2 auto-correlations}
+\item For multivariate time series, the (matrix of) \alert{cross-correlation}(s) is also useful
+\item Together these summary statistics capture much of the essential dynamic structure of multivariate time series
+\item For our auto-reg network example, this reduces the dimension of the statistic we are trying to match from $50\times 2=100$ to $2\times 4+1=9$ --- not only a big reduction, but we are now trying to match statistics that are relatively robust to noise in the data 
+\item The individual components of $s(\cdot)$ are on different scales, so need to re-weight (eg. by standardising) before applying a simple metric such as Euclidean distance
+\end{itemize}
+}
+
+
+
+\frame{
+\frametitle{Issues with simple rejection ABC}
+\begin{itemize}
+\item There are \alert{two main problems} with naive rejection sampling based ABC:
+ \begin{itemize}
+ \item The first relates to the \alert{dimension of the data}, and this is (largely) dealt with by carefully choosing and weighting appropriate \alert{summary statistics}
+ \item The second relates to the dimension of the parameter space...
+ \end{itemize} 
+\item If the \alert{dimension of the parameter space} is large, the posterior distribution is likely to have almost all of its mass concentrated in a tiny part of the space covered by the prior, so the chances of hitting on good parameters when sampling from the prior will be very small
+\item Might be better to gradually ``zoom in'' on promising parts of the parameter space gradually over a series of iterations...
+\end{itemize}
+}
+
+\frame{
+\frametitle{ABC--SMC}
+\begin{itemize}
+\item Interest in a Bayesian posterior distribution
+\[
+\pi(\theta|x) \propto \pi(\theta)f(x|\theta)
+\]
+where $f(x|\theta)$ is intractable
+\item Observed data $x_0$
+\item Sequence of approximations
+\[
+\pi_t(\theta) = \pi(\theta|\rho(x,x_0)<\eps_t),
+\]
+where $\infty=\eps_0>\eps_1>\cdots>\eps_n>0$ and $\rho(\cdot,\cdot)$
+is a suitable metric on data space
+\item $\pi_0$ is the prior, and for sufficiently small $\eps_n$,
+  hopefully $\pi_n$ not too far from the posterior, $\pi(\theta|x_0)$
+\item Progressively reduce tolerances to improve agreement between
+  successive distributions and hopefully improve acceptance rates
+\end{itemize}
+}
+
+
+
+\frame{
+\frametitle{ABC--SMC algorithm}
+\begin{itemize}
+\item Suppose we have a large (possibly weighted) sample of size $N$
+  from $\pi_{t-1}(\theta)$, $\{\theta_1,\ldots,\theta_N\}$ with
+  normalised weights $\tilde{w}_{t-1}^i$
+\item Pick $\theta_i^\star \sim \pi_{t-1}(\theta)$ (weighted
+  particles)
+\item Perturb $\theta_i^{\star\star}\sim
+  K(\theta_i^\star,\theta_i^{\star\star})$
+\item Simulate $x^\star\sim f(x^\star|\theta^{\star\star})$ from
+  intractable likelihood model
+\item Accept only if $\rho(x^\star,x_0)<\eps_t$, otherwise reject go back to
+  the start and pick another $\theta_i^\star$
+\item Keep $\theta^{\star\star}$ as $i$th member of new sample, and
+  compute its weight as
+\[
+w_t^i = \frac{\pi(\theta^{\star\star})}{\sum_{j=1}^N
+  \tilde{w}_{t-1}^i K(\theta_j,\theta^{\star\star})}
+\]
+\item Once a sample of size $N$ is obtained, normalise weights and
+  increment $t$
+\end{itemize}
+}
+
+\begin{comment}
+
+\frame{
+\frametitle{ABC--SMC weight derivation}
+\begin{itemize}
+\item Why does the ABC-SMC algorithm work? In particular, where does
+  the weight expression come from?
+\item Need to view proposal on $\theta^{\star\star}$ and $x^\star$
+  jointly, but with $\theta^\star$ integrated out
+\[
+\propto \int_\Theta \pi_{t-1}(\theta^\star)K(\theta^\star,\theta^{\star\star})f(x^\star|\theta^{\star\star})I[\rho(x_0,x^\star)<\eps_t]\,d\theta^\star
+\]
+\item Similarly, the target is
+\[
+\propto \pi(\theta^{\star\star})f(x^\star|\theta^{\star\star})I[\rho(x_0,x^\star)<\eps_t]
+\]
+\item Leads to weight
+\[
+w= \frac{\pi(\theta^{\star\star})}{\int_\Theta
+  \pi_{t-1}(\theta^\star)K(\theta^\star,\theta^{\star\star})\,d\theta^\star}
+\]
+with obvious particle approximation, leading to the desired weight
+\end{itemize}
+}
+
+\end{comment}
+
+
+
+
+% \section{Summary and conclusions}
+
+\subsection{Summary}
+
+
+\frame{
+\frametitle{Pros and cons of ABC(--SMC)}
+\begin{itemize}
+\item All likelihood-free methods have a tendency to be very computationally intensive and somewhat inefficient
+\item ABC is very general, and can be applied to arbitrary settings (eg. not just POMP models)
+\item ABC methods parallelise very well, and hence can be useful for getting reasonably good approximations to be true posterior relatively quickly if suitable hardware is available
+\item ABC is becoming increasingly popular outside of statistics, where the idea of ``moment matching'' is familiar and intuitive
+\item ABC usually results in a distribution significantly over-dispersed relative to the true posterior
+\item The tuning parameters can affect the ABC posterior
+\item It's hard to know how well you are doing when working ``blind''
+\end{itemize}
+}
+
+\frame{
+\frametitle{Pros and cons of pMCMC}
+\begin{itemize}
+\item Most obvious application is to POMP models --- less general than ABC
+\item It targets the ``exact'' posterior distribution, irrespective of the choices of tuning constants!
+\item In practice, for finite length runs, the pMCMC output tends to be slightly under-dispersed relative to the true posterior (``missing the tails'')
+\item Parallelises fine over multiple cores on a single machine, but less well over a cluster
+\item Although the theory underpinning pMCMC is non-trivial, implementing likelihood-free PMMH is straightforward, and has the advantage that it targets the ``exact'' posterior distribution
+% --- a bit analogous to using a simple direct ``exact" SSA for simulating a stochastic reaction network, rather than a fancy approximate algorithm
+\end{itemize}
+}
+
+\frame{
+\frametitle{ABC--SMC and PMMH}
+\begin{itemize}
+\item PMMH algorithms require careful tuning, and are not trivial to
+  parallelise 
+\item Multiple parallel chains benefit from being initialised at
+  samples from the posterior, in order to minimise burn-in
+\item Tuning the number of particles to use in the particle filter is
+  best done by averaging over a sample from the posterior
+\item ABC--SMC can be used to generate a sample from an
+  approximation to the posterior, which is good enough for tuning and
+  initialisation of PMMH chains
+  \begin{itemize}
+  \item ABC algorithms parallelise well, so this strategy is well
+    suited to taking advantage of parallel hardware
+  \item ABC--SMC algorithms also require tuning, but reasonable
+    default choices work mostly OK for POMP models
+  \end{itemize}
+\item Multiple independent tuned PMMH chains can then target the exact
+  posterior
+\end{itemize}
+}
+
+\frame{
+\frametitle{Summary}
+\begin{itemize}
+\item For conducting Bayesian inference for complex simulation models,
+  ``likelihood--free'' methods are very attractive
+\item There are many likelihood--free algorithms, some of which are
+  ``exact'' --- \alert{pMCMC} algorithms being a notable example
+\item Likelihood-free algorithms can sometimes be very inefficient
+%\item Approximate bridging processes can be used to construct more efficient pMCMC algorithms provided that the complete-data likelihood is tractable 
+\item pMCMC not the only option worth considering --- \alert{ABC--SMC} methods, and \alert{SMC$^2$} are also worth trying; also \alert{iterated filtering} for a ML solution
+%\item For Markov processes, it is well worth considering methods which
+%  take advantage of the Markov property of the process --- sequential
+%  methods are natural and powerful in this context
+\item Hybrid procedures which parallelise well and take advantage of
+  the particular strengths of different algorithms are worth exploring
+\end{itemize}
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%
 
 
 \frame{
 \frametitle{Lotka--Volterra system}
-Trivial (familiar) example from population dynamics (in reality, the
-``reactions'' will be elementary biochemical reactions taking place
-inside a cell)
+Trivial (familiar) example from population dynamics, but here the
+``reactions'' are elementary biochemical reactions taking place
+inside a cell
 %The running example through this talk will be a familiar example from population dynamics --- the Lotka--Volterra predator--prey system. We will regard it as a particular example of a broad class of nonlinear multivariate Markov jump processes known as \alert{stochastic kinetic models}
 \begin{block}{Reactions}
 \begin{align*}
@@ -93,79 +603,6 @@ Y &\longrightarrow \emptyset \tag{predator death}
 }
 
 
-\frame{
-\frametitle{Forming the matrix representation}
-\begin{block}{The L-V system in tabular form}
-\begin{center}
-\begin{tabular}{|c|c|rr|rr|rr|}\hline
-& Rate Law &\multicolumn{2}{|c|}{LHS}&\multicolumn{2}{|c|}{RHS}&\multicolumn{2}{|c|}{Net-effect} \\
-& $h(\cdot,c)$ & $X$&$Y$ & $X$&$Y$ & $X$&$Y$ \\ \hline
-$R_1$ & $c_1 x$ & 1 & 0 & 2 & 0 & 1 & 0 \\
-$R_2$ & $c_2 xy$ & 1 & 1 & 0 & 2 & -1 & 1 \\
-$R_3$ & $c_3 y$ & 0 & 1 & 0 & 0 & 0 & -1 \\ \hline
-\end{tabular}
-\end{center}
-\end{block}
-%\pause
-Call the $3\times 2$ net-effect (or \alert{reaction}) matrix $N$. The 
-matrix $S=N'$ is the \alert{stoichiometry matrix} of the
-system. 
-Typically both are \alert{sparse}. 
-%The SVD of $S$ (or $N$) is
-%of interest for structural analysis of the 
-%system dynamics...
-}
-
-
-\frame{
-\frametitle{Stochastic chemical kinetics}
-\begin{itemize}
-\item $u$ species: $\mathcal{X}_1,\ldots,\mathcal{X}_u$, and $v$
-reactions: $\mathcal{R}_1,\ldots,\mathcal{R}_v$
-\item $\mathcal{R}_i:\ p_{i1}\mathcal{X}_1+\cdots+p_{iu}\mathcal{X}_u
-\longrightarrow q_{i1}\mathcal{X}_1+\cdots+q_{iu}\mathcal{X}_u,\ 
-i=1,\ldots,v$
-\item In matrix form: $P\mathcal{X} \longrightarrow Q\mathcal{X}$ ($P$
-and $Q$ are \alert{sparse})
-\item $S=(Q-P)'$ is the \alert{stoichiometry matrix} of the system
-\item $X_{jt}$: \# molecules of $\mathcal{X}_j$ at time
-$t$. $X_t=(X_{1t},\ldots,X_{ut})'$
-\item Reaction $\mathcal{R}_i$ has \alert{hazard} (or \alert{rate law}, or
-\alert{propensity}) $h_i(X_t,c_i)$, where $c_i$ is a \alert{rate
-parameter}, $c=(c_1,\ldots,c_v)'$,
-$h(X_t,c)=(h_1(X_t,c_1),\ldots,h_v(X_t,c_v))'$ and the system evolves as a \alert{Markov jump process}
-\item For \alert{mass-action stochastic kinetics},
-\[
-h_i(X_t,c_i) = c_i\prod_{j=1}^u\binom{X_{jt}}{p_{ij}},\quad i=1,\ldots,v
-\]
-\end{itemize}
-}
-
-
-\frame{
-\frametitle{The Gillespie algorithm}
-\small
-\begin{enumerate}
-\item Initialise the system at $t=0$ with rate constants
-$c_1,c_2,\ldots,c_v$ and initial numbers of molecules for each
-species, $x=(x_1,x_2,\ldots,x_u)'$.
-\item For each $i=1,2,\ldots,v$, calculate $h_i(x,c_i)$ based on the
-current state, $x$.
-\item Calculate $h_0(x,c) \equiv \sum_{i=1}^v h_i(x,c_i)$, the
-combined reaction hazard.
-\item Simulate time to next event, $\tau$, as an $Exp(h_0(x,c))$ random
-quantity, and put $t:=t+\tau$.
-\item Simulate the reaction index, $j$, as a discrete random quantity
-with probabilities $h_i(x,c_i)$ $/$ $h_0(x,c)$, $i=1,2,\ldots,v$.
-\item Update $x$ according to reaction $j$. That is, put
-$x:=x+S^{(j)}$, where $S^{(j)}$ denotes the $j$th column of the
-stoichiometry matrix $S$.
-\item Output $x$ and $t$.
-\item If $t<T_{max}$, return to step 2.
-\end{enumerate}
-}
-
-
 
 \frame{
 \frametitle{The Lotka-Volterra model}
@@ -175,9 +612,6 @@ stoichiometry matrix $S$.
 \includegraphics[width=5cm,clip=true]{ch06-stoch-lv}
 \includegraphics[width=5cm,clip=true]{ch06-stoch-lv-phase}
 }
-
-\subsection{The well-mixed assumption}
-
 
 \frame{
 \frametitle{The well-mixed assumption}
@@ -191,34 +625,6 @@ stoichiometry matrix $S$.
 }
 
 
-\section{Lattice models for diffusion and reaction diffusion}
-
-\subsection{Stochastic molecular diffusion}
-
-\frame{
-\frametitle{Stochastic particle models}
-\begin{itemize}
-\item One approach to discrete stochastic modelling of reaction diffusion processes is to completely abandon the well-mixed framework and switch to modelling the position of every single molecule in space
-\item Molecules can react when they ``collide'' (come within a threshold reaction distance)
-\item Sophisticated statistical physics theory for describing the probabilistic behaviour of such processes, and complex algorithms for exact and approximate stochastic simulation of time course trajectories of the system evolution
-\item Several free software implementations, with \alert{Smoldyn} being a notable example (Andrews et al, 2010)
-\item Although useful for some problems, it's very difficult to implement, and exceptionally computationally intensive...
-\end{itemize}
-}
-
-
-\frame{
-\frametitle{Discrete stochastic models of diffusion}
-\begin{itemize}
-\item Let us begin by assuming that we can identify finite sub-volumes of volume $V$ sufficiently small that the well-mixed assumption is valid
-\item Note that we are regarding $V$ as fixed and \alert{not} (at this stage) thinking about taking any kind of continuum limit as, say, $V\longrightarrow 0$
-\item Just consider a single species, $X$, which is well-mixed within each sub-volume
-\item However, molecules may be able to move (\alert{diffuse}) to an adjacent sub-volume
-\item It is clear that the \alert{rate} at which a particular molecule will diffuse to an adjacent sub-volume must be \alert{constant}, due to the well mixed assumption
-\end{itemize}
-}
-
-\subsection{Stochastic diffusion on a 1d lattice}
 
 \frame{
 \frametitle{Discrete stochastic diffusion on a 1d lattice}
@@ -244,25 +650,6 @@ stoichiometry matrix $S$.
 }
 
 \frame{
-\frametitle{Simulating 1d diffusion}
-\centerline{\includegraphics[height=0.8\textheight]{dsdiff1d}}
-}
-
-\frame{
-\frametitle{SDE approximation of discrete stochastic diffusion}
-\begin{itemize}
-\item Let $X_{i,t}$ be the number of molecules (of $\cal X$) in volume $i$ at time $t$
-\item Molecules leave volume $i$ at rate $2DX_{i,t}$ and enter at rate $D(X_{i-1,t}+X_{i+1,t})$
-\item So for $\delta X_{i,t}=X_{i,t+\delta t}-X_{i,t}$ we have
-\begin{align*} 
-\operatorname{E}(\delta X_{i,t}) &\simeq D(X_{i-1,t}-2X_{i,t}+X_{i+1,t})\delta t\\
-\operatorname{Var}(\delta X_{i,t}) &\simeq D(X_{i-1,t}+2X_{i,t}+X_{i+1,t})\delta t
-\end{align*}
-\item It is helpful to re-write the expectation using \alert{finite differences} notation
-\end{itemize}
-}
-
-\frame{
 \frametitle{Finite differences}
 \begin{itemize}
 \item Back-shift operator, $B$, s.t. $BX_{i,t}=X_{i-1,t}$
@@ -275,89 +662,6 @@ stoichiometry matrix $S$.
 \operatorname{Var}(\delta X_{i,t}) &\simeq D(\Delta X_{i,t}+4X_{i,t})\delta t
 \end{align*}
 \end{itemize}
-}
-
-
-\frame{
-\frametitle{SDE system for stochastic diffusion on a lattice}
-\begin{itemize}
-\item Given the infinitesimal moments we \alert{might} guess at a system of SDEs of the form
-\[
-dX_{i,t} = D\Delta X_{i,t}\,dt + \sqrt{D(\Delta X_{i,t}+4X_{i,t}})\,dW_{i,t}
-\]
-but this \alert{isn't quite right}, since the noise needs to be coupled to preserve mass balance
-\item If $W_{i,t}$ is the Brownian motion governing the flow of mass between cells $i$ and $i+1$, then we actually have
-\end{itemize}
-\begin{multline*}
-dX_{i,t} = D\Delta X_{i,t}\,dt + \sqrt{D (X_{i,t}+X_{i+1,t})}\,dW_{i,t}\\ - \sqrt{D (X_{i-1,t}+X_{i,t})}\,dW_{i-1,t}
-\end{multline*}
-}
-
-\begin{frame}[fragile]
-\frametitle{Back-shift version and pseudo-code}
-\begin{itemize}
-\item We can also use the back-shift operator to re-write the stochastic terms to give an SDE family of the form
-\end{itemize}
-\[
-dX_{i,t} = D\Delta X_{i,t}\,dt + \sqrt{D}\left(\sqrt{(1+B^{-1})X_{i,t}}-\sqrt{(1+B)X_{i,t}}\,B\right)dW_{i,t}
-\]
-\begin{itemize}
-\item
-This formulation leads to efficient Euler-Maruyama time-stepping algorithms in vectorised languages such as R (or Python, or Matlab, ...)
-\begin{lstlisting}{myR}
-dwt = rnorm(N,0,sqrt(dt))
-x = x + D*laplace(x)*dt + sqrt(D)*(
-        sqrt(x+forward(x))*dwt - 
-        sqrt(x+back(x))*back(dwt))
-\end{lstlisting}
-\end{itemize}
-\end{frame}
-
-\frame{
-\frametitle{SDE approximation to 1d diffusion}
-\centerline{\includegraphics[height=0.8\textheight]{sgdiff1d}}
-}
-
-\frame{
-\frametitle{Length scaling}
-\begin{itemize}
-\item The rate at which molecules move from one sub-volume to the next must obviously depend on the size of the box
-\item The smaller the box, the higher the rate at which molecules diffuse out of the box
-\item Thinking about random walks and the expected distance from the origin, it is clear that the rate must be proportional to \emph{length}${}^{-2}$, so put
-\[
-D = D_c / l^2,
-\]
-where $D_c$ is the continuum rate of diffusion and $l$ is the (cubic) length of the volume
-\end{itemize}
-}
-
-\frame{
-\frametitle{Continuum limit}
-\begin{itemize}
-\item The noise becomes negligible in high concentration scenarios
-\item Setting the noise terms to zero gives
-\[
-\frac{d x_{i}}{d t} = D\Delta x_{i},\quad i=1,2,\ldots,N
-\]
-which corresponds exactly to the \alert{method of lines} for the \alert{centred finite difference} approximation to the heat/diffusion equation
-\[
-\frac{\partial x}{\partial t} = D_c\Delta x
-\]
-\item \alert{With} the noise terms, it is a method of lines approach to solving the relevant diffusion \alert{SPDE}
-\end{itemize}
-}
-
-
-\frame{
-\frametitle{Multivariate SDE}
-Put $X_t = \begin{pmatrix}X_{1,t}\\X_{2,t}\\\vdots\\X_{N,t}\end{pmatrix}$,
-\(
-B = \begin{pmatrix}0&0&0&\cdots&0&1\\1&0&0&\ddots&0&0\\0&1&0&\ddots&0&0\\\vdots&\ddots&\ddots&\ddots&\ddots&\vdots\\0&0&0&\cdots&1&0\end{pmatrix}
-\),
-$\nabla=I-B$, $\Delta=\nabla^2B^{-1}=\nabla^2B\trans$, so that
-\[
-\Delta = \begin{pmatrix}-2&1&0&0&\cdots&0&1\\1&-2&1&0&\ddots&0&0\\0&1&-2&1&\ddots&0&0\\\vdots&\ddots&\ddots&\ddots&\ddots&\ddots&\vdots\\0&0&0&0&\ddots&-2&1\\1&0&0&0&\cdots&1&-2\end{pmatrix}
-\]
 }
 
 \frame{
@@ -375,103 +679,7 @@ dX_t = D\Delta X_t\,dt +  \sqrt{D}\nabla\operatorname{diag}\left\{\sqrt{(I+B\tra
 \end{itemize}
 }
 
-\subsection{Stochastic reaction diffusion on a 1d lattice}
 
-
-\frame{
-\frametitle{Reaction diffusion master equation (RDME)}
-\begin{itemize}
-\item Returning to the discrete stochastic case, let's now consider multiple species and additional reactions...
-\item For the Lotka--Volterra model, we just have separate species for the prey and predator in each sub-volume
-\begin{align*}
-X_i &\longrightarrow 2X_i \tag{prey reproduction}\\
-X_i+Y_i &\longrightarrow 2Y_i \tag{prey-predator interaction}\\
-Y_i &\longrightarrow \emptyset \tag{predator death} \\
-X_i &\longrightarrow X_{i+1} \tag{prey moves right} \\
-X_i &\longrightarrow X_{i-1} \tag{prey moves left} \\
-Y_i &\longrightarrow Y_{i+1} \tag{predator moves right} \\
-Y_i &\longrightarrow Y_{i-1} \tag{predator moves left}
-\end{align*}
-\item So in this case we now have 2 species and 7 reactions per box
-\end{itemize}
-}
-
-\frame{
-\frametitle{Discrete stochastic Lotka--Volterra on a 1d lattice}
-Just simulate trajectories with the Gillespie algorithm:
-\centerline{\includegraphics[height=0.8\textheight]{dsrd1d}}
-}
-
-\frame{
-\frametitle{RDME}
-\begin{itemize}
-\item The chemical master equation (CME) in the well mixed case is
-\[
-\frac{d}{dt}p(x,t) = \sum_{j=1}^v \left[ h_j(x-S^{(j)})p(x-S^{(j)},t) - h_j(x)p(x,t) \right]
-\]
-\item If we now let $X$ be a $u\times N$ matrix of molecule counts, with elements $x_{ij}$, then the RDME can be written
-\end{itemize}
-\begin{multline*}
-\frac{d}{dt}p(X,t) = \\ \sum_{n=1}^N \sum_{m\in\{n-1,n+1\}} \sum_{i=1}^u D_i\left[ (x_{im}+1)p(X+\delta_{im}-\delta_{in},t) - x_{im}p(X,t) \right] \\
-+ \sum_{n=1}^N \sum_{j=1}^v \left[ h_j(X^{(n)}-S^{(j)})p(X-S^{(j)}e_n\trans,t) - h_j(X^{(n)})p(X,t) \right]
-\end{multline*}
-}
-
-\frame{
-\frametitle{Next sub-volume method}
-\begin{itemize}
-\item The model ends up being a Markov jump process and so can be simulated with any exact discrete event simulation algorithm --- the previous example was simulated using a simple Gillespie algorithm
-\item Due to the large number of species, reactions and reaction events, naive implementations of the Gillespie algorithm are inefficient
-\item The \alert{next sub-volume method} (Elf and Ehrenberg, '04) is a variant of the \alert{next reaction method} (Gibson and Bruck, '00) for RDME models
-\item The algorithm keeps track of the time of the next event for each sub-volume in a queue, and then selects the next sub-volume to have an event executed from the top of the queue
-\end{itemize}
-}
-
-
-\frame{
-\frametitle{The spatial chemical Langevin equation (CLE)}
-\small
-\begin{itemize}
-\item Start by thinking separately about diffusion and reaction --- $X_{i,n,t}$ is amount of species $i$ in sub-volume $n$ at time $t$
-\item Diffusion: $dX_{i,n,t} = D_i\Delta X_{i,n,t} dt + \sqrt{D_i}\left(\sqrt{(1+B^{-1})X_{i,n,t}} - \sqrt{(1+B)X_{i,n,t}}B\right)dW_{i,n,t}$
-\item Reaction: $dX_{i,n,t} = S_ih(X_{n,t})dt+S_i\operatorname{diag}\left\{\sqrt{h(X_{n,t})}\right\}dW^\star_{n,t}$
-\item Combining these gives the spatial CLE:
-\end{itemize}
-\begin{multline*}
-dX_{i,n,t} = [D_i\Delta X_{i,n,t}  +S_ih(X_{n,t})]dt+ \sqrt{D_i}\left(\sqrt{(1+B^{-1})X_{i,n,t}} \right. \\ \left. - \sqrt{(1+B)X_{i,n,t}}B\right)dW_{i,n,t}+S_i\operatorname{diag}\left\{\sqrt{h(X_{n,t})}\right\}dW^\star_{n,t}
-\end{multline*}
-\begin{itemize}
-\item But in practice, just alternate between diffusion and reaction steps for every species in every sub-volume
-\end{itemize}
-}
-
-\frame{
-\frametitle{Spatial CLE for Lotka-Volterra}
-\centerline{\includegraphics[height=0.85\textheight]{sgrd1d}}
-}
-
-\frame{
-\frametitle{Volume scaling}
-\begin{itemize}
-\item We have seen how the diffusion constants scale with the \alert{length} of the associated sub-volume
-\item Reaction rates for the well mixed case typically scale according to the \alert{volume} of the container, with the scaling depending on the order of the reaction
- \begin{itemize}
- \item Zeroth order: Stochastic rate $c_j = k_j V$ for volume-independent rate $k_j$ (typically)
- \item First order: Rates are independent of volume, $c_j = k_j$
- \item Second order: Stochastic rate $c_j = k_j / V$ is inversely proportional to the container volume
- \end{itemize}
-\item By scaling rates appropriately, we can simulate model on coarser and finer grids without changing qualitative behaviour (up to a point)
-\end{itemize}
-}
-
-\frame{
-\frametitle{Spatial CLE on a fine grid}
-\centerline{\includegraphics[height=0.85\textheight]{sgrd1dv2}}
-}
-
-\section{Stochastic reaction diffusion in 2d}
-
-\subsection{Diffusion in 2d}
 
 \frame{
 \frametitle{Discrete stochastic diffusion on a 2d lattice}
@@ -485,38 +693,6 @@ B_1 X_{i,j,t} \equiv X_{i-1,j,t},\quad B_2 X_{i,j,t} \equiv X_{i,j-1,t}
 So $\Delta X_{i,j,t} = X_{i-1,j,t}+X_{i+1,j,t}+X_{i,j-1,t}+X_{i,j+1,t}-4X_{i,j,t}$
 }
 
-\frame{
-\frametitle{Isotropy and lattice artefacts}
-\centerline{\includegraphics[height=0.8\textheight]{lattice}}
-}
-
-\frame{
-\frametitle{SDE approximation}
-\small
-Diffusion on a 2d lattice can be approximated by the following system of SDEs:
-\begin{multline*}
-dX_{i,j,t} = D\Delta X_{i,j,t}dt + \sqrt{D(X_{i,j,t}+X_{i+1,j,t})}dW_{i,j,t} \\
-- \sqrt{D(X_{i-1,j,t}+X_{i,j,t})}dW_{i-1,j,t}+ \sqrt{D(X_{i,j,t}+X_{i,j+1,t})}dW^\star_{i,j,t} \\
-- \sqrt{D(X_{i,j-1,t}+X_{i,j,t})}dW^\star_{i,j-1,t}
-\end{multline*}
-We can re-write this using back-shift notation as:
-\begin{multline*}
-dX_{ijt} = D\Delta X_{ijt}dt + \sqrt{D}\left(\left[\sqrt{(1+B_1^{-1})X_{ijt}}-\sqrt{(1+B_1)X_{ijt}}B_1\right]dW_{ijt}\right. \\
-+ \left.\left[\sqrt{(1+B_2^{-1})X_{ijt}}-\sqrt{(1+B_2)X_{ijt}}B_2\right]dW^\star_{ijt}\right)
-\end{multline*}
-}
-
-\subsection{Reaction diffusion in 2d}
-
-\frame{
-\frametitle{Lotka--Volterra in 2d}
-\begin{itemize}
-\item Returning to discrete stochastic reaction-diffusion, we can have diffusion for each species and a set of reactions for each sub-volume
-\item For our Lotka--Volterra example, we will have 2 species and $3+2\times 4=11$ reactions per sub-volume
-\item So, on a $50\times 50$ grid, we will have 5,000 species and 27,500 reactions to manage and simulate
-\item I use a reasonably efficient Gillespie implementation (local hazard updating) in Scala, outputting a series of 2d images to be formed into a movie (prey are blue and predators are red)
-\end{itemize}
-}
 
 \frame{
 \frametitle{Discrete stochastic reaction diffusion on a 2d lattice}
@@ -561,18 +737,6 @@ dX_{ijt} = D\Delta X_{ijt}dt + \sqrt{D}\left(\left[\sqrt{(1+B_1^{-1})X_{ijt}}-\s
 %\movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2dv4.mp4}
 \movie{\includegraphics[height=0.85\textheight]{dsrd2d}}{sgrd2dv4.mp4}
 \end{center}
-}
-
-\subsection{Summary}
-
-\frame{
-\frametitle{Summary}
-\begin{itemize}
-\item Discrete stochastic models of molecular diffusion combine nicely with discrete stochastic kinetic models of chemical reaction networks to give Markov jump process models described by the RDME
-\item The RDME does not have a continuum limit in general (the length scale of the sub-volumes must remain much larger than the reaction distance of bi-molecular reactions)
-\item RDME models can be approximated with systems of coupled SDEs corresponding to the spatial CLE
-\item The spatial CLE is efficient to simulate, and corresponds to a finite-difference discretisation of a limiting reaction-diffusion SPDE
-\end{itemize}
 }
 
 

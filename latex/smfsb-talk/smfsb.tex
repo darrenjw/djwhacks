@@ -60,11 +60,14 @@ The Alan Turing Institute, U.K.}
 \begin{itemize}
 %\item Stochastic reaction networks: Modelling, simulation and inference
 \item Stochastic reaction networks, stochastic simulation and partially observed Markov process (POMP) models
-%\item Likelihood-free MCMC for POMP models
-\item Likelihood-free (PMMH) pMCMC --- exact fully Bayesian joint inference for the model state and static parameters
+  \item Modularity: separating model representation from simulation algorithm
+  \item Well-mixed versus reaction--diffusion
+  \item Likelihood-free MCMC for POMP models: separating simulation from inference
+    \item Likelihood-free PMMH pMCMC, ABC and ABC--SMC
+%\item Likelihood-free (PMMH) pMCMC --- exact fully Bayesian joint inference for the model state and static parameters
 %\item Efficient (PMMH) pMCMC for diffusion processes
 %\item Efficient (PMMH) pMCMC for Markov jump processes
-\item (Adaptive) ABC(--SMC)
+%\item (Adaptive) ABC(--SMC)
 %\item Comparing pMCMC and ABC
   %\item Hybrid ABC/pMCMC approaches
 \item Functional programming approaches for scalable scientific and statistical computing 
@@ -72,7 +75,9 @@ The Alan Turing Institute, U.K.}
 %Some joint work with \alert{Jamie Owen} and \alert{Colin Gillespie}
 }
 
-\subsection{Modelling and simulation}
+%\section{Modelling and simulation}
+
+%\subsection{Well-mixed models}
 
 \frame{
 \frametitle{Example --- genetic auto-regulation}
@@ -88,6 +93,8 @@ The Alan Turing Institute, U.K.}
 \centerline{\includegraphics[height=9cm,clip=true,angle=90]{figs/ch07-ar-stochastic}}
 }
 
+\begin{comment}
+  
 \frame{
 \frametitle{Multi-scale simulation issues}
 \begin{itemize}
@@ -99,7 +106,9 @@ The Alan Turing Institute, U.K.}
 \end{itemize}
 }
 
-\subsection{Modularity}
+\end{comment}
+
+%\subsection{Modularity}
 
 \frame{
 \frametitle{Modularity: decoupling models from simulation algorithms}
@@ -114,9 +123,192 @@ The Alan Turing Institute, U.K.}
 \end{itemize}
 }
 
-\section{Bayesian inference}
 
-\subsection{Overview of Bayesian methodology for stochastic dynamic models}
+
+%%%%%%%%%%%%%%%%%%%
+
+
+\frame{
+\frametitle{Lotka--Volterra system}
+Trivial (familiar) example from population dynamics, but here the
+``reactions'' are elementary biochemical reactions taking place
+inside a cell
+%The running example through this talk will be a familiar example from population dynamics --- the Lotka--Volterra predator--prey system. We will regard it as a particular example of a broad class of nonlinear multivariate Markov jump processes known as \alert{stochastic kinetic models}
+\begin{block}{Reactions}
+\begin{align*}
+X &\longrightarrow 2X \tag{prey reproduction}\\
+X+Y &\longrightarrow 2Y \tag{prey-predator interaction}\\
+Y &\longrightarrow \emptyset \tag{predator death}
+\end{align*}
+\end{block}
+\begin{itemize}
+\item $X$ -- Prey, $Y$ -- Predator
+\item We can re-write this using matrix notation
+% for the corresponding Petri net
+\end{itemize}
+}
+
+
+
+\frame{
+\frametitle{The Lotka-Volterra model}
+\includegraphics[width=5cm,clip=true]{ch06-lv-dynamics}
+\includegraphics[width=5cm,clip=true]{ch06-lv-phase}
+\\
+\includegraphics[width=5cm,clip=true]{ch06-stoch-lv}
+\includegraphics[width=5cm,clip=true]{ch06-stoch-lv-phase}
+}
+
+%\subsection{Spatially explicit models}
+
+\frame{
+\frametitle{The well-mixed assumption}
+\begin{itemize}
+\item The fundamental assumption underpinning the mass-action stochastic kinetic approach to modelling chemical reactions as a Markov jump process is that the hazard associated with any reaction event is \alert{constant}
+\item It is this assumption of constant hazard which leads to exponential inter-arrival times of reaction events and all of the other algorithms commonly used for non-spatial modelling
+\item However, it's pretty clear that molecules far apart will have a lower reaction hazard than molecules which are nearby
+\item Mass-action kinetics assumes that molecular \alert{diffusion} is rapid relative to the time scales associated with the chemical \alert{reactions}
+\item Evidence that this assumption is violated for many interesting intra-cellular processes
+\end{itemize}
+}
+
+\begin{comment}
+
+\frame{
+\frametitle{Discrete stochastic diffusion on a 1d lattice}
+\centerline{\includegraphics[height=0.3\textheight]{1d}}
+\begin{itemize}
+\item Assume a collection of $N$ sub-volumes, labelled $1,2,\ldots,N$, each of volume $V$, arranged linearly so that a molecule in sub-volume $i$ may diffuse to sub-volume $i+1$ (and \emph{vice versa})
+\item The \alert{diffusion rate} is $D$, so that the probability of a particular molecule in volume $i$ moving to volume $i+1$ in time $\delta t$ is $D\delta t$
+\end{itemize}
+}
+
+\end{comment}
+
+\frame{
+\frametitle{Stochastic kinetics of diffusion}
+\centerline{\includegraphics[height=0.2\textheight]{1d}}
+\begin{itemize}
+\item We can think of diffusion events as ``reactions'':
+\begin{align*}
+{\cal X}_i &\longrightarrow {\cal X}_{i+1} \\
+{\cal X}_i &\longrightarrow {\cal X}_{i-1} 
+\end{align*}
+\item There are 2 reactions per sub-volume, so $2N$ reactions in total (for periodic boundary conditions)
+\item This defines a Markov jump process which we can solve exactly or simulate using the Gillespie algorithm
+\end{itemize}
+}
+
+\begin{comment}
+
+\frame{
+\frametitle{Finite differences}
+\begin{itemize}
+\item Back-shift operator, $B$, s.t. $BX_{i,t}=X_{i-1,t}$
+\item Difference operator, $\nabla\equiv 1-B$ so that $\nabla X_{i,t}=X_{i,t}-X_{i-1,t}$
+\item Laplace operator, $\Delta\equiv \nabla^2 B^{-1}$ so that 
+\[\Delta X_{i,t} = X_{i-1,t}-2X_{i,t}+X_{i+1,t}\]
+\item So we may re-write the infinitesimal moments as
+\begin{align*}
+\operatorname{E}(\delta X_{i,t}) &\simeq D\Delta X_{i,t}\delta t\\
+\operatorname{Var}(\delta X_{i,t}) &\simeq D(\Delta X_{i,t}+4X_{i,t})\delta t
+\end{align*}
+\end{itemize}
+}
+
+\frame{
+\frametitle{Multivariate SDE}
+\begin{itemize}
+\item Clear we can write the drift as $D\Delta X_t$
+\item Elementary manipulation gives the ``diffusion'' matrix as $\sqrt{D}\nabla\operatorname{diag}\{\sqrt{(I+B\trans)X_t}\}$
+\item Then we can describe diffusion on the lattice with the multivariate SDE
+\begin{block}{Lattice diffusion as a multivariate SDE}
+\[
+dX_t = D\Delta X_t\,dt +  \sqrt{D}\nabla\operatorname{diag}\left\{\sqrt{(I+B\trans)X_t}\right\}\,dW_t
+\]
+\end{block}
+\item Clear to SPDE experts that this is a method of lines solution to a limiting SPDE
+\end{itemize}
+}
+
+\end{comment}
+
+\frame{
+\frametitle{Discrete stochastic diffusion on a 2d lattice}
+\centerline{\includegraphics[height=0.4\textheight]{2d}}
+\[
+B_1 X_{i,j,t} \equiv X_{i-1,j,t},\quad B_2 X_{i,j,t} \equiv X_{i,j-1,t}
+\]
+\[
+\nabla_i \equiv 1-B_i,\quad \Delta \equiv \nabla^2_1B_1^{-1} + \nabla^2_2B_2^{-1}
+\]
+So $\Delta X_{i,j,t} = X_{i-1,j,t}+X_{i+1,j,t}+X_{i,j-1,t}+X_{i,j+1,t}-4X_{i,j,t}$
+}
+
+
+\frame{
+\frametitle{Discrete stochastic reaction diffusion on a 2d lattice}
+\begin{center}
+%\movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{dsrd2d.mp4}
+\movie{\includegraphics[height=0.85\textheight]{dsrd2d}}{dsrd2d.mp4}
+\end{center}
+}
+
+\begin{comment}
+
+  \frame{
+\frametitle{Spatial CLE approximation}
+\begin{center}
+%\movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2d.mp4}
+\movie{\includegraphics[height=0.85\textheight]{dsrd2d}}{sgrd2d.mp4}
+\end{center}
+}
+
+
+\frame{
+\frametitle{SDE approximation on a fine grid}
+\begin{center}
+%\movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2dv2.mp4}
+\movie{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2dv2.mp4}
+\end{center}
+}
+
+\end{comment}
+
+\frame{
+\frametitle{Lotka--Volterra SPDE dynamics (via the spatial CLE)}
+\begin{center}
+%\movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2dv3.mp4}
+\movie{\includegraphics[height=0.85\textheight]{dsrd2d}}{sgrd2dv3.mp4}
+\end{center}
+}
+
+\begin{comment}
+
+\frame{
+\frametitle{Lotka--Volterra SPDE dynamics (3 seeds)}
+\begin{center}
+%\includemovie{.8\textheight}{.8\textheight}{sgrd2dv4.mp4}
+%\movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2dv4.mp4}
+\movie{\includegraphics[height=0.85\textheight]{dsrd2d}}{sgrd2dv4.mp4}
+\end{center}
+}
+
+\end{comment}
+
+\frame{
+  \frametitle{Lotka--Volterra reaction--diffusion SPDE}
+    \vspace*{-5cm}\centerline{\includegraphics[width=1.2\textwidth]{figs/ch09scle2dex2}}
+}
+
+
+\frame{
+wrap up
+  }
+
+%\section{Bayesian inference}
+
+%\subsection{Overview}
 
 \frame{
 \frametitle{Parameter inference}
@@ -166,7 +358,7 @@ In this context there are 3 main classes of MC algorithms:
 \end{itemize}
 }
 
-\subsection{POMP Models}
+%\subsection{POMP Models}
 
 \frame{
 \frametitle{Partially observed Markov process (POMP) models}
@@ -213,6 +405,7 @@ measurement error model)
 \end{itemize}
 }
 
+\begin{comment}
 
 \frame{
 \frametitle{Particle MCMC (pMCMC)}
@@ -288,7 +481,7 @@ See \alert{Golightly and W (2011)} for further details
 }
 
 
-
+\end{comment}
 
 \frame{
 \frametitle{PMMH inference results}
@@ -361,10 +554,10 @@ the RN derivative of the true (unconditioned) diffusion wrt the proposal process
 
 \end{comment}
 
-% \subsection{ABC approaches}
+%\subsection{ABC approaches}
 
 
-%\subsection{ABC}
+%%\subsection{ABC}
 
 
 \frame{
@@ -400,6 +593,8 @@ the RN derivative of the true (unconditioned) diffusion wrt the proposal process
 \end{itemize}
 }
 
+\begin{comment}
+
 \frame{
 \frametitle{Summary statistics for POMP models}
 \begin{itemize}
@@ -411,7 +606,7 @@ the RN derivative of the true (unconditioned) diffusion wrt the proposal process
 \end{itemize}
 }
 
-
+\end{comment}
 
 \frame{
 \frametitle{Issues with simple rejection ABC}
@@ -448,7 +643,7 @@ is a suitable metric on data space
 \end{itemize}
 }
 
-
+\begin{comment}
 
 \frame{
 \frametitle{ABC--SMC algorithm}
@@ -474,8 +669,6 @@ w_t^i = \frac{\pi(\theta^{\star\star})}{\sum_{j=1}^N
   increment $t$
 \end{itemize}
 }
-
-\begin{comment}
 
 \frame{
 \frametitle{ABC--SMC weight derivation}
@@ -505,9 +698,9 @@ with obvious particle approximation, leading to the desired weight
 
 
 
-% \section{Summary and conclusions}
+%%\section{Summary and conclusions}
 
-\subsection{Summary}
+%%\subsection{Summary}
 
 
 \frame{
@@ -535,6 +728,8 @@ with obvious particle approximation, leading to the desired weight
 \end{itemize}
 }
 
+\begin{comment}
+  
 \frame{
 \frametitle{ABC--SMC and PMMH}
 \begin{itemize}
@@ -558,8 +753,10 @@ with obvious particle approximation, leading to the desired weight
 \end{itemize}
 }
 
+\end{comment}
+
 \frame{
-\frametitle{Summary}
+\frametitle{Likelihood free inference}
 \begin{itemize}
 \item For conducting Bayesian inference for complex simulation models,
   ``likelihood--free'' methods are very attractive
@@ -567,177 +764,43 @@ with obvious particle approximation, leading to the desired weight
   ``exact'' --- \alert{pMCMC} algorithms being a notable example
 \item Likelihood-free algorithms can sometimes be very inefficient
 %\item Approximate bridging processes can be used to construct more efficient pMCMC algorithms provided that the complete-data likelihood is tractable 
-\item pMCMC not the only option worth considering --- \alert{ABC--SMC} methods, and \alert{SMC$^2$} are also worth trying; also \alert{iterated filtering} for a ML solution
+\item pMCMC is not the only option worth considering --- \alert{ABC--SMC} methods, and \alert{SMC$^2$} are also worth trying; also \alert{iterated filtering} for a ML solution
 %\item For Markov processes, it is well worth considering methods which
 %  take advantage of the Markov property of the process --- sequential
 %  methods are natural and powerful in this context
-\item Hybrid procedures which parallelise well and take advantage of
-  the particular strengths of different algorithms are worth exploring
+%\item Hybrid procedures which parallelise well and take advantage of
+  %  the particular strengths of different algorithms are worth exploring
+\item The reliance of likelihood free algorithms on \alert{forward} simulation fundamentally limits their effectiveness and utility for many challenging problems --- inference is fundamentally about \alert{conditional} simulation --- other ways of modularising models and inferential algorithms are also worth considering
 \end{itemize}
 }
 
-
-
-
-%%%%%%%%%%%%%%%%%%%
+%\section{Functional approaches to computation}
 
 
 \frame{
-\frametitle{Lotka--Volterra system}
-Trivial (familiar) example from population dynamics, but here the
-``reactions'' are elementary biochemical reactions taking place
-inside a cell
-%The running example through this talk will be a familiar example from population dynamics --- the Lotka--Volterra predator--prey system. We will regard it as a particular example of a broad class of nonlinear multivariate Markov jump processes known as \alert{stochastic kinetic models}
-\begin{block}{Reactions}
-\begin{align*}
-X &\longrightarrow 2X \tag{prey reproduction}\\
-X+Y &\longrightarrow 2Y \tag{prey-predator interaction}\\
-Y &\longrightarrow \emptyset \tag{predator death}
-\end{align*}
-\end{block}
-\begin{itemize}
-\item $X$ -- Prey, $Y$ -- Predator
-\item We can re-write this using matrix notation
-% for the corresponding Petri net
+  \frametitle{Composable models and algorithms}
+
+  
+  }
+
+
+
+%\subsection{SMfSB3e}
+
+\frame{
+    \centerline{\includegraphics[height=\textheight]{cover-3e}}
+}
+
+\frame{
+  \frametitle{SMfSB3e: New in the third edition}
+  \begin{itemize}
+\item New chapter on spatially extended systems, covering the spatial Gillespie algorithm for reaction diffusion master equation (RDME) models in 1- and 2-d, the next subvolume method, spatial CLE, scaling issues, etc.
+\item Significantly expanded chapter on inference for stochastic kinetic models from data, covering approximate methods of inference (ABC), including ABC-SMC. The material relating to particle MCMC has also been improved and extended.
+\item Updated R package, including code relating to all of the new material
+\item New R package for parsing SBML models into simulatable stochastic Petri net models
+\item New software library, written in Scala, replicating most of the functionality of the R packages in a fast, compiled, strongly typed, functional language
 \end{itemize}
-}
-
-
-
-\frame{
-\frametitle{The Lotka-Volterra model}
-\includegraphics[width=5cm,clip=true]{ch06-lv-dynamics}
-\includegraphics[width=5cm,clip=true]{ch06-lv-phase}
-\\
-\includegraphics[width=5cm,clip=true]{ch06-stoch-lv}
-\includegraphics[width=5cm,clip=true]{ch06-stoch-lv-phase}
-}
-
-\frame{
-\frametitle{The well-mixed assumption}
-\begin{itemize}
-\item The fundamental assumption underpinning the mass-action stochastic kinetic approach to modelling chemical reactions as a Markov jump process is that the hazard associated with any reaction event is \alert{constant}
-\item It is this assumption of constant hazard which leads to exponential inter-arrival times of reaction events and all of the other algorithms commonly used for non-spatial modelling
-\item However, it's pretty clear that molecules far apart will have a lower reaction hazard than molecules which are nearby
-\item Mass-action kinetics assumes that molecular \alert{diffusion} is rapid relative to the time scales associated with the chemical \alert{reactions}
-\item Evidence that this assumption is violated for many interesting intra-cellular processes
-\end{itemize}
-}
-
-
-
-\frame{
-\frametitle{Discrete stochastic diffusion on a 1d lattice}
-\centerline{\includegraphics[height=0.3\textheight]{1d}}
-\begin{itemize}
-\item Assume a collection of $N$ sub-volumes, labelled $1,2,\ldots,N$, each of volume $V$, arranged linearly so that a molecule in sub-volume $i$ may diffuse to sub-volume $i+1$ (and \emph{vice versa})
-\item The \alert{diffusion rate} is $D$, so that the probability of a particular molecule in volume $i$ moving to volume $i+1$ in time $\delta t$ is $D\delta t$
-\end{itemize}
-}
-
-\frame{
-\frametitle{Stochastic kinetics of diffusion}
-\centerline{\includegraphics[height=0.2\textheight]{1d}}
-\begin{itemize}
-\item We can think of diffusion events as ``reactions'':
-\begin{align*}
-{\cal X}_i &\longrightarrow {\cal X}_{i+1} \\
-{\cal X}_i &\longrightarrow {\cal X}_{i-1} 
-\end{align*}
-\item There are 2 reactions per sub-volume, so $2N$ reactions in total (for periodic boundary conditions)
-\item This defines a Markov jump process which we can solve exactly or simulate using the Gillespie algorithm
-\end{itemize}
-}
-
-\frame{
-\frametitle{Finite differences}
-\begin{itemize}
-\item Back-shift operator, $B$, s.t. $BX_{i,t}=X_{i-1,t}$
-\item Difference operator, $\nabla\equiv 1-B$ so that $\nabla X_{i,t}=X_{i,t}-X_{i-1,t}$
-\item Laplace operator, $\Delta\equiv \nabla^2 B^{-1}$ so that 
-\[\Delta X_{i,t} = X_{i-1,t}-2X_{i,t}+X_{i+1,t}\]
-\item So we may re-write the infinitesimal moments as
-\begin{align*}
-\operatorname{E}(\delta X_{i,t}) &\simeq D\Delta X_{i,t}\delta t\\
-\operatorname{Var}(\delta X_{i,t}) &\simeq D(\Delta X_{i,t}+4X_{i,t})\delta t
-\end{align*}
-\end{itemize}
-}
-
-\frame{
-\frametitle{Multivariate SDE}
-\begin{itemize}
-\item Clear we can write the drift as $D\Delta X_t$
-\item Elementary manipulation gives the ``diffusion'' matrix as $\sqrt{D}\nabla\operatorname{diag}\{\sqrt{(I+B\trans)X_t}\}$
-\item Then we can describe diffusion on the lattice with the multivariate SDE
-\begin{block}{Lattice diffusion as a multivariate SDE}
-\[
-dX_t = D\Delta X_t\,dt +  \sqrt{D}\nabla\operatorname{diag}\left\{\sqrt{(I+B\trans)X_t}\right\}\,dW_t
-\]
-\end{block}
-\item Clear to SPDE experts that this is a method of lines solution to a limiting SPDE
-\end{itemize}
-}
-
-
-
-\frame{
-\frametitle{Discrete stochastic diffusion on a 2d lattice}
-\centerline{\includegraphics[height=0.4\textheight]{2d}}
-\[
-B_1 X_{i,j,t} \equiv X_{i-1,j,t},\quad B_2 X_{i,j,t} \equiv X_{i,j-1,t}
-\]
-\[
-\nabla_i \equiv 1-B_i,\quad \Delta \equiv \nabla^2_1B_1^{-1} + \nabla^2_2B_2^{-1}
-\]
-So $\Delta X_{i,j,t} = X_{i-1,j,t}+X_{i+1,j,t}+X_{i,j-1,t}+X_{i,j+1,t}-4X_{i,j,t}$
-}
-
-
-\frame{
-\frametitle{Discrete stochastic reaction diffusion on a 2d lattice}
-\begin{center}
-%\movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{dsrd2d.mp4}
-\movie{\includegraphics[height=0.85\textheight]{dsrd2d}}{dsrd2d.mp4}
-\end{center}
-}
-
-\frame{
-\frametitle{SDE approximation}
-\begin{center}
-%\movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2d.mp4}
-\movie{\includegraphics[height=0.85\textheight]{dsrd2d}}{sgrd2d.mp4}
-\end{center}
-}
-
-\begin{comment}
-
-\frame{
-\frametitle{SDE approximation on a fine grid}
-\begin{center}
-%\movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2dv2.mp4}
-\movie{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2dv2.mp4}
-\end{center}
-}
-
-\end{comment}
-
-\frame{
-\frametitle{Lotka--Volterra SPDE dynamics}
-\begin{center}
-%\movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2dv3.mp4}
-\movie{\includegraphics[height=0.85\textheight]{dsrd2d}}{sgrd2dv3.mp4}
-\end{center}
-}
-
-\frame{
-\frametitle{Lotka--Volterra SPDE dynamics (3 seeds)}
-\begin{center}
-%\includemovie{.8\textheight}{.8\textheight}{sgrd2dv4.mp4}
-%\movie[externalviewer]{\includegraphics[height=0.8\textheight]{dsrd2d}}{sgrd2dv4.mp4}
-\movie{\includegraphics[height=0.85\textheight]{dsrd2d}}{sgrd2dv4.mp4}
-\end{center}
-}
+  }
 
 \frame{
   \begin{minipage}{0.45\textwidth}
@@ -749,21 +812,11 @@ So $\Delta X_{i,j,t} = X_{i-1,j,t}+X_{i+1,j,t}+X_{i,j-1,t}+X_{i,j+1,t}-4X_{i,j,t
     \item Published 30th November
       \item Pre-order now for Xmas!
       \item New website/GitHub repository
+        \item Lots of new, improved and updated software --- all free, open source, and available now
     \end{itemize}
   \end{minipage}\\
   \vspace{1.5ex}
     \centerline{\alert{\url{https://github.com/darrenjw/smfsb}}}
-  }
-
-\frame{
-  \frametitle{SMfSB3e: New in the third edition}
-  \begin{itemize}
-\item New chapter on spatially extended systems, covering the spatial Gillespie algorithm for reaction diffusion master equation (RDME) models in 1- and 2-d, the next subvolume method, spatial CLE, scaling issues, etc.
-\item Significantly expanded chapter on inference for stochastic kinetic models from data, covering approximate methods of inference (ABC), including ABC-SMC. The material relating to particle MCMC has also been improved and extended.
-\item Updated R package, including code relating to all of the new material
-\item New R package for parsing SBML models into simulatable stochastic Petri net models
-\item nNew software library, written in Scala, replicating most of the functionality of the R packages in a fast, compiled, strongly typed, functional language
-\end{itemize}
   }
 
 

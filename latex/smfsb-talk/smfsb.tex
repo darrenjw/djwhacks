@@ -792,7 +792,7 @@ with obvious particle approximation, leading to the desired weight
   \item Functions encourage the \alert{separation of concerns}:
     \begin{itemize}
     \item although we often parametrise models, a function for constructing a simulation algorithm from a fully specified model shouldn't know if or how that model is parametrised
-    \item Similarly, a function for running a bootstrap particle filter for a simulation model, should need to know anything about the model structure, let alone if or how it is parametrised
+    \item Similarly, a function for running a bootstrap particle filter for a simulation model, shouldn't need to know anything about the model structure, let alone if or how it is parametrised
       \item A PMMH algorithm should just accept a noisy likelihood function, and shouldn't know anything about how it is constructed
       \end{itemize}
     \end{itemize}

@@ -49,7 +49,7 @@ col, set,start,end,deltat,zip},
 \alert{\url{tinyurl.com/darrenjw}}\\
 Newcastle University, U.K.\\ and\\
 The Alan Turing Institute, U.K.}
-\date{BIRS Workshop 18w5144\\Banff, Alberta, Canada\\12th November 2018}
+\date{Connecting models and data in the life sciences\\BIRS, Banff, Alberta, Canada\\12th November 2018}
 
 \frame{\titlepage}
 
@@ -785,8 +785,17 @@ with obvious particle approximation, leading to the desired weight
 
 \frame{
   \frametitle{Composable models and algorithms}
-
-  
+  \begin{itemize}
+  \item We want to construct models and algorithms from composable and inter-changable pieces
+  \item Pure, referentially transparent (mathematical) functions are exactly the right abstraction for this purpose
+  \item Functional programming languages encourage and support the use of pure functions for constructing programs
+  \item Functions encourage the \alert{separation of concerns}:
+    \begin{itemize}
+    \item although we often parametrise models, a function for constructing a simulation algorithm from a fully specified model shouldn't know if or how that model is parametrised
+    \item Similarly, a function for running a bootstrap particle filter for a simulation model, should need to know anything about the model structure, let alone if or how it is parametrised
+      \item A PMMH algorithm should just accept a noisy likelihood function, and shouldn't know anything about how it is constructed
+      \end{itemize}
+    \end{itemize}
   }
 
 
@@ -815,7 +824,7 @@ with obvious particle approximation, leading to the desired weight
   \begin{minipage}{0.45\textwidth}
     \begin{itemize}
     \item In the press right now
-    \item Published 30th November
+    \item Published 29th November
       \item Pre-order now for Xmas!
       \item New website/GitHub repository
         \item Lots of new, improved and updated software --- all free, open source, and available now

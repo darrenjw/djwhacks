@@ -798,6 +798,23 @@ with obvious particle approximation, leading to the desired weight
     \end{itemize}
   }
 
+\frame{
+  \frametitle{Nesting and composing algorithms}
+  \begin{itemize}
+  \item Problems associated with parameter inference and model selection typically involve composing many layers of algorithm together
+  \item For a typical LF-PMMH algorithm:
+    \begin{itemize}
+  \item A parameter vector is drawn from a prior distribution
+  \item The parameter vector is used to fully-specify a Markov process model
+  \item The Markov process model representation is used to generate a transition kernel which can be forward simulated using an appropriate algorithm
+  \item The transition kernel is embedded into a bootstap particle filter for marginal likelihood estimation
+  \item The marginal likelihood evaluator is embedded into a Metropolis-Hastings algorithm
+    \end{itemize}
+    \item Most people working in this field aren't trained in how to write flexible generic software for solving these kinds of multi-layered problems
+    \end{itemize}
+
+  }
+
 
 
 %\subsection{SMfSB3e}

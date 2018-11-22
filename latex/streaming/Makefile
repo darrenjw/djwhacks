@@ -18,10 +18,10 @@ $(FILE)-nup.pdf: $(FILE).pdf
 	pdfnup --nup 3x3 $(FILE).pdf
 
 content.tex: content.md
-	pandoc -t beamer -Vtheme:Luebeck -Vcolortheme:seahorse content.md -o content.tex
+	pandoc -t beamer -Vtheme:metropolis content.md -o content.tex
 
 clean:
-	rm -f *~ $(FILE).pdf content.tex
+	rm -f *~ $(FILE).pdf content.tex *.nav *.aux
 
 edit:
 	emacs Makefile $(FILE).tex *.txt *.md &

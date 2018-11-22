@@ -74,51 +74,25 @@ col, set,start,end,deltat,zip},
 
 \begin{document}
 
-\title{Monads for probabilistic programming}
+\title{A compositional approach to scalable Bayesian computation and probabilistic programming}
 \author[Darren Wilkinson --- Newcastle 26/10/18]{\textbf{\large Darren Wilkinson} \\
   \url{@darrenjw}\\
   \alert{\url{tinyurl.com/darrenjw}}\\
 %School of Mathematics, Statistics and Physics\\
 Newcastle University, UK\\and\\The Alan Turing Institute}
-\date{Statistics Research Group Seminar\\Newcastle University\\26th October 2018}
+\date{\textbf{Bayesian Statistics in the Big Data Era}\\\emph{CIRM, Marseille Luminy, France}\\29th November 2018}
 
 
 \frame{\titlepage}
 
-\section{FP and CT}
-
-\begin{comment}
-
-  \subsection{Outline}
-
-  
 \frame{
-\frametitle{Talk outline}
-\begin{itemize}
-\item What's wrong with the current state of statistical modelling and computation?
-\item What is functional programming (FP) and why is it better than conventional imperative programming?
-\item What is category theory (CT) and what has it got to do with FP?
-\item How can we use CT and FP to make statistical computing more scalable?
-  \item What does ``scalable'' mean, anyway?
-\item Some examples along the way...
-\end{itemize}
+  \frametitle{Overview}
+  \vfill
+  \vfill
+  \tableofcontents
 }
 
-
-\frame{
-\frametitle{Talk outline}
-\begin{itemize}
-\item Compositionality in statistical modelling and computation
-\item Category theory (CT) as a framework for composable modelling and computation
-\item Advantages of functional programming (FP) and its relation to CT
-\item How can we use CT and FP to make statistical computing more scalable?
-\item Examples of composable algorithms
-\item Examples of composable models
-\item Wrap-up
-\end{itemize}
-}
-
-\end{comment}
+\section{Compositionality, category theory, and functional programming}
 
 \subsection{Compositionality}
 
@@ -369,7 +343,6 @@ Newcastle University, UK\\and\\The Alan Turing Institute}
   \end{itemize}
 \end{frame}
 
-\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{Parallel monadic collections}
@@ -412,7 +385,6 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \end{itemize}
 \end{frame}
 
-\end{comment}
 
 \subsection{Category Theory}
 
@@ -1015,6 +987,8 @@ MarkovChain(initialState)(kernel).steps.
 And several others...
 \end{frame}
 
+\begin{comment}
+
 \subsection{Monads for UQ}
 
 \begin{frame}[fragile]
@@ -1050,6 +1024,8 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
   \end{itemize}
 \end{frame}
 
+\end{comment}
+
 \subsection{Implementations of probability monads}
 
 \begin{frame}[fragile]
@@ -1063,6 +1039,8 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
     \end{itemize}
 \end{frame}
 
+\begin{comment}
+  
 \begin{frame}
   \frametitle{\texttt{Gen} for property-based testing}
   \begin{itemize}
@@ -1073,6 +1051,8 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
     \item \texttt{ScalaCheck} in Scala and \texttt{QuickCheck} in Haskell are well-known examples of property-based testing libraries
     \end{itemize}
 \end{frame}
+
+\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{\texttt{Dist} for Bayesian conditioning via SMC}
@@ -1099,7 +1079,7 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
 
 
 \begin{frame}[fragile]
-\frametitle{Example --- logistic regression in Rainier}
+\frametitle{Example --- Bayesian logistic regression model in Rainier}
 \begin{lstlisting}[language=scala]
 val model = for {
       beta0 <- Normal(0, 5).param
@@ -1157,7 +1137,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 
 \section{Summary and conclusions}
 
-\subsection{Summary}
+%\subsection{Summary}
 
 \begin{frame}
   \frametitle{Summary}
@@ -1211,23 +1191,23 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \frametitle{References}
   \begin{thebibliography}{}
 
-    \scriptsize
-
 %  \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
 
-   \bibitem{} Fritz, T., Perrone, P. (2017) \alert{A probability monad as the colimit of finite powers}, \emph{arXiv:1712.05363}.
+%   \bibitem{} Fritz, T., Perrone, P. (2017) \alert{A probability monad as the colimit of finite powers}, \emph{arXiv:1712.05363}.
 
-  \bibitem{} Heunen, C., Kammar, O., Staton, S., Yang, H. (2017) \alert{A convenient category for higher-order probability thoery}, \emph{32nd Annual ACM/IEEE Symposium on Logic in Computer Science (LICS).}
+  \bibitem{} Heunen, C., Kammar, O., Staton, S., Yang, H. (2017) \alert{A convenient category for higher-order probability theory}, \emph{32nd Annual ACM/IEEE LICS.}, 1--12.
      
-    \bibitem{} Law, J., Wilkinson, D. J. (2018) \alert{Composable models for online Bayesian analysis of streaming data}, \emph{Statistics and Computing}, \textbf{28}(6):1119-1137.
+    \bibitem{} Law, J., Wilkinson, D. J. (2018) \alert{Composable models for online Bayesian analysis of streaming data}, \emph{Statistics and Computing}, \textbf{28}(6):1119--1137.
     
 %    \bibitem{} Meijer, E., Fokkinga, M., Paterson, R. (1991) \alert{Functional programming with bananas, lenses, envelopes and barbed wire}. In: Hughes J. (eds) \emph{Functional Programming Languages and Computer Architecture}. FPCA 1991. Lecture Notes in Computer Science, vol 523. Springer.
 
-    \bibitem{} Park, S., Pfenning, F., Thrun, S. (2008) \alert{A probabilistic language based on sampling functions}, \emph{TOPLAS}, \textbf{31}(1):4.
+%    \bibitem{} Park, S., Pfenning, F., Thrun, S. (2008) \alert{A probabilistic language based on sampling functions}, \emph{TOPLAS}, \textbf{31}(1):4.
 
-  \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A., Ghahramani, Z. and Gordon, A. D. (2015) \alert{Practical probabilistic programming with monads}, \emph{Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell}, 165--176.
+%  \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A., Ghahramani, Z. and Gordon, A. D. (2015) \alert{Practical probabilistic programming with monads}, \emph{Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell}, 165--176.
 
-  \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A. et al (2018) \alert{Denotational validation of higher-order Bayesian inference}, \emph{Proceeding of the ACM on Programming Languages}, \textbf{2}(POPL): 60.
+\bibitem{} \'{S}cibior, A., Kammar, O., Gharamani, Z. (2018) \alert{Functional programming for modular Bayesian inference}, \emph{Proc.\ ACM Prog.\ Lang.}, \textbf{2}(ICFP): 83.
+      
+  \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A. et al (2018) \alert{Denotational validation of higher-order Bayesian inference}, \emph{Proc.\ ACM Prog.\ Lang.}, \textbf{2}(POPL): 60.
     
   %   \bibitem{} Wadler, P. (1995) \alert{Monads for functional programming}. In: Jeuring J., Meijer E. (eds) \emph{Advanced Functional Programming}. AFP 1995. Lecture Notes in Computer Science, vol 925. Springer.
     
@@ -1237,7 +1217,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
     
   \end{thebibliography}
 
-  \vspace*{1ex}
+  \vspace*{0.8ex}
   
 For more about Scala and FP: \alert{\url{darrenjw.wordpress.com}}
 

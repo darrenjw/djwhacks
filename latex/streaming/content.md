@@ -1,5 +1,7 @@
 # Outline
 
+People: DJW, Andy Golightly, Chris Oates
+
 ## Streaming data
 * Architecture
 * Methodology

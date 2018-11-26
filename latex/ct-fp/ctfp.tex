@@ -92,6 +92,23 @@ Newcastle University, UK\\and\\The Alan Turing Institute}
   \tableofcontents
 }
 
+\frame{
+  \frametitle{Aside: SMfSB3e just published!}
+  \begin{minipage}{0.45\textwidth}
+    \includegraphics[height=0.8\textheight]{cover-3e}
+  \end{minipage}
+  \begin{minipage}{0.48\textwidth}
+    \begin{itemize}
+    \item New chapter on stochastic reaction--diffusion models
+      \item Extended chapter on inference: pMCMC, ABC, ABC--SMC, ...
+      \item New website/GitHub repository
+        \item Lots of new, improved and updated software --- all free, open source and well-documented
+    \end{itemize}
+  \end{minipage}\\
+  \vspace{2ex}
+    \centerline{\alert{\url{https://github.com/darrenjw/smfsb}}}
+  }
+
 \section{Compositionality, category theory, and functional programming}
 
 \subsection{Compositionality}
@@ -132,10 +149,10 @@ Newcastle University, UK\\and\\The Alan Turing Institute}
 \frame{
 \frametitle{Compositionality and modelling}
 \begin{itemize}
-\item We typically solve big problems by (recursively) breaking them down into smaller problems that we can solve more easily, and then compose the solutions of the smaller problems to provide a solution to the big problem that we are really interested in
-\item This ``divide and conquer'' approach is necessary for the development of genuinely scalable models and algorithms
+\item We typically solve big problems by (recursively) breaking them down into smaller problems that we can solve more easily, and then \alert{compose} the solutions of the smaller problems to provide a solution to the big problem that we are really interested in
+\item This \alert{``divide and conquer''} approach is necessary for the development of genuinely \alert{scalable} models and algorithms
 \item Statistical models and algorithms are not usually formulated in a composable way
-\item Category theory is in many ways the mathematical study of composition, and provides significant insight into the development of more compositional models of computation
+\item \alert{Category theory} is in many ways the \alert{mathematical study of composition}, and provides significant insight into the development of more compositional models of computation
 \end{itemize}
 }
 
@@ -385,6 +402,17 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]
+  \frametitle{Distributed parallel collections with Apache Spark}
+  \begin{itemize}
+%  \item We have already seen how parallel monadic collections can automatically parallelise ``map'' and ``reduce'' operations
+  \item \alert{Apache Spark} is a Scala library for Big Data analytics on (large) clusters of machines (in the cloud)
+  \item The basic datatype provided by Spark is an \alert{RDD} --- a resilient distributed dataset
+  \item An RDD is just a \alert{lazy}, \alert{distributed}, parallel monadic collection, supporting methods such as |map|, |flatMap|, |reduce|, etc., which can be used in exactly the same way as any other monadic collection
+  \item Code looks exactly the same whether the RDD is a small dataset on a laptop or terabytes in size, distributed over a large Spark cluster
+    \item Good framework for the development of scalable algorithms for Bayesian computation
+  \end{itemize}
+\end{frame}
 
 \subsection{Category Theory}
 
@@ -544,17 +572,6 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 
 
 \subsection{Scalable modelling and computation}
-
-\begin{frame}[fragile]
-  \frametitle{Apache Spark}
-  \begin{itemize}
-  \item We have already seen how parallel monadic collections can automatically parallelise ``map'' and ``reduce'' operations
-  \item \alert{Apache Spark} is a Scala library for Big Data analytics on (large) clusters of machines (in the cloud)
-  \item The basic datatype provided by Spark is an \alert{RDD} --- a resilient distributed dataset
-  \item An RDD is just a \alert{lazy}, \alert{distributed}, parallel monadic collection, supporting methods such as |map|, |flatMap|, |reduce|, etc., which can be used in exactly the same way as any other monadic collection
-    \item Code looks exactly the same whether the RDD is a small dataset on a laptop or terabytes in size, distributed over a large Spark cluster
-  \end{itemize}
-\end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Laziness, composition, laws and optimisations}
@@ -1060,7 +1077,7 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
   \item Rather than providing a |draw| method for generating individual values from the distribution of interest, you can define a monad whose values represent large (weighted) random samples from a distribution --- an empirical distribution
   \item |flatMap| is then essentially just the same |flatMap| you would have on any other collection, but here will typically be combined with a random thinning of the result set to prevent an explosion in the number of particles with deep chaining
   \item One advantage of this representation is that it then easy to introduction a |condition| method which uses importance (re)sampling to condition on observations
-    \item This can be used to implement a simple SMC-based Bayesian PPL with very little code, but it won't cope well with large or complex models
+    \item This can be used to implement a simple SMC-based Bayesian PPL with very little code, but it won't scale well with large or complex models
     \end{itemize}
 \end{frame}
 
@@ -1076,7 +1093,7 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
     \end{itemize}
 \end{frame}
 
-
+\subsection{Probabilistic programming}
 
 \begin{frame}[fragile]
 \frametitle{Example --- Bayesian logistic regression model in Rainier}
@@ -1104,7 +1121,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \item However you implement your probability monad, the semantics of your probabilistic program are (essentially) the same
   \item It would be nice to be able to define and compose probabilistic programs independently of concerns about implementation, and then to \alert{interpret} the program with a particular implementation later
   \item Building a probability monad on top of the \alert{free monad} allows this --- implementation of |pure| and |flatMap| is ``suspended'' in a way that allows subsequent interpretation with concrete implementations later
-    \item In principle, this potentially allows different interpretation of different parts of the model, enabling the composition of different inference algorithms
+    \item This allows \alert{layering} of multiple inference algorithms, and different interpretation of different parts of the model, enabling sophisticated \alert{composition} of different (hybrid) inference algorithms
     \end{itemize}
 \end{frame}
 
@@ -1126,10 +1143,10 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 \begin{frame}
   \frametitle{Compositionality of inference algorithms}
   \begin{itemize}
-  \item As well as building models in scalable, compositional way, we would also like our inference algorithms to be compositional, ideally reflecting the compositional structure of our models
+  \item As well as building \alert{models} in scalable, compositional way, we would also like our \alert{inference algorithms} to be compositional, ideally reflecting the compositional structure of our models
   \item Some algorithms, such as component-wise samplers and message-passing algorithms, naturally reflect the compositional structure of the underlying model
   \item Other algorithms, such as Langevin and HMC samplers, deliberately don't decompose with the model structure, but do have other structure that can be exploited, such as decomposing over observations
-    \item Understanding and exploiting the compositional structure of models and algorithms will be crucial for developing improved inferential methods
+    \item Understanding and exploiting the \alert{compositional structure} of models and algorithms will be crucial for developing scalable inferential methods
   \end{itemize}
 \end{frame}
 
@@ -1143,9 +1160,9 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \frametitle{Summary}
   \begin{itemize}
   \item Mathematicians and theoretical computer scientists have been thinking about models of (scalable) computation for decades
-  \item Functional programming languages based on Cartesian closed categories provide a sensible foundation for computational modelling with appropriate levels of abstraction
-  \item Concepts from category theory, such as functors, monads, comonads, natural transformations and recursion schemes provide an appropriate array of tools for scalable data modelling and algorithm construction
-    \item Expressing models and algorithms in FP languages using category theory abstractions leads to elegant, composable PPLs ``for free'', doing away with the need to manually construct and parse custom DSLs
+  \item \alert{Functional programming languages} based on Cartesian closed categories provide a sensible foundation for computational modelling with appropriate levels of abstraction
+  \item Concepts from \alert{category theory}, such as functors, monads, comonads, natural transformations and recursion schemes provide an appropriate array of tools for scalable data modelling and algorithm construction and composition
+    \item Expressing models and algorithms in FP languages using category theory abstractions leads to \alert{elegant, composable PPLs ``for free''}, doing away with the need to manually construct and parse custom DSLs
 %    \item There is \alert{nothing special} about computations associated with statistical inference which somehow makes these ideas, tools and techniques irrelevant
   \end{itemize}
 \end{frame}

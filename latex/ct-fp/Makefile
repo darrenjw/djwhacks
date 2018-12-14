@@ -6,8 +6,7 @@ FILE=ctfp
 DIAFIGS=
 
 $(FILE).pdf: $(FILE).tex $(DIAFIGS)
-	pdflatex $(FILE)
-	pdflatex $(FILE)
+	texi2pdf $(FILE).tex
 
 $(FILE)-nup.pdf: $(FILE).pdf
 	pdfnup --nup 4x4 $(FILE).pdf
@@ -20,7 +19,7 @@ view: $(FILE).pdf
 	xdg-open $(FILE).pdf &
 
 present: $(FILE).pdf
-	okular $(FILE).pdf
+	pdf-presenter-console $(FILE).pdf
 
 edit:
 	emacs $(FILE).tex &

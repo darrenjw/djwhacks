@@ -74,16 +74,18 @@ col, set,start,end,deltat,zip},
 
 \begin{document}
 
-\title{A compositional approach to scalable Bayesian computation and probabilistic programming}
-\author[Darren Wilkinson --- Newcastle 26/10/18]{\textbf{\large Darren Wilkinson} \\
+\title{A more functional future for statistical computing?}
+\author[Darren Wilkinson --- Cambridge 14/12/18]{\textbf{\large Darren Wilkinson} \\
   \url{@darrenjw}\\
   \alert{\url{tinyurl.com/darrenjw}}\\
 %School of Mathematics, Statistics and Physics\\
 Newcastle University, UK\\and\\The Alan Turing Institute}
-\date{\textbf{Bayesian Statistics in the Big Data Era}\\\emph{CIRM, Marseille Luminy, France}\\29th November 2018}
+\date{\textbf{APTS Statistical Computing}\\\emph{Cambridge University}\\14th December 2018}
 
-
+  
 \frame{\titlepage}
+
+\begin{comment}
 
 \frame{
   \frametitle{Overview}
@@ -109,12 +111,24 @@ Newcastle University, UK\\and\\The Alan Turing Institute}
     \centerline{\alert{\url{https://github.com/darrenjw/smfsb}}}
   }
 
-\section{Compositionality, category theory, and functional programming}
+\end{comment}
 
-\subsection{Compositionality}
 
-\begin{comment}
-  
+\section{Background}
+
+\frame{
+  \frametitle{Changing face of statistics}
+  \begin{itemize}
+  \item The practice of academic statistics, and especially computational statistics, has changed beyond recognition in the last 40 years
+  \item It is likely to change even more in the next 40 years
+  \item This is the age of data...
+  \item Boundaries are blurring between \alert{statistics} and related disciplines, such as \alert{machine learning}, \alert{AI}, and \alert{data science}
+  \item Computing and computational approaches are progressing very rapidly in all of these disciplines, and this is impacting how we do and think about computing in statistics
+  \item Most people in these other fields don't use R
+    \item Will we still be using R in 20 years time? I doubt it, and I really hope not!
+    \end{itemize}
+  }
+
 \frame{
   \frametitle{What's up with statistical computing?}
   \begin{itemize}
@@ -143,7 +157,11 @@ Newcastle University, UK\\and\\The Alan Turing Institute}
     \end{itemize}
 }
 
-\end{comment}
+
+\section{Compositionality, category theory, and functional programming}
+
+\subsection{Compositionality}
+
 
 
 \frame{
@@ -156,8 +174,6 @@ Newcastle University, UK\\and\\The Alan Turing Institute}
 \end{itemize}
 }
 
-\begin{comment}
-  
 \frame{
 \frametitle{Compositionality and programming}
 \begin{itemize}
@@ -220,8 +236,6 @@ Newcastle University, UK\\and\\The Alan Turing Institute}
     \end{itemize}
   }
 
-\end{comment}
-
 %\section{FP and CT}
 
 \subsection{Functional Programming}
@@ -236,7 +250,6 @@ Newcastle University, UK\\and\\The Alan Turing Institute}
   \end{itemize}
   }
 
-\begin{comment}
 
 \frame{
   \frametitle{Functional programming}
@@ -276,7 +289,6 @@ Newcastle University, UK\\and\\The Alan Turing Institute}
   \end{itemize}
   }
 
-\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Monadic collections (in Scala)}
@@ -298,7 +310,6 @@ Newcastle University, UK\\and\\The Alan Turing Institute}
   \end{itemize}
 \end{frame}
 
-\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{Other monadic types: Option}
@@ -318,7 +329,6 @@ Newcastle University, UK\\and\\The Alan Turing Institute}
     \end{itemize}
 \end{frame}
 
-\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Composing monadic functions}
@@ -332,7 +342,6 @@ Newcastle University, UK\\and\\The Alan Turing Institute}
   \end{itemize}
 \end{frame}
 
-\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{Other monadic types: Future}
@@ -345,7 +354,6 @@ Newcastle University, UK\\and\\The Alan Turing Institute}
   \end{itemize}
 \end{frame}
 
-\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Other monadic types: Prob/Gen/Rand}
@@ -444,7 +452,7 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \end{frame}
 
 \begin{comment}
-
+  
 \begin{frame}[fragile]
   \frametitle{\textbf{Set} and \textbf{Hask}}
   \begin{itemize}
@@ -556,6 +564,8 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \end{frame}
 
 
+\end{comment}
+
 \begin{frame}[fragile]
   \frametitle{Comonads}
   \begin{itemize}
@@ -612,8 +622,6 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
-\end{comment}
-
 \begin{frame}[fragile]
   \frametitle{Typeclasses for Monoid, Functor, Monad and Comonad}
 %  \begin{itemize}
@@ -638,7 +646,6 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \end{lstlisting}
 \end{frame}
 
-\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{A generic collection typeclass}
@@ -698,7 +705,8 @@ using map--fusion to avoid constructing a collection of synthetic datasets
 \end{lstlisting}
 \end{frame}
 
-
+\begin{comment}
+  
 \begin{frame}[fragile]
   \frametitle{A scalable particle filter}
 Single--observation update of a bootstrap particle filter:
@@ -773,6 +781,7 @@ data.foldLeft((0.0, x0))((prev, o) => {
 |foldLeft| is fundamentally sequential, but the |updater| is parallelisation-agnostic
 \end{frame}
 
+\end{comment}
 
 \begin{frame}[fragile]
 \frametitle{Composable time series models}
@@ -791,7 +800,8 @@ val composedMod = negBinModel |+|
 Another library: \alert{\url{git.io/dlm}} for more conventional linear state space modelling
 \end{frame}
 
-
+\begin{comment}
+  
 \begin{frame}[fragile]
 \frametitle{Composable time series models}
 \begin{itemize}
@@ -813,6 +823,7 @@ val poisson = Dglm.poisson(linear)
 \end{lstlisting}
 \end{frame}
 
+\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Comonads for statistical computation}
@@ -906,8 +917,6 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
   \end{itemize}
 \end{frame}
 
-\end{comment}
-
 \section{Probability monads}
 
 \subsection{Composing random variables}
@@ -962,7 +971,6 @@ MarkovChain(initialState)(kernel).steps.
 \end{itemize}
 \end{frame}
 
-\end{comment}
 
 \begin{frame}
   \frametitle{Probability monad foundations}
@@ -1004,9 +1012,9 @@ MarkovChain(initialState)(kernel).steps.
 And several others...
 \end{frame}
 
-\begin{comment}
+\end{comment}
 
-\subsection{Monads for UQ}
+%\subsection{Monads for UQ}
 
 \begin{frame}[fragile]
   \frametitle{Probability monads for uncertainty quantification (UQ)}
@@ -1041,8 +1049,6 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
   \end{itemize}
 \end{frame}
 
-\end{comment}
-
 \subsection{Implementations of probability monads}
 
 \begin{frame}[fragile]
@@ -1056,8 +1062,6 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
     \end{itemize}
 \end{frame}
 
-\begin{comment}
-  
 \begin{frame}
   \frametitle{\texttt{Gen} for property-based testing}
   \begin{itemize}
@@ -1068,8 +1072,6 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
     \item \texttt{ScalaCheck} in Scala and \texttt{QuickCheck} in Haskell are well-known examples of property-based testing libraries
     \end{itemize}
 \end{frame}
-
-\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{\texttt{Dist} for Bayesian conditioning via SMC}
@@ -1208,11 +1210,11 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \frametitle{References}
   \begin{thebibliography}{}
 
-%  \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
+  \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
 
 %   \bibitem{} Fritz, T., Perrone, P. (2017) \alert{A probability monad as the colimit of finite powers}, \emph{arXiv:1712.05363}.
 
-  \bibitem{} Heunen, C., Kammar, O., Staton, S., Yang, H. (2017) \alert{A convenient category for higher-order probability theory}, \emph{32nd Annual ACM/IEEE LICS.}, 1--12.
+%  \bibitem{} Heunen, C., Kammar, O., Staton, S., Yang, H. (2017) \alert{A convenient category for higher-order probability theory}, \emph{32nd Annual ACM/IEEE LICS.}, 1--12.
      
     \bibitem{} Law, J., Wilkinson, D. J. (2018) \alert{Composable models for online Bayesian analysis of streaming data}, \emph{Statistics and Computing}, \textbf{28}(6):1119--1137.
     
@@ -1224,9 +1226,9 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 
 \bibitem{} \'{S}cibior, A., Kammar, O., Gharamani, Z. (2018) \alert{Functional programming for modular Bayesian inference}, \emph{Proc.\ ACM Prog.\ Lang.}, \textbf{2}(ICFP): 83.
       
-  \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A. et al (2018) \alert{Denotational validation of higher-order Bayesian inference}, \emph{Proc.\ ACM Prog.\ Lang.}, \textbf{2}(POPL): 60.
+%  \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A. et al (2018) \alert{Denotational validation of higher-order Bayesian inference}, \emph{Proc.\ ACM Prog.\ Lang.}, \textbf{2}(POPL): 60.
     
-  %   \bibitem{} Wadler, P. (1995) \alert{Monads for functional programming}. In: Jeuring J., Meijer E. (eds) \emph{Advanced Functional Programming}. AFP 1995. Lecture Notes in Computer Science, vol 925. Springer.
+     \bibitem{} Wadler, P. (1995) \alert{Monads for functional programming}. In: Jeuring J., Meijer E. (eds) \emph{Advanced Functional Programming}. AFP 1995. Lecture Notes in Computer Science, vol 925. Springer.
     
 %\beamertemplatebookbibitems
 %

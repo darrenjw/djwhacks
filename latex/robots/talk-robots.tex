@@ -257,15 +257,15 @@ library) takes around \alert{1 month} of calendar time, and several days of
 robot time
 \item The inoculation, spotting and imaging of the 8 repeats takes
   \alert{1 month} of calendar time, and around 2 weeks of robot time
-\item The experiment uses around \alert{\pounds 3,000} of consumables
+\item The experiment uses around \alert{\pounds 1k} of consumables
 (plastics and media) 
-\item The library is distributed across 72 96-well plates or 18 solid agar
-plates (in 384 format, or 1536 in quadruplicate)
+\item The library is distributed across \alert{72 96-well plates} or 18 solid agar
+plates (in 384 format, or 1,536 in quadruplicate)
 \item If each plate is imaged 30 times, there will be around 35k
 high-resolution photographs of plates in 384 format, corresponding to
 around \alert{13 million} colony growth measurements (400k time
 series)
-\item This is \alert{big data}!
+%\item This is \alert{big data}!
 \end{itemize}
 }
 
@@ -442,6 +442,7 @@ where $X_{t_i}$ refers to our realisation of the diffusion process
 \item Lots of work on Bayesian inference for intractable diffusions
   \alert{(Golightly \& W, '05, '06, '08, '10, '11)}, but this won't
   scale to simultaneous fitting of tens of thousands of realisations
+\item Can avoid difficulties by approximating the diffusion with a tractable approximation (the LNA), and then integrate the process away
 \end{itemize}
 }
 
@@ -512,8 +513,6 @@ The (log)LNA is a very good approximation to the true process, with
 \alert{tractable log-normal increments}
 }
 
-\end{comment}
-
 \frame{
 \frametitle{Further simplifications and approximations}
 \begin{itemize}
@@ -539,6 +538,8 @@ The (log)LNA is a very good approximation to the true process, with
 \item More important to have a plausible error structure than a super-accurate approximation to the stochastic process
 \end{itemize}
 }
+
+\end{comment}
 
 \frame{
 \frametitle{Growth curve model}
@@ -652,6 +653,8 @@ F_{clm} &\sim N(\hat{F}_{cl},1/\nu_{cl}) \\
 \centerline{\includegraphics[height=0.8\textheight]{figs/IHM}}
 }
 
+\begin{comment}
+
 \frame{
 \frametitle{Joint modelling of growth curves and genetic interaction}
 \begin{itemize}
@@ -682,6 +685,8 @@ N(\alpha_c+K_l^o+\delta_l\gamma_{cl},1/\tau_{cl}^K)\\
 \frametitle{Joint model results}
 \centerline{\includegraphics[height=0.8\textheight]{figs/JHM}}
 }
+
+\end{comment}
 
 \subsection{MiniQFA}
 
@@ -876,6 +881,10 @@ yeast}, {\em Journal of the Royal Statistical Society, Series C}, \textbf{65}(3)
 %    inference for sparse VAR(1) models, with application to time
 %    course microarray data}}. {\em Journal of Biometrics and Biostatistics\/}, \textbf{2}:127.
 
+\bibitem{blah}
+Narayanan, S. et al (2015) \alert{Quantitative Fitness Analysis identifies exo1 and other suppressors or enhancers of telomere defects in \emph{S. pombe}}, {\em PLoS ONE}, \textbf{10}(7): e0132240.
+
+
 %\bibitem[\protect\citeauthoryear{blah}{blah}{2012}]{blah}
 %Weile, J., James, K., Hallinan, J., Cockell, S. J., Lord, P., Wipat, A., Wilkinson, D. J. (2012)
 %\alert{\href{http://dx.doi.org/10.1093/bioinformatics/bts154}{Bayesian integration of networks without gold standards}}. {\em Bioinformatics\/}, \textbf{28}:1495--1500.
@@ -892,9 +901,9 @@ yeast}, {\em Journal of the Royal Statistical Society, Series C}, \textbf{65}(3)
 %\bibitem[\protect\citeauthoryear{blah}{blah}{2009}]{blah}Henderson,
 %D. A., Boys, R. J., Proctor, C. J., Wilkinson, D. J. (2010) \alert{Linking systems biology models to data: a stochastic kinetic model of p53 oscillations\/}, A. O'Hagan and M. West (eds.) Handbook of Applied Bayesian Analysis, Oxford University Press.
 
-\bibitem[\protect\citeauthoryear{blah}{blah}{2009}]{blah}Wilkinson,
-D. J. (2009) \alert{\href{http://dx.doi.org/10.1038/nrg2509}{Stochastic modelling for quantitative description of
-heterogeneous biological systems}}, {\em Nature Reviews Genetics.\/}~\textbf{10}(2):122-133.
+%\bibitem[\protect\citeauthoryear{blah}{blah}{2009}]{blah}Wilkinson,
+%D. J. (2009) \alert{\href{http://dx.doi.org/10.1038/nrg2509}{Stochastic modelling for quantitative description of
+%heterogeneous biological systems}}, {\em Nature Reviews Genetics.\/}~\textbf{10}(2):122-133.
 
 %\bibitem[\protect\citeauthoryear{blah}{blah}{2010}]{blah}Wilkinson,
 %  D. J. (2010) \alert{\href{http://www.mas.ncl.ac.uk/~ndjw1/docs/Wilkinson10.pdf}{Parameter inference for stochastic kinetic models of

@@ -9,7 +9,7 @@
 * [Scopus profile](https://www.scopus.com/authid/detail.uri?authorId=7401870210)
 * [arXiv profile](https://arxiv.org/a/wilkinson_d_1.html)
 * [Main research-related blog](https://darrenjw.wordpress.com/)
-* [Additional personal blog](https://darrenjw1.wordpress.com/)
+* [Additional personal blog](https://darrenjw2.wordpress.com/)
 * [Twitter](https://twitter.com/darrenjw)
 * [GitHub](https://github.com/darrenjw)
 

@@ -1,7 +1,6 @@
 # Darren Wilkinson
 
-* [Main university web site](https://www.staff.ncl.ac.uk/d.j.wilkinson/)
-* [Official university profile](https://www.ncl.ac.uk/maths-physics/staff/profile/darrenwilkinson.html)
+* [Main university web site](https://www.staff.ncl.ac.uk/d.j.wilkinson/) (also [official university profile](https://www.ncl.ac.uk/maths-physics/staff/profile/darrenwilkinson.html))
 * [Turing Fellow profile](https://www.turing.ac.uk/people/researchers/darren-wilkinson)
 * [LinkedIn](https://www.linkedin.com/in/darrenjwilkinson/)
 * [Gateway to Research (grants)](https://gtr.ukri.org/person/D3B0D48B-8511-4D9E-AD7C-C0B6875A9F42/)

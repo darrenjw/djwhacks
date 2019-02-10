@@ -9,9 +9,9 @@ scalacOptions ++= Seq(
 libraryDependencies  ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.1" % "test",
 //  "com.stripe" %% "rainier-core" % "0.1.2-SNAPSHOT",
-  "com.stripe" %% "rainier-core" % "0.1.1",
-  "com.stripe" %% "rainier-plot" % "0.1.1",
-  "com.cibo" %% "evilplot" % "0.2.0",
+  "com.stripe" %% "rainier-core" % "0.2.1",
+  "com.stripe" %% "rainier-plot" % "0.2.1",
+//  "com.cibo" %% "evilplot" % "0.2.0",
   "org.scalanlp" %% "breeze" % "0.13",
   "org.scalanlp" %% "breeze-viz" % "0.13",
   "org.scalanlp" %% "breeze-natives" % "0.13"
@@ -24,7 +24,9 @@ resolvers ++= Seq(
 
 resolvers += Resolver.bintrayRepo("cibotech", "public")
 
-scalaVersion := "2.12.4"
+scalaVersion := "2.12.8"
+
+scalaVersion in ThisBuild := "2.12.8" // for ensime
 
 fork := true
 

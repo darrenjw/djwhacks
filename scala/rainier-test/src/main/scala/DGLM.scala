@@ -69,7 +69,7 @@ object DGLM {
       )
 
     println("Model built. Sampling now...")
-    val out = model.sample(HMC(5), 1000, 10000, 1)
+    val out = model.sample(HMC(5), 1000, 10000)
 
     println("Iterates: " + out.length)
     println("First 20:")

@@ -36,8 +36,8 @@ object BinomialTest {
 
     implicit val rng = RNG.default
 
-    val out = model.sample()
-    //val out = model.sample(HMC(5), 1000, 10000)
+    //val out = model.sample()
+    val out = model.sample(HMC(5), 1000, 10000)
     println(out.take(10))
     println(s"p (true value $p):")
     println(DensityPlot().plot1D(out).mkString("\n"))

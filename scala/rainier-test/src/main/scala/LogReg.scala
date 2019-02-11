@@ -42,9 +42,10 @@ object LogReg {
 
     // now fit the model
     implicit val rng = ScalaRNG(3)
-    val its = 10000
-    val thin = 5
-    val out = model.sample(HMC(5), 10000, its*thin, thin)
+    val its = 1000
+    val thin = 2
+    //val out = model.sample(HMC(5), 10000, its*thin, thin)
+    val out = model.sample(EHMC(10,10000), 100, its*thin, thin)
     println(out.take(10))
 
     // now process the output

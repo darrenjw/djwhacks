@@ -16,7 +16,7 @@ object DLM {
 
     // first simulate some data from a DLM model
     val r = new scala.util.Random(0)
-    val n = 40 // time points
+    val n = 100 // time points
     val mu = 3.0 // AR(1) mean
     val a = 0.95 // auto-regressive parameter
     val sig = 1.0 // AR(1) SD
@@ -61,8 +61,10 @@ object DLM {
     implicit val rng = ScalaRNG(4)
 
     println("Model built. Sampling now (will take a long time)...")
-    val thin=1
-    val out = model.sample(HMC(5), 10000, 10000*thin,thin)
+    val thin = 5
+    val its = 2000
+    // val out = model.sample(HMC(5), its, its*thin,thin)
+    val out = model.sample(EHMC(5,1000), its, its*thin,thin)
     println("Sampling finished.")
 
     println("Iterates: " + out.length)

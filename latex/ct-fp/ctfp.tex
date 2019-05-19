@@ -1190,7 +1190,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \item \alert{Functional programming languages} based on Cartesian closed categories provide a sensible foundation for computational modelling with appropriate levels of abstraction
   \item Concepts from \alert{category theory}, such as functors, monads, comonads, natural transformations and recursion schemes provide an appropriate array of tools for scalable data modelling and algorithm construction and composition
     \item Expressing models and algorithms in FP languages using category theory abstractions leads to \alert{elegant, composable PPLs ``for free''}, doing away with the need to manually construct and parse custom DSLs
-%    \item There is \alert{nothing special} about computations associated with statistical inference which somehow makes these ideas, tools and techniques irrelevant
+\item Monadic composition is \alert{the} \emph{canonical} approach to constructing flexible, composable PPLs
   \end{itemize}
 \end{frame}
 
@@ -1233,27 +1233,34 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 
 \begin{frame}
   \frametitle{References}
+
+  \setbeamerfont{bibliography item}{size=\footnotesize}
+  \setbeamerfont{bibliography entry author}{size=\footnotesize}
+  \setbeamerfont{bibliography entry title}{size=\footnotesize}
+  \setbeamerfont{bibliography entry location}{size=\footnotesize}
+  \setbeamerfont{bibliography entry note}{size=\footnotesize}
+  
   \begin{thebibliography}{}
 
-  \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
+%  \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
 
 %   \bibitem{} Fritz, T., Perrone, P. (2017) \alert{A probability monad as the colimit of finite powers}, \emph{arXiv:1712.05363}.
 
-%  \bibitem{} Heunen, C., Kammar, O., Staton, S., Yang, H. (2017) \alert{A convenient category for higher-order probability theory}, \emph{32nd Annual ACM/IEEE LICS.}, 1--12.
+\bibitem{} Heunen, C., Kammar, O., Staton, S., Yang, H. (2017) \alert{A convenient category for higher-order probability theory}, \emph{32nd Annual ACM/IEEE LICS.}, 1--12.
      
     \bibitem{} Law, J., Wilkinson, D. J. (2018) \alert{Composable models for online Bayesian analysis of streaming data}, \emph{Statistics and Computing}, \textbf{28}(6):1119--1137.
     
 %    \bibitem{} Meijer, E., Fokkinga, M., Paterson, R. (1991) \alert{Functional programming with bananas, lenses, envelopes and barbed wire}. In: Hughes J. (eds) \emph{Functional Programming Languages and Computer Architecture}. FPCA 1991. Lecture Notes in Computer Science, vol 523. Springer.
 
-%    \bibitem{} Park, S., Pfenning, F., Thrun, S. (2008) \alert{A probabilistic language based on sampling functions}, \emph{TOPLAS}, \textbf{31}(1):4.
+    \bibitem{} Park, S., Pfenning, F., Thrun, S. (2008) \alert{A probabilistic language based on sampling functions}, \emph{TOPLAS}, \textbf{31}(1):4.
 
-%  \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A., Ghahramani, Z. and Gordon, A. D. (2015) \alert{Practical probabilistic programming with monads}, \emph{Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell}, 165--176.
+\bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A., Ghahramani, Z. and Gordon, A. D. (2015) \alert{Practical probabilistic programming with monads}, \emph{Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell}, 165--176.
 
 \bibitem{} \'{S}cibior, A., Kammar, O., Gharamani, Z. (2018) \alert{Functional programming for modular Bayesian inference}, \emph{Proc.\ ACM Prog.\ Lang.}, \textbf{2}(ICFP): 83.
       
 %  \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A. et al (2018) \alert{Denotational validation of higher-order Bayesian inference}, \emph{Proc.\ ACM Prog.\ Lang.}, \textbf{2}(POPL): 60.
     
-     \bibitem{} Wadler, P. (1995) \alert{Monads for functional programming}. In: Jeuring J., Meijer E. (eds) \emph{Advanced Functional Programming}. AFP 1995. Lecture Notes in Computer Science, vol 925. Springer.
+%     \bibitem{} Wadler, P. (1995) \alert{Monads for functional programming}. In: Jeuring J., Meijer E. (eds) \emph{Advanced Functional Programming}. AFP 1995. Lecture Notes in Computer Science, vol 925. Springer.
     
 %\beamertemplatebookbibitems
 %
@@ -1262,8 +1269,11 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \end{thebibliography}
 
   \vspace*{0.8ex}
-  
-For more about Scala and FP: \alert{\url{darrenjw.wordpress.com}}
+
+  Rainier:
+  \alert{\url{github.com/stripe/rainier}}
+
+  For more about Scala and FP: \alert{\url{darrenjw.wordpress.com}}
 
 \end{frame}
 

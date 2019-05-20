@@ -76,10 +76,11 @@ col, set,start,end,deltat,zip},
 
 \title{A compositional approach to scalable Bayesian computation and probabilistic programming}
 \author[Darren Wilkinson --- Cambridge 14/12/18]{\textbf{\large Darren Wilkinson} \\
-  \url{@darrenjw}\hfill \alert{\url{darrenjw.github.io}}\\
+\url{@darrenjw}\hfill \alert{\url{darrenjw.github.io}}\\
+\vspace{2ex}%
 %School of Mathematics, Statistics and Physics\\
-Newcastle University, UK\\and\\The Alan Turing Institute}
-\date{\textbf{Advances and challenges in Machine Learning Languages}\\\emph{Cambridge University}\\20-21 May 2019}
+Newcastle University, UK / The Alan Turing Institute}
+\date{\textbf{Advances and challenges in machine learning languages}\\\emph{Cambridge University}\\20-21 May 2019}
 
   
 \frame{\titlepage}
@@ -513,7 +514,7 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
       \item $F(f\circ g) = F(f)\circ F(g)$ for all composable $f,g\in \operatorname{hom}(\mathcal{C})$
       \end{itemize}
       %  \item The laws ensure that we can form a category, called \textbf{Cat}, which has categories as objects and functors as morphisms
-      \item A functor $F:\mathcal{C}\longrightarrow\mathcal{C}$ is called an \alert{endofunctor} --- in the context of functional programming, the word functor usually refers to an endofunctor $F: \textbf{Hask}\longrightarrow\textbf{Hask}$
+      \item A functor $F:\mathcal{C}\longrightarrow\mathcal{C}$ is called an \alert{endofunctor} --- in the context of functional programming, the word functor usually refers to an endofunctor $F: \textbf{Set}\longrightarrow\textbf{Set}$
   \end{itemize}
 \end{frame}
 
@@ -845,7 +846,8 @@ val poisson = Dglm.poisson(linear)
   \begin{itemize}
   \item Monads are good for operations that can be carried out on data points independently
     \item For computations requiring knowledge of some kind of local neighbourhood structure, \alert{Comonads} are a better fit
-  \item |coflatMap| will take a function representing a \alert{local computation} producing one value for the new structure, and then extend this to generate all values associated with the comonad
+    \item |coflatMap| will take a function representing a \alert{local computation} producing one value for the new structure, and then extend this to generate all values associated with the comonad
+      \item Useful for defining linear filters, Gibbs samplers, convolutional neural networks, etc.
     \end{itemize}
 \end{frame}
 
@@ -886,8 +888,6 @@ def pims = Stream.iterate(pim0)(_.coflatMap(fil))
 \end{lstlisting}
 \end{frame}
 
-\end{comment}
-
 \begin{frame}[fragile]
 \frametitle{Gibbs sampling (an Ising model)}
 \begin{lstlisting}[language=scala]
@@ -910,8 +910,6 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
 \end{lstlisting}
 \end{frame}
 
-
-\begin{comment}
 
 \begin{frame}
   \frametitle{Recursion schemes}
@@ -1087,6 +1085,8 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
     \end{itemize}
 \end{frame}
 
+\begin{comment}
+  
 \begin{frame}
   \frametitle{\texttt{Gen} for property-based testing}
   \begin{itemize}
@@ -1097,6 +1097,8 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
     \item \texttt{ScalaCheck} in Scala and \texttt{QuickCheck} in Haskell are well-known examples of property-based testing libraries
     \end{itemize}
 \end{frame}
+
+\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{\texttt{Dist} for Bayesian conditioning via SMC}
@@ -1141,6 +1143,18 @@ val model = for {
 val out = model.sample(HMC(5), 1000, 10000*10, 10)
 \end{lstlisting}
 \end{frame}
+
+\begin{frame}
+  \frametitle{Composing probabilistic programs}
+  \begin{itemize}
+  \item Describing probabilistic programs as \alert{monadic values} in a functional programming language with syntax for monadic composition leads immediately to an \alert{embedded PPL DSL} ``for free''
+  \item This in turn enables a fully \alert{compositional} approach to the (scalable) development of (hierarchical) probabilistic models
+  \item Model components can be easily ``re-used'' in order to build big models from small
+  \item eg. a regression model component can be re-used to create a hierarchical random effects model over related regressions
+    \item In some well-known PPLs (eg. BUGS), this would require manual copy-and-pasting of code, wrapping with a ``for loop'', and manual hacking in of an extra array index into all array references --- not at all compositional!
+  \end{itemize}
+\end{frame}
+
 
 \begin{frame}[fragile]
   \frametitle{Representation independence using the \emph{free} monad}
@@ -1188,9 +1202,9 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \begin{itemize}
   \item Mathematicians and theoretical computer scientists have been thinking about models of (scalable) computation for decades
   \item \alert{Functional programming languages} based on Cartesian closed categories provide a sensible foundation for computational modelling with appropriate levels of abstraction
-  \item Concepts from \alert{category theory}, such as functors, monads, comonads, natural transformations and recursion schemes provide an appropriate array of tools for scalable data modelling and algorithm construction and composition
+  \item Concepts from \alert{category theory}, such as functors, monads and comonads, provide an appropriate array of tools for scalable data modelling and algorithm construction and composition
     \item Expressing models and algorithms in FP languages using category theory abstractions leads to \alert{elegant, composable PPLs ``for free''}, doing away with the need to manually construct and parse custom DSLs
-\item Monadic composition is \alert{the} \emph{canonical} approach to constructing flexible, composable PPLs
+\item Monadic composition is \alert{the} \emph{canonical} approach to constructing flexible, composable PPLs (and AD systems, and deep NNs, ...)
   \end{itemize}
 \end{frame}
 
@@ -1244,9 +1258,11 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 
 %  \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
 
+\bibitem{} Fong, B., Spivak, D., Tuy\'eras, R. (2019) \alert{Backprop as Functor: A compositional perspective on supervised learning}, \emph{arXiv}, 1711.10455
+   
 %   \bibitem{} Fritz, T., Perrone, P. (2017) \alert{A probability monad as the colimit of finite powers}, \emph{arXiv:1712.05363}.
 
-\bibitem{} Heunen, C., Kammar, O., Staton, S., Yang, H. (2017) \alert{A convenient category for higher-order probability theory}, \emph{32nd Annual ACM/IEEE LICS.}, 1--12.
+\bibitem{} Heunen, C., Kammar, O., Staton, S., Yang, H. (2017) \alert{A convenient category for higher-order probability theory}, \emph{32nd ACM/IEEE LICS.}, 1--12.
      
     \bibitem{} Law, J., Wilkinson, D. J. (2018) \alert{Composable models for online Bayesian analysis of streaming data}, \emph{Statistics and Computing}, \textbf{28}(6):1119--1137.
     
@@ -1273,8 +1289,10 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   Rainier:
   \alert{\url{github.com/stripe/rainier}}
 
-  For more about Scala and FP: \alert{\url{darrenjw.wordpress.com}}
+%  For more about Scala and FP: \alert{\url{darrenjw.wordpress.com}}
 
+ \alert{\url{darrenjw.github.io}} \hfill \url{@darrenjw}
+  
 \end{frame}
 
 

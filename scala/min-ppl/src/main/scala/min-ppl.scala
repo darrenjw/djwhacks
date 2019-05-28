@@ -7,7 +7,7 @@ A minimal probabilistic programming language
 
 object MinPpl {
 
-  val N = 1000
+  val N = 2000
 
   trait Prob[T] {
     val particles: Vector[T]
@@ -58,8 +58,9 @@ object MinPpl {
       y <- Normal(x,1)
     } yield (x,y)
     val y = xy map (_._2)
-    //val yGz = y.cond(3.0, (
+    val yGz = y.cond(yi => breeze.stats.distributions.Gaussian(yi, 1).logPdf(5))
     println(breeze.stats.meanAndVariance(y.particles))
+    println(breeze.stats.meanAndVariance(yGz.particles))
     println("Bye")
   }
 

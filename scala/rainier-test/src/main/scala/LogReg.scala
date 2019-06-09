@@ -41,11 +41,13 @@ object LogReg {
     } yield (beta0, beta1)
 
     // now fit the model
+    println("Model built. Now sampling...")
     implicit val rng = ScalaRNG(3)
     val its = 1000
     val thin = 2
     //val out = model.sample(HMC(5), 10000, its*thin, thin)
-    val out = model.sample(EHMC(10,10000), 100, its*thin, thin)
+    val out = model.sample(EHMC(1,1000), 1000, its*thin, thin)
+    println("Sampling finished.")
     println(out.take(10))
 
     // now process the output

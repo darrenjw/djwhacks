@@ -3,16 +3,16 @@ name := "min-ppl"
 version := "0.1-SNAPSHOT"
 
 scalacOptions ++= Seq(
-  "-unchecked", "-deprecation", "-feature", "-Ypartial-unification"
+  "-unchecked", "-deprecation", "-feature"
 )
 
 
 libraryDependencies  ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.0.1" % "test",
-  "org.scalanlp" %% "breeze" % "0.13",
-  // "org.scalanlp" %% "breeze-viz" % "0.13",
-  "org.scalanlp" %% "breeze-natives" % "0.13",
-  "org.typelevel" %% "cats-core" % "2.0.0-M1"
+  "org.scalatest" %% "scalatest" % "3.1.0-SNAP13" % "test",
+  "org.scalanlp" %% "breeze" % "1.0-RC4",
+  // "org.scalanlp" %% "breeze-viz" % "1.0-RC4",
+  "org.scalanlp" %% "breeze-natives" % "1.0-RC4",
+  "org.typelevel" %% "cats-core" % "2.0.0-M4"
 )
 
 resolvers ++= Seq(
@@ -22,5 +22,6 @@ resolvers ++= Seq(
     "https://oss.sonatype.org/content/repositories/releases/"
 )
 
-scalaVersion := "2.12.7"
+scalaVersion := "2.13.0"
 
+scalaVersion in ThisBuild := "2.13.0"

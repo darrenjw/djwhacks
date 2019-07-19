@@ -35,6 +35,7 @@ object MinPpl {
 
   trait Dist[T] extends Prob[T] {
     def ll(obs: T): Double
+    def ll(obs: Seq[T]): Double = obs.map(ll).reduce(_+_)
   }
 
   case class Normal(mu: Double, v: Double) extends Dist[Double] {
@@ -58,7 +59,7 @@ object MinPpl {
       y <- Normal(x,1)
     } yield (x,y)
     val y = xy map (_._2)
-    val yGz = y.cond(yi => breeze.stats.distributions.Gaussian(yi, 1).logPdf(5))
+    val yGz = y.cond(yi => Normal(yi, 1).ll(List(5.0,4,4,3,4,5,6)))
     println(breeze.stats.meanAndVariance(y.particles))
     println(breeze.stats.meanAndVariance(yGz.particles))
     println("Bye")

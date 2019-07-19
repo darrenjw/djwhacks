@@ -59,6 +59,7 @@ object MinPpl {
 
   // now a few simple examples
 
+  // linear Gaussian
   def example1 = {
     val xy = for {
       x <- Normal(0,9)
@@ -70,6 +71,31 @@ object MinPpl {
     println(breeze.stats.meanAndVariance(yGz.particles))
   }
 
+  // normal random sample
+  def example2 = {
+    val prior = for {
+      mu <- Normal(0,100)
+      v <- Gamma(1,0.01)
+    } yield (mu,v)
+    val mod = prior.cond{case (mu,v) => Normal(mu,v).ll(List(8.0,9,7,7,8,10))}
+    println(breeze.stats.meanAndVariance(mod.particles map (_._1)))
+    println(breeze.stats.meanAndVariance(mod.particles map (_._2)))
+  }
+
+  // Poisson DGLM
+  def example3 = {
+    val data = List(2,1,0,2,3,4,5,4,3,2,1)
+    val model = for {
+      w <- Gamma(1, 0.01)
+      state0 = Normal(0.0, 100.0)
+      //states = data.foldLeft(state0)((smo, xi) => Normal(smo, w))
+    } yield (w,state0)
+    data
+  }
+
+  // linear model
+
+
 
 
 
@@ -77,7 +103,7 @@ object MinPpl {
 
   def main(args: Array[String]): Unit = {
     println("Hi")
-    example1
+    example3
     println("Bye")
   }
 

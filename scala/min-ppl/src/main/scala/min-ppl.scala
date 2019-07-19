@@ -7,7 +7,8 @@ A minimal probabilistic programming language
 
 object MinPpl {
 
-  // code for the language starts here
+  // *************************************************************************
+  // Code for the language starts here
 
   import breeze.stats.{distributions => bdist}
   import breeze.linalg.DenseVector
@@ -39,6 +40,7 @@ object MinPpl {
     def ll(obs: T): Double
     def ll(obs: Seq[T]): Double = obs map (ll) reduce (_+_)
   }
+  // TODO: possible to add a "fit" method, a la Rainier?
 
   case class Normal(mu: Double, v: Double)(implicit N: Int) extends Dist[Double] {
     lazy val particles = bdist.Gaussian(mu, math.sqrt(v)).sample(N).toVector
@@ -55,11 +57,13 @@ object MinPpl {
     def ll(obs: Int) = bdist.Poisson(mu).logProbabilityOf(obs)
   }
 
-  // code for the language ends here
+  // Code for the language ends here
+  // *************************************************************************
 
-  // now a few simple examples
 
-  // linear Gaussian
+  // Now a few simple examples
+
+  // Linear Gaussian
   def example1 = {
     val xy = for {
       x <- Normal(0,9)
@@ -70,8 +74,9 @@ object MinPpl {
     println(breeze.stats.meanAndVariance(y.particles))
     println(breeze.stats.meanAndVariance(yGz.particles))
   }
+  // TODO: do analytic checks
 
-  // normal random sample
+  // Normal random sample
   def example2 = {
     val prior = for {
       mu <- Normal(0,100)
@@ -82,24 +87,37 @@ object MinPpl {
     println(breeze.stats.meanAndVariance(mod.particles map (_._2)))
   }
 
-  // Poisson DGLM
+  // TODO: Poisson DGLM
   def example3 = {
+
     val data = List(2,1,0,2,3,4,5,4,3,2,1)
-    val model = for {
+
+    val prior = for {
       w <- Gamma(1, 0.01)
-      state0 = Normal(0.0, 100.0)
-      //states = data.foldLeft(state0)((smo, xi) => Normal(smo, w))
-    } yield (w,state0)
-    data
+      state0 <- Normal(0.0, 100.0)
+    } yield (w, List(state0))
+    
+    def addTimePoint(current: Prob[(Double, List[Double])],
+      obs: Int): Prob[(Double, List[Double])] = for {
+      tup <- current
+        w = tup._1
+        states = tup._2
+        os = states.head
+        ns <- Normal(os, w) // cond?
+    } yield (w, ns :: states)
+
   }
 
-  // linear model
+
+
+
+  // TODO: Linear model
 
 
 
 
 
-  // main entry point
+  // Main entry point
 
   def main(args: Array[String]): Unit = {
     println("Hi")

@@ -1,11 +1,13 @@
 /*
-min-ppl.scala
+min-ppl-unweighted.scala
 
 A minimal probabilistic programming language
 
+Unweighted version, which doesn't seem very promising
+
 */
 
-object MinPpl {
+object MinPplUW {
 
   // *************************************************************************
   // Code for the language starts here
@@ -15,37 +17,26 @@ object MinPpl {
 
   implicit val numParticles = 2000
 
-  case class Particle[T](v: T, lw: Double) { // value and log-weight
-    def map[S](f: T => S): Particle[S] = Particle(f(v), lw)
-    def flatMap[S](f: T => Particle[S]): Particle[S] = { // TODO: Don't need flatMap??
-      val ps = f(v)
-      Particle(ps.v, lw + ps.lw)
-    }
-  }
-
   trait Prob[T] {
-    val particles: Vector[Particle[T]]
-    def map[S](f: T => S): Prob[S] = Empirical(particles map (_ map f))
-    def flatMap[S](f: T => Prob[S]): Prob[S] = {
-      Empirical((particles map (p => {
-        f(p.v).particles.map(psi => Particle(psi.v, p.lw + psi.lw))
-      })).flatten).resample
+    val particles: Vector[T]
+    def map[S](f: T => S): Prob[S] = Empirical(particles map f)
+    def flatMap[S](f: T => Prob[S])(implicit N: Int): Prob[S] = {
+      val fm = (particles.map(f).map((p: Prob[S]) => p.particles)).flatten
+      val r = bdist.Rand.randInt(fm.length)
+      val ind = Vector.fill(N)(r.draw)
+      Empirical(ind map (i => fm(i)))
     }
-    def resample(implicit N: Int): Prob[T] = {
-      val lw = particles map (_.lw)
+    def cond(ll: T => Double)(implicit N: Int): Prob[T] = {
+      val lw = particles map (ll(_))
       val mx = lw reduce (math.max(_,_))
       val rw = (lw map (_ - mx)) map (math.exp(_))
       val ind = bdist.Multinomial(DenseVector(rw.toArray)).sample(N)
       val newParticles = ind map (i => particles(i))
       Empirical(newParticles.toVector)
     }
-    def cond(ll: T => Double)(implicit N: Int): Prob[T] =
-      Empirical(particles map (p => Particle(p.v, p.lw + ll(p.v))))
   }
 
-  case class Empirical[T](particles: Vector[Particle[T]]) extends Prob[T]
-
-  def unweighted[T](ts: Vector[T]): Prob[T] = Empirical(ts map (Particle(_, 0.0)))
+  case class Empirical[T](particles: Vector[T]) extends Prob[T]
 
   trait Dist[T] extends Prob[T] {
     def ll(obs: T): Double

@@ -13,7 +13,8 @@ object MinPpl {
   import breeze.stats.{distributions => bdist}
   import breeze.linalg.DenseVector
 
-  implicit val numParticles = 2500
+  //implicit val numParticles = 100
+  implicit val numParticles = 500
 
   case class Particle[T](v: T, lw: Double) { // value and log-weight
     def map[S](f: T => S): Particle[S] = Particle(f(v), lw)
@@ -34,6 +35,7 @@ object MinPpl {
     def resample(implicit N: Int): Prob[T] = { // TODO: even more minimal version without the log-sum-exp trick?
       val lw = particles map (_.lw)
       val mx = lw reduce (math.max(_,_))
+      //val np = particles.length ; println(s"$np $mx") // TODO: Debug code
       val rw = (lw map (_ - mx)) map (math.exp(_))
       val ind = bdist.Multinomial(DenseVector(rw.toArray)).sample(N)
       val newParticles = ind map (i => particles(i))
@@ -51,8 +53,10 @@ object MinPpl {
   trait Dist[T] extends Prob[T] {
     def ll(obs: T): Double
     def ll(obs: Seq[T]): Double = obs map (ll) reduce (_+_)
+    def fit(obs: Seq[T]): Prob[T] = Empirical(particles map (p => Particle(p.v, p.lw + ll(obs))))
+    //def fit(obs: Seq[T]): Prob[T] = Empirical(Vector(Particle(particles.head.v, ll(obs))))
+    def fit(obs: T): Prob[T] = fit(List(obs))
   }
-  // TODO: possible to add a "fit" method, a la Rainier?
 
   case class Normal(mu: Double, v: Double)(implicit N: Int) extends Dist[Double] {
     lazy val particles = unweighted(bdist.Gaussian(mu, math.sqrt(v)).sample(N).toVector).particles
@@ -96,8 +100,28 @@ object MinPpl {
     val xyze = xyz.empirical
     println(breeze.stats.meanAndVariance(xyze.map(_._1))) // x
     println(breeze.stats.meanAndVariance(xyze.map(_._2))) // y
+    // Now fit...
+    val xyzf = for {
+      x <- Normal(5,4)
+      y <- Normal(x,1)
+      z <- Normal(y,9).fit(8.0)
+    } yield (x,y,z)
+    val xyzfe = xyzf.empirical
+    println(breeze.stats.meanAndVariance(xyzfe.map(_._1))) // x
+    println(breeze.stats.meanAndVariance(xyzfe.map(_._2))) // y
+    //println(breeze.stats.meanAndVariance(xyzfe.map(_._3))) // z
   }
   // TODO: do analytic checks
+
+  def example1a = {
+    val deep = for {
+      w <- Normal(0.0,1.0)
+      x <- Normal(w,1)
+      y <- Normal(x,1)
+      z <- Normal(y,1)
+    } yield z
+    println(breeze.stats.meanAndVariance(deep.empirical))
+  }
 
   // Normal random sample
   def example2 = {

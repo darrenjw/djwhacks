@@ -41,6 +41,7 @@ object MinPpl {
     }
     def cond(ll: T => Double)(implicit N: Int): Prob[T] =
       Empirical(particles map (p => Particle(p.v, p.lw + ll(p.v))))
+    def empirical: Vector[T] = resample.particles.map(_.v)
   }
 
   case class Empirical[T](particles: Vector[Particle[T]]) extends Prob[T]
@@ -54,17 +55,17 @@ object MinPpl {
   // TODO: possible to add a "fit" method, a la Rainier?
 
   case class Normal(mu: Double, v: Double)(implicit N: Int) extends Dist[Double] {
-    lazy val particles = bdist.Gaussian(mu, math.sqrt(v)).sample(N).toVector
+    lazy val particles = unweighted(bdist.Gaussian(mu, math.sqrt(v)).sample(N).toVector).particles
     def ll(obs: Double) = bdist.Gaussian(mu, math.sqrt(v)).logPdf(obs)
   }
 
   case class Gamma(a: Double, b: Double)(implicit N: Int) extends Prob[Double] {
-    lazy val particles = bdist.Gamma(a, 1.0/b).sample(N).toVector
+    lazy val particles = unweighted(bdist.Gamma(a, 1.0/b).sample(N).toVector).particles
     def ll(obs: Double) = bdist.Gamma(a, 1.0/b).logPdf(obs)
   }
 
   case class Poisson(mu: Double)(implicit N: Int) extends Prob[Int] {
-    lazy val particles = bdist.Poisson(mu).sample(N).toVector
+    lazy val particles = unweighted(bdist.Poisson(mu).sample(N).toVector).particles
     def ll(obs: Int) = bdist.Poisson(mu).logProbabilityOf(obs)
   }
 
@@ -76,14 +77,18 @@ object MinPpl {
 
   // Linear Gaussian
   def example1 = {
+    println("here1")
     val xy = for {
       x <- Normal(0,9)
       y <- Normal(x,1)
     } yield (x,y)
-    val y = xy map (_._2)
-    val yGz = y.cond(yi => Normal(yi, 1).ll(List(5.0,4,4,3,4,5,6)))
-    println(breeze.stats.meanAndVariance(y.particles))
-    println(breeze.stats.meanAndVariance(yGz.particles))
+    println("here2")
+    val y = xy.map(_._2)
+    println("here3")
+    val yGz = y.cond(yi => Normal(yi, 1).ll(List(5.0,4,4,3,4,5,6))).empirical
+    println("here4")
+    println(breeze.stats.meanAndVariance(y.empirical))
+    println(breeze.stats.meanAndVariance(yGz))
   }
   // TODO: do analytic checks
   // TODO: cond inside for expression?
@@ -94,9 +99,9 @@ object MinPpl {
       mu <- Normal(0,100)
       v <- Gamma(1,0.01)
     } yield (mu,v)
-    val mod = prior.cond{case (mu,v) => Normal(mu,v).ll(List(8.0,9,7,7,8,10))}
-    println(breeze.stats.meanAndVariance(mod.particles map (_._1)))
-    println(breeze.stats.meanAndVariance(mod.particles map (_._2)))
+    val mod = prior.cond{case (mu,v) => Normal(mu,v).ll(List(8.0,9,7,7,8,10))}.empirical
+    println(breeze.stats.meanAndVariance(mod map (_._1)))
+    println(breeze.stats.meanAndVariance(mod map (_._2)))
   }
 
   // TODO: Poisson DGLM

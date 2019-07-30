@@ -13,7 +13,7 @@ object MinPpl {
   import breeze.stats.{distributions => bdist}
   import breeze.linalg.DenseVector
 
-  implicit val numParticles = 2000
+  implicit val numParticles = 2500
 
   case class Particle[T](v: T, lw: Double) { // value and log-weight
     def map[S](f: T => S): Particle[S] = Particle(f(v), lw)
@@ -37,7 +37,7 @@ object MinPpl {
       val rw = (lw map (_ - mx)) map (math.exp(_))
       val ind = bdist.Multinomial(DenseVector(rw.toArray)).sample(N)
       val newParticles = ind map (i => particles(i))
-      Empirical(newParticles.toVector)
+      Empirical(newParticles.toVector map (pi => Particle(pi.v, 0.0)))
     }
     def cond(ll: T => Double)(implicit N: Int): Prob[T] =
       Empirical(particles map (p => Particle(p.v, p.lw + ll(p.v))))
@@ -77,21 +77,27 @@ object MinPpl {
 
   // Linear Gaussian
   def example1 = {
-    println("here1")
     val xy = for {
-      x <- Normal(0,9)
+      x <- Normal(5,4)
       y <- Normal(x,1)
     } yield (x,y)
-    println("here2")
     val y = xy.map(_._2)
-    println("here3")
-    val yGz = y.cond(yi => Normal(yi, 1).ll(List(5.0,4,4,3,4,5,6))).empirical
-    println("here4")
+    val yGz = y.cond(yi => Normal(yi, 9).ll(8.0)).empirical
     println(breeze.stats.meanAndVariance(y.empirical))
     println(breeze.stats.meanAndVariance(yGz))
+    val xyGz = xy.cond{case (x,y) => Normal(y,9).ll(8.0)}.empirical
+    println(breeze.stats.meanAndVariance(xyGz.map(_._1))) // x
+    println(breeze.stats.meanAndVariance(xyGz.map(_._2))) // y
+    // Now cond inside for expression...
+    val xyz = for {
+      x <- Normal(5,4)
+      y <- Normal(x,1).cond(y => Normal(y,9).ll(8.0))
+    } yield (x,y)
+    val xyze = xyz.empirical
+    println(breeze.stats.meanAndVariance(xyze.map(_._1))) // x
+    println(breeze.stats.meanAndVariance(xyze.map(_._2))) // y
   }
   // TODO: do analytic checks
-  // TODO: cond inside for expression?
 
   // Normal random sample
   def example2 = {

@@ -17,7 +17,7 @@ object MinPpl {
 
   case class Particle[T](v: T, lw: Double) { // value and log-weight
     def map[S](f: T => S): Particle[S] = Particle(f(v), lw)
-    def flatMap[S](f: T => Particle[S]): Particle[S] = { // TODO: Don't need flatMap??
+    def flatMap[S](f: T => Particle[S]): Particle[S] = { // TODO: Don't need flatMap in min version
       val ps = f(v)
       Particle(ps.v, lw + ps.lw)
     }
@@ -31,7 +31,7 @@ object MinPpl {
         f(p.v).particles.map(psi => Particle(psi.v, p.lw + psi.lw))
       })).flatten).resample
     }
-    def resample(implicit N: Int): Prob[T] = {
+    def resample(implicit N: Int): Prob[T] = { // TODO: even more minimal version without the log-sum-exp trick?
       val lw = particles map (_.lw)
       val mx = lw reduce (math.max(_,_))
       val rw = (lw map (_ - mx)) map (math.exp(_))

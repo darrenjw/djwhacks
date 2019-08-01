@@ -14,8 +14,8 @@ object MinPpl {
   import breeze.linalg.DenseVector
 
   //implicit val numParticles = 100
-  //implicit val numParticles = 500
-  implicit val numParticles = 1000
+  implicit val numParticles = 300
+  //implicit val numParticles = 1000
 
   case class Particle[T](v: T, lw: Double) { // value and log-weight
     def map[S](f: T => S): Particle[S] = Particle(f(v), lw)
@@ -31,7 +31,7 @@ object MinPpl {
     def flatMap[S](f: T => Prob[S]): Prob[S] = {
       Empirical((particles map (p => {
         f(p.v).particles.map(psi => Particle(psi.v, p.lw + psi.lw))
-      })).flatten).resample
+      })).flatten)//.resample
     }
     def resample(implicit N: Int): Prob[T] = {
       // TODO: Could do an even more minimal version without the log-sum-exp trick?

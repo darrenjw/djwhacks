@@ -14,7 +14,8 @@ object MinPpl {
   import breeze.linalg.DenseVector
 
   //implicit val numParticles = 100
-  implicit val numParticles = 500
+  //implicit val numParticles = 500
+  implicit val numParticles = 2000
 
   case class Particle[T](v: T, lw: Double) { // value and log-weight
     def map[S](f: T => S): Particle[S] = Particle(f(v), lw)
@@ -41,7 +42,7 @@ object MinPpl {
       val newParticles = ind map (i => particles(i))
       Empirical(newParticles.toVector map (pi => Particle(pi.v, 0.0)))
     }
-    def cond(ll: T => Double)(implicit N: Int): Prob[T] =
+    def cond(ll: T => Double): Prob[T] =
       Empirical(particles map (p => Particle(p.v, p.lw + ll(p.v))))
     def empirical: Vector[T] = resample.particles.map(_.v)
   }
@@ -53,9 +54,10 @@ object MinPpl {
   trait Dist[T] extends Prob[T] {
     def ll(obs: T): Double
     def ll(obs: Seq[T]): Double = obs map (ll) reduce (_+_)
-    def fit(obs: Seq[T]): Prob[T] = Empirical(particles map (p => Particle(p.v, p.lw + ll(obs))))
+    //def fit(obs: Seq[T]): Prob[T] = Empirical(particles map (p => Particle(p.v, p.lw + ll(obs))))
     //def fit(obs: Seq[T]): Prob[T] = Empirical(Vector(Particle(particles.head.v, ll(obs))))
-    def fit(obs: T): Prob[T] = fit(List(obs))
+    //def fit(obs: T): Prob[T] = fit(List(obs))
+    def fit(obs: T): Prob[T] = Empirical(Vector(Particle(obs, ll(obs))))
   }
 
   case class Normal(mu: Double, v: Double)(implicit N: Int) extends Dist[Double] {
@@ -87,10 +89,14 @@ object MinPpl {
     } yield (x,y)
     val y = xy.map(_._2)
     val yGz = y.cond(yi => Normal(yi, 9).ll(8.0)).empirical
+    print("y: 5.000, 5.000 : ")
     println(breeze.stats.meanAndVariance(y.empirical))
+    print("y: 6.071, 3.214 : ")
     println(breeze.stats.meanAndVariance(yGz))
     val xyGz = xy.cond{case (x,y) => Normal(y,9).ll(8.0)}.empirical
+    print("x: 5.857, 2.867 : ")
     println(breeze.stats.meanAndVariance(xyGz.map(_._1))) // x
+    print("y: 6.071, 3.214 : ")
     println(breeze.stats.meanAndVariance(xyGz.map(_._2))) // y
     // Now cond inside for expression...
     val xyz = for {
@@ -98,7 +104,9 @@ object MinPpl {
       y <- Normal(x,1).cond(y => Normal(y,9).ll(8.0))
     } yield (x,y)
     val xyze = xyz.empirical
+    print("x: 5.857, 2.867 : ")
     println(breeze.stats.meanAndVariance(xyze.map(_._1))) // x
+    print("y: 6.071, 3.214 : ")
     println(breeze.stats.meanAndVariance(xyze.map(_._2))) // y
     // Now fit...
     val xyzf = for {
@@ -107,11 +115,23 @@ object MinPpl {
       z <- Normal(y,9).fit(8.0)
     } yield (x,y,z)
     val xyzfe = xyzf.empirical
+    print("x: 5.857, 2.867 : ")
     println(breeze.stats.meanAndVariance(xyzfe.map(_._1))) // x
+    print("y: 6.071, 3.214 : ")
     println(breeze.stats.meanAndVariance(xyzfe.map(_._2))) // y
-    //println(breeze.stats.meanAndVariance(xyzfe.map(_._3))) // z
+    print("z: 8.000, 0.000 : ")
+    println(breeze.stats.meanAndVariance(xyzfe.map(_._3))) // z
+    // Simpler fit test
+    val yzf = for {
+      y <- Normal(5,5)
+      z <- Normal(y,9).fit(8.0)
+    } yield (y,z)
+    val yzfe = xyzf.empirical
+    print("y: 6.071, 3.214 : ")
+    println(breeze.stats.meanAndVariance(yzfe.map(_._2))) // y
+    print("z: 8.000, 0.000 : ")
+    println(breeze.stats.meanAndVariance(yzfe.map(_._3))) // z
   }
-  // TODO: do analytic checks
 
   def example1a = {
     val deep = for {

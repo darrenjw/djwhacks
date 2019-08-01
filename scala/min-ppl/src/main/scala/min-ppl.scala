@@ -198,6 +198,20 @@ object MinPpl {
     println(breeze.stats.meanAndVariance(modEmp map (_._2)))
   }
 
+  // Normal random sample - IG on v
+  def example2a = {
+    val mod = for {
+      mu <- Normal(0, 100)
+      tau <- Gamma(1, 0.1)
+      _ <- Normal(mu, 1.0/tau).fitQ(List(8.0,9,7,7,8,10))
+    } yield (mu,tau)
+    val modEmp = mod.empirical
+    print("mu : ")
+    println(breeze.stats.meanAndVariance(modEmp map (_._1)))
+    print("tau : ")
+    println(breeze.stats.meanAndVariance(modEmp map (_._2)))
+  }
+
   // TODO: Poisson DGLM
   def example3 = {
 
@@ -232,7 +246,7 @@ object MinPpl {
 
   def main(args: Array[String]): Unit = {
     println("Hi")
-    example2
+    example2a
     println("Bye")
   }
 

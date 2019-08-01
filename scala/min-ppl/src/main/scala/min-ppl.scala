@@ -13,9 +13,9 @@ object MinPpl {
   import breeze.stats.{distributions => bdist}
   import breeze.linalg.DenseVector
 
-  implicit val numParticles = 100
+  //implicit val numParticles = 100
   //implicit val numParticles = 300
-  //implicit val numParticles = 1000
+  implicit val numParticles = 1000
 
   case class Particle[T](v: T, lw: Double) { // value and log-weight
     def map[S](f: T => S): Particle[S] = Particle(f(v), lw)
@@ -161,28 +161,41 @@ object MinPpl {
     println(breeze.stats.meanAndVariance(yzfe.map(_._1))) // y
     print("z: 6.071,12.214 : ")
     println(breeze.stats.meanAndVariance(yzfe.map(_._2))) // z
+    // Simpler fit test - multiple obs
+    val yzf2 = for {
+      y <- Normal(5,5)
+      z <- Normal(y,18).fit(List(6.0,10.0))
+    } yield (y,z)
+    val yzfe2 = yzf2.empirical
+    print("y: 6.071, 3.214 : ")
+    println(breeze.stats.meanAndVariance(yzfe2.map(_._1))) // y
+    print("z: 6.071,21.214 : ")
+    println(breeze.stats.meanAndVariance(yzfe2.map(_._2))) // z
   }
 
   def example1a = {
     val deep = for {
-      w <- Normal(0.0,1.0)
+      w <- Normal(2.0,1.0)
       x <- Normal(w,1)
-      y <- Normal(x,1)
+      y <- Normal(x,2)
       z <- Normal(y,1)
     } yield z
-    println("0.0, 4.0 :")
+    println("2.0, 5.0 :")
     println(breeze.stats.meanAndVariance(deep.empirical))
   }
 
   // Normal random sample
   def example2 = {
-    val prior = for {
+    val mod = for {
       mu <- Normal(0,100)
-      v <- Gamma(1,0.01)
+      v <- Gamma(1,0.1)
+      _ <- Normal(mu,v).fitQ(List(8.0,9,7,7,8,10))
     } yield (mu,v)
-    val mod = prior.cond{case (mu,v) => Normal(mu,v).ll(List(8.0,9,7,7,8,10))}.empirical
-    println(breeze.stats.meanAndVariance(mod map (_._1)))
-    println(breeze.stats.meanAndVariance(mod map (_._2)))
+    val modEmp = mod.empirical
+    print("mu : ")
+    println(breeze.stats.meanAndVariance(modEmp map (_._1)))
+    print("v : ")
+    println(breeze.stats.meanAndVariance(modEmp map (_._2)))
   }
 
   // TODO: Poisson DGLM
@@ -219,7 +232,7 @@ object MinPpl {
 
   def main(args: Array[String]): Unit = {
     println("Hi")
-    example1
+    example2
     println("Bye")
   }
 

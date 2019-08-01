@@ -33,11 +33,12 @@ object MinPpl {
         f(p.v).particles.map(psi => Particle(psi.v, p.lw + psi.lw))
       })).flatten).resample
     }
-    def resample(implicit N: Int): Prob[T] = { // TODO: even more minimal version without the log-sum-exp trick?
+    def resample(implicit N: Int): Prob[T] = {
+      // TODO: Could do an even more minimal version without the log-sum-exp trick?
       val lw = particles map (_.lw)
       val mx = lw reduce (math.max(_,_))
       //val np = particles.length ; println(s"$np $mx") // TODO: Debug code
-      val rw = (lw map (_ - mx)) map (math.exp(_))
+      val rw = lw map (lwi => math.exp(lwi - mx))
       val ind = bdist.Multinomial(DenseVector(rw.toArray)).sample(N)
       val newParticles = ind map (i => particles(i))
       Empirical(newParticles.toVector map (pi => Particle(pi.v, 0.0)))
@@ -108,6 +109,19 @@ object MinPpl {
     println(breeze.stats.meanAndVariance(xyze.map(_._1))) // x
     print("y: 6.071, 3.214 : ")
     println(breeze.stats.meanAndVariance(xyze.map(_._2))) // y
+    // Now cond inside a deeper for expression...
+    val wxyz = for {
+      w <- Normal(5,2)
+      x <- Normal(w,2)
+      y <- Normal(x,1).cond(y => Normal(y,9).ll(8.0))
+    } yield (w,x,y)
+    val wxyze = wxyz.empirical
+    print("w: 5.429, 1.714 : ")
+    println(breeze.stats.meanAndVariance(wxyze.map(_._1))) // w
+    print("x: 5.857, 2.867 : ")
+    println(breeze.stats.meanAndVariance(wxyze.map(_._2))) // x
+    print("y: 6.071, 3.214 : ")
+    println(breeze.stats.meanAndVariance(wxyze.map(_._3))) // y
     // Now fit...
     val xyzf = for {
       x <- Normal(5,4)
@@ -126,11 +140,11 @@ object MinPpl {
       y <- Normal(5,5)
       z <- Normal(y,9).fit(8.0)
     } yield (y,z)
-    val yzfe = xyzf.empirical
+    val yzfe = yzf.empirical
     print("y: 6.071, 3.214 : ")
-    println(breeze.stats.meanAndVariance(yzfe.map(_._2))) // y
+    println(breeze.stats.meanAndVariance(yzfe.map(_._1))) // y
     print("z: 8.000, 0.000 : ")
-    println(breeze.stats.meanAndVariance(yzfe.map(_._3))) // z
+    println(breeze.stats.meanAndVariance(yzfe.map(_._2))) // z
   }
 
   def example1a = {

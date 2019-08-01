@@ -15,7 +15,7 @@ object MinPpl {
 
   //implicit val numParticles = 100
   //implicit val numParticles = 500
-  implicit val numParticles = 2000
+  implicit val numParticles = 1000
 
   case class Particle[T](v: T, lw: Double) { // value and log-weight
     def map[S](f: T => S): Particle[S] = Particle(f(v), lw)

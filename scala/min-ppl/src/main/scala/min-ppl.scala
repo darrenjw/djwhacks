@@ -13,9 +13,9 @@ object MinPpl {
   import breeze.stats.{distributions => bdist}
   import breeze.linalg.DenseVector
 
-  //implicit val numParticles = 100
+  implicit val numParticles = 100
   //implicit val numParticles = 300
-  implicit val numParticles = 1000
+  //implicit val numParticles = 1000
 
   case class Particle[T](v: T, lw: Double) { // value and log-weight
     def map[S](f: T => S): Particle[S] = Particle(f(v), lw)
@@ -53,12 +53,14 @@ object MinPpl {
 
   case class Empirical[T](particles: Vector[Particle[T]]) extends Prob[T]
 
-  def unweighted[T](ts: Vector[T]): Prob[T] = Empirical(ts map (Particle(_, 0.0)))
+  def unweighted[T](ts: Vector[T], lw: Double = 0.0): Prob[T] =
+    Empirical(ts map (Particle(_, lw)))
 
   trait Dist[T] extends Prob[T] {
     def ll(obs: T): Double
     def ll(obs: Seq[T]): Double = obs map (ll) reduce (_+_)
-    def fit(obs: Seq[T]): Prob[T] = Empirical(particles map (p => Particle(p.v, p.lw + ll(obs))))
+    def fit(obs: Seq[T]): Prob[T] =
+      Empirical(particles map (p => Particle(p.v, p.lw + ll(obs))))
     def fitQ(obs: Seq[T]): Prob[T] = Empirical(Vector(Particle(obs.head, ll(obs))))
     def fit(obs: T): Prob[T] = fit(List(obs))
     def fitQ(obs: T): Prob[T] = fitQ(List(obs))
@@ -237,7 +239,12 @@ object MinPpl {
 
 
   // TODO: Linear model
+  def example4 = {
 
+    val x = List(1.0,2,3,4,5,6)
+    val y = List(3.0,2,4,5,5,6)
+
+  }
 
 
 
@@ -246,7 +253,7 @@ object MinPpl {
 
   def main(args: Array[String]): Unit = {
     println("Hi")
-    example2a
+    example3
     println("Bye")
   }
 

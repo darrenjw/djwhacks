@@ -13,8 +13,8 @@ object MinPpl {
   import breeze.stats.{distributions => bdist}
   import breeze.linalg.DenseVector
 
-  implicit val numParticles = 100
-  //implicit val numParticles = 300
+  //implicit val numParticles = 100
+  implicit val numParticles = 300
   //implicit val numParticles = 1000
 
   case class Particle[T](v: T, lw: Double) { // value and log-weight
@@ -71,12 +71,12 @@ object MinPpl {
     def ll(obs: Double) = bdist.Gaussian(mu, math.sqrt(v)).logPdf(obs)
   }
 
-  case class Gamma(a: Double, b: Double)(implicit N: Int) extends Prob[Double] {
+  case class Gamma(a: Double, b: Double)(implicit N: Int) extends Dist[Double] {
     lazy val particles = unweighted(bdist.Gamma(a, 1.0/b).sample(N).toVector).particles
     def ll(obs: Double) = bdist.Gamma(a, 1.0/b).logPdf(obs)
   }
 
-  case class Poisson(mu: Double)(implicit N: Int) extends Prob[Int] {
+  case class Poisson(mu: Double)(implicit N: Int) extends Dist[Int] {
     lazy val particles = unweighted(bdist.Poisson(mu).sample(N).toVector).particles
     def ll(obs: Int) = bdist.Poisson(mu).logProbabilityOf(obs)
   }
@@ -220,18 +220,29 @@ object MinPpl {
     val data = List(2,1,0,2,3,4,5,4,3,2,1)
 
     val prior = for {
-      w <- Gamma(1, 0.01)
-      state0 <- Normal(0.0, 100.0)
+      w <- Gamma(1, 1)
+      state0 <- Normal(0.0, 2.0)
     } yield (w, List(state0))
     
     def addTimePoint(current: Prob[(Double, List[Double])],
-      obs: Int): Prob[(Double, List[Double])] = for {
-      tup <- current
-        w = tup._1
-        states = tup._2
+      obs: Int): Prob[(Double, List[Double])] = {
+      println(s"Conditioning on observation: $obs")
+      for {
+        tup <- current
+        (w, states) = tup
         os = states.head
-        ns <- Normal(os, w) // cond?
-    } yield (w, ns :: states)
+        ns <- Normal(os, w)
+        _ <- Poisson(math.exp(ns)).fit(obs)
+      } yield (w, ns :: states)
+    }
+
+    val mod = data.foldLeft(prior)(addTimePoint(_,_)).empirical
+    print("w  : ")
+    println(breeze.stats.meanAndVariance(mod map (_._1)))
+    print("s0 : ")
+    println(breeze.stats.meanAndVariance(mod map (_._2.reverse.head)))
+    print("sN : ")
+    println(breeze.stats.meanAndVariance(mod map (_._2.head)))
 
   }
 

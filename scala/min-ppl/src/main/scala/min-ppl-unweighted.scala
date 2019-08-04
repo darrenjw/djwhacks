@@ -5,6 +5,9 @@ A minimal probabilistic programming language
 
 Unweighted version, which doesn't seem very promising
 
+
+NOT DEVELOPING THIS ANY FURTHER FOR NOW
+
 */
 
 object MinPplUW {
@@ -122,7 +125,7 @@ object MinPplUW {
 
   // Main entry point
 
-  def main(args: Array[String]): Unit = {
+  def mainOld(args: Array[String]): Unit = {
     println("Hi")
     example1
     println("Bye")

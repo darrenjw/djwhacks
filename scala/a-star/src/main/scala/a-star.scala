@@ -13,28 +13,33 @@ import scala.collection.immutable.SortedSet
 
 object AStar {
 
+  val rawJson = scala.io.Source.fromFile("field1.json").mkString
+  import io.circe._, io.circe.parser._
+  val parseResult = parse(rawJson)
+  val myMap = parseResult.getOrElse(Json.Null).as[List[List[String]]].getOrElse(List(List()))
+  val width: Int = myMap.head.length
+  val height: Int = myMap.length
+
   case class Node(x: Int, y: Int) {
     def allNeighbours: List[Node] = List(Node(x+1,y), Node(x,y+1), Node(x-1,y), Node(x,y-1))
     def neighbours: List[Node] = allNeighbours filter isValid
   }
 
-  val obstacles: Set[Node] = Set(Node(1,0), Node(1,3), Node(1,4), Node(3,2))
-  val width: Int = 5
-  val height: Int = 4
-
   def isValid(n: Node): Boolean = n match {
-    case Node(x,y) => (x >= 0) & (y >= 0) & (x < width) & (y < height) & !(obstacles.contains(n))
+    case Node(x,y) => (x >= 0) && (y >= 0) &&
+      (x < width) && (y < height) && (myMap(y)(x) == " ")
   }
 
   def printMaze(path: List[Node] = List()) = {
     (0 until height).foreach(y => {
       (0 until width).foreach(x => {
-        if (obstacles.contains(Node(x,y)))
+        if (myMap(y)(x) == "#")
           print("#")
         else if (path.contains(Node(x,y)))
           print("o")
         else
           print(".")
+        print(" ")
         })
         println("")
     })
@@ -93,8 +98,9 @@ object AStar {
 
     printMaze()
 
-    val start = Node(0,0)
-    val target = Node(4,3)
+    val start = Node(0, 0)
+    //val target = Node(width-1, height-1)
+    val target = Node(5, 5)
     def h(n: Node): Int = n match {
       case Node(x,y) => math.abs(x-target.x) + math.abs(y-target.y)
     }

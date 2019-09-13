@@ -14,6 +14,15 @@ libraryDependencies  ++= Seq(
   "org.scalanlp" %% "breeze-natives" % "1.0"
 )
 
+val circeVersion = "0.12.1"
+
+libraryDependencies ++= Seq(
+  "io.circe" %% "circe-core",
+  "io.circe" %% "circe-generic",
+  "io.circe" %% "circe-parser"
+).map(_ % circeVersion)
+
+
 resolvers ++= Seq(
   "Sonatype Snapshots" at
     "https://oss.sonatype.org/content/repositories/snapshots/",

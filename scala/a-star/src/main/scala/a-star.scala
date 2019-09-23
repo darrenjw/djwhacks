@@ -30,13 +30,15 @@ object AStar {
       (x < width) && (y < height) && (myMap(y)(x) == " ")
   }
 
-  def printMaze(path: List[Node] = List()) = {
+  def printMaze(path: List[Node] = List(), closed: Set[Node]=Set()) = {
     (0 until height).foreach(y => {
       (0 until width).foreach(x => {
         if (myMap(y)(x) == "#")
           print("#")
         else if (path.contains(Node(x,y)))
-          print("o")
+        print("X")
+        else if (closed.contains(Node(x,y)))
+          print("c")
         else
           print(".")
         print(" ")
@@ -48,8 +50,8 @@ object AStar {
   case class State(
     cameFrom: Map[Node,Node],
     closedSet: Set[Node],
-    openSet: SortedSet[(Node, Int)],
-    gScore: Map[Node,Int]
+    openSet: SortedSet[(Node, Double)],
+    gScore: Map[Node,Double]
   )
 
   @annotation.tailrec
@@ -64,9 +66,10 @@ object AStar {
   @annotation.tailrec
   def findPath(
     state: State,
-    h: Node => Int,
+    h: Node => Double,
     target: Node
   ): State = {
+    println(state.openSet)
     val currentPair = state.openSet.head
     val current = currentPair._1
     if (current == target) state else {
@@ -76,14 +79,16 @@ object AStar {
         state.openSet.tail,
         state.gScore
       )
+      println(state1.openSet)
       val newState = current.neighbours.foldLeft(state1)((st,ne) => {
+        //println(ne, st.openSet)
         if (st.closedSet.contains(ne)) st else {
-          val tentativeGScore = st.gScore(current) + 1 // distance between neighbours is 1
+          val tentativeGScore = st.gScore(current) + 1.0 // distance between neighbours is 1
           if (tentativeGScore >= st.gScore(ne)) st else {
             State(
               st.cameFrom.updated(ne,current),
-              st.closedSet,
-              st.openSet + ((ne, tentativeGScore + h(ne))),
+              st.closedSet - ne, // correct??
+              st.openSet.filter(_._1 != ne) + ((ne, tentativeGScore + h(ne))),
               st.gScore.updated(ne, tentativeGScore)
             )
           }
@@ -101,19 +106,19 @@ object AStar {
     val start = Node(0, 0)
     //val target = Node(width-1, height-1)
     val target = Node(5, 5)
-    def h(n: Node): Int = n match {
-      case Node(x,y) => math.abs(x-target.x) + math.abs(y-target.y)
+    def h(n: Node): Double = n match {
+      case Node(x,y) => (math.abs(x-target.x) + math.abs(y-target.y)).toDouble
     }
     val cameFrom = Map[Node,Node]()
     val closedSet = Set[Node]()
-    val openSet = SortedSet[(Node, Int)]((start, h(start)))(Ordering.by(_._2))
-    val gScore = Map[Node,Int](start -> 0).withDefaultValue(Int.MaxValue)
+    val openSet = SortedSet[(Node, Double)]((start, h(start)))(Ordering.by(_._2))
+    val gScore = Map[Node,Double](start -> 0.0).withDefaultValue(Double.PositiveInfinity)
 
     val solution = findPath(State(cameFrom, closedSet, openSet, gScore), h, target)
     val path = reconstuctPath(solution.cameFrom, List(target))
     println(path)
 
-    printMaze(path)
+    printMaze(path, solution.closedSet)
 
   }
 

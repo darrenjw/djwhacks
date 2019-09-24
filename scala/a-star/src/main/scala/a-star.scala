@@ -47,14 +47,14 @@ object AStar {
   }
 
   case class State(
-    cameFrom: Map[Node,Node],
+    cameFrom: Map[Node, Node],
     closedSet: Set[Node],
     openSet: Map[Node, Double],
-    gScore: Map[Node,Double]
+    gScore: Map[Node, Double]
   )
 
   @annotation.tailrec
-  def reconstuctPath(cameFrom: Map[Node,Node], current: List[Node]): List[Node] = {
+  def reconstuctPath(cameFrom: Map[Node, Node], current: List[Node]): List[Node] = {
     val top = current.head
     if (cameFrom.contains(top))
       reconstuctPath(cameFrom, cameFrom(top) :: current)
@@ -68,13 +68,12 @@ object AStar {
     h: Node => Double,
     target: Node
   ): State = {
-    val currentPair = state.openSet.head // TODO: fix to find min
-    val current = currentPair._1
+    val (current, _) = state.openSet.reduce((kv1,kv2) => if (kv2._2 < kv1._2) kv2 else kv1)
     if (current == target) state else {
       val state1 = State(
         state.cameFrom,
         state.closedSet + current,
-        state.openSet.tail,
+        state.openSet.removed(current),
         state.gScore
       )
       val newState = current.neighbours.foldLeft(state1)((st,ne) => {
@@ -107,7 +106,6 @@ object AStar {
     }
     val cameFrom = Map[Node,Node]()
     val closedSet = Set[Node]()
-    // val openSet = SortedSet[(Node, Double)]((start, h(start)))(Ordering.by(_._2))
     val openSet = Map[Node, Double](start -> h(start))
     val gScore = Map[Node,Double](start -> 0.0).withDefaultValue(Double.PositiveInfinity)
 

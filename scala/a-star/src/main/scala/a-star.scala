@@ -9,7 +9,6 @@ https://en.wikipedia.org/wiki/A*_search_algorithm
 
 */
 
-import scala.collection.immutable.SortedSet
 
 object AStar {
 
@@ -50,7 +49,7 @@ object AStar {
   case class State(
     cameFrom: Map[Node,Node],
     closedSet: Set[Node],
-    openSet: SortedSet[(Node, Double)],
+    openSet: Map[Node, Double],
     gScore: Map[Node,Double]
   )
 
@@ -69,8 +68,7 @@ object AStar {
     h: Node => Double,
     target: Node
   ): State = {
-    println(state.openSet)
-    val currentPair = state.openSet.head
+    val currentPair = state.openSet.head // TODO: fix to find min
     val current = currentPair._1
     if (current == target) state else {
       val state1 = State(
@@ -79,16 +77,14 @@ object AStar {
         state.openSet.tail,
         state.gScore
       )
-      println(state1.openSet)
       val newState = current.neighbours.foldLeft(state1)((st,ne) => {
-        //println(ne, st.openSet)
         if (st.closedSet.contains(ne)) st else {
           val tentativeGScore = st.gScore(current) + 1.0 // distance between neighbours is 1
           if (tentativeGScore >= st.gScore(ne)) st else {
             State(
               st.cameFrom.updated(ne,current),
               st.closedSet - ne, // correct??
-              st.openSet.filter(_._1 != ne) + ((ne, tentativeGScore + h(ne))),
+              st.openSet + ((ne, tentativeGScore + h(ne))),
               st.gScore.updated(ne, tentativeGScore)
             )
           }
@@ -104,14 +100,15 @@ object AStar {
     printMaze()
 
     val start = Node(0, 0)
-    //val target = Node(width-1, height-1)
-    val target = Node(5, 5)
+    val target = Node(width-1, height-1)
+    //val target = Node(5, 5)
     def h(n: Node): Double = n match {
       case Node(x,y) => (math.abs(x-target.x) + math.abs(y-target.y)).toDouble
     }
     val cameFrom = Map[Node,Node]()
     val closedSet = Set[Node]()
-    val openSet = SortedSet[(Node, Double)]((start, h(start)))(Ordering.by(_._2))
+    // val openSet = SortedSet[(Node, Double)]((start, h(start)))(Ordering.by(_._2))
+    val openSet = Map[Node, Double](start -> h(start))
     val gScore = Map[Node,Double](start -> 0.0).withDefaultValue(Double.PositiveInfinity)
 
     val solution = findPath(State(cameFrom, closedSet, openSet, gScore), h, target)

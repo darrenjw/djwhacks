@@ -9,52 +9,39 @@ https://en.wikipedia.org/wiki/A*_search_algorithm
 
 */
 
-
+// Reasonably generic A* path finder
 object AStar {
 
-  val rawJson = scala.io.Source.fromFile("field1.json").mkString
-  import io.circe._, io.circe.parser._
-  val parseResult = parse(rawJson)
-  val myMap = parseResult.getOrElse(Json.Null).as[List[List[String]]].getOrElse(List(List()))
-  val width: Int = myMap.head.length
-  val height: Int = myMap.length
-
-  case class Node(x: Int, y: Int) {
-    def allNeighbours: List[Node] = List(Node(x+1,y), Node(x,y+1), Node(x-1,y), Node(x,y-1))
-    def neighbours: List[Node] = allNeighbours filter isValid
+  import simulacrum._
+  @typeclass trait GraphNode[N] {
+    def neighbours(n: N): List[N]
   }
+  import GraphNode.ops._
 
-  def isValid(n: Node): Boolean = n match {
-    case Node(x,y) => (x >= 0) && (y >= 0) &&
-      (x < width) && (y < height) && (myMap(y)(x) == " ")
-  }
-
-  def printMaze(path: List[Node] = List(), closed: Set[Node]=Set()) = {
-    (0 until height).foreach(y => {
-      (0 until width).foreach(x => {
-        if (myMap(y)(x) == "#")
-          print("#")
-        else if (path.contains(Node(x,y)))
-        print("X")
-        else if (closed.contains(Node(x,y)))
-          print("c")
-        else
-          print(".")
-        print(" ")
-        })
-        println("")
-    })
-  }
-
-  case class State(
-    cameFrom: Map[Node, Node],
-    closedSet: Set[Node],
-    openSet: Map[Node, Double],
-    gScore: Map[Node, Double]
+  case class State[N](
+    cameFrom: Map[N, N],
+    closedSet: Set[N],
+    openSet: Map[N, Double],
+    gScore: Map[N, Double]
   )
 
+  def aStar[N: GraphNode](
+    start: N, target: N, h: N => Double
+  ): (List[N], State[N]) = {
+    val cameFrom = Map[N,N]()
+    val closedSet = Set[N]()
+    val openSet = Map[N, Double](start -> h(start))
+    val gScore = Map[N,Double](start -> 0.0).
+      withDefaultValue(Double.PositiveInfinity)
+    val solution = findPath(State(cameFrom, closedSet, openSet, gScore),
+      h, target)
+    val path = reconstuctPath(solution.cameFrom, List(target))
+    (path, solution)
+  }
+
   @annotation.tailrec
-  def reconstuctPath(cameFrom: Map[Node, Node], current: List[Node]): List[Node] = {
+  def reconstuctPath[N](cameFrom: Map[N, N],
+    current: List[N]): List[N] = {
     val top = current.head
     if (cameFrom.contains(top))
       reconstuctPath(cameFrom, cameFrom(top) :: current)
@@ -63,12 +50,13 @@ object AStar {
   }
 
   @annotation.tailrec
-  def findPath(
-    state: State,
-    h: Node => Double,
-    target: Node
-  ): State = {
-    val (current, _) = state.openSet.reduce((kv1,kv2) => if (kv2._2 < kv1._2) kv2 else kv1)
+  def findPath[N: GraphNode](
+    state: State[N],
+    h: N => Double,
+    target: N
+  ): State[N] = {
+    val (current, _) = state.openSet.reduce((kv1,kv2) =>
+      if (kv2._2 < kv1._2) kv2 else kv1)
     if (current == target) state else {
       val state1 = State(
         state.cameFrom,
@@ -78,11 +66,14 @@ object AStar {
       )
       val newState = current.neighbours.foldLeft(state1)((st,ne) => {
         if (st.closedSet.contains(ne)) st else {
-          val tentativeGScore = st.gScore(current) + 1.0 // distance between neighbours is 1
+          val tentativeGScore = st.gScore(current) + 1.0
+          // Distance between neighbours is 1 for the example,
+          //  but obviously won't be in general.
+          // Could pass in a distance function, d(), just like h().
           if (tentativeGScore >= st.gScore(ne)) st else {
             State(
               st.cameFrom.updated(ne,current),
-              st.closedSet - ne, // correct??
+              st.closedSet - ne, // Correct to remove the neighbour?
               st.openSet + ((ne, tentativeGScore + h(ne))),
               st.gScore.updated(ne, tentativeGScore)
             )
@@ -93,33 +84,8 @@ object AStar {
     }
   }
 
-
-  def main(args: Array[String]): Unit = {
-
-    printMaze()
-
-    val start = Node(0, 0)
-    val target = Node(width-1, height-1)
-    //val target = Node(5, 5)
-    def h(n: Node): Double = n match {
-      case Node(x,y) => (math.abs(x-target.x) + math.abs(y-target.y)).toDouble
-    }
-    val cameFrom = Map[Node,Node]()
-    val closedSet = Set[Node]()
-    val openSet = Map[Node, Double](start -> h(start))
-    val gScore = Map[Node,Double](start -> 0.0).withDefaultValue(Double.PositiveInfinity)
-
-    val solution = findPath(State(cameFrom, closedSet, openSet, gScore), h, target)
-    val path = reconstuctPath(solution.cameFrom, List(target))
-    println(path)
-
-    printMaze(path, solution.closedSet)
-
-  }
-
-
-
 }
+
 
 // eof
 

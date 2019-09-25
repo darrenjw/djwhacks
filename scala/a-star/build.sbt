@@ -9,11 +9,8 @@ scalacOptions ++= Seq(
 
 libraryDependencies  ++= Seq(
   "org.scalatest" %% "scalatest" % "3.1.0-SNAP13" % "test",
-  "org.typelevel" %% "cats-core" % "2.0.0",
-  "com.github.mpilquist" %% "simulacrum" % "0.19.0",
-  "org.scalanlp" %% "breeze" % "1.0",
-  // "org.scalanlp" %% "breeze-viz" % "1.0",
-  "org.scalanlp" %% "breeze-natives" % "1.0"
+ // "org.typelevel" %% "cats-core" % "2.0.0",
+  "org.typelevel" %% "simulacrum" % "1.0.0"
 )
 
 val circeVersion = "0.12.1"

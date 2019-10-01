@@ -1,10 +1,15 @@
-// maze.scala
-// pure scala
-// just run with:
-// scala maze.scala 
+/*
+maze.scala
 
-val width=140
-val height=100
+ */
+
+
+object Maze {
+
+//val width=140
+//val height=100
+val width=40
+val height=30
 
 val rng = new scala.util.Random
 
@@ -45,6 +50,7 @@ def pick[T](s: Set[T]):T = s.toList(rng.nextInt(s.size))
 
 // now create a maze
 
+def main(args: Array[String]): Unit = {  
 val init=Set( ((0,0),(0,1)) , ((0,1),(1,1)) )
 val tree=genTree(init)
 
@@ -70,7 +76,7 @@ val maze=for {
 
 val mazeFinal=maze ++ ( for (x <- 0 until width) yield "+-" )
 val mazeStr=mazeFinal.reduce(_+_) + "+\n"
-//println(mazeStr)
+println(mazeStr)
 
 // now draw to an image
 import java.awt.image.BufferedImage
@@ -107,6 +113,12 @@ for (e <- tree) {
 // save image
 g.dispose()
 javax.imageio.ImageIO.write(canvas, "png", new java.io.File("maze.png"))
+
+}
+
+
+
+}
 
 
 // eof

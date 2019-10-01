@@ -8,8 +8,8 @@ object Maze {
 
 //val width=140
 //val height=100
-val width=20
-val height=15
+val width=30
+val height=20
 
 val rng = new scala.util.Random
 

@@ -17,7 +17,7 @@ object AStarExample{
 
   // read map from disk
   //val fileName = "field1.json"
-  val fileName = "maze.json"
+  val fileName = "maze2.json"
   val rawJson = scala.io.Source.fromFile(fileName).mkString
   import io.circe._, io.circe.parser._
   val parseResult = parse(rawJson)

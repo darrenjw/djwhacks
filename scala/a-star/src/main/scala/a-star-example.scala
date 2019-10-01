@@ -16,7 +16,9 @@ object AStarExample{
   import AStar._
 
   // read map from disk
-  val rawJson = scala.io.Source.fromFile("field1.json").mkString
+  //val fileName = "field1.json"
+  val fileName = "maze.json"
+  val rawJson = scala.io.Source.fromFile(fileName).mkString
   import io.circe._, io.circe.parser._
   val parseResult = parse(rawJson)
   val myMap = parseResult.getOrElse(Json.Null).as[List[List[String]]].

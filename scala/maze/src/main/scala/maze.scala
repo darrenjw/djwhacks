@@ -8,8 +8,8 @@ object Maze {
 
 //val width=140
 //val height=100
-val width=40
-val height=30
+val width=20
+val height=15
 
 val rng = new scala.util.Random
 
@@ -77,6 +77,30 @@ val maze=for {
 val mazeFinal=maze ++ ( for (x <- 0 until width) yield "+-" )
 val mazeStr=mazeFinal.reduce(_+_) + "+\n"
 println(mazeStr)
+
+  // maze in a JSON format
+print("[")
+val mazeJ=for {
+ y <- 0 until height
+ z <- 0 until 2
+ x <- 0 until width
+ str = if (z==0) {
+  if (contains(((x,y),(x,y-1)))) "\"#\",\" \"," else "\"#\",\"#\","
+ } else {
+  if (contains(((x,y),(x-1,y)))) "\" \",\" \"," else "\"#\",\" \","
+ }
+ termStr = if (x==width-1) {
+    str+"\"#\"],\n"
+   } 
+  else if (x==0) {
+    "["+str
+  } else str
+} yield termStr
+
+val mazeFinalJ = mazeJ ++ (Vector("[") ++ ( for (x <- 0 until width) yield "\"#\",\"#\"," ))
+val mazeStrJ = mazeFinalJ.reduce(_+_) + "\"#\"]]\n"
+println(mazeStrJ)
+
 
 // now draw to an image
 import java.awt.image.BufferedImage

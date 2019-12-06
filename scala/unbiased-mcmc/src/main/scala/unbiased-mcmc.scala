@@ -72,11 +72,16 @@ object UnbiasedMcmc {
   }
 
   def coupledMetropTest: Unit = {
-    val chain = MarkovChain((5.0,-5.0))(coupledMetKernel((x: Double) => Uniform(x-0.5, x+0.5))(x => Gaussian(0.0,1.0).logPdf(x))).
+    val chainProcess = MarkovChain((5.0,-5.0))(coupledMetKernel((x: Double) => Uniform(x-0.5, x+0.5))(x => Gaussian(0.0,1.0).logPdf(x)))
+    val chain = chainProcess.
       steps.
       sliding(2).
       takeWhile(ps => ps.head._1 != ps.head._2).
       map(ps => ps.tail.head).
+      toArray
+    val chain1 = chainProcess.
+      steps.
+      takeWhile(ps => ps._1 != ps._2).
       toArray
     val x = chain map (_._1)
     val y = chain map (_._2)

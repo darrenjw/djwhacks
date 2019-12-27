@@ -8,9 +8,8 @@ scalacOptions ++= Seq(
 
 libraryDependencies  ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.1" % "test",
-//  "com.stripe" %% "rainier-core" % "0.1.2-SNAPSHOT",
-  "com.stripe" %% "rainier-core" % "0.2.1",
-  "com.stripe" %% "rainier-plot" % "0.2.1",
+  "com.stripe" %% "rainier-core" % "0.2.3",
+  "com.stripe" %% "rainier-plot" % "0.2.3",
 //  "com.cibo" %% "evilplot" % "0.2.0",
   "org.scalanlp" %% "breeze" % "0.13",
   "org.scalanlp" %% "breeze-viz" % "0.13",

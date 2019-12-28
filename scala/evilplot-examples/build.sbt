@@ -8,8 +8,8 @@ scalacOptions ++= Seq(
 
 libraryDependencies  ++= Seq(
   "org.scalatest" %% "scalatest" % "3.1.0-SNAP13" % "test",
-  "com.cibo" %% "evilplot" % "0.7.0",
-  "com.cibo" %% "evilplot-repl" % "0.7.0",
+  "com.cibo" %% "evilplot" % "0.6.3", // 0.7.0
+  "com.cibo" %% "evilplot-repl" % "0.6.3", // 0.7.0
   "org.scalanlp" %% "breeze" % "1.0",
   // "org.scalanlp" %% "breeze-viz" % "1.0",
   "org.scalanlp" %% "breeze-natives" % "1.0"

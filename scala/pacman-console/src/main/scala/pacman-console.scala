@@ -7,6 +7,10 @@ Pretty much pure functional. Well, no "vars", anyway... ;-)
 
 */
 
+// Use lenses for updating of immutable ADTs
+import monocle._
+import monocle.macros._
+
 object PacmanApp {
 
   val mazeString = """
@@ -95,6 +99,10 @@ object PacmanApp {
   case class Pacman(pos: Position, dir: Direction, power: Int, lives: Int) extends
       Sprite(pos: Position, dir: Direction)
 
+  case class GameState(m: Maze, ghosts: Vector[Ghost], pm: Pacman)
+  val gsGhosts = GenLens[GameState](_.ghosts)
+  val gsPm = GenLens[GameState](_.pm)
+
   def updateGhost(gs: GameState, gi: Int): GameState = {
     val g = gs.ghosts(gi)
     val newPos = g.pos.move(g.dir)
@@ -108,7 +116,7 @@ object PacmanApp {
       } else {
         gs.copy(ghosts=gs.ghosts.updated(gi,ghost0),pm=gs.pm.copy(lives=gs.pm.lives-1))
       }
-    } else gs.copy(ghosts=gs.ghosts.updated(gi,newGhost))
+    } else gsGhosts.set(gs.ghosts.updated(gi,newGhost))(gs)
   }
 
   def updatePacman(gs: GameState, key: Int): GameState = {
@@ -136,8 +144,6 @@ object PacmanApp {
   val ghost0 = Ghost(Position(8,7),Up)
   val ghosts0 = Vector.fill(4)(ghost0)
   val pm0 = Pacman(Position(8,3),Down,-1,3)
-
-  case class GameState(m: Maze, ghosts: Vector[Ghost], pm: Pacman)
 
   def updateState(gs: GameState,key: Int): GameState = {
     val gsu = (0 until 4).foldLeft(gs)((g,i) => updateGhost(g,i))

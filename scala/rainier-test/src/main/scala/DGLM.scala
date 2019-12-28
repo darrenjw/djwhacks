@@ -24,7 +24,7 @@ object DGLM {
     // first simulate some data from a DGLM model
     val r = new scala.util.Random
     val n = 50 // time points
-    val mu = 1.0 // AR(1) mean
+    val mu = 2.0 // AR(1) mean
     val a = 0.95 // auto-regressive parameter
     val sig = 0.5 // AR(1) SD
     val state = Stream
@@ -32,15 +32,17 @@ object DGLM {
       .take(n)
       .toVector
     val obs = state map (s => genPois(math.exp(s)))
+    println("Simulated observations:")
+    println(obs)
 
     case class Static(mu: Real, a: Real, sig: Real)
 
     // build and fit model
     val prior = for {
-      mu <- Normal(0, 100).param
+      mu <- Normal(1, 10).param
       a <- Normal(1, 0.2).param
-      sig <- LogNormal(0, 10).param
-      sp <- Normal(0, 100).param
+      sig <- LogNormal(0, 2).param
+      sp <- Normal(0, 10).param
     } yield (Static(mu, a, sig), List(sp))
 
     def addTimePoint(current: RandomVariable[(Static, List[Real])], i: Int) =
@@ -69,24 +71,29 @@ object DGLM {
       )
 
     println("Model built. Sampling now...")
-    val out = model.sample(HMC(5), 1000, 10000)
+    val thin = 100
+    val out = model.sample(HMC(5), 10000, 10000*thin, thin)
+
+    // some diagnostic plots
+    import com.cibo.evilplot.geometry.Extent
+    import com.stripe.rainier.plot.EvilTracePlot._
 
     println("Iterates: " + out.length)
-    println("First 20:")
-    println(out.take(20))
-    println(s"Mu (true value $mu):")
-    println(DensityPlot().plot1D(out map (_("mu"))).mkString("\n"))
-    println(s"a (true value $a):")
-    println(DensityPlot().plot1D(out map (_("a"))).mkString("\n"))
-    println(s"sig (true value $sig):")
-    println(DensityPlot().plot1D(out map (_("sig"))).mkString("\n"))
-    println("Scatter of sig against mu")
-    println(
-      DensityPlot()
-        .plot2D(out map { r =>
-          (r("mu"), r("sig"))
-        })
-        .mkString("\n"))
+    render(traces(out,
+                  truth = Map("mu" -> mu,
+                              "a" -> a,
+                              "sig" -> sig,
+                              "SP" -> state(0))),
+           "traceplots.png",
+           Extent(1200, 1400))
+    render(pairs(out,
+                 truth = Map("mu" -> mu,
+                             "a" -> a,
+                             "sig" -> sig,
+                             "SP" -> state(0))),
+           "pairs.png")
+    println("Diagnostic plots written to disk")
+
 
   }
 

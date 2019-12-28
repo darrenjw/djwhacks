@@ -7,11 +7,10 @@ Pretty much pure functional. Well, no "vars", anyway... ;-)
 
 */
 
-// Use lenses for updating of immutable ADTs
-import monocle._
-import monocle.macros._
-
 object PacmanApp {
+
+  import monocle._
+  import monocle.macros._
 
   val mazeString = """
 
@@ -73,9 +72,9 @@ object PacmanApp {
   sealed trait Direction {
     def rand: Direction = {
       val u = math.random
-      if (u<0.25) Up
-      else if (u<0.5) Down
-      else if (u<0.75) Left
+      if (u < 0.25) Up
+      else if (u < 0.5) Down
+      else if (u < 0.75) Left
       else Right
     }
   }
@@ -86,10 +85,10 @@ object PacmanApp {
 
   case class Position(x: Int, y: Int) {
     def move(d: Direction): Position = d match {
-      case Up => Position(x,y-1)
-      case Down => Position(x,y+1)
-      case Left => if (x > 0) Position(x-1,y) else Position(width-1,y)
-      case Right => if (x < width-1) Position(x+1,y) else Position(0,y)
+      case Up => Position(x, y-1)
+      case Down => Position(x, y+1)
+      case Left => if (x > 0) Position(x-1, y) else Position(width-1, y)
+      case Right => if (x < width-1) Position(x+1, y) else Position(0, y)
     }
   }
 
@@ -99,22 +98,29 @@ object PacmanApp {
   case class Pacman(pos: Position, dir: Direction, power: Int, lives: Int) extends
       Sprite(pos: Position, dir: Direction)
 
+  val pacmanLives = GenLens[Pacman](_.lives)
+
   case class GameState(m: Maze, ghosts: Vector[Ghost], pm: Pacman)
+
+  val gsM = GenLens[GameState](_.m)
   val gsGhosts = GenLens[GameState](_.ghosts)
   val gsPm = GenLens[GameState](_.pm)
+
+  val gsPmLives = gsPm composeLens pacmanLives
+  val gsPmLoseLife = gsPmLives.modify(_ - 1)
 
   def updateGhost(gs: GameState, gi: Int): GameState = {
     val g = gs.ghosts(gi)
     val newPos = g.pos.move(g.dir)
     val newGhost = if (gs.m(newPos.y)(newPos.x) == Wall)
-      Ghost(g.pos,g.dir.rand)
+      Ghost(g.pos, g.dir.rand)
     else
-      Ghost(newPos,g.dir)
+      Ghost(newPos, g.dir)
     if ((g.pos == gs.pm.pos)|(newPos == gs.pm.pos)) {
       if (gs.pm.power > 0) {
-        gs.copy(ghosts=gs.ghosts.updated(gi,ghost0))
+        gsGhosts.set(gs.ghosts.updated(gi,ghost0))(gs)
       } else {
-        gs.copy(ghosts=gs.ghosts.updated(gi,ghost0),pm=gs.pm.copy(lives=gs.pm.lives-1))
+        gsGhosts.set(gs.ghosts.updated(gi,ghost0))(gsPmLoseLife(gs))
       }
     } else gsGhosts.set(gs.ghosts.updated(gi,newGhost))(gs)
   }
@@ -145,7 +151,7 @@ object PacmanApp {
   val ghosts0 = Vector.fill(4)(ghost0)
   val pm0 = Pacman(Position(8,3),Down,-1,3)
 
-  def updateState(gs: GameState,key: Int): GameState = {
+  def updateState(gs: GameState, key: Int): GameState = {
     val gsu = (0 until 4).foldLeft(gs)((g,i) => updateGhost(g,i))
     updatePacman(gsu,key)
   }
@@ -169,7 +175,7 @@ object PacmanApp {
     }
     if (gs.pm.lives == 0) {
       println("\n\n\n *** YOU LOSE! ***\n\n\n")
-      Thread.sleep(5000)
+      Thread.sleep(3000)
       System.exit(0)
     }
   }

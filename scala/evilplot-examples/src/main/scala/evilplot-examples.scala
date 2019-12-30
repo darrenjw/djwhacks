@@ -177,9 +177,17 @@ object EvilPlotExamples {
         .render()
     }
 
+  def heatMap() = {
+    import com.cibo.evilplot.plot.aesthetics.DefaultTheme._
+    val data = Vector.fill(100)(Vector.fill(50)(Random.nextDouble()))
+    Heatmap(data,256)
+      .standard()
+      .render()
+  }
+
 
   // TODO:
-  // Custom point rendering
+  // Custom point rendering - broken??
 
 
   def main(args: Array[String]): Unit = {
@@ -191,6 +199,7 @@ object EvilPlotExamples {
     //displayPlot(clusteredBar())
     //displayPlot(boxPlot())
     //displayPlot(pairsPlot())
+    displayPlot(heatMap())
     //displayPlot(contourPlot())
     val bitmap = contourPlot().asBufferedImage
     javax.imageio.ImageIO.write(bitmap, "png", new java.io.File("image.png"))

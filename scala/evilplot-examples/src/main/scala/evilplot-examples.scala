@@ -179,7 +179,9 @@ object EvilPlotExamples {
 
   def heatMap() = {
     import com.cibo.evilplot.plot.aesthetics.DefaultTheme._
-    val data = Vector.fill(100)(Vector.fill(50)(Random.nextDouble()))
+    val x = 100 ; val y = 50
+    //val x = 500 ; val y = 500
+    val data = Vector.fill(y)(Vector.fill(x)(Random.nextDouble()))
     Heatmap(data,256)
       .standard()
       .render()

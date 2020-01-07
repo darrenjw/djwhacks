@@ -19,6 +19,7 @@ sbt assembly
 Then submit to a flink cluster with something like:
 ```bash
 ./bin/flink run ~/....../target/scala-2.12/flink-test-assembly-0.1-SNAPSHOT.jar localhost 9000
+```
 
 ## sbt template
 

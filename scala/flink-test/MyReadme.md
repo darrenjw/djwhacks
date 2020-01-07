@@ -10,3 +10,7 @@ sbt "run localhost 9000"
 ```
 Go back to the other tab and enter lines of test text. Check the results back in this tab.
 
+This template was originally created with:
+```bash
+sbt new tillrohrmann/flink-project.g8
+```

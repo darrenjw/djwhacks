@@ -11,6 +11,9 @@ object PacmanApp {
 
   import monocle._
   import monocle.macros._
+  import monix.execution.Scheduler.Implicits.global
+  import monix.reactive._
+  import concurrent.duration._
 
   val mazeString = """
 
@@ -156,9 +159,7 @@ object PacmanApp {
     updatePacman(gsu,key)
   }
 
-
-  // Here be dragons...
-
+  // TODO: should cancel stream at end of game..
   def renderGame(gs: GameState): Unit = {
     val mazeWithGhosts = gs.ghosts.foldLeft(gs.m)((m,g) => m.updated(g.pos.y,m(g.pos.y).updated(g.pos.x,GhostBlock)))
     val completeMaze = mazeWithGhosts.updated(gs.pm.pos.y,mazeWithGhosts(gs.pm.pos.y).updated(gs.pm.pos.x,PacmanBlock))
@@ -182,19 +183,17 @@ object PacmanApp {
 
 
   def main(args: Array[String]): Unit = {
+    // initialise game state
     val gs0 = GameState(maze0,ghosts0,pm0)
-    // use "jline" to construct a stream of key presses
-    val con = new jline.console.ConsoleReader
-    val is = con.getInput
+    // use "jline" to get key presses
+    val is = (new jline.console.ConsoleReader).getInput
     val nbis = new jline.internal.NonBlockingInputStream(is,true)
-    val charStream = Stream.iterate(0)(x => nbis.read(200))
-    // run the game by folding the game state with the key presses
-    charStream.foldLeft(gs0)((gs,key) => {
-      val ns = updateState(gs,key)
-      renderGame(gs)
-      ns
-    })
-
+    // use Monix Observable to run the game
+    val tickStream = Observable.intervalAtFixedRate(0.2.second)
+    val charStream = tickStream.map(i => nbis.read(50))
+    val gameStream = charStream.scan(gs0)((gs, key) => updateState(gs,key))
+    gameStream.consumeWith(Consumer.foreach(renderGame)).
+      runSyncUnsafe(1000.seconds)
   }
 
 }

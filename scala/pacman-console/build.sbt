@@ -8,6 +8,7 @@ scalacOptions ++= Seq(
 
 libraryDependencies  ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.1" % "test",
+  "io.monix"      %% "monix"     % "3.1.0",
   "jline" % "jline" % "2.14.2"
 )
 

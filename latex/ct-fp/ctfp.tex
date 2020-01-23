@@ -74,13 +74,13 @@ col, set,start,end,deltat,zip},
 
 \begin{document}
 
-\title{A compositional approach to scalable Bayesian computation and probabilistic programming}
-\author[Darren Wilkinson --- Cambridge 14/12/18]{\textbf{\large Darren Wilkinson} \\
+\title{A compositional approach to statistical computing, machine learning, and probabilistic programming}
+\author{\textbf{\large Darren Wilkinson} \\
 \url{@darrenjw}\hfill \alert{\url{darrenjw.github.io}}\\
 \vspace{2ex}%
 %School of Mathematics, Statistics and Physics\\
 Newcastle University, UK / The Alan Turing Institute}
-\date{\textbf{Advances and challenges in machine learning languages}\\\emph{Cambridge University}\\20-21 May 2019}
+\date{\textbf{Bristol Data Science Seminar}\\\emph{Bristol University}\\5th February 2020}
 
   
 \frame{\titlepage}
@@ -92,26 +92,6 @@ Newcastle University, UK / The Alan Turing Institute}
   \vfill
   \tableofcontents
 }
-
-\begin{comment}
-
-  \frame{
-  \frametitle{Aside: SMfSB3e just published!}
-  \begin{minipage}{0.45\textwidth}
-    \includegraphics[height=0.8\textheight]{cover-3e}
-  \end{minipage}
-  \begin{minipage}{0.48\textwidth}
-    \begin{itemize}
-    \item New chapter on stochastic reaction--diffusion models
-      \item Extended chapter on inference: pMCMC, ABC, ABC--SMC, ...
-      \item New website/GitHub repository
-        \item Lots of new, improved and updated software --- all free, open source and well-documented
-    \end{itemize}
-  \end{minipage}\\
-  \vspace{2ex}
-    \centerline{\alert{\url{https://github.com/darrenjw/smfsb}}}
-  }
-
 
 
 \section{Background}
@@ -129,6 +109,8 @@ Newcastle University, UK / The Alan Turing Institute}
     \end{itemize}
   }
 
+\begin{comment}
+
 \frame{
   \frametitle{What's up with statistical computing?}
   \begin{itemize}
@@ -145,6 +127,8 @@ Newcastle University, UK / The Alan Turing Institute}
   \end{itemize}
   }
 
+\end{comment}
+
 \frame{
   \frametitle{Pre-historic programming languages}
   \begin{itemize}
@@ -158,7 +142,6 @@ Newcastle University, UK / The Alan Turing Institute}
 }
 
 
-\end{comment}
 
 \section{Compositionality, category theory, and functional programming}
 
@@ -176,7 +159,6 @@ Newcastle University, UK / The Alan Turing Institute}
 \end{itemize}
 }
 
-\begin{comment}
 
 \frame{
 \frametitle{Compositionality and programming}
@@ -240,7 +222,6 @@ Newcastle University, UK / The Alan Turing Institute}
     \end{itemize}
   }
 
-\end{comment}
 
 %\section{FP and CT}
 
@@ -256,7 +237,6 @@ Newcastle University, UK / The Alan Turing Institute}
   \end{itemize}
   }
 
-\begin{comment}
 
 \frame{
   \frametitle{Functional programming}
@@ -296,7 +276,6 @@ Newcastle University, UK / The Alan Turing Institute}
   \end{itemize}
   }
 
-\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Monadic collections (in Scala)}
@@ -352,8 +331,6 @@ Newcastle University, UK / The Alan Turing Institute}
   \end{itemize}
 \end{frame}
 
-\begin{comment}
-  
 \begin{frame}[fragile]
   \frametitle{Other monadic types: Future}
   \begin{itemize}
@@ -364,8 +341,6 @@ Newcastle University, UK / The Alan Turing Institute}
     \item |Future|s are a powerful method for developing parallel and concurrent programs in a modular, composable way
   \end{itemize}
 \end{frame}
-
-\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Other monadic types: Prob/Gen/Rand}
@@ -595,8 +570,6 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
-\begin{comment}
-  
 \subsection{Scalable modelling and computation}
 
 \begin{frame}[fragile]
@@ -618,6 +591,7 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
+\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{Distributed computation}
@@ -851,8 +825,6 @@ val poisson = Dglm.poisson(linear)
     \end{itemize}
 \end{frame}
 
-\begin{comment}
-  
 \begin{frame}[fragile]
 \frametitle{Linear filters for Streams and Images}  
 Let's start with writing a function to compute the weighted average of values at the start of an infinite data |Stream|
@@ -887,6 +859,8 @@ val filteredImage = pim0.coflatMap(fil)
 def pims = Stream.iterate(pim0)(_.coflatMap(fil))
 \end{lstlisting}
 \end{frame}
+
+\begin{comment}
 
 \begin{frame}[fragile]
 \frametitle{Gibbs sampling (an Ising model)}
@@ -1124,6 +1098,8 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
 
 \subsection{Probabilistic programming}
 
+\begin{comment}
+  
 \begin{frame}[fragile]
 \frametitle{Example --- Bayesian logistic regression model in Rainier}
 \begin{lstlisting}[language=scala]
@@ -1143,6 +1119,8 @@ val model = for {
 val out = model.sample(HMC(5), 1000, 10000*10, 10)
 \end{lstlisting}
 \end{frame}
+
+\end{comment}
 
 \begin{frame}
   \frametitle{Composing probabilistic programs}
@@ -1258,19 +1236,21 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 
 %  \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
 
-\bibitem{} Fong, B., Spivak, D., Tuy\'eras, R. (2019) \alert{Backprop as Functor: A compositional perspective on supervised learning}, \emph{arXiv}, 1711.10455
+\bibitem{} Fong, B., Spivak, D., Tuy\'eras, R. (2019) \alert{Backprop as Functor: A compositional perspective on supervised learning}, \emph{arXiv}, 1711.10455.
    
 %   \bibitem{} Fritz, T., Perrone, P. (2017) \alert{A probability monad as the colimit of finite powers}, \emph{arXiv:1712.05363}.
 
 \bibitem{} Heunen, C., Kammar, O., Staton, S., Yang, H. (2017) \alert{A convenient category for higher-order probability theory}, \emph{32nd ACM/IEEE LICS.}, 1--12.
      
     \bibitem{} Law, J., Wilkinson, D. J. (2018) \alert{Composable models for online Bayesian analysis of streaming data}, \emph{Statistics and Computing}, \textbf{28}(6):1119--1137.
-    
+
+      \bibitem{} Law, J., Wilkinson, D. J. (2019) \alert{Functional probabilistic programming for scalable Bayesian modelling}, \emph{arXiv}, 1908.02062.
+      
 %    \bibitem{} Meijer, E., Fokkinga, M., Paterson, R. (1991) \alert{Functional programming with bananas, lenses, envelopes and barbed wire}. In: Hughes J. (eds) \emph{Functional Programming Languages and Computer Architecture}. FPCA 1991. Lecture Notes in Computer Science, vol 523. Springer.
 
     \bibitem{} Park, S., Pfenning, F., Thrun, S. (2008) \alert{A probabilistic language based on sampling functions}, \emph{TOPLAS}, \textbf{31}(1):4.
 
-\bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A., Ghahramani, Z. and Gordon, A. D. (2015) \alert{Practical probabilistic programming with monads}, \emph{Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell}, 165--176.
+%\bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A., Ghahramani, Z. and Gordon, A. D. (2015) \alert{Practical probabilistic programming with monads}, \emph{Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell}, 165--176.
 
 \bibitem{} \'{S}cibior, A., Kammar, O., Gharamani, Z. (2018) \alert{Functional programming for modular Bayesian inference}, \emph{Proc.\ ACM Prog.\ Lang.}, \textbf{2}(ICFP): 83.
       

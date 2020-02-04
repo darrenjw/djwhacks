@@ -96,6 +96,8 @@ Newcastle University, UK / The Alan Turing Institute}
 
 \section{Background}
 
+\begin{comment}
+
 \frame{
   \frametitle{Changing face of statistics}
   \begin{itemize}
@@ -108,8 +110,6 @@ Newcastle University, UK / The Alan Turing Institute}
     \item Will we still be using R in 20 years time? I doubt it, and I really hope not!
     \end{itemize}
   }
-
-\begin{comment}
 
 \frame{
   \frametitle{What's up with statistical computing?}
@@ -211,7 +211,8 @@ Newcastle University, UK / The Alan Turing Institute}
   Not obvious that one of these is naturally parallel\ldots
 \end{frame}
 
-
+\begin{comment}
+  
 \frame{
   \frametitle{Modern programming language design}
   \begin{itemize}
@@ -222,6 +223,7 @@ Newcastle University, UK / The Alan Turing Institute}
     \end{itemize}
   }
 
+\end{comment}
 
 %\section{FP and CT}
 
@@ -259,6 +261,7 @@ Newcastle University, UK / The Alan Turing Institute}
   \end{itemize}
 \end{frame}
 
+\begin{comment}
   
 \frame{
   \frametitle{Ideal languages for statistical computing}
@@ -276,6 +279,7 @@ Newcastle University, UK / The Alan Turing Institute}
   \end{itemize}
   }
 
+\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Monadic collections (in Scala)}
@@ -598,8 +602,6 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
-\end{comment}
-
 \begin{frame}[fragile]
   \frametitle{Typeclasses}
   \begin{itemize}
@@ -609,6 +611,8 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \item To define a typeclass (such as |Functor| or |Monad|) for a parametric type or type constructor, the language must support \alert{higher-kinded types} (very few widely-used languages do)
   \end{itemize}
 \end{frame}
+
+\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Typeclasses for Monoid, Functor, Monad and Comonad}

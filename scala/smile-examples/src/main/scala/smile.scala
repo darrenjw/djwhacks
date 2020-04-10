@@ -5,7 +5,7 @@ Testing the use of Smile as a Scala library for data analysis
 
 */
 
-object SmileApp {
+object SmileLR {
 
 
   def main(args: Array[String]): Unit = {
@@ -46,6 +46,13 @@ object SmileApp {
     println(buildFormula("Resist" ~).x(df))
     println(buildFormula("Resist" ~).x(df).summary)
 
+    import java.awt.Color
+    import smile.plot.desktop
+    import smile.plot.show
+    import smile.plot.swing._
+    //val canvas = plot(df, "Resist", "Froude", '*', Color.BLACK)
+    val canvas = plot(df, '*')
+    show(canvas)
 
   }
 

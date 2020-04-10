@@ -9,7 +9,7 @@ object SmileLR {
 
 
   def main(args: Array[String]): Unit = {
-    println("Hi")
+    println("Linear regression example")
     val url = "http://archive.ics.uci.edu/ml/machine-learning-databases/00243/yacht_hydrodynamics.data"
     val fileName = "yacht.csv"
 
@@ -46,6 +46,7 @@ object SmileLR {
     println(buildFormula("Resist" ~).x(df))
     println(buildFormula("Resist" ~).x(df).summary)
 
+    println("Plot data")
     import java.awt.Color
     import smile.plot.desktop
     import smile.plot.show

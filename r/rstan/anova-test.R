@@ -4,9 +4,15 @@
 source("myStan.R")
 
 ## simulate some data
-n = 100
-x = rnorm(n, 10, 5)
-y = 1.5*x + rnorm(n, 3, 4) # alpha=3, beta=1.5, sig=4
+set.seed(1)
+Z=matrix(rnorm(1000*8,3.1,0.1),nrow=8)
+RE=rnorm(8,0,0.01)
+X=t(Z+RE)
+colnames(X)=paste("Uni",1:8,sep="")
+Data=stack(data.frame(X))
+boxplot(exp(values)~ind,data=Data,notch=TRUE)
+
+stop("done")
 
 ## define the stan model
 modelstring="

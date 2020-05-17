@@ -43,7 +43,7 @@ model {
 
 ## run the stan model
 constants = list(n=N, p=8, x=X)
-output = stan(file=stanFile(modelstring), data=constants, iter=2000,
+output = stan(model_code=modelstring, data=constants, iter=2000,
               chains=4, warmup=1000)
 out = as.matrix(output)
 dim(out)

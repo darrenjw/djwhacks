@@ -22,7 +22,7 @@ generated quantities {
 "
 
 constants = list(N=30, p=0.8)
-output = stan(file=stanFile(modelstring), data=constants, iter=1,
+output = stan(model_code=modelstring, data=constants, iter=1,
               chains=1, algorithm="Fixed_param")
 out = as.matrix(output)
 dim(out)

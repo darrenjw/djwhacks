@@ -35,13 +35,20 @@ model {
 constants = list(N=n, x=x, y=y)
 output = stan(model_code=modelstring, data=constants, iter=2000,
               chains=4, warmup=1000)
+
+## some basic diagnostics
 out = as.matrix(output)
 dim(out)
 head(out)
-
 library(smfsb)
 mcmcSummary(out)
 
+## stan summaries
+print(output)
+summary(output)
+plot(output)
+traceplot(output)
+pairs(output)
 
 
 

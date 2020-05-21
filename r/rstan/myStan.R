@@ -7,13 +7,5 @@ rstan_options(auto_write = TRUE)
 
 options(mc.cores = parallel::detectCores())
 
-## use instead of a textConnection when calling stan
-stanFile = function(modelstring) {
-    tmpf=tempfile(fileext=".stan")
-    tmps=file(tmpf, "w")
-    cat(modelstring, file=tmps)
-    close(tmps)
-    tmpf
-}
 
 ## eof

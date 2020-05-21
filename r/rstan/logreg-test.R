@@ -37,13 +37,8 @@ model {
 
 ## run the stan model
 constants = list(N=n, x=x, y=y)
-<<<<<<< HEAD
-output = stan(file=stanFile(modelstring), data=constants, iter=1000000,
-              chains=4, warmup=10000, thin=250)
-=======
 output = stan(model_code=modelstring, data=constants, iter=10000,
               chains=4, warmup=2000, thin=4)
->>>>>>> 7ab72dac93751e4d62efbc63f1fae808167960a5
 out = as.matrix(output)
 dim(out)
 head(out)

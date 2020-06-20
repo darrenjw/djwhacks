@@ -1,0 +1,12 @@
+## An introduction to high-resolution patient record data for observational health research
+
+### Links for further reading
+
+* https://www.ohdsi.org/
+    * https://www.ohdsi.org/data-standardization/the-common-data-model/
+* https://github.com/OHDSI/
+    * https://github.com/OHDSI/CommonDataModel/
+* https://cran.r-project.org/web/packages/dbplyr/vignettes/dbplyr.html
+* https://decovid.org/
+
+

@@ -1,0 +1,160 @@
+---
+title: "An introduction to high-resolution patient record data for observational health research"
+author: "Darren Wilkinson"
+date: "darrenjw.github.io"
+output: beamer_presentation
+---
+
+# Introduction
+
+## Background
+
+Modern hospitals within "digitally mature" NHS Trusts have very sophisticated electronic health record (EHR) systems for tracking patient information:
+
+* Basic demographic information
+* Medical background
+* Hospital admittance information (and departure, and death)
+* Movements within the hospital (eg. moves between wards, and in and out of ICU)
+* Vital signs monitoring (temperature, heart rate, blood pressure, respiratory rate, ...)
+* Every sample and measurement taken, observation made
+* Every treatment and drug administered
+* Every intervention (eg. ventilation, ventilation settings)
+
+All of this information is recorded, and it has enormous potential for understanding patient trajectories and improving patient care. 
+
+## The need for standardised data
+
+* Hospitals are full of custom and proprietary devices and IT systems with no common standard
+* This makes it extremely difficult to directly use the data recorded by any given hospital IT system
+* Different systems will:
+    * Use different names/codes for the same thing
+	* Use the same name/code for different things
+	* Measure things in different units
+	* Store things in different ways in different (proprietary) data formats
+* Ultimately, it would be nice if all hospital IT systems stored data in the same way, but that isn't going to happen any time soon, and in any case is not necessary to facilitate better utilisation of EHR data
+* All we need is that each hospital is able to output the data from its own internal representation into a standardised format for subsequent analysis
+
+# The OMOP Common Data Model
+
+## The OMOP Common Data Model
+
+* The Observational Medical Outcomes Partnership (OMOP) was a major NIH-funded US public-private partnership created to address the need to common data formats and IT infrastructure for patient data and their EHR
+* This led to the creation of the OMOP Common Data Model (CDM), which is now maintained by the Observational Health Data Sciences and Informatics (OHDSI, pronounced "Odyssey") community
+* The OMOP CDM is essentially just a standardised set of relational database tables for EHRs, described precisely in a Data Definition Language (DDL), along with a standardised vocabulary (ontology) of clinical terms and concepts
+* Software tools and algorithms designed to work with OMOP data can work more-or-less uniformly across any data from any patient population anywhere in the world, so long as the data can be transformed into the OMOP CDM
+
+## Standard tables
+
+* The OMOP CDM is based on the standard relational model, and assumes data stored in a relational database management system (RDBMS), to be queried using the Structured Query Language (SQL)
+* Standard tables include `person`, `visit_occurrence`, `visit_detail`, `measurement`, `observation`, `specimen`, `concept`, `concept_ancestor`, ..., each of which contains standardised fields
+* eg. the `measurement` table includes fields `measurement_id`, `person_id`, `measurement_concept_id`, `measurement_datetime`, `value_as_number`, `unit_concept_id`, ...
+
+## Querying and joining
+
+* Connect to the RDBMS and issue queries via SQL
+```bash
+psql -h localhost -d synpuf
+```
+* Information is extracted from the RDBMS using SQL queries
+```sql
+select * from person 
+  where (year_of_birth < 1960) and 
+    (gender_concept_id = 8507);
+```
+* Information in one table can be linked against information in another by joining on the linking fields
+```sql
+select v.*, p.*
+  from visit_occurrence v, person p
+  where v.person_id = p.person_id;
+```
+
+## Standard vocabulary and the concept tables
+
+* Most of the CDM tables contain fields with names of the form `XXX_concept_id`
+* These fields contain integers representing a concept contained within a standard vocabulary of clinical terms
+* The CDM `concept` tables contain the information necessary to decode these IDs into meaningful concepts, including human-readable `concept_name`s
+```sql
+select m.*, c.concept_name
+  from measurement m
+  left join concept c on
+    m.measurement_concept_id = c.concept_id;
+```
+* The databases of clinical terms can also be searched online using the *OHDSI Athena* database
+
+## Querying from R
+
+```{r}
+library(DBI)
+con <- DBI::dbConnect(RPostgres::Postgres(),
+       host = "dell13.home", dbname = "synpuf")
+	   
+df = dbGetQuery(con, "select v.*, p.*
+  from visit_occurrence v, person p
+  where v.person_id = p.person_id;")
+
+df[1:5, 1:3]
+```
+
+## Resolving concepts
+
+```{r}
+df = dbGetQuery(con, "select m.*, c.concept_name
+  from measurement m
+  left join concept c on
+    m.measurement_concept_id = c.concept_id;")
+
+df[1:5, 1:3]
+```
+
+## Python
+
+* There is a strong correspondence between the results of an SQL `select` query and data frame objects in languages such as R and Python
+* In Python, Pandas is the standard library providing data frame functionality similar to that found in R
+* We can send SQL queries and get results back into a Pandas data frame similarly to how we have done it in R
+
+```python
+import pyodbc
+import pandas as pd
+import numpy as np
+# ... set connection info here...
+cnxn = pyodbc.connect(f"DRIVER={{ODBC Driver ...
+
+df = pd.read_sql("""select v.*, p.*
+  from visit_occurrence v, person p
+  where v.person_id = p.person_id;""", cnxn)
+```
+
+## Querying and wrangling with tidyverse tools
+
+* Statisticians and ML researchers typically want all of their data arranged into a big rectangular data frame object for input into their algorithms
+* Getting data into the form expected by typical prediction models requires very large and complex SQL queries
+* Statisticians and data scientists would typically prefer to wrangle data using tools such as those provided by the R `tidyverse` 
+* OMOP databases are often very large, so it is a bad idea to pull big tables into R and then start joining them using R code (and similar for Python)
+* Want to do as much work as possible *inside* the RDBMS, since that is designed for working with large datasets
+* Actually possible to get the best of both worlds, even using R, using packages such as `dbplyr` (note the `b`)
+
+## dbplyr
+
+
+
+# Statistical modelling of ICU data
+
+## Prediction models
+
+* blah
+
+# Conclusions
+
+## Links for further reading
+
+* https://www.ohdsi.org/
+    * https://www.ohdsi.org/data-standardization/the-common-data-model/
+* https://github.com/OHDSI/
+    * https://github.com/OHDSI/CommonDataModel/
+* https://athena.ohdsi.org/
+* https://cran.r-project.org/web/packages/dbplyr/vignettes/dbplyr.html
+* https://r-forge.r-project.org/projects/omopr/
+
+* https://decovid.org/
+
+

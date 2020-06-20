@@ -1,0 +1,9 @@
+Title:
+
+An introduction to high-resolution patient record data for observational health research
+
+Abstract:
+
+This talk will give an introduction to high-resolution electronic health record data relating to hospitalised patients. In principle this data is incredibly valuable for understanding patient populations, their risk of serious outcomes, and treatments most likely to benefit particular patient subgroups. However, hospital IT systems are notoriously complex, consisting of numerous proprietary and incompatible devices, recording and monitoring systems. This is especially true of ICUs, which makes using the data extremely challenging, even for a single hospital. Comparing data across multiple hospitals and Trusts, which typically have completely different IT systems, is simply impossible without first reconciling data into some kind of standard representation. I will describe the most promising approach to this problem: the OMOP Common Data Model, and give a brief introduction to querying and wrangling OMOP data from programming languages such as R and Python. The use of a common data model opens up the possibility of developing a library of software tools supporting a wide range of observational health data research. Note that there will be essentially no statistics in this talk.
+
+

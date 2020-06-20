@@ -135,13 +135,48 @@ df = pd.read_sql("""select v.*, p.*
 
 ## dbplyr
 
+* `dbplyr` connects SQL RDBMSs to the tidyverse by means of a "lazy tibble", which can be computed with in R much like any other `dplyr` tibble, but is really just a tibble-like wrapper around an SQL query
+```{r message=FALSE}
+library(tidyverse)
+tbl(con, "visit_occurrence") %>%
+  inner_join(tbl(con, "person"), by = "person_id")
+```
 
+## omopr
+
+* I've written a little R package, `omopr` (currently on R-Forge), to facilitate working with OMOP CDM data using a tidyverse approach
+* As well as initialising a connection by creating a list of CDM table references, the main function in the package resolves concepts in a lazy tibble by left-joining each `concept_id` column against the `concept` table
+```{r message=FALSE}
+library(omopr)
+tRefs = omopr_init(con)
+vpc = tRefs[["visit_occurrence"]] %>%
+  inner_join(tRefs[["person"]], by = "person_id") %>%
+  concept_names()
+vpc
+```
+
+## Executing the query
+
+When you've finished wrangling your lazy tibbles, you can force execution of the query, and extraction of data into a strict `dplyr` tibble, for in-memory analysis using R, by calling `collect()`
+```{r}
+vpc %>% collect()
+```
 
 # Statistical modelling of ICU data
 
 ## Prediction models
 
-* blah
+* The querying and joining examples we have seen so far are incredibly simple, but in practice, rather complex wrangling code is needed to coerce the OMOP data into the form required by typical statistical analysis routines
+* Prediction models will often attempt to compute a risk score for a patient on the basis of the available information at the time of admission, or transfer to ICU, or within 24 hours of transfer to ICU
+* The computation of illness severity scores typically requires non-trivial wrangling of OMOP data
+* Most existing scores were developed prior to the current coronavirus pandemic
+* Assessing the utility of existing severity scores, and improving on them, for patients exhibiting COVID-19 symptoms, is a topic of current interest
+
+## Causal inference from observational data
+
+MORE HERE
+
+* Hernán & Robins (2016) Using big data to emulate a target trial when a randomized trial is not available, *American Journal of Epidemiology*.
 
 # Conclusions
 
@@ -154,6 +189,7 @@ df = pd.read_sql("""select v.*, p.*
 * https://athena.ohdsi.org/
 * https://cran.r-project.org/web/packages/dbplyr/vignettes/dbplyr.html
 * https://r-forge.r-project.org/projects/omopr/
+* Hernán & Robins: https://doi.org/10.1093/aje/kwv254
 
 * https://decovid.org/
 

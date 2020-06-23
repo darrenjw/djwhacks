@@ -11,5 +11,6 @@
 * https://r-forge.r-project.org/projects/omopr/
 * Wynants et al: https://www.bmj.com/content/369/bmj.m1328
 * Hernán & Robins: https://doi.org/10.1093/aje/kwv254
+* https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/
 * https://decovid.org/
 

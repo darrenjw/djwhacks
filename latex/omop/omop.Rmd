@@ -169,20 +169,27 @@ vpc %>% collect()
 * The querying and joining examples we have seen so far are incredibly simple, but in practice, rather complex wrangling code is needed to coerce the OMOP data into the form required by typical statistical analysis routines
 * Prediction models will often attempt to compute a risk score for a patient on the basis of the available information at the time of admission, or transfer to ICU, or within 24 hours of transfer to ICU
 * The computation of illness severity scores typically requires non-trivial wrangling of OMOP data
-* Most existing scores were developed prior to the current coronavirus pandemic
-* Assessing the utility of existing severity scores, and improving on them, for patients exhibiting COVID-19 symptoms, is a topic of current interest
+* Most existing scores were developed prior to the current coronavirus pandemic - assessing the utility of existing severity scores, and improving on them, for patients exhibiting COVID-19 symptoms, is a topic of current interest
+* Wynants et al (2020) Prediction models for diagnosis and prognosis of COVID-19: systematic review and critical appraisal, *BMJ* - "living" systematic review
 
 ## Causal inference from observational data
 
-MORE HERE
-
+* In addition to making predictions about likely outcome, we might also be interested in identifying effective treatment interventions
+* Carefully designed large randomised clinical trials are the gold standard for checking the effectiveness of a proposed new treatment, as they provide some protection against confounding variables confusing association and causation
+* When making inferences using observational data, great care must be taken to measure and adjust for as many potential confounders as possible, and not to over-interpret findings
+* In recent years, increasing use has been made of techniques from the causal inference literature, using large observational data sets to emulate a "target trial" you would have liked to have done
 * Hernán & Robins (2016) Using big data to emulate a target trial when a randomized trial is not available, *American Journal of Epidemiology*.
 
 # Conclusions
 
 ## Conclusions
 
-WRAP UP
+* High-resolution EHR data from ICU patients has very significant potential for generating insight that could improve patient outcomes
+* Data-standardisation is necessary to allow pooling of data across multiple hospitals and Trusts
+* The OHDSI OMOP CDM format is the closest thing we have to a proper data standard for EHR data
+* Wrangling hospital data from internal proprietary systems into the OMOP CDM is a non-trivial undertaking
+* Wrangling OMOP data into rectangular data frame formats that statisticians and other analysts are most comfortable with is also challenging
+* The potential long-term payoffs of this standardised approach to EHR data is huge
 
 ## Links for further reading
 
@@ -193,8 +200,8 @@ WRAP UP
 * https://athena.ohdsi.org/
 * https://cran.r-project.org/web/packages/dbplyr/vignettes/dbplyr.html
 * https://r-forge.r-project.org/projects/omopr/
+* Wynants et al: https://www.bmj.com/content/369/bmj.m1328
 * Hernán & Robins: https://doi.org/10.1093/aje/kwv254
-
 * https://decovid.org/
 
 

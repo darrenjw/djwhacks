@@ -8,7 +8,7 @@
     * https://github.com/OHDSI/CommonDataModel/
 * https://athena.ohdsi.org/
 * https://cran.r-project.org/web/packages/dbplyr/vignettes/dbplyr.html
-* https://r-forge.r-project.org/projects/omopr/
+* https://cran.r-project.org/web/packages/omopr/
 * Wynants et al: https://www.bmj.com/content/369/bmj.m1328
 * Hernán & Robins: https://doi.org/10.1093/aje/kwv254
 * https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/

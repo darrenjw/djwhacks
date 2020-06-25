@@ -144,7 +144,7 @@ tbl(con, "visit_occurrence") %>%
 
 ## omopr
 
-* I've written a little R package, `omopr` (currently on R-Forge), to facilitate working with OMOP CDM data using a tidyverse approach
+* I've written a little R package, `omopr` (on CRAN), to facilitate working with OMOP CDM data using a tidyverse approach
 * As well as initialising a connection by creating a list of CDM table references, the main function in the package resolves concepts in a lazy tibble by left-joining each `concept_id` column against the `concept` table
 ```{r message=FALSE}
 library(omopr)
@@ -199,7 +199,7 @@ vpc %>% collect()
     * https://github.com/OHDSI/CommonDataModel/
 * https://athena.ohdsi.org/
 * https://cran.r-project.org/web/packages/dbplyr/vignettes/dbplyr.html
-* https://r-forge.r-project.org/projects/omopr/
+* https://cran.r-project.org/web/packages/omopr/
 * Wynants et al: https://www.bmj.com/content/369/bmj.m1328
 * Hernán & Robins: https://doi.org/10.1093/aje/kwv254
 * https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/

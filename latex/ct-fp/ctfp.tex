@@ -74,7 +74,8 @@ col, set,start,end,deltat,zip},
 
 \begin{document}
 
-\title{A compositional approach to statistical computing, machine learning, and probabilistic programming}
+%\title{A compositional approach to statistical computing, machine learning, and probabilistic programming}
+\title{A more functional future for statistical computing?}
 \author{\textbf{\large Darren Wilkinson} \\
 \url{@darrenjw}\hfill \alert{\url{darrenjw.github.io}}\\
 \vspace{2ex}%
@@ -96,7 +97,7 @@ Newcastle University, UK / The Alan Turing Institute}
 
 \section{Background}
 
-\begin{comment}
+%\begin{comment}
 
 \frame{
   \frametitle{Changing face of statistics}
@@ -127,7 +128,7 @@ Newcastle University, UK / The Alan Turing Institute}
   \end{itemize}
   }
 
-\end{comment}
+%\end{comment}
 
 \frame{
   \frametitle{Pre-historic programming languages}
@@ -660,6 +661,8 @@ and then define instances for standard (serial) collections (eg. |Vector|), para
   \end{itemize}
 \end{frame}
 
+\end{comment}
+
 \begin{frame}[fragile]
 \frametitle{Scalable ABC}
 \begin{itemize}
@@ -680,6 +683,8 @@ pars.map(summ compose simModel).
 using map--fusion to avoid constructing a collection of synthetic datasets
 \end{itemize}
 \end{frame}
+
+\begin{comment}
 
 \begin{frame}[fragile]
 \frametitle{A scalable particle filter}
@@ -884,6 +889,8 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
 \end{lstlisting}
 \end{frame}
 
+\end{comment}
+
 
 \begin{frame}
   \frametitle{Recursion schemes}
@@ -909,8 +916,6 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
   \end{itemize}
 \end{frame}
 
-\end{comment}
-
 \section{Probability monads}
 
 \subsection{Composing random variables}
@@ -924,7 +929,6 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
     \item Those two functions don't directly compose, but do in the Kleisli category of the |Rand| monad, so |Exponential(3) flatMap {Poisson(_)}| will return a |Rand[Int]| which we can draw samples from if required
   \end{itemize}
 \end{frame}
-
 
 \begin{frame}[fragile]
   \frametitle{Monads for probabilistic programming}
@@ -1145,8 +1149,6 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 \end{frame}
 
 
-\begin{comment}
-  
 \begin{frame}
   \frametitle{Bayesian hierarchical models, graphical models and probabilistic programs}
   \begin{itemize}
@@ -1157,7 +1159,6 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \end{itemize}
 \end{frame}
 
-\end{comment}
 
 \begin{frame}
   \frametitle{Compositionality of inference algorithms}
@@ -1267,11 +1268,11 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \vspace*{0.8ex}
 
   Rainier:
-  \alert{\url{rainier.fit}}
+  \alert{\url{rainier.fit}} \hfill My blog:  \alert{\url{darrenjw.wordpress.com}}
 
 %  For more about Scala and FP: \alert{\url{darrenjw.wordpress.com}}
 
- \alert{\url{darrenjw.github.io}} \hfill \url{@darrenjw}
+Web: \alert{\url{darrenjw.github.io}} \hfill Twitter: \url{@darrenjw}
   
 \end{frame}
 

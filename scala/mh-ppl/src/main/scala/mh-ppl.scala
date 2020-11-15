@@ -8,30 +8,32 @@ PPL encoding a log-likelihood function that can be used with a MH algorithm
 import breeze.stats.{distributions => bdist}
 import breeze.linalg.DenseVector
 
-
-trait Prob[S, T] {
-  val ll: S => Double
-  val extract: S => T
-  def flatMap[U](f: T => Dist[U]): Prob[(U, S), U] =
-    LogLik((us: (U, S)) => ll(us._2) + f(extract(us._2)).ll(us._1),
-      (us: (U, S)) => us._1)
+trait Prob[T] {
+  val ll: Vector[Double] => Double
+  val pd: Int // dimension of the parameter vector
+  def flatMap[U](f: T => Prob[U]): Prob[U] =
+    LogLik(v => ll(v.take(pd)) + f(v.tail).ll(v.head))
+  def map[U](f: T => U) = flatMap(t => Dirac(f(t)))
 }
 
-case class LogLik[S, T](ll: S => Double, extract: S => T) extends Prob[S, T]
+case class LogLik[T](ll: Vector[Double] => Double) extends Prob[T]
 
-trait Dist[T] extends Prob[T, T] {
-  val extract = identity
+case class Dirac[T](x: T) extends Prob[T] {
+  val ll = (obs: T) => if (obs == x)
+    Double.PositiveInfinity
+  else
+    Double.NegativeInfinity
 }
 
-case class Normal(mu: Double, v: Double) extends Dist[Double] {
+case class Normal(mu: Double, v: Double) extends Prob[Double] {
   val ll = (obs: Double) => bdist.Gaussian(mu, math.sqrt(v)).logPdf(obs)
 }
  
-case class Gamma(a: Double, b: Double) extends Dist[Double] {
+case class Gamma(a: Double, b: Double) extends Prob[Double] {
   val ll = (obs: Double) => bdist.Gamma(a, 1.0/b).logPdf(obs)
 }
  
-case class Poisson(mu: Double) extends Dist[Int] {
+case class Poisson(mu: Double) extends Prob[Int] {
   val ll = (obs: Int) => bdist.Poisson(mu).logProbabilityOf(obs)
 }
 
@@ -39,6 +41,11 @@ object PplApp {
 
   def main(args: Array[String]): Unit = {
     println(breeze.stats.distributions.Poisson(10).sample(5))
+    val pp = for {
+      mu <- Normal(0.0,1.0)
+      v <- Gamma(1.0,1.0)
+      x <- Normal(mu,v)
+    } yield x
   }
 
 }

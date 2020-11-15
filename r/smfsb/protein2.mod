@@ -3,8 +3,8 @@
 @compartments
  Cell
 @parameters
- k1=1
- k2=0.5
+ k1=10
+ k2=5
  k3=10
  k4=0.1
 @species

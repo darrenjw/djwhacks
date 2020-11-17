@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" level="3" version="1">
+  <model id="Noise" name="Model of protein expression noise" substanceUnits="item" timeUnits="second" volumeUnits="litre" extentUnits="item">
+    <listOfCompartments>
+      <compartment id="Cell"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="Rna" compartment="Cell" initialAmount="0" hasOnlySubstanceUnits="true"/>
+      <species id="P" compartment="Cell" initialAmount="0" hasOnlySubstanceUnits="true"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="k1" value="10"/>
+      <parameter id="k2" value="5"/>
+      <parameter id="k3" value="10"/>
+      <parameter id="k4" value="0.1"/>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="Transcription" reversible="false">
+        <listOfProducts>
+          <speciesReference species="Rna" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <ci> k1 </ci>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="RnaDegradation" name="RNA Degradation" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Rna" stoichiometry="1"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k2 </ci>
+              <ci> Rna </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="Translation" reversible="false">
+        <listOfReactants>
+          <speciesReference species="Rna" stoichiometry="1"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Rna" stoichiometry="1"/>
+          <speciesReference species="P" stoichiometry="1"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k3 </ci>
+              <ci> Rna </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="ProteinDegradation" name="Protein degradation" reversible="false">
+        <listOfReactants>
+          <speciesReference species="P" stoichiometry="1"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> k4 </ci>
+              <ci> P </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

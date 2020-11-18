@@ -1,41 +1,110 @@
+
 # Outline
 
-People: DJW, Andy Golightly, Chris Oates
+* What is streaming data?
+* How to think about streaming data
+* Computational models for streaming data
+* Statistical models for streaming data
+* An example: nowcasting urban air pollution
+* Streaming Gaussian processes
 
-## Streaming data
-* Architecture
-* Methodology
+# Big data
+
+* We live in the age of data...
+* Small cheap ubiquitous computing devices, cheap storage
+* Fast communication over the internet 
+* *Blah, blah, ...*
+* **Big data** is apparently about '**V**'s:
+    * Volume
+	* Variety
+	* **Velocity**
+	* (Veracity), ...
+* **Fast data** is all about dealing with newly acquired data in near real-time
+* Data engineers are increasingly relying on *streaming data architectures* for managing, routing, analysing and processing of fast data
+
+# Streaming data applications
+
+* Streaming voice and video applications
+    * Zoom, Netflix, YouTube, etc.
+	* Typically streamed directly *over the internet* to your display
+	* Even if the video is downloaded to local storage, it is still *streamed* from storage and decompressed on-the-fly for real-time viewing - the entire video is never fully decompressed in RAM - not just about moving data over the internet
+* Real-time financial market trading data
+    * Automated trading systems
+	* Decision suport for human traders
+* On-line processing (and compression) of scientific experiments
+    * Biological sequencing technolgies
+	* Particle collider experiments
+	* Large astronomical surveys (eg. SKA)
+* Real time sensor network data for continuous monitoring
+    * Traffic (and pollution) monitoring, weather forecasting, ...
+
+# Historic streaming data technology: Unix pipes!
+
+* Unix-based shell commands can provide a simple streaming data system, based on the assumption that the units of your data stream correspond to single lines of a text file
+    * Many Unix programs are designed to read lines one-at-a-time from *standard input*, do some processing, and write lines one-at-a-time to *standard output*.
+* Standard output can be *piped* from one command to the standard input of another
+    * The processes run concurrently - the second program in the pipeline does not wait for the first program to complete before starting
+* `myMCMC 1000000 | burn 1000 | thin 100 > chain.csv`
+    * The full 1000000 iterations never exist either in RAM or mass storage
+* Nice idea, but unsuitable for complex (especially quantitative) data and pipelines
+	
+# Newcastle Centre for Data (NUCoRE)
+
+* A University research centre focussed on data
+* Seven cross-cutting themes:
+    * biomedical informatics
+    * data for manufacturing
+    * data visualization
+    * spatial analytics
+    * **streaming data modelling**
+    * text in a digital age
+    * regulation of data driven technologies
+* [`www.ncl.ac.uk/research/data/`](https://www.ncl.ac.uk/research/data/)
+
+# Turing project
+
+## Streaming data modelling for real-time monitoring and forecasting
+
+* Computational architecture and infrastructure
+* Statistical methodology and algorithms
 
 ## Applications
-* Urban Analytics (The Urban Observatory)
-* Healthcare (Wearables?)
+* Urban Analytics (The Urban Observatory - eg. pollution)
+* Healthcare (Wearables/neuroscience)
+
+## Links
+* https://urbanobservatory.ac.uk/
+* https://www.turing.ac.uk/research/research-projects/streaming-data-modelling-real-time-monitoring-and-forecasting
 
 # Streaming data architecture
 
-* One of the 3 (or 4) "V"s of Big Data is *velocity*
-* **Fast data** is all about dealing with newly acquired data in near real-time
-* Data engineers are increasingly relying on *streaming data architectures* for managing, routing, analysing and processing of fast data
-* *Storm*, *Heron*, *Spark streaming*, *Akka streams*, *Kafka*, *Flink* are well-known examples of streaming data frameworks
+## Fundamental concepts
+* A *stream* is a (possibly infinite) sequence of values of a given (potentially complex) data type, with a definite order
+* The stream is accessed one value at a time, and processing is done incrementally, triggered by the arrival of each value
+* Typically only *one pass* over the data is possible
+
+## Software libraries and frameworks
+* *Storm*, *Heron*, *Spark streaming*, *Akka streams*, *Flink*, (*Kafka*) are well-known examples of streaming data frameworks
 * Frameworks are often run on the *JVM*, built in languages with good support for **functional programming** (FP), such as *Scala*, and rely to a greater-or-lesser extent on FP principles such as *functional reactive programming* (FRP)
-* Some lesser known libraries take a purer FP approach, such as *Monix* and *FS2*
 
 # Functional models of streaming data
 
-* The fundamental streaming data abstraction is a **function**:
+* A key streaming data processing abstraction is a pure **function**:
+$$h: \mathcal{X} \times \mathcal{Y} \longrightarrow \mathcal{X}$$
 ```
 advance: (State, Observation) => State
 ```
 combining current world knowledge (encapsulated in a `State`) together with the latest observation to get an updated world view
-* Then given
+
+* Then given $x_0\in\mathcal{X},\quad \mathbf{y} \in \mathcal{Y}^{\mathbb{N}}$
 ```
 s0: State, sObs: Stream[Observation]
 ```
-we transform the stream of observations to a stream of states:
+we transform the stream of observations $\mathbf{y}$ to states $\mathbf{x}\in\mathcal{X}^{\mathbb{N}}$:
 ```
-sState: Stream[State] = sObs scanLeft (s0)(advance)
+sState: Stream[State] = sObs scan (s0)(advance)
 ```
-* The *definition* of an on-line algorithm is one that can be expressed in terms of a *pure* function, `advance`
-
+via successive application of $h$.
 
 # State-space modelling
 
@@ -53,7 +122,7 @@ For *filtering* we typically think in terms of predict-update steps:
 
 `predict` is monadic `flatMap` (or `>>=`) with `f`, and `update` is probabilistic *conditioning* via `g`
 
-Streaming: `advance = update compose predict` where `State = P[X]` - eg. one step of a Kalman or particle filter
+Streaming: `advance = update compose predict'` where `State = P[X]` - eg. one step of a Kalman or particle filter
 
 # Composable functional models of on-line algorithms and PPLs
 
@@ -63,32 +132,44 @@ Streaming: `advance = update compose predict` where `State = P[X]` - eg. one ste
 
 * Simultaneous estimation of (static) parameters and (dynamic) state still problematic: augmented state, Lui & West, Storvik filters, particle learning/practical filters, ... Also on-line (windowed) versions of PMCMC, IBIS, SMC${}^2$, ...
 
-# The Urban Observatory
+# POMP models
 
-* Newcastle's Urban Observatory project - based in the USB
-* www.urbanobservatory.ac.uk
-* The largest set of publicly available real time urban data in the UK
+* Classical SSMs assume that the data are on an regular equispaced time grid, so that the state evolution model $f(x_t|x_{t-1},\theta)$ represents a single time step of the process
+* Many sensors and devices do not generate data on a regular grid, either by design, or due to crashes/reboots creating large gaps of missing values, pushing observations onto a *misaligned grid*, or changes in sampling frequency, etc.
+* **Partially observed Markov process** (POMP) models generalise classical SSMs in two important ways:
+    * The state evolution model formulated in *continuous time*, and is described by a transition kernel $f(x_{t+t'}|x_t,t',\theta)$
+	* It is not required that the transition kernel can be *evaluated* --- only that the state process can by stochastically *simulated* forwards in time
+
+# What makes an algorithm "on-line"?
+
+* Not all streaming data applications are about time series
+* Many are just about analysing data based on a single pass
+* Almost any statistical algorithm can be expressed in the form of a streaming data algorithm
+* All of the data observed so far can be embedded in the *state*, and any analysis whatsoever of the data can be restarted from scratch with the arrival of each new observation!
+* We wouldn't consider such an analysis to be *genuinely* on-line
+* We typically assume that the "size" of the state is bounded, and that the "complexity" of the advance step has bounded expectation
+
+# Example application: pollution monitoring
+
+## The Urban Observatory
+
+* The largest set of publicly available real time urban data in the UK --- web API, and also a "websocket" for real time data
 * Temperature, rainfall and air quality sensors around the city
 * Rainfall radar data
 * *Multivariate*, *spatial*, *temporal*, *irregularly observed*, *mixed modality* (eg. point and areal)
 
-## eg. Flood-PREPARED
-* NERC Funded project for real-time flood monitoring and prediction for the city based on forecasts and UO data (including rain gauges and rainfall radar)
-* Coupling statistical and hydrological models in (near) real-time using data assimiliation
+## Pollution mapping in real time
 
-# Healthcare
+* Pollution monitors are various (fixed) locations around the city
+* Measurements every few minutes from every sensor, but not on a fixed grid, and not temporally aligned across sensors
+* Would like to "nowcast" a spatially continuous map of pollution levels across the city, updated with each new observation
 
-Big streaming data crops up in numerous problems relating to health
+# Gaussian process modelling
 
-## Wearables
-* Currently working on wearables data for Type II diabetes
-* Joint modelling of both activity data (from accelerometers) and blood sugar levels (from continuous glucose monitoring devices)
-* Developing models for short-term forecasting and alerting
-* eg. "Your blood sugar is heading too high - go for a walk around the block"
-
-## Genomics
-
-* eg. analysis of streaming sequencing data in (near) real-time
-
-Still looking for a really compelling healthcare use-case
-
+* GPs have the property that any finite number of points are jointly multivariate normal (MVN), with a covariance matrix determined by a kernel
+* Use MVN theory to get the conditional distribution of unobserved values given observations
+* Two common parametrisations of the MVN, with different trade-offs
+1. Use the *covariance* matrix
+    * Makes marginalisation easy, but conditioning expensive
+2. Use the *precision* matrix
+    * Makes conditioning easy, but marginalisation expensive

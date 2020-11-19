@@ -173,3 +173,26 @@ Streaming: `advance = update compose predict'` where `State = P[X]` - eg. one st
     * Makes marginalisation easy, but conditioning expensive
 2. Use the *precision* matrix
     * Makes conditioning easy, but marginalisation expensive
+
+# MVN marginalisation and conditioning
+
+$$
+\binom{X}{Y} \sim N\left\{\binom{\mu_X}{\mu_Y}, \begin{pmatrix} V_{XX} & V_{XY} \\ V_{YX} & V_{YY} \end{pmatrix}\right\} = N\left\{\binom{\mu_X}{\mu_Y}, \begin{pmatrix} Q_{XX} & Q_{XY} \\ Q_{YX} & Q_{YY} \end{pmatrix}^{-1} \right\}
+$$
+
+## Variance parametrisation
+$$
+X \sim N\{\mu_X,\ V_{XX}\}
+$$
+$$
+(X|Y=y) \sim N\left\{\mu_X + V_{XY}V_{YY}^{-1}(y-\mu_Y),\ V_{XX} - V_{XY}V_{YY}^{-1}V_{YX}\right\}
+$$
+
+## Precision parametrisation
+$$
+X \sim N\left\{\mu_X,\ (Q_{XX}-Q_{XY}Q_{YY}^{-1}Q_{YX})^{-1}\right\}
+$$
+$$
+(X|Y=y) \sim N\left\{\mu_X-Q_{XX}^{-1}Q_{XY}(y-\mu_Y),\ Q_{XX}^{-1}\right\}
+$$
+

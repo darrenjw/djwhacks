@@ -24,7 +24,7 @@ present: $(FILE).pdf
 	okular $(FILE).pdf
 
 edit:
-	gedit $(FILE).tex &
+	emacs Makefile $(FILE).tex &
 
 update:
 	git pull

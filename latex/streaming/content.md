@@ -196,3 +196,9 @@ $$
 (X|Y=y) \sim N\left\{\mu_X-Q_{XX}^{-1}Q_{XY}(y-\mu_Y),\ Q_{XX}^{-1}\right\}
 $$
 
+## Extending a GP precision matrix
+
+To add a new data point to the precision matrix of a GP, use a $2\times 2$ block inverse:
+$$
+
+$$

@@ -102,9 +102,29 @@ s0: State, sObs: Stream[Observation]
 ```
 we transform the stream of observations $\mathbf{y}$ to states $\mathbf{x}\in\mathcal{X}^{\mathbb{N}}$:
 ```
-sState: Stream[State] = sObs scan (s0)(advance)
+sState: Stream[State] = sObs.scan(s0)(advance)
 ```
 via successive application of $h$.
+
+# Stream transformation
+
+Streams are *functors*, since they support a `map` operation:
+```
+Stream[A].map[B](f: A => B): Stream[B]
+```
+The `scan` operation, sometimes called `scanLeft`, has signature:
+```
+  scanLeft[B](init: B)(advance: (B, A) => B): Stream[B]
+```
+For example:
+```
+val naturals = Stream.iterate(1)(_ + 1)
+// 1, 2, 3, 4, ...
+val evens = naturals map (_ * 2)
+// 2, 4, 6, 8, ...
+val triangular = naturals.scan(0)(_ + _).drop(1)
+// 1, 3, 6, 10, ...
+```
 
 # State-space modelling
 
@@ -139,6 +159,17 @@ Streaming: `advance = update compose predict'` where `State = P[X]` - eg. one st
 * **Partially observed Markov process** (POMP) models generalise classical SSMs in two important ways:
     * The state evolution model formulated in *continuous time*, and is described by a transition kernel $f(x_{t+t'}|x_t,t',\theta)$
 	* It is not required that the transition kernel can be *evaluated* --- only that the state process can by stochastically *simulated* forwards in time
+
+# On-line filtering of POMP models
+
+* The "bootstrap" particle filter is a "likelihood free" algorithm for sequentially computing the filtering distribution of a POMP model (for fixed $\theta$):
+$$
+\pi(x_t|\mathcal{Y}_t),\ \text{ where } \mathcal{Y}_t \equiv \{y_s|y_s\in\mathcal{Y},s\leq t\}
+$$
+* Although it is typically presented in discrete time, it works fine for continuous time processes observed discretely at irregular times
+
+* Law \& W (2018) *Composable models for online Bayesian analysis of streaming data*
+https://doi.org/10.1007/s11222-017-9783-1
 
 # What makes an algorithm "on-line"?
 
@@ -196,9 +227,60 @@ $$
 (X|Y=y) \sim N\left\{\mu_X-Q_{XX}^{-1}Q_{XY}(y-\mu_Y),\ Q_{XX}^{-1}\right\}
 $$
 
-## Extending a GP precision matrix
+# Extending a GP precision matrix
 
 To add a new data point to the precision matrix of a GP, use a $2\times 2$ block inverse:
 $$
-
+\begin{pmatrix}V & c \\ c^T & \sigma^2\end{pmatrix}^{-1} = 
 $$
+$$
+\begin{pmatrix} V^{-1} + V^{-1}c(\sigma^2 - c^TV^{-1}c)^{-1}c^TV^{-1} & -V^{-1}c(\sigma^2-c^TV^{-1}c)^{-1} \\ -(\sigma^2-c^TV^{-1}c)^{-1}c^TV^{-1} & (\sigma^2-c^TV^{-1}c)^{-1} \end{pmatrix}
+$$
+and so
+$$
+Q_\text{new} = \begin{pmatrix} Q + \frac{c_\star c_\star^T}{\sigma_\star^2} & -\frac{c_\star}{\sigma_\star^2} \\ -\frac{c_\star^T}{\sigma_\star^2} & \frac{1}{\sigma_\star^2}\end{pmatrix}
+$$
+where $c_\star = Qc$ and $\sigma_\star^2 = \sigma^2 - c^Tc_\star$.
+
+# GP point prediction
+
+* For a new unobserved design point $x^\star$, let $k$ be the vector of covariances with the observed design points (and $\sigma^2$ the variance). Then (for a mean zero GP):
+$$
+(Y(x^\star)|Y=y) \sim N(k^TQy, \sigma^2 - k^T Qk).
+$$
+* Note that for a collection of new design points, $x_1^\star, x_2^\star,\ldots$, (eg. a grid of points of interest) and associated matrix of covariances with the observed design points, $K$, then the conditional expectation for the new vector of values is just
+$Ky^\star$
+where $y^\star = Qy$. 
+* Similar tricks can give the pointwise variances.
+
+# Cute example
+
+**2 or 3 slides**
+
+# Pollution nowcasting
+
+**1 slide**
+
+# Scalable GP modelling
+
+**2 slides**
+
+
+# Summary
+
+blah
+
+# Links and references
+
+## Links
+
+* https://darrenjw.github.io/
+* https://www.ncl.ac.uk/research/data/
+* https://urbanobservatory.ac.uk/
+* https://www.turing.ac.uk/research/research-projects/streaming-data-modelling-real-time-monitoring-and-forecasting
+
+## Papers
+
+* https://doi.org/10.1007/s11222-017-9783-1
+* https://arxiv.org/abs/1908.02062
+

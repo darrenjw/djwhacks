@@ -254,9 +254,9 @@ $Ky^\star$
 where $y^\star = Qy$. 
 * Similar tricks can give the pointwise variances.
 
-# Cute example
+# Toy example
 
-**2 or 3 slides**
+\movie{\includegraphics[height=0.85\textheight]{truth}}{movie.mp4}
 
 # Pollution nowcasting
 

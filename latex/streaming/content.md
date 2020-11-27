@@ -60,10 +60,13 @@
     * text in a digital age
     * regulation of data driven technologies
 * [`www.ncl.ac.uk/research/data/`](https://www.ncl.ac.uk/research/data/)
+* Opportunity to run events in theme areas - ideas for streaming data events to me and AG
 
-# Turing project
+# Turing Fellow project
 
 ## Streaming data modelling for real-time monitoring and forecasting
+
+(with A Golightly, S Heaps, Y Huang, ...)
 
 * Computational architecture and infrastructure
 * Statistical methodology and algorithms
@@ -75,6 +78,16 @@
 ## Links
 * https://urbanobservatory.ac.uk/
 * https://www.turing.ac.uk/research/research-projects/streaming-data-modelling-real-time-monitoring-and-forecasting
+
+# Flood-PREPARED
+
+## Predicting Rainfall Events by Physical Analytics of REaltime Data
+
+(with S Heaps, K Wilson, S Johnson, Y Yu, ...)
+
+* Real-time short-term high-resolution spatio-temporal rainfall modelling, synthesising areal weather radar and point rain gauge data
+* Near real-time emulation of and data assimilation for a hydrodynamic urban flood model
+* Hooked up to traffic monitors, CCTV feeds, social media sources, etc., all live streaming, for the development of an emergency decision support system for Newcastle
 
 # Streaming data architecture
 

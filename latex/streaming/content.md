@@ -30,9 +30,9 @@
 	* Even if the video is downloaded to local storage, it is still *streamed* from storage and decompressed on-the-fly for real-time viewing - the entire video is never fully decompressed in RAM - not just about moving data over the internet
 * Real-time financial market trading data
     * Automated trading systems
-	* Decision suport for human traders
+	* Decision support for human traders
 * On-line processing (and compression) of scientific experiments
-    * Biological sequencing technolgies
+    * Biological sequencing technologies
 	* Particle collider experiments
 	* Large astronomical surveys (eg. SKA)
 * Real time sensor network data for continuous monitoring
@@ -50,11 +50,11 @@
 	
 # Newcastle Centre for Data (NUCoRE)
 
-* A University research centre focussed on data
+* A University research centre focused on data
 * Seven cross-cutting themes:
     * biomedical informatics
     * data for manufacturing
-    * data visualization
+    * data visualisation
     * spatial analytics
     * **streaming data modelling**
     * text in a digital age
@@ -252,7 +252,7 @@ $$
 * Note that for a collection of new design points, $x_1^\star, x_2^\star,\ldots$, (eg. a grid of points of interest) and associated matrix of covariances with the observed design points, $K$, then the conditional expectation for the new vector of values is just
 $Ky^\star$
 where $y^\star = Qy$. 
-* Similar tricks can give the pointwise variances.
+* Similar tricks can give the point-wise variances.
 
 # Toy example
 
@@ -277,7 +277,7 @@ where $y^\star = Qy$.
 * The analysis and modelling of streaming data is becoming increasingly important
 * Typical motivations:
     1. Sequential analysis of "live" data in (near) real time
-    2. Analysis of large datasets based on "one pass" methods
+    2. Analysis of large data-sets based on "one pass" methods
 * There exist computational models and software libraries for working with streaming data in an efficient and robust way
 * Functional (and reactive) programming languages and approaches are well-suited to working with (infinite) data streams
 * Time series are a natural fit to streaming data models, but not all streaming data applications have a semantically important temporal aspect

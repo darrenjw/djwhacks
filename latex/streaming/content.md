@@ -82,6 +82,7 @@
 * A *stream* is a (possibly infinite) sequence of values of a given (potentially complex) data type, with a definite order
 * The stream is accessed one value at a time, and processing is done incrementally, triggered by the arrival of each value
 * Typically only *one pass* over the data is possible
+* Streams are connected together in a DAG called the *flow graph*
 
 ## Software libraries and frameworks
 * *Storm*, *Heron*, *Spark streaming*, *Akka streams*, *Flink*, (*Kafka*) are well-known examples of streaming data frameworks
@@ -108,9 +109,9 @@ via successive application of $h$.
 
 # Stream transformation
 
-Streams are *functors*, since they support a `map` operation:
+Streams are *functors* (and in fact, *comonads*), since they `map`:
 ```
-Stream[A].map[B](f: A => B): Stream[B]
+  Stream[A].map[B](f: A => B): Stream[B]
 ```
 The `scan` operation, sometimes called `scanLeft`, has signature:
 ```
@@ -168,8 +169,8 @@ $$
 $$
 * Although it is typically presented in discrete time, it works fine for continuous time processes observed discretely at irregular times
 
-* Law \& W (2018) *Composable models for online Bayesian analysis of streaming data*
-https://doi.org/10.1007/s11222-017-9783-1
+* **Law \& W (2018)** *Composable models for online Bayesian analysis of streaming data*
+    * https://doi.org/10.1007/s11222-017-9783-1
 
 # What makes an algorithm "on-line"?
 
@@ -178,7 +179,7 @@ https://doi.org/10.1007/s11222-017-9783-1
 * Almost any statistical algorithm can be expressed in the form of a streaming data algorithm
 * All of the data observed so far can be embedded in the *state*, and any analysis whatsoever of the data can be restarted from scratch with the arrival of each new observation!
 * We wouldn't consider such an analysis to be *genuinely* on-line
-* We typically assume that the "size" of the state is bounded, and that the "complexity" of the advance step has bounded expectation
+* We typically assume that the "size" of the state is bounded, and that the "complexity" of the *advance* step has bounded expectation
 
 # Example application: pollution monitoring
 
@@ -199,7 +200,7 @@ https://doi.org/10.1007/s11222-017-9783-1
 
 * GPs have the property that any finite number of points are jointly multivariate normal (MVN), with a covariance matrix determined by a kernel
 * Use MVN theory to get the conditional distribution of unobserved values given observations
-* Two common parametrisations of the MVN, with different trade-offs
+* Two common parametrisations of the MVN (dual formulations), with different trade-offs:
 1. Use the *covariance* matrix
     * Makes marginalisation easy, but conditioning expensive
 2. Use the *precision* matrix
@@ -259,16 +260,28 @@ where $y^\star = Qy$.
 
 # Pollution nowcasting
 
-**1 slide**
+![UO "live" monitoring](uo-gui.png)
 
 # Scalable GP modelling
 
-**2 slides**
-
+* As the number of observations, $n$, grows, the $n\times n$ covariance (or precision) matrix gradually becomes problematic, whether inversion is explicit or not
+* Can subset or merge design points in more-or-less principled ways, or form some other sparse or low-rank approximation of the covariance (or precision) matrix
+* There is also interest in learning GP hyperparameters (such as length scales) in an on-line fashion
+* **Snelson and Ghahramani** - *Sparse GPs using pseudo-inputs*
+    * http://www.gatsby.ucl.ac.uk/~snelson/SPGP_up.pdf
+* **Bui et al.** - *Streaming sparse GP approximations*
+    * https://arxiv.org/abs/1705.07131
 
 # Summary
 
-blah
+* The analysis and modelling of streaming data is becoming increasingly important
+* Typical motivations:
+    1. Sequential analysis of "live" data in (near) real time
+    2. Analysis of large datasets based on "one pass" methods
+* There exist computational models and software libraries for working with streaming data in an efficient and robust way
+* Functional (and reactive) programming languages and approaches are well-suited to working with (infinite) data streams
+* Time series are a natural fit to streaming data models, but not all streaming data applications have a semantically important temporal aspect
+* Many statistical models and algorithms can be adapted to a sequential context
 
 # Links and references
 
@@ -284,3 +297,5 @@ blah
 * https://doi.org/10.1007/s11222-017-9783-1
 * https://arxiv.org/abs/1908.02062
 
+* http://www.gatsby.ucl.ac.uk/~snelson/SPGP_up.pdf
+* https://arxiv.org/abs/1705.07131

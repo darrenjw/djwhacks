@@ -6,8 +6,10 @@ FORCE:
 	make $(FILE).pdf
 
 view: $(FILE).pdf
-	xdg-open $(FILE).pdf
+	xdg-open $(FILE).pdf &
 
+present: $(FILE).pdf
+	okular $(FILE).pdf &
 
 $(FILE).pdf: $(FILE).tex content.tex
 	#cd figs; make

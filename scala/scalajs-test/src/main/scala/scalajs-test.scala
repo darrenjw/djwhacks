@@ -32,7 +32,7 @@ object ScalaJsTest {
     else can
   }
 
-  def squaresS = Stream.iterate(squares)(_ map nextSquare)
+  def squaresS = LazyList.iterate(squares)(_ map nextSquare)
 
   @JSExport
   def main(canvas: html.Canvas): Unit = {
@@ -50,8 +50,7 @@ object ScalaJsTest {
     def run = {
       val sq = sqrs.head
       sqrs = sqrs.tail
-      //println("hi")
-      clear
+      clear()
       sq map (_.render(ctx))
     }
 

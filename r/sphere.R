@@ -15,8 +15,10 @@ mySphere = function()
 N = 1e6
 sm = sapply(1:N, function(x) mySphere())
 rv = apply(sm,2,function(x) sqrt(sum(x*x)))
-mean(rv)
-
+m = mean(rv)
+V = (4/3)*pi*0.5^3
+int = m * V
+int
 
 
 ## eof

@@ -19,7 +19,7 @@ object SmileLR {
       println("Downloading file...")
       val s = new java.io.PrintWriter(file)
       s.write("LongPos,PrisCoef,LDR,BDR,LBR,Froude,Resist\n")
-      val data = scala.io.Source.fromURL(url).getLines
+      val data = scala.io.Source.fromURL(url).getLines()
       data.foreach(l => s.write(l.trim.split(' ').filter(_ != "").mkString("",",","\n")))
       s.close
       println("File downloaded.")
@@ -33,10 +33,10 @@ object SmileLR {
     println("Simple OLS regression")
     import smile.data.formula._
     import scala.language.postfixOps
-    val mod = smile.regression.ols("Resist" ~, df)
+    val mod = smile.regression.lm("Resist" ~, df)
     println(mod)
-    println(smile.regression.ols("Resist" ~ "Froude", df))
-    println(smile.regression.ols("Resist" ~ "Froude" + "LongPos", df))
+    println(smile.regression.lm("Resist" ~ "Froude", df))
+    println(smile.regression.lm("Resist" ~ "Froude" + "LongPos", df))
 
     println("Understand formula parsing...")
     println(buildFormula("Resist" ~).y(df))
@@ -48,11 +48,11 @@ object SmileLR {
 
     println("Plot data")
     import java.awt.Color
-    import smile.plot.desktop
     import smile.plot.show
     import smile.plot.swing._
-    //val canvas = plot(df, "Resist", "Froude", '*', Color.BLACK)
-    val canvas = plot(df, '*')
+    import smile.plot.Render._
+    val canvas = plot(df, "Resist", "Froude", '*', Color.BLACK)
+    //val canvas = plot(df, '*')
     show(canvas)
 
   }

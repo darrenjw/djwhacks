@@ -28,9 +28,9 @@ object SmileLogReg {
 
     println("plot predictions")
     import java.awt.Color
-    import smile.plot.desktop
     import smile.plot.show
     import smile.plot.swing._
+    import smile.plot.Render._
     show(plot((x zip y).map(xyi => Array(xyi._1,xyi._2)), '*'))
     show(plot(x.map(xi => Array(xi,mod.predict(Array(xi)))), '*'))
 

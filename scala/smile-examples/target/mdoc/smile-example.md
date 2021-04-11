@@ -69,12 +69,12 @@ We can now carry out OLS regression after a couple of imports
 ```scala
 import smile.data.formula._
 import scala.language.postfixOps
-val mod = smile.regression.ols("Resist" ~, df)
+val mod = smile.regression.lm("Resist" ~, df)
 // mod: smile.regression.LinearModel = Linear Model:
 // 
 // Residuals:
-// 	       Min	        1Q	    Median	        3Q	       Max
-// 	  -11.7700	   -7.5578	   -1.8198	    6.1620	   31.5715
+//        Min          1Q      Median          3Q         Max
+//   -11.7700     -7.5578     -1.8198      6.1620     31.5715
 // 
 // Coefficients:
 //                   Estimate Std. Error    t value   Pr(>|t|)
@@ -90,14 +90,14 @@ val mod = smile.regression.ols("Resist" ~, df)
 // 
 // Residual standard error: 8.9596 on 301 degrees of freedom
 // Multiple R-squared: 0.6576,    Adjusted R-squared: 0.6507
-// F-statistic: 96.3327 on 6 and 301 DF,  p-value: 4.526e-67
+// F-statistic: 96.3327 on 7 and 301 DF,  p-value: 4.526e-67
 // 
 mod
 // res2: smile.regression.LinearModel = Linear Model:
 // 
 // Residuals:
-// 	       Min	        1Q	    Median	        3Q	       Max
-// 	  -11.7700	   -7.5578	   -1.8198	    6.1620	   31.5715
+//        Min          1Q      Median          3Q         Max
+//   -11.7700     -7.5578     -1.8198      6.1620     31.5715
 // 
 // Coefficients:
 //                   Estimate Std. Error    t value   Pr(>|t|)
@@ -113,19 +113,19 @@ mod
 // 
 // Residual standard error: 8.9596 on 301 degrees of freedom
 // Multiple R-squared: 0.6576,    Adjusted R-squared: 0.6507
-// F-statistic: 96.3327 on 6 and 301 DF,  p-value: 4.526e-67
+// F-statistic: 96.3327 on 7 and 301 DF,  p-value: 4.526e-67
 //
 ```
 
 If we don't want to regress on everything, we can just choose what we'd like to regress on.
 
 ```scala
-smile.regression.ols("Resist" ~ "Froude", df)
+smile.regression.lm("Resist" ~ "Froude", df)
 // res3: smile.regression.LinearModel = Linear Model:
 // 
 // Residuals:
-// 	       Min	        1Q	    Median	        3Q	       Max
-// 	  -11.2396	   -7.6662	   -1.7111	    6.4039	   32.1537
+//        Min          1Q      Median          3Q         Max
+//   -11.2396     -7.6662     -1.7111      6.4039     32.1537
 // 
 // Coefficients:
 //                   Estimate Std. Error    t value   Pr(>|t|)
@@ -136,14 +136,14 @@ smile.regression.ols("Resist" ~ "Froude", df)
 // 
 // Residual standard error: 8.9031 on 306 degrees of freedom
 // Multiple R-squared: 0.6562,    Adjusted R-squared: 0.6551
-// F-statistic: 584.1803 on 1 and 306 DF,  p-value: 6.233e-73
+// F-statistic: 584.1803 on 2 and 306 DF,  p-value: 6.233e-73
 // 
-smile.regression.ols("Resist" ~ "Froude" + "LongPos", df)
+smile.regression.lm("Resist" ~ "Froude" + "LongPos", df)
 // res4: smile.regression.LinearModel = Linear Model:
 // 
 // Residuals:
-// 	       Min	        1Q	    Median	        3Q	       Max
-// 	  -11.2361	   -7.4169	   -1.7970	    6.3781	   32.1378
+//        Min          1Q      Median          3Q         Max
+//   -11.2361     -7.4169     -1.7970      6.3781     32.1378
 // 
 // Coefficients:
 //                   Estimate Std. Error    t value   Pr(>|t|)
@@ -155,7 +155,7 @@ smile.regression.ols("Resist" ~ "Froude" + "LongPos", df)
 // 
 // Residual standard error: 8.9129 on 305 degrees of freedom
 // Multiple R-squared: 0.6566,    Adjusted R-squared: 0.6544
-// F-statistic: 291.6172 on 2 and 305 DF,  p-value: 1.604e-71
+// F-statistic: 291.6172 on 3 and 305 DF,  p-value: 1.604e-71
 //
 ```
 

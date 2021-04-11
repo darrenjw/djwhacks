@@ -1,0 +1,14 @@
+Streaming data modelling for real-time monitoring and forecasting
+
+This project is addressing a key challenge of modern data science: the
+development of scalable algorithms for extracting useful information
+from large, complex, heterogeneous and ever-growing data sets in
+(near) real-time. The project combines sequential statistical
+modelling with computational frameworks for streaming data processing,
+making significant use of functional programming approaches. The
+techniques will be illustrated using live streaming data from
+Newcastle’s Urban Observatory – one of the largest public sources of
+smart-city data in the world. Data from environmental sensors which
+are both multivariate and spatially distributed provide a challenging
+use case for on-line statistical modelling.
+

@@ -29,5 +29,5 @@ resolvers ++= Seq(
     "https://oss.sonatype.org/content/repositories/releases/"
 )
 
-scalaVersion := "2.13.4"
+scalaVersion := "2.13.5"
 

@@ -33,18 +33,18 @@ object SmileLR {
     println("Simple OLS regression")
     import smile.data.formula._
     import scala.language.postfixOps
-    val mod = smile.regression.lm("Resist" ~, df)
+    val mod = smile.regression.lm("Resist" ~ ".", df)
     println(mod)
     println(smile.regression.lm("Resist" ~ "Froude", df))
     println(smile.regression.lm("Resist" ~ "Froude" + "LongPos", df))
 
     println("Understand formula parsing...")
-    println(buildFormula("Resist" ~).y(df))
-    println(buildFormula("Resist" ~).y(df).toDoubleArray)
-    println(buildFormula("Resist" ~).matrix(df, true))
-    println(buildFormula("Resist" ~).matrix(df, true).toArray)
-    println(buildFormula("Resist" ~).x(df))
-    println(buildFormula("Resist" ~).x(df).summary)
+    println(buildFormula("Resist" ~ ".").y(df))
+    println(buildFormula("Resist" ~ ".").y(df).toDoubleArray)
+    println(buildFormula("Resist" ~ ".").matrix(df, true))
+    println(buildFormula("Resist" ~ ".").matrix(df, true).toArray)
+    println(buildFormula("Resist" ~ ".").x(df))
+    println(buildFormula("Resist" ~ ".").x(df).summary)
 
     println("Plot data")
     import java.awt.Color

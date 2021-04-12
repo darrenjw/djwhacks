@@ -17,7 +17,7 @@ We can now carry out OLS regression after a couple of imports
 ```scala mdoc
 import smile.data.formula._
 import scala.language.postfixOps
-val mod = smile.regression.lm("Resist" ~, df)
+val mod = smile.regression.lm("Resist" ~ ".", df)
 mod
 ```
 If we don't want to regress on everything, we can just choose what we'd like to regress on.

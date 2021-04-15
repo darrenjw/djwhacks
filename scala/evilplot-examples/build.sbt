@@ -8,16 +8,12 @@ scalacOptions ++= Seq(
 
 libraryDependencies  ++= Seq(
   "org.scalatest" %% "scalatest" % "3.1.0-SNAP13" % "test",
-  "com.cibo" %% "evilplot" % "0.8.0",
-  "com.cibo" %% "evilplot-repl" % "0.8.0",
+  "io.github.cibotech" %% "evilplot" % "0.8.1",
+  "io.github.cibotech" %% "evilplot-repl" % "0.8.1",
   "org.scalanlp" %% "breeze" % "1.1",
   // "org.scalanlp" %% "breeze-viz" % "1.1",
   "org.scalanlp" %% "breeze-natives" % "1.1"
 )
-
-
-resolvers += Resolver.bintrayRepo("cibotech", "public")
-// https://bintray.com/cibotech/public/evilplot
 
 resolvers ++= Seq(
   "Sonatype Snapshots" at
@@ -26,9 +22,7 @@ resolvers ++= Seq(
     "https://oss.sonatype.org/content/repositories/releases/"
 )
 
-//scalaVersion := "2.12.12"
-
-scalaVersion := "2.13.4"
+scalaVersion := "2.13.5"
 
 fork := true
 

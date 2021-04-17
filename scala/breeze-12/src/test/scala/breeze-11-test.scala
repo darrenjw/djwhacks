@@ -1,6 +1,6 @@
-import org.scalatest.FlatSpec
+import org.scalatest.flatspec.AnyFlatSpec
 
-class SetSpec extends FlatSpec {
+class SetSpec extends AnyFlatSpec {
 
  "A Poisson(10.0)" should "have mean 10.0" in {
     import breeze.stats.distributions.Poisson

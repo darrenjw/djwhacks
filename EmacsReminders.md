@@ -12,14 +12,13 @@
 * Smaller: `C-x C--`
 * Reset to default: `C-x C-0`
 
-## Scala / Ensime
+#### Indenting code blocks
 
+Highlight block to indent (or unindent) then `C-x Tab`. Use left and right arrows to indent as required, then `Esc` three times to exit.
 
 ## Latex
 
 * Compile: `C-c C-c` (pdflatexs if required)
-
-## R / ESS
 
 
 

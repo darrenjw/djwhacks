@@ -16,6 +16,16 @@
 
 Highlight block to indent (or unindent) then `C-x Tab`. Use left and right arrows to indent as required, then `Esc` three times to exit.
 
+## Metals for Scala
+
+* https://scalameta.org/metals/docs/
+* https://scalameta.org/metals/docs/editors/emacs
+
+## Melpa
+
+* `M-x list-packages`
+* `U` to mark upgradable packages and `x` to execute.
+
 ## Latex
 
 * Compile: `C-c C-c` (pdflatexs if required)

@@ -1,6 +1,10 @@
 # Makefile
 
-FILE=djw-streaming
+#FILE=djw-streaming
+FILE=djw-turing
+
+
+CONTENT=$(FILE)-content
 
 FORCE:
 	make $(FILE).pdf
@@ -11,7 +15,7 @@ view: $(FILE).pdf
 present: $(FILE).pdf
 	okular $(FILE).pdf &
 
-$(FILE).pdf: $(FILE).tex content.tex
+$(FILE).pdf: $(FILE).tex $(CONTENT).tex
 	#cd figs; make
 	pdflatex $(FILE)
 	pdflatex $(FILE)
@@ -19,11 +23,11 @@ $(FILE).pdf: $(FILE).tex content.tex
 $(FILE)-nup.pdf: $(FILE).pdf
 	pdfnup --nup 3x3 $(FILE).pdf
 
-content.tex: content.md
-	pandoc -t beamer -Vtheme:metropolis content.md -o content.tex
+%.tex: %.md
+	pandoc -t beamer -Vtheme:metropolis $< -o $@
 
 clean:
-	rm -f *~ $(FILE).pdf content.tex *.nav *.aux
+	rm -f *~ $(FILE).pdf $(CONTENT).tex *.nav *.aux
 
 edit:
 	emacs Makefile $(FILE).tex *.txt *.md &

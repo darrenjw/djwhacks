@@ -27,12 +27,10 @@
 
 ## Streaming data modelling for real-time monitoring and forecasting
 
-
 * Computational architecture and infrastructure
 * Statistical methodology and algorithms
 
-* Case studies: Urban Analytics (The Urban Observatory - eg. air pollution)
-* Healthcare (neuroscience), engineering biology, ...
+* Case studies: Urban Analytics (The Urban Observatory - eg. air pollution), Healthcare (neuroscience), engineering biology, ...
 
 *Joint work with A Golightly, S Heaps, Y Huang, N Hannaford, A Hardy, ...*
 
@@ -40,12 +38,11 @@
 
 ## Predicting Rainfall Events by Physical Analytics of REaltime Data
 
-* Real-time short-term high-resolution spatio-temporal rainfall modelling, synthesising areal weather radar and point rain gauge data
+* Real-time short-term high-resolution spatio-temporal rainfall modelling, synthesising *areal* weather radar and *point* rain gauge data
 * Near real-time emulation of and data assimilation for a hydrodynamic urban flood model
-* Hooked up to traffic monitors, CCTV feeds, social media sources, etc., all live streaming, for the development of an emergency decision support system for Newcastle
+* Hooked up to traffic monitors, CCTV feeds, social media sources, etc., all live streaming (from the Urban Observatory), for the development of an emergency decision support system for Newcastle
 
 **Johnson, Heaps, Wilson, W (2021)** Bayesian spatio-temporal model for high-resolution short-term forecasting of precipitation fields, *arXiv*, 2105.03269
-
 
 # Streaming data architecture
 
@@ -126,7 +123,7 @@ Streaming: `advance = update compose predict'` where `State = P[X]` - eg. one st
 
 # POMP models
 
-* Classical SSMs assume that the data are on an regular equispaced time grid, so that the state evolution model $f(x_t|x_{t-1},\theta)$ represents a single time step of the process
+* Classical SSMs assume that the data are on a regular equispaced time grid, so that the state evolution model $f(x_t|x_{t-1},\theta)$ represents a single time step of the process
 * Many sensors and devices do not generate data on a regular grid, either by design, or due to crashes/reboots creating large gaps of missing values, pushing observations onto a *misaligned grid*, or changes in sampling frequency, etc.
 * **Partially observed Markov process** (POMP) models generalise classical SSMs in two important ways:
     * The state evolution model formulated in *continuous time*, and is described by a transition kernel $f(x_{t+t'}|x_t,t',\theta)$
@@ -139,8 +136,9 @@ $$
 \pi(x_t|\mathcal{Y}_t),\ \text{ where } \mathcal{Y}_t \equiv \{y_s|y_s\in\mathcal{Y},s\leq t\}
 $$
 * Although it is typically presented in discrete time, it works fine for continuous time processes observed discretely at irregular times
+* Additionally, composable (and tractable) families of continuous time transition kernels can be built using similar techniques as are sometimes used for discrete time DLMs
 
-* **Law \& W (2018)** [Composable models for online Bayesian analysis of streaming data](https://doi.org/10.1007/s11222-017-9783-1), *Stats. and Computing*, **28**:1119-37.
+**Law \& W (2018)** [Composable models for online Bayesian analysis of streaming data](https://doi.org/10.1007/s11222-017-9783-1), *Statistics and Computing*, **28**:1119-37.
 
 # What makes an algorithm "on-line"?
 
@@ -149,7 +147,7 @@ $$
 * Almost any statistical algorithm can be expressed in the form of a streaming data algorithm
 * All of the data observed so far can be embedded in the *state*, and any analysis whatsoever of the data can be restarted from scratch with the arrival of each new observation!
 * We wouldn't consider such an analysis to be *genuinely* on-line
-* We typically assume that the "size" of the state is bounded, and that the "complexity" of the *advance* step has bounded expectation
+* We typically assume that the "size" of the state is bounded, and that the computational "complexity" of the *advance* step has bounded expectation
 
 # Spatio-temporal modelling
 
@@ -173,16 +171,16 @@ $$
 
 # Example application: pollution monitoring
 
-## The Urban Observatory
+## The Urban Observatory: `urbanobservatory.ac.uk`
 
-* The largest set of publicly available real time urban data in the UK --- web API, and also a "websocket" for real time data
-* Temperature, rainfall and air quality sensors around the city
+* The largest set of publicly available real time urban data in the UK --- web API (and also a *websocket* for real time data)
+* eg. Temperature, rainfall and air quality sensors around the city
 * Rainfall radar data
 * *Multivariate*, *spatial*, *temporal*, *irregularly observed*, *mixed modality* (eg. point and areal)
 
 ## Pollution mapping in real time
 
-* Pollution monitors are various (fixed) locations around the city
+* Pollution monitors at various (fixed) locations around the city
 * Measurements every few minutes from every sensor, but not on a fixed grid, and not temporally aligned across sensors
 * Would like to "nowcast" a spatially continuous map of pollution levels across the city, updated with each new observation
 

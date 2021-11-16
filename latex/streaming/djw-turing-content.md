@@ -44,6 +44,10 @@
 
 **Johnson, Heaps, Wilson, W (2021)** Bayesian spatio-temporal model for high-resolution short-term forecasting of precipitation fields, *arXiv*, 2105.03269
 
+# Synthesising point and areal data (Flood-PREPARED)
+
+![Rainfall data](ncl_z2_radar_grid_gauge.pdf)
+
 # Streaming data architecture
 
 ## Fundamental concepts
@@ -60,17 +64,17 @@
 
 * A key streaming data processing abstraction is a pure **function**:
 $$h: \mathcal{X} \times \mathcal{Y} \longrightarrow \mathcal{X}$$
-```
+```scala
 advance: (State, Observation) => State
 ```
 combining current world knowledge (encapsulated in a `State`) together with the latest observation to get an updated world view
 
 * Then given $x_0\in\mathcal{X},\quad \mathbf{y} \in \mathcal{Y}^{\mathbb{N}}$
-```
+```scala
 s0: State, sObs: Stream[Observation]
 ```
 we transform the stream of observations $\mathbf{y}$ to states $\mathbf{x}\in\mathcal{X}^{\mathbb{N}}$:
-```
+```scala
 sState: Stream[State] = sObs.scan(s0)(advance)
 ```
 via successive application of $h$.
@@ -78,15 +82,15 @@ via successive application of $h$.
 # Stream transformation
 
 Streams are *functors*, since they `map`:
-```
+```scala
   Stream[A].map[B](f: A => B): Stream[B]
 ```
 The `scan` operation, sometimes called `scanLeft`, has signature:
-```
+```scala
   scanLeft[B](init: B)(advance: (B, A) => B): Stream[B]
 ```
 For example:
-```
+```scala
 val naturals = Stream.iterate(1)(_ + 1)
 // 1, 2, 3, 4, ...
 val evens = naturals map (_ * 2)
@@ -165,7 +169,7 @@ $$
 
 * As the number of observations, $n$, grows, the $n\times n$ covariance (or precision) matrix gradually becomes problematic (whether inversion is explicit or not)
 * Can subset or merge design points in more-or-less principled ways, or form some other sparse or low-rank approximation of the covariance (or precision) matrix
-* There is also interest in learning GP hyperparameters (such as length scales) in an on-line fashion
+* There is also interest in learning GP hyper-parameters (such as length scales) in an on-line fashion
 * Hybrid approaches using off-line algorithms for learning static (hyper)parameters and on-line algorithms for dynamic state work well in practice
 * Very active research area
 
@@ -184,13 +188,19 @@ $$
 * Measurements every few minutes from every sensor, but not on a fixed grid, and not temporally aligned across sensors
 * Would like to "nowcast" a spatially continuous map of pollution levels across the city, updated with each new observation
 
+# Pollution monitoring application
+
+* Urban observatory provides APIs (and a websocket) for accessing multiple air pollution measurements (eg. CO, NO2, NO, O3, PM1, PM4, PM10, PM25)
+* New small stream processing application server (in Scala), consuming a live stream of pollution measurements from an array of sensors around the city, updating a spatio-temporal GP in real-time, generating a new stream containing a now-casting pollution map (with uncertainty), for consumption by a small web front-end visualisation application (in JS)
+* Front-end application consumes nowcast map stream (via a websocket) and renders in a web page
+
 # Pollution nowcasting
 
 ![UO "live" monitoring](uo-gui.png)
 
 # Practical issues
 
-* We have a running testbed system that can visualise pollution levels across the city, using transparent fade-out to represent uncertainty in areas of poor sensor coverage, updating in real-time as each new observation arrives
+* We have a running test-bed system that can visualise pollution levels across the city, using transparent fade-out to represent uncertainty in areas of poor sensor coverage, updating in real-time as each new observation arrives
 * Many practical issues requiring further work and collaboration with subject matter experts before public deployment
 * Modelling issues
     * Modelling sensor-specific issues and biases --- impact of biases on parameter inference --- especially length scales
@@ -200,6 +210,15 @@ $$
     * Colour-scales for inferred pollution levels
 	* Appropriate, calibrated visualisation of uncertainty
 
+# Current and future plans and projects
+
+* Complete work on the air pollution case study
+* Neuroscience application
+* Engineering biology application
+* Complete rainfall modelling work
+* Collaboration on novel streaming data architectures
+* Further work on scalable sequential Bayesian updating methodology
+* Software for (functional) probabilistic programming on streaming data
 
 # Summary
 
@@ -209,7 +228,7 @@ $$
     2. Analysis of large data-sets based on "one pass" methods
 	3. Parallel computation via stream *splitting* and *merging*
 * There exist computational models and software libraries for working with streaming data in an efficient and robust way
-* Functional (and reactive) programming languages and approaches are well-suited to working with (infinite) data streams
+* Functional (and reactive) programming languages and approaches are well-suited to working with (infinite) data streams (and probabilistic programs)
 * Time series are a natural fit to streaming data models, but not all streaming data applications have a natural temporal aspect
 * Many statistical models and algorithms can be adapted to a sequential context
 

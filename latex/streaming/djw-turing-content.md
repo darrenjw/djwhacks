@@ -17,7 +17,7 @@
     * Automated trading systems
 	* Decision support for human traders
 * On-line processing (and compression) of scientific experiments
-    * Biological sequencing technologies
+    * Biological sequencing technologies, neuroscience data
 	* Collider experiments, astronomical surveys
 * Real time sensor network data for continuous monitoring
     * Traffic (and pollution) monitoring, weather forecasting, healthcare wearables, ...
@@ -131,7 +131,7 @@ Streaming: `advance = update compose predict'` where `State = P[X]` - eg. one st
 * Many sensors and devices do not generate data on a regular grid, either by design, or due to crashes/reboots creating large gaps of missing values, pushing observations onto a *misaligned grid*, or changes in sampling frequency, etc.
 * **Partially observed Markov process** (POMP) models generalise classical SSMs in two important ways:
     * The state evolution model formulated in *continuous time*, and is described by a transition kernel $f(x_{t+t'}|x_t,t',\theta)$
-	* It is not (necessarily) required that the transition kernel can be *evaluated* --- only that the state process can by stochastically *simulated* forwards in time
+	* It is not (necessarily) required that the transition kernel can be *evaluated* --- only that the state process can be stochastically *simulated* forwards in time
 
 # On-line filtering of POMP models
 
@@ -157,7 +157,7 @@ $$
 
 ## Spatio-temporal SSMs
 
-* SSMs fit naturally into the streaming data framework
+* SSMs/POMPs fit naturally into the streaming data framework
 * Can be "on-line", since the **Markov property** for the hidden state process facilitates the bounding of state size and computation associated with updating
 
 ## Spatio-temporal GPs

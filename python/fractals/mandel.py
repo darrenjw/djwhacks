@@ -7,7 +7,7 @@ from math import log
 csize=1000
 msize=3.0
 z0 = -2.0-1.5j
-maxIt = 200
+maxIt = 300
 
 root = Tk()
 can = Canvas(root, width=csize, height=csize)

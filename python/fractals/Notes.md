@@ -12,6 +12,7 @@
 	* https://en.wikipedia.org/wiki/Mandelbrot_set
 	* https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle
 	* https://en.wikipedia.org/wiki/Koch_snowflake
+	* https://en.wikipedia.org/wiki/Weierstrass_function
   * Random
     * https://en.wikipedia.org/wiki/Wiener_process
     * https://en.wikipedia.org/wiki/Fractional_Brownian_motion

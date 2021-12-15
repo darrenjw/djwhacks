@@ -6,6 +6,7 @@
   * General
     * https://en.wikipedia.org/wiki/Fractal
     * https://en.wikipedia.org/wiki/Hausdorff_dimension
+    * https://en.wikipedia.org/wiki/Hurst_exponent
     * https://en.wikipedia.org/wiki/Fractal_dimension
     * https://en.wikipedia.org/wiki/List_of_fractals_by_Hausdorff_dimension
   * Deterministic

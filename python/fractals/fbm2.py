@@ -1,26 +1,27 @@
 #!/usr/bin/env python3
-
-# Diamond square algorithm...
-
+# fbm2.py
+# Diamond square algorithm
 
 import numpy as np
 import matplotlib.pyplot as plt
 
 # Choose N and H:
-N = 5
-H = 0.95
+N = 6
+H = 0.9
 
 
 # Derived quantities
-n = 2**N + 1
+n = 2**N
 D = 3 - H
 
+# Print some summary info
 print(f'N={N}, n={n}, H={H}, D={D}')
-if (N>6):
-    print("***Large N*** - will take a while!")
+if (N > 6):
+    print("***Large N*** - will take a while. Be patient!")
 
+# Create an empty matrix to fill with the fractal    
 mat = np.zeros([n, n])
-# Accessor function which wraps around (for the diamond step)
+# Accessor function which wraps around (doing on a torus)
 def m(r,c):
     if (r < 0):
         r = r + n
@@ -34,7 +35,7 @@ def m(r,c):
     c = int(c)
     return(mat[r,c])
 
-# TODO: Initialise corners if you don't want zeros
+# TODO: recursion not right - overlapping subdomains!
 
 def squareFill(L, tlr, tlc, brr, brc):
     #print(f'squareFill({L},{tlr},{tlc},{brr},{brc})')
@@ -51,12 +52,13 @@ def squareFill(L, tlr, tlc, brr, brc):
         diamondFill(L, tlr-shift, tlc, brr-shift, brc)
         diamondFill(L, tlr+shift, tlc, brr+shift, brc)
 
-
 def diamondFill(L, tlr, tlc, brr, brc):
     #print(f'diamondFill({L},{tlr},{tlc},{brr},{brc})')
     shift = (brr - tlr)/2
     cr = tlr + shift
     cc = tlc + shift
+    if ((cr < 0)|(cr >= n)|(cc < 0)|(cc >= n)):
+        return
     mean = 0.25*(m(tlr,cc)+m(cr,tlc)+m(cr,brc)+m(brr,cc))
     mat[int(cr),int(cc)] = mean + np.random.normal()*2**(-H*(N-L))
     if (L > 1):
@@ -66,8 +68,11 @@ def diamondFill(L, tlr, tlc, brr, brc):
         squareFill(L-1, tlr+shift, tlc+shift, brr, brc)
 
 print("Filling now...")        
-squareFill(N, 0, 0, n-1, n-1)
+squareFill(N, 0, 0, n, n)
 print("Matrix filled. Rendering...")
+
+# Just extract part to hide artifacts
+mat = mat[0:int(n/2),0:int(n/2)]
 
 from mpl_toolkits.mplot3d import Axes3D
 fig = plt.figure()

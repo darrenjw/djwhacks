@@ -58,7 +58,7 @@ print("Matrix filled. Rendering...")
 # Just extract centre to hide edge artifacts
 mat = mat[(n//4):(3*n//4),(n//4):(3*n//4)]
 
-# Render
+# Render as a surface
 from mpl_toolkits.mplot3d import Axes3D
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
@@ -66,3 +66,16 @@ x, y = np.meshgrid(range(mat.shape[0]), range(mat.shape[1]))
 ax.plot_surface(x, y, mat)
 plt.title(f'2d fBm via diamond-square: H={H}, D={D}')
 plt.show()
+
+# Render as an image
+plt.imshow(mat)
+plt.show()
+
+# Convert to a grey image and save as a png
+from PIL import Image
+mx = np.max(mat)
+mn = np.min(mat)
+imat = np.uint8((mat-mn)*255//(mx-mn))
+img = Image.fromarray(imat)
+img.save('fBm2d.png')
+img.show()

@@ -20,3 +20,5 @@
     * https://en.wikipedia.org/wiki/Brownian_surface
     * https://en.wikipedia.org/wiki/Fractal_landscape
     * https://en.wikipedia.org/wiki/Diamond-square_algorithm
+	* https://en.wikipedia.org/wiki/Scenery_generator
+	

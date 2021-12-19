@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Choose N and H:
-N = 10
+N = 11
 H = 0.85
 
 

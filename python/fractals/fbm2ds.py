@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-# fbm2.py
-# Diamond square algorithm
+
+# 2d fBm
+# Diamond square algorithm (approx)
 
 import numpy as np
 import matplotlib.pyplot as plt

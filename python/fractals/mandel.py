@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Mandelbrot set
+
 from tkinter import *
 from math import sqrt
 from math import log

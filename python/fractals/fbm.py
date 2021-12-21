@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
+# fBm - exact simulation of the process
+
 import numpy as np
 import matplotlib.pyplot as plt
 
 dt = 0.01
-t = np.arange(0., 10., dt)
 H = 0.85
+
+t = np.arange(0., 10., dt)
 D = 2 - H
 n = len(t)
 

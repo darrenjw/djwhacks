@@ -2,8 +2,6 @@
 
 # Fourier synthesis approach
 
-# Currently WRONG??? - need to check the book...
-
 import numpy as np
 import matplotlib.pyplot as plt
 from math import pi
@@ -13,15 +11,15 @@ t = np.arange(0., 1., dt)
 H = 0.85
 D = 2 - H
 n = len(t)
-N = 500 # number of Fourier components
+N = n//2 # number of Fourier components needed
 
 xt = np.zeros(n)
 for k in range(1,N):
-    sd = k**(-1.5*H) # TODO: check this!!!
+    sd = k**(-(H+0.5)) # beta = 2H+1
     xt = xt + np.random.normal(0.0, sd, 1)*np.sin(2*k*pi*t)
     xt = xt + np.random.normal(0.0, sd, 1)*np.cos(2*k*pi*t)
 
 plt.plot(t, xt)
-plt.title(f'fBM: H = {H}, D = {D}')
+plt.title(f'fBM (FS): H = {H}, D = {D}')
 plt.show()
 

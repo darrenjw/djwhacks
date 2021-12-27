@@ -1,6 +1,5 @@
 # Fractals
 
-
 ## Some wikipedia links
 
 * https://en.wikipedia.org/wiki/Category:Fractals
@@ -22,4 +21,9 @@
     * https://en.wikipedia.org/wiki/Fractal_landscape
     * https://en.wikipedia.org/wiki/Diamond-square_algorithm
 	* https://en.wikipedia.org/wiki/Scenery_generator
-	
+
+
+## Books, papers, notes, theses, etc.
+
+* Simulation of fBm: http://www2.isye.gatech.edu/~adieker3/fbm/thesis.pdf
+

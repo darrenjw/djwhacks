@@ -3,8 +3,6 @@
 # 2d fBm
 # Approximate Fourier synthesis approach
 
-# WARNING: Something seems not quite right...
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -15,7 +13,7 @@ H = 0.85
 t = np.arange(0., 1., dt)
 n = len(t)
 D = 3 - H
-N = n#n//2 + 1 # number of Fourier components
+N = n//2 + 1 # number of Fourier components
 
 # Print some summary info
 print(f'N={N}, n={n}, H={H}, D={D}')
@@ -35,6 +33,11 @@ for j in range(N):
         phase = np.random.uniform(0., 2*np.pi)
         mat = mat + rad*np.sin(phase)*np.sin(2*np.pi*(j*x + k*y))
         mat = mat + rad*np.cos(phase)*np.cos(2*np.pi*(j*x + k*y))
+        # need negative k, too
+        rad = np.random.normal(0., sd)
+        phase = np.random.uniform(0., 2*np.pi)
+        mat = mat + rad*np.sin(phase)*np.sin(2*np.pi*(j*x - k*y))
+        mat = mat + rad*np.cos(phase)*np.cos(2*np.pi*(j*x - k*y))
 
 # N.B. This would be MUCH faster with a 2d inverse FFT...
         

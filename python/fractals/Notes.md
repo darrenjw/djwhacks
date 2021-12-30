@@ -21,6 +21,8 @@
     * https://en.wikipedia.org/wiki/Fractal_landscape
     * https://en.wikipedia.org/wiki/Diamond-square_algorithm
 	* https://en.wikipedia.org/wiki/Scenery_generator
+	* https://en.wikipedia.org/wiki/Spectral_density
+	* https://en.wikipedia.org/wiki/Wiener%E2%80%93Khinchin_theorem
 
 
 ## Books, papers, notes, theses, etc.

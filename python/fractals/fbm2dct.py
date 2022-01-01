@@ -28,7 +28,7 @@ for j in range(n):
         else:
             sd = (j*j + k*k)**(-(H+1)/2) # beta = 2H+2 for 2d fBm
         mat[j, k] = np.random.normal(0., sd)
-            
+           
 mat = scipy.fftpack.idctn(mat)
 
 # Just extract centre to hide edge artifacts

@@ -26,12 +26,13 @@
 	* https://en.wikipedia.org/wiki/Fourier_analysis
 	* https://en.wikipedia.org/wiki/Fourier_series
 	* https://en.wikipedia.org/wiki/Fourier_transform
-	* https://en.wikipedia.org/wiki/Discrete_Fourier_transform
-	* https://en.wikipedia.org/wiki/Fast_Fourier_transform
 	* https://en.wikipedia.org/wiki/Spectral_density
 	* https://en.wikipedia.org/wiki/Wiener%E2%80%93Khinchin_theorem
+	* https://en.wikipedia.org/wiki/Discrete_Fourier_transform
+	* https://en.wikipedia.org/wiki/Fast_Fourier_transform
+	* https://en.wikipedia.org/wiki/Discrete_cosine_transform
 
 ## Books, papers, notes, theses, etc.
 
-* Simulation of fBm: http://www2.isye.gatech.edu/~adieker3/fbm/thesis.pdf
+* Thesis on simulation of fBm: http://www2.isye.gatech.edu/~adieker3/fbm/thesis.pdf
 

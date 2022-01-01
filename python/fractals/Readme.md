@@ -29,7 +29,7 @@ These use numpy (and some use scipy):
 * [fBm FFT](fbmfft.py) - appromimate fBm using the Fast Fourier Transform (FFT) - the classic spectral synthesis approach
 * [fBm DCT](fbmdct.py) - using the Discrete Cosine Transform (DCT) instead of the FFT - an arguably simpler and better spectral synthesis approach, but requires (very basic) knowledge of the DCT
 
-#### 2d - 2d versions of most of the above algorithms
+#### 2d - 2d versions of most of the above algorithms, so fractal dimension between 2 and 3
 
 * [fBm 2D diamond square](fbm2ds.py) - the diamond square algorithm - the natural 2d adaptation of the random midpoint displacement approach
 * [fBm 2D FS](fbm2fs.py) - an elementary Fourier synthesis approach - very slow and inefficient

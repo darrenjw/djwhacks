@@ -9,7 +9,7 @@ import breeze.signal.*
 import breeze.math.*
 import math.Pi
 
-object RefImps:
+object DCT:
 
   // Naive O(N^2) DFT implementation for test/reference
   def dftc(x: DenseVector[Complex], inverse: Boolean): DenseVector[Complex] =
@@ -65,6 +65,10 @@ object RefImps:
         else dct(x(::, k)))}
     x
 
+object Examp:
+
+  import DCT.*
+
   @main def examples() =
     val x = DenseVector(1.0,2.0,3.0,2.0,4.0,3.0)
     println(x)
@@ -98,4 +102,29 @@ object RefImps:
     println(fourierTr(M))
     println(dct2(M))
     println(dct2(dct2(M), true))
+
+object FBmExample:
+
+  import DCT.*
+  import breeze.stats.distributions.*
+  import breeze.stats.distributions.Rand.VariableSeed.randBasis
+
+  @main def fbmex() =
+    val N = 1024
+    val H = 0.8
+    val sd = DenseMatrix.tabulate(N, N){(j, k) =>
+      if (j*j + k*k < 9) 0.0 else
+        math.pow(j*j + k*k, -(H + 1)/2) }
+    val M = sd map (s => Gaussian(0.0, s).draw())
+    val m = dct2(M, true)
+    import breeze.plot.*
+    val fig = Figure("fBm")
+    fig.width = 1200
+    fig.height = 1200
+    val p0 = fig.subplot(0)
+    p0 += image(m)
+    fig.refresh()
+
+
+// eof
 

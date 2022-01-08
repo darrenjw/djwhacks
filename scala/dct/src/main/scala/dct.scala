@@ -40,13 +40,10 @@ object DCT:
     if (N == 1)
       x
     else
-      val M = N/2  
       if (N % 2 != 0) println("ERROR: Length not a power of 2. Result will be incorrect.")
-      val e = x(0 to N-1 by 2)
-      val o = x(1 to N-1 by 2)
-      val ff = DenseVector.tabulate(M){k => exp(-Pi*i*k/M)}
-      val E = fft(e)
-      val O = fft(o)
+      val ff = DenseVector.tabulate(N/2){k => exp(-2*Pi*i*k/N)}
+      val E = fft(x(0 to N-1 by 2))
+      val O = fft(x(1 to N-1 by 2))
       DenseVector.vertcat(E + (ff *:* O), E - (ff *:* O))
 
   // Naive DCT implementation for reference (O(n^2))

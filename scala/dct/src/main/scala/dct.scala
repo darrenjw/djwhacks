@@ -77,17 +77,33 @@ object DCT:
     val Y = iFourierTr(sy)
     Y(0 to N-1).map(_.real) * N.toDouble
 
+  // DCT from JTransforms...
+  def dctj(x: DenseVector[Double]): DenseVector[Double] =
+    val dct = org.jtransforms.dct.DoubleDCT_1D(x.length)
+    val a = x.copy.toArray
+    dct.forward(a, false)
+    DenseVector(a) /:/ x.length.toDouble
+
+  // iDCT from JTransforms...
+  def idctj(x: DenseVector[Double]): DenseVector[Double] =
+    val dct = org.jtransforms.dct.DoubleDCT_1D(x.length)
+    val a = x.copy.toArray
+    dct.inverse(a, false)
+    DenseVector(a) *:* x.length.toDouble
+
   // 2d DCT and inversion using 1d on rows and columns
   // TODO: this is trivial to parallelise
   def dct2(X: DenseMatrix[Double], inverse: Boolean = false): DenseMatrix[Double] =
     val x = X.copy
     (0 until x.rows).foreach{j =>
-      x(j, ::) := (if (inverse) idct(x(j, ::).t)
-        else dct(x(j, ::).t)).t}
+      x(j, ::) := (if (inverse) idctj(x(j, ::).t)
+        else dctj(x(j, ::).t)).t}
     (0 until x.cols).foreach{k =>
-      x(::, k) := (if (inverse) idct(x(::, k))
-        else dct(x(::, k)))}
+      x(::, k) := (if (inverse) idctj(x(::, k))
+        else dctj(x(::, k)))}
     x
+
+
 
 object Examp:
 
@@ -121,10 +137,14 @@ object Examp:
     println(dct0(x))
     println("DCT")
     println(dct(x))
+    println("DCT from JTransforms")
+    println(dctj(x))
     println("iDCT0")
     println(idct0(x))
     println("iDCT")
     println(idct(x))
+    println("iDCT from JTransforms")
+    println(idctj(x))
     println("DCT0 Inversion")
     println(idct0(dct0(x)))
     println("DCT Inversion")

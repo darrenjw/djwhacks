@@ -1,6 +1,8 @@
 /*
-Stub.scala
-Stub for Scala Breeze code
+dct.scala
+
+Messing around with trigonometric transforms in Scala
+
 */
 
 import breeze.linalg.*

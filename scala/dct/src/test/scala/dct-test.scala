@@ -15,7 +15,7 @@ class SetSpec extends AnyFlatSpec:
   import breeze.linalg.*
 
   // create a random, random length vector for testing
-  val N = 20 + Poisson(20).draw()
+  val N = 2 + Poisson(20).draw()
   val x = DenseVector(Gaussian(1.0,2.0).sample(N).toArray)
   val tol = 1e-6
   //println(N)
@@ -54,7 +54,7 @@ class SetSpec extends AnyFlatSpec:
     assert(norm(idctj(dctj(x)) - x) < tol)
   }
 
-  val M = 20 + Poisson(20).draw()
+  val M = 2 + Poisson(20).draw()
   val Mat = DenseMatrix.fill(N,M)(Gaussian(1.0,2.0).draw())
 
   def mnorm(m: DenseMatrix[Double]): Double =

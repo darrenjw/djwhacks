@@ -186,6 +186,8 @@ object Examp:
     println(M)
     println("FFT2")
     println(fourierTr(M))
+    println("DCT20")
+    println(dct20(M))
     println("DCT2")
     println(dct2(M))
     println("iDCT2")
@@ -254,6 +256,52 @@ object FBmExample:
     val m = dct2(M, true)
     javax.imageio.ImageIO.write(dm2bi(m), "png", new java.io.File("fBm.png"))
     showImage(m)
+
+object Bench:
+
+  import DCT.*
+  import breeze.stats.distributions.*
+  import breeze.stats.distributions.Rand.VariableSeed.randBasis
+
+  def time[A](f: => A) =
+    val s = System.nanoTime
+    val ret = f
+    println("time: "+(System.nanoTime-s)/1e6+"ms")
+    ret
+
+  @main def benchmarks() =
+    val x = DenseVector(Gaussian(2.0,10.0).sample(20000).toArray)
+    println("Benchmarks - will be quite slow!")
+    println("dct0")
+    time{ dct0(x) }
+    println("dct")
+    time{ dct(x) }
+    println("dctj")
+    time{ dctj(x) }
+    println("idct0")
+    time{ idct0(x) }
+    println("idct")
+    time{ idct(x) }
+    println("idctj")
+    time{ idctj(x) }
+    val M = DenseMatrix.fill(550,600)(Gaussian(1.0,4.0).draw())
+    println("dct20")
+    time{ dct20(M) }
+    println("dct2")
+    time{ dct2(M) }
+    println("dct2j0")
+    time{ dct2j0(M) }
+    println("dct2j")
+    time{ dct2j(M) }
+    println("idct20")
+    time{ dct20(M,true) }
+    println("idct2")
+    time{ dct2(M,true) }
+    println("idct2j0")
+    time{ dct2j0(M,true) }
+    println("idct2j")
+    time{ dct2j(M,true) }
+    println("Done!")
 
 
 // eof

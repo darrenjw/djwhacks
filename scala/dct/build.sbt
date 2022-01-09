@@ -22,3 +22,5 @@ resolvers ++= Seq(
 
 scalaVersion := "3.0.1"
 
+fork := true
+

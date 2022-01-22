@@ -1,6 +1,10 @@
 /*
 free.scala
 
+https://typelevel.org/cats/datatypes/freemonad.html
+https://underscore.io/blog/posts/2017/06/02/uniting-church-and-state.html
+https://softwaremill.com/free-tagless-compared-how-not-to-commit-to-monad-too-early/
+https://webspace.science.uu.nl/~swier004/publications/2008-jfp.pdf
 
 */
 

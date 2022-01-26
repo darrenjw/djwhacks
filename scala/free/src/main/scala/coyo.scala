@@ -22,7 +22,7 @@ case class Coyo[F[_], A, B](fa: F[A], f: A => B):
 
   def fold(fun: Functor[F]): F[B] = fun.map(fa)(f)
 
-def lift[F[_], A](fa: F[A]): Coyo[F[_], A, A] = Coyo(fa, identity)
+def lift[F[_], A](fa: F[A]): Coyo[F, A, A] = Coyo(fa, identity)
 
 
 // a parameterised type, with no functor instance

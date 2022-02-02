@@ -21,6 +21,7 @@ libraryDependencies  ++= Seq(
 //  "org.typelevel" %% "cats-effect" % "3.2.2",
 //  "org.typelevel" %% "discipline-core" % "1.1.5",
   ("org.typelevel" %% "cats-core" % "2.1.1").cross(CrossVersion.for3Use2_13),
+  ("org.typelevel" %% "cats-free" % "2.1.1").cross(CrossVersion.for3Use2_13),
   "org.scalanlp" %% "breeze" % "2.0.1-RC2"
 )
 

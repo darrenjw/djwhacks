@@ -12,7 +12,8 @@ import breeze.stats.distributions.Rand.VariableSeed.randBasis
 object PPL3:
 
   opaque type NumParticles = Int
-
+  object NumParticles:
+    def apply(np: Int): NumParticles = np
   given NumParticles = 2000
 
   case class Particle[T](v: T, lw: Double): // value and log-weight
@@ -60,7 +61,7 @@ object PPL3:
       val idx = bdist.Multinomial(DenseVector(rw.toArray)).draw()
       Particle(particles(idx).v, law)
 
-  // TODO: should wrap in a case object?
+  // TODO: should wrap in a case object? Or just part of Dist??
   def unweighted[T](ts: Vector[T], lw: Double = 0.0): Prob[T] =
     Empirical(ts map (Particle(_, lw)))
 
@@ -97,6 +98,7 @@ object Example:
   import PPL3.*
   import breeze.stats.{meanAndVariance => meanVar}
 
+  // Deep monadic binding issues
   def example1 =
     println("binding with for")
     val prior1 = for
@@ -112,13 +114,68 @@ object Example:
           Poisson(10) map {z =>
             (x,y,z)}}}
     println(meanVar(prior2.empirical.map(_._2)))
+
+  def example2 =
     println("tupling")
     val prior3 = Applicative[Prob].tuple3(Normal(0,1), Gamma(1,1), Poisson(10))
     println(meanVar(prior3.empirical.map(_._2)))
     print("done")
 
+  // Poisson DGLM
+  def example3 =
+
+    val data = List(2,1,0,2,3,4,5,4,3,2,1)
+
+    val prior = for {
+      w <- Gamma(1, 1)
+      state0 <- Normal(0.0, 2.0)
+    } yield (w, List(state0))
+    
+    def addTimePointSimple(current: Prob[(Double, List[Double])],
+      obs: Int): Prob[(Double, List[Double])] = {
+      println(s"Conditioning on observation: $obs")
+      val updated = for {
+        tup <- current
+        (w, states) = tup
+        os = states.head
+        ns <- Normal(os, w)
+        _ <- Poisson(math.exp(ns)).fitQ(obs)
+      } yield (w, ns :: states)
+      updated.resample
+    }
+
+    def addTimePoint(current: Prob[(Double, List[Double])],
+      obs: Int): Prob[(Double, List[Double])] = {
+      println(s"Conditioning on observation: $obs")
+      val predict = for {
+        tup <- current
+        (w, states) = tup
+        os = states.head
+        ns <- Normal(os, w)
+      }
+      yield (w, ns :: states)
+      val updated = for {
+        tup <- predict
+        (w, states) = tup
+        st = states.head
+        _ <- Poisson(math.exp(st)).fitQ(obs)
+      } yield (w, states)
+      updated.resample
+    }
+
+    val mod = data.foldLeft(prior)(addTimePoint(_,_)).empirical
+    print("w  : ")
+    println(meanVar(mod map (_._1)))
+    print("s0 : ")
+    println(meanVar(mod map (_._2.reverse.head)))
+    print("sN : ")
+    println(meanVar(mod map (_._2.head)))
+
+
+
+
 
   // Main runner method - program entry point
   @main def run =
-    example1
-
+    given NumParticles = NumParticles(1000) // TODO: ignored!
+    example2

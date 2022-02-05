@@ -10,8 +10,6 @@ There is a separate document containing relevant [links and resources](Notes.md)
 
 ### Deterministic
 
-These programs draw on the Tk canvas.
-
 * [Sierpinski triangle](sierp.py) - every baby's first fractal
 * [Koch curve](koch.py) - showing steps in the generation
 * [Mandelbrot set](mandel.py) - a very basic construction

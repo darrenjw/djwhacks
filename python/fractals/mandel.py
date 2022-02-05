@@ -2,7 +2,6 @@
 
 # Mandelbrot set
 
-from tkinter import *
 from math import sqrt
 from math import log
 
@@ -10,10 +9,6 @@ csize=1000
 msize=3.0
 z0 = -2.0-1.5j
 maxIt = 300
-
-root = Tk()
-can = Canvas(root, width=csize, height=csize)
-can.pack()
 
 def mandel(c):
     z = 0+0j
@@ -26,6 +21,11 @@ def mandel(c):
     else:
         return(-1)
 
+from PIL import Image, ImageDraw
+    
+img = Image.new('RGB', (1000, 1000), color='white')
+can = ImageDraw.Draw(img)
+    
 print("Mandelbrot set. This may take a few seconds to run...")
     
 for x in range(csize):
@@ -33,10 +33,12 @@ for x in range(csize):
         c = z0 + complex(msize*x/csize, msize*y/csize)
         its = mandel(c)
         if (its == -1):
-            can.create_oval(x,y, x+1,y+1, outline="#222222")
+            can.point([x,y], fill="#222222")
         else:
             shade = round(255*log(its+1)/log(maxIt+1))
             col = "#%02x%02x%02x" % (shade,shade,shade)
-            can.create_oval(x,y, x+1,y+1, outline=col)
+            can.point([x,y], fill=col)
 
-mainloop()
+img.show()
+img.save('mandel.png')
+

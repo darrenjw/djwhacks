@@ -2,16 +2,11 @@
 
 # Koch curve
 
-from tkinter import *
 from math import sqrt
-
-root = Tk()
-c = Canvas(root, width=1000, height=1000)
-c.pack()
 
 def koch(level, x1,y1, x2,y2):
     if (level == 0):
-        c.create_line(x1,y1, x2,y2, fill="blue", width=2)
+        can.line([x1,y1, x2,y2], fill='blue', width=2)
     else:
         vx = (x2-x1)/3; vy = (y2-y1)/3
         xa = x1+vx; ya = y1+vy
@@ -23,7 +18,14 @@ def koch(level, x1,y1, x2,y2):
         koch(level-1, xc,yc, xb,yb)
         koch(level-1, xb,yb, x2,y2)
 
+from PIL import Image, ImageDraw
+
+img = Image.new('RGB', (1000, 1000), color='white')
+can = ImageDraw.Draw(img)
+
 for i in range(6):
     koch(i, 200, 180*(0.2+i), 800, 180*(0.2+i))
 
-mainloop()
+img.show()
+img.save('koch.png')
+

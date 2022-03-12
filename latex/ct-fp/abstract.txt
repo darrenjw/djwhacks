@@ -48,3 +48,19 @@ A compositional approach to Bayesian computation
 Abstract:
 
 In the Big Data era, some kind of hierarchical "divide and conquer" approach seems necessary for the development of genuinely scalable modelling and model fitting, where solutions to sub-problems are combined to obtain solutions to the full problem of interest. It is therefore unfortunate that statistical models and algorithms are not usually formulated in a composable way, and that the programming languages typically used for scientific and statistical computing fail to naturally support the composition of models, data and computation. Functional programming languages which are strongly influenced by category theory turn out to be much better suited to the development of scalable statistical models and algorithms than the imperative programming languages more commonly used. Expressing algorithms in a functional/categorical way is not only more elegant, concise and less error-prone, but provides numerous more tangible scalability benefits, such as automatic parallelisation and distribution of computation. This talk will provide a brief introduction to functional programming for scalable Bayesian computation.
+
+
+
+Laplace's demon (May 2022)
+
+Title:
+
+Compositional approaches to scalable Bayesian computation
+
+Abstract:
+
+Typical implementations of models and algorithms for Bayesian computation lack scalability, from a variety of different perspectives. Ultimately, scalability requires compositionality, but traditional approaches and programming languages are poorly suited to this way of thinking. Functional programming languages have seen increasing adoption in recent years, driven in part by big tech companies with a need to process data at scale. Expressing algorithms in a functional way is not only more elegant, concise and less error-prone, but provides numerous more tangible scalability benefits, such as automatic parallelisation and distribution of computation, as well as increased amenability to automatic differentiation. The Scala programming language is routinely used for building scalable data processing infrastructure, often in conjunction with Apache Spark for distributed big data processing and ML. Modern auto-diff frameworks such as JAX require a functional approach to algorithm development, and libraries such as BlackJAX show that they form a solid foundation for the development of gradient-based MCMC samplers. Experimental functional array languages such as DEX give an idea of what the future of ML programming languages may look like. Functional programming is intrinsically more compositional than traditional imperative programming. Strongly typed compiled functional programming languages are ideally suited to the development of scalable Bayesian modelling languages and computational algorithms, and this talk will attempt to justify this claim.
+
+Bio:
+
+Darren Wilkinson is Professor of Statistics at Durham University, UK. His current research interests involve applications of Bayesian statistics to a variety of challenging big data problems in molecular biology and engineering, and understanding the extent to which category theory and pure functional programming can provide a foundation for more scalable approaches Bayesian modelling and computation. He is especially interested in parameter inference for dynamic models, on-line inference for high-velocity time series data, probabilistic programming, and the use of approximate models and emulators for rendering computationally prohibitive algorithms for expensive models more tractable. 

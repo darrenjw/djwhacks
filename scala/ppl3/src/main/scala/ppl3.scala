@@ -47,7 +47,11 @@ object PPL3:
   given Monad[Prob] = new Monad[Prob]:
     def pure[T](t: T): Prob[T] = Empirical(Vector(Particle(t, 0.0)))
     def flatMap[T,S](pt: Prob[T])(f: T => Prob[S]): Prob[S] = pt.flatMap(f)
-    def tailRecM[T,S](t: T)(f: T => Prob[Either[T,S]]): Prob[S] = ???
+    def tailRecM[T,S](t: T)(f: T => Prob[Either[T,S]]): Prob[S] =
+      flatMap(f(t)) {
+        case Right(b) => pure(b)
+        case Left(nextA) => tailRecM(nextA)(f)
+      }
 
   // TODO: factor out common logic for resample and draw
 

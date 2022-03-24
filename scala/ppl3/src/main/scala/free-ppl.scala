@@ -10,42 +10,54 @@ import cats.syntax.*
 
 object FreePPL:
 
-  enum Dist[A]:
-    case Observe(d: Dist[A], o: A) extends Dist[A]
-    //case Cond(ll: A => Double) extends Dist[A]
-    case Normal(m: Double, v: Double) extends Dist[Double]
-    case Poisson(l: Double) extends Dist[Int]
-    case Gamma(a: Double, b: Double) extends Dist[Double]
-  import Dist.*
+  sealed trait Prob[A]
+  case class Observe[A](d: Dist[A], o: A) extends Prob[A]
+  //case Cond(ll: A => Double) extends Prob[A]
 
+  sealed trait Dist[A] extends Prob[A]
+  case class Normal(m: Double, v: Double) extends Dist[Double]
+  case class Poisson(l: Double) extends Dist[Int]
+  case class Gamma(a: Double, b: Double) extends Dist[Double]
+ 
   import cats.free.Free
-  type DistF[A] = Free[Dist, A]
+  type ProbF[A] = Free[Prob, A]
 
-  def observe[A](d: Dist[A], o: A) = Free.liftF[Dist, A](Observe(d, o))
-  //def cond[A](ll: A => Double) = Free.liftF[Dist, A](Cond(ll))
-  def normal(m: Double, s: Double) = Free.liftF[Dist, Double](Normal(m, s))
-  def poisson(l: Double) = Free.liftF[Dist, Int](Poisson(l))
-  def gamma(a: Double, b: Double) = Free.liftF[Dist, Double](Gamma(a, b))
+  def observe[A](d: Dist[A], o: A) = Free.liftF[Prob, A](Observe(d, o))
+  //def cond[A](ll: A => Double) = Free.liftF[Prob, A](Cond(ll))
+
+  def normal(m: Double, s: Double) = Free.liftF[Prob, Double](Normal(m, s))
+  def poisson(l: Double) = Free.liftF[Prob, Int](Poisson(l))
+  def gamma(a: Double, b: Double) = Free.liftF[Prob, Double](Gamma(a, b))
 
 object FreePPL3:
 
-  import PPL3.Prob
   import FreePPL.*
-  import Dist.*
 
-  val c2smc = new (Dist ~> PPL3.Prob):
-    def apply[A](pa: Dist[A]): Prob[A] = pa match
-      case Normal(m: Double, v: Double) => PPL3.Normal(m, v)
-      case Poisson(l: Double) => PPL3.Poisson(l)
-      case Gamma(a: Double, b: Double) => PPL3.Gamma(a, b)
-      //case Observe(d: Dist[A], o: A) => apply(d).fitQ(o)
+  val c2smc = new (Prob ~> PPL3.Prob):
+    def dist[A](da: Dist[A]): PPL3.Dist[A] = da match
+      case Normal(m, v) => PPL3.Normal(m, v)
+      case Poisson(l) => PPL3.Poisson(l)
+      case Gamma(a, b) => PPL3.Gamma(a, b)
+    def apply[A](pa: Prob[A]): PPL3.Prob[A] = pa match
+      case Observe(d: Dist[A], o: A) => dist(d).fitQ(o)
+      case Normal(m, v) => dist(Normal(m, v))
+      case Poisson(l) => dist(Poisson(l))
+      case Gamma(a, b) => dist(Gamma(a,b))
 
 object FreeExample:
 
   import FreePPL.*
-  import Dist.*
 
   val prior1 = for
+    x <- normal(0,1)
+  yield (x)
+
+  val prior2 = for
+    x <- normal(0,1)
+    y <- gamma(1,1)
+  yield (x,y)
+
+  val prior3 = for
     x <- normal(0,1)
     y <- gamma(1,1)
     z <- poisson(10)
@@ -60,8 +72,8 @@ object FreeExample:
     state0 <- normal(0.0, 2.0)
   yield (w, List(state0))
     
-  def addTimePoint(current: DistF[(Double, List[Double])],
-    obs: Int): DistF[(Double, List[Double])] =
+  def addTimePoint(current: ProbF[(Double, List[Double])],
+    obs: Int): ProbF[(Double, List[Double])] =
     println(s"Conditioning on observation: $obs")
     val predict = for
       tup <- current
@@ -81,8 +93,21 @@ object FreeExample:
 
 
   @main def runFree() =
-    println("running")
-    println(mod)
+    println("Starting...")
+    import FreePPL3.c2smc
+    import breeze.stats.{meanAndVariance => meanVar}
+    println("PP1..")
+    val pp1 = prior1.foldMap(c2smc)
+    println(meanVar(pp1.empirical))
+    println("PP2...")
+    val pp2 = prior2.foldMap(c2smc)
+    println(meanVar(pp2.empirical.map(_._1)))
+    println(meanVar(pp2.empirical.map(_._2)))
+    //val pp3 = prior3.foldMap(c2smc) // takes 15 hours!
+    //println(meanVar(pp3.empirical.map(_._1)))
+    //println(meanVar(pp3.empirical.map(_._2)))
+    //println(meanVar(pp3.empirical.map(_._3.toDouble)))
+
 
 
 // eof

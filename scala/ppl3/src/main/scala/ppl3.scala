@@ -52,8 +52,8 @@ object PPL3:
         case Right(b) => pure(b)
         case Left(nextA) => tailRecM(nextA)(f)
       }
-
-  // TODO: factor out common logic for resample and draw
+  // TODO: need a proper tailRecM...
+  // Can't really fix without trampolining???
 
   case class Empirical[T](samples: Vector[Particle[T]]) extends Prob[T]:
     lazy val particles = samples
@@ -103,9 +103,19 @@ object Example:
   import PPL3.*
   import breeze.stats.{meanAndVariance => meanVar}
 
+
+  def example0 =
+    println("shallow binding with for")
+    val prior1 = for
+      x <- Normal(0,1)
+      y <- Gamma(1,1)
+    yield (x,y)
+    println(meanVar(prior1.empirical.map(_._2)))
+
+
   // Deep monadic binding issues
   def example1 =
-    println("binding with for")
+    println("deep binding with for")
     val prior1 = for
       x <- Normal(0,1)
       y <- Gamma(1,1)
@@ -183,4 +193,4 @@ object Example:
   // Main runner method - program entry point
   @main def run =
     given NumParticles = NumParticles(1000) // TODO: ignored!
-    example3
+    example0

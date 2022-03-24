@@ -57,12 +57,13 @@ object PPL3:
 
   case class Empirical[T](samples: Vector[Particle[T]]) extends Prob[T]:
     lazy val particles = samples
+    lazy val lw = particles map (_.lw)
+    lazy val mx = lw reduce (math.max(_,_))
+    lazy val rw = lw map (lwi => math.exp(lwi - mx))
+    lazy val law = mx + math.log(rw.sum/(rw.length))
+    lazy val dist = bdist.Multinomial(DenseVector(rw.toArray))
     def draw: Particle[T] =
-      val lw = particles map (_.lw)
-      val mx = lw reduce (math.max(_,_))
-      val rw = lw map (lwi => math.exp(lwi - mx))
-      val law = mx + math.log(rw.sum/(rw.length))
-      val idx = bdist.Multinomial(DenseVector(rw.toArray)).draw()
+      val idx = dist.draw()
       Particle(particles(idx).v, law)
 
   // TODO: should wrap in a case object? Or just part of Dist??
@@ -182,4 +183,4 @@ object Example:
   // Main runner method - program entry point
   @main def run =
     given NumParticles = NumParticles(1000) // TODO: ignored!
-    example2
+    example3

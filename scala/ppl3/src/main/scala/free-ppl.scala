@@ -103,10 +103,10 @@ object FreeExample:
     val pp2 = prior2.foldMap(c2smc)
     println(meanVar(pp2.empirical.map(_._1)))
     println(meanVar(pp2.empirical.map(_._2)))
-    //val pp3 = prior3.foldMap(c2smc) // takes 15 hours!
-    //println(meanVar(pp3.empirical.map(_._1)))
-    //println(meanVar(pp3.empirical.map(_._2)))
-    //println(meanVar(pp3.empirical.map(_._3.toDouble)))
+    val pp3 = prior3.foldMap(c2smc) // takes 15 hours!
+    println(meanVar(pp3.empirical.map(_._1)))
+    println(meanVar(pp3.empirical.map(_._2)))
+    println(meanVar(pp3.empirical.map(_._3.toDouble)))
 
 
 

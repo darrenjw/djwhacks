@@ -5,10 +5,10 @@ FORCE:
 	make run
 
 run:
-	xdg-open ./target/scala-2.13/classes/index.html
+	xdg-open ./target/scala-3.1.0/classes/index.html
 
 edit:
-	emacs build.sbt src/main/resources/* src/main/scala/*.scala &
+	emacs Makefile build.sbt src/main/resources/* src/main/scala/*.scala &
 
 
 

@@ -9,9 +9,15 @@ scalacOptions ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.scala-js" %%% "scalajs-dom" % "1.1.0"
+  "org.scalameta" %%% "munit" % "0.7.29" % Test,
+  "org.scala-js" %%% "scalajs-dom" % "2.1.0",
+  "org.typelevel" %%% "cats-core" % "2.7.0",
+  "org.typelevel" %%% "spire" % "0.18.0-M3",
+  "dev.optics" %%% "monocle-core"  % "3.1.0",
+  "dev.optics" %%% "monocle-macro"  % "3.1.0"
 )
 
-scalaVersion := "2.13.4"
+scalaVersion := "3.1.0"
+
 
 

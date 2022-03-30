@@ -11,7 +11,9 @@ enablePlugins(MdocPlugin)
 
 libraryDependencies  ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.8" % "test",
-  "com.github.haifengl" %% "smile-scala" % "2.6.0"
+  "com.github.haifengl" %% "smile-scala" % "2.6.0",
+  "org.apache.parquet" % "parquet-hadoop" % "1.10.1",  // for parquet
+  "org.apache.hadoop" % "hadoop-common" % "3.1.4"      // for parquet
 )
 
 // blas, etc.

@@ -15,9 +15,9 @@ object PlotlyStuff:
 
   import org.openmole.plotlyjs.*
   import org.openmole.plotlyjs.all.*
-  import org.openmole.plotlyjs.PlotlyImplicits.*
+  import org.openmole.plotlyjs.PlotlyImplicits.{given,*}
   import org.openmole.plotlyjs.plotlyConts.*
-  import com.raquo.laminar.api.L.*
+  import com.raquo.laminar.api.L.{given,*}
 
   import scala.scalajs.js.JSConverters.*
 

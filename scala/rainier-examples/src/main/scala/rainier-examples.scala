@@ -42,9 +42,8 @@ object ComputeTest:
   val params = List(x0, x1, x2)
   val targ = Target("y", y, params)
   val grad = targ.gradient.map(Compiler.default.compile(params, _))
-  def ev(vars: Array[Double]) =
-    grad.map(_(vars))
-  // More efficient method below...
+  def ev(vars: Array[Double]) = grad.map(_(vars))
+  // More efficient method below... but relies on ordering of variables introduced
   val target = TargetGroup(List(y), params.toSet)
   val g = Compiler.default.compileTargets(target)
   val nVars = params.size

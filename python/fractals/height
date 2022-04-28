@@ -1,5 +1,0 @@
-#!/bin/sh
-
-povray +A +W1200 +H1000 +Iheight.pov +Orender.png
-
-

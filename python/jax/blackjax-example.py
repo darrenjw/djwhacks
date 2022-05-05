@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 
 # blackjax example from website
+# https://github.com/blackjax-devs/blackjax
+# https://blackjax-devs.github.io/blackjax/
+# https://blackjax-devs.github.io/blackjax/examples/Introduction.html
+# https://blackjax-devs.github.io/blackjax/examples/LogisticRegression.html
+
 
 import jax
 import jax.numpy as jnp

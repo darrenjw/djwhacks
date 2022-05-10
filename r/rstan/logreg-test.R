@@ -25,7 +25,7 @@ parameters {
 }
 model {
   for (i in 1:N) {
-    real eta = alpha * beta*x[i];
+    real eta = alpha + beta*x[i];
     real p = 1/(1+exp(-eta));
     y[i] ~ binomial(1, p);
   }

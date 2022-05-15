@@ -93,13 +93,13 @@ Durham University, UK}
 }
 
 
-\section{ISBA}
+\section{Background}
 
 \begin{frame}{Background}
 \protect\hypertarget{background}{}
 
 \begin{itemize}
-\tightlist
+
 \item
   For non-trivial problems, Bayesian computation typically relies on
   computationally intensive methods, such as MCMC, SMC or ABC
@@ -125,41 +125,41 @@ Durham University, UK}
 \protect\hypertarget{alternative-languages-and-approaches}{}
 
 \begin{itemize}
-\tightlist
+
 \item
   All of the languages on the previous slide are fundamentally
-  \emph{imperative} programming languages, mimicking closely the way
+  \alert{imperative} programming languages, mimicking closely the way
   computer processors actually operate
 \item
   There have been huge advances in computing science in the decades
   since these languages were created, and many new, different and better
   programming languages have been created
 \item
-  Although \emph{functional} programming (FP) languages are not new,
+  Although \alert{functional} programming (FP) languages are not new,
   there has been a large resurgence of interest in functional languages
   in the last decade or two, as people have begun to appreciate the
   advantages of the functional approach, especially in the context of
   developing large, scalable software systems, and the ability to take
   advantage of modern computing hardware
 \item
-  There has also been a swing away from \emph{dynamically typed}
-  programming languages back to \emph{statically typed} languages
+  There has also been a swing away from \alert{dynamically typed}
+  programming languages back to \alert{statically typed} languages
 \end{itemize}
 
 \end{frame}
 
-\hypertarget{compositionality-and-functional-programming}{%
-\section{Compositionality and functional
-programming}\label{compositionality-and-functional-programming}}
+%\hypertarget{compositionality-and-functional-programming}{%
+%\section{Compositionality and functional
+%programming}\label{compositionality-and-functional-programming}}
 
 \begin{frame}{Functional programming}
 \protect\hypertarget{functional-programming}{}
 
 \begin{itemize}
-\tightlist
+
 \item
-  FP languages emphasise the use of \emph{immutable} data, \emph{pure,
-  referentially transparent functions}, and \emph{higher order
+  FP languages emphasise the use of \alert{immutable} data, \alert{pure,
+  referentially transparent functions}, and \alert{higher order
   functions}
 \item
   FP languages more naturally support composition of models, data and
@@ -167,14 +167,14 @@ programming}\label{compositionality-and-functional-programming}}
   testable software
 \item
   Statically typed FP languages (such as Haskell and Scala) correspond
-  closely to the \emph{simply-typed lambda calculus} which is one of the
-  canonical examples of a \emph{Cartesian closed category} (CCC)
+  closely to the \alert{simply-typed lambda calculus} which is one of the
+  canonical examples of a \alert{Cartesian closed category} (CCC)
 \item
   This connection between typed FP languages and CCCs enables the
   borrowing of ideas from category theory into FP
 \item
-  Category theory concepts such as \emph{functors}, \emph{monads} and
-  \emph{comonads} are useful for simplifying code that would otherwise
+  Category theory concepts such as \alert{functors}, \alert{monads} and
+  \alert{comonads} are useful for simplifying code that would otherwise
   be somewhat cumbersome to express in pure FP languages
 \end{itemize}
 
@@ -184,20 +184,20 @@ programming}\label{compositionality-and-functional-programming}}
 \protect\hypertarget{concurrency-parallelism-distribution-state}{}
 
 \begin{itemize}
-\tightlist
+
 \item
   Modern computing platforms feature processors with many cores, and
   possibly many such processors - parallel programming is required to
   properly exploit this
 \item
   Most of the notorious difficulties associated with parallel
-  programming revolve around \emph{shared mutable state}
+  programming revolve around \alert{shared mutable state}
 \item
   In pure FP, state is not mutable, so there is no mutable state, shared
   or otherwise
 \item
   Consequently, most of the difficulties typically associated with
-  parallel and concurrent programming simply don't exist in FP -
+  parallel, distributed, and concurrent programming simply don't exist in FP ---
   parallelism in FP is so easy and natural that it is sometimes
   completely automatic
 \item
@@ -211,7 +211,7 @@ programming}\label{compositionality-and-functional-programming}}
 \protect\hypertarget{compositionality}{}
 
 \begin{itemize}
-\tightlist
+
 \item
   Not all issues relating to scalability of models and algorithms relate
   to parallelism
@@ -224,9 +224,9 @@ programming}\label{compositionality-and-functional-programming}}
 \item
   This (recursive) decomposition-composition approach is at the heart of
   the so-called ``divide and conquer'' approach to problem solution, and
-  is very natural in FP
+  is very natural in FP (eg. FFT and BP for PGMs)
 \item
-  It also makes code much easier to \emph{test} for correct behaviour
+  It also makes code much easier to \alert{test} for correct behaviour
 \item
   Category theory is in many ways the mathematical study of
   (associative) composition, and this leads to useful insights
@@ -234,17 +234,19 @@ programming}\label{compositionality-and-functional-programming}}
 
 \end{frame}
 
+\section{Bayesian computation}
+
 \begin{frame}{Bayesian computation}
 \protect\hypertarget{bayesian-computation}{}
 
 \begin{itemize}
-\tightlist
+
 \item
-  \emph{map-reduce} operations on \emph{functorial} data collections can
+  \alert{map-reduce} operations on \alert{functorial} data collections can
   trivially parallelise (and distribute):
 
   \begin{itemize}
-  \tightlist
+  
   \item
     Likelihood evaluations for big data
   \item
@@ -253,67 +255,28 @@ programming}\label{compositionality-and-functional-programming}}
     SMC re-weighting and re-sampling
   \end{itemize}
 \item
-  Gibbs sampling algorithms can be implemented as \emph{cobind}
-  operations on an appropriately coloured (parallel) \emph{comonadic}
+  Gibbs sampling algorithms can be implemented as \alert{cobind}
+  operations on an appropriately coloured (parallel) \alert{comonadic}
   conditional independence graph
 \item
-  \emph{Probabilistic programming languages} (PPLs) can be implemented
+  \alert{Probabilistic programming languages} (PPLs) can be implemented
   as embedded domain specific languages (DSLs) trivially using
-  \emph{for/do} syntax for \emph{monadic composition} in conjunction
-  with \emph{probability monads}
+  \alert{for/do} syntax for \alert{monadic composition} in conjunction
+  with \alert{probability monads}
 \item
-  Automatic differentiation (AD) for compute graphs is particularly
-  natural in functional languages, facilitating gradient-based
+  \alert{Automatic differentiation} (AD) is
+  natural and convenient in functional languages, facilitating gradient-based
   algorithms such as MALA, HMC and PDMP
 \end{itemize}
 
 \end{frame}
 
-\hypertarget{conclusion}{%
-\section{Conclusion}\label{conclusion}}
 
-\begin{frame}{Summary}
-\protect\hypertarget{summary}{}
-
-\begin{itemize}
-\tightlist
-\item
-  All of the programming languages commonly used for Bayesian
-  computation are poorly suited to the task
-\item
-  Functional programming languages borrowing ideas from \emph{Cartesian
-  closed categories} provide an excellent foundation for scalable
-  modelling and computation
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Concepts from category theory, such as \emph{functors},
-    \emph{monads} and \emph{comonads} provide a useful framework for
-    organising computation
-  \end{itemize}
-\item
-  Functional languages are particularly elegant and powerful for
-  probabilistic and differentiable programming
-\item
-  This isn't about one particular programming language (eg. \emph{Scala}
-  or \emph{Haskell}), or language syntax - it is about a class of
-  languages:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Statically typed compiled functional programming languages with type
-    inference and higher-kinded types
-  \end{itemize}
-\end{itemize}
-
-\end{frame}
+\begin{comment}
 
 
 \section{Background}
 
-%\begin{comment}
 
 \frame{
   \frametitle{Changing face of statistics}
@@ -344,7 +307,6 @@ programming}\label{compositionality-and-functional-programming}}
   \end{itemize}
   }
 
-%\end{comment}
 
 \frame{
   \frametitle{Pre-historic programming languages}
@@ -357,7 +319,6 @@ programming}\label{compositionality-and-functional-programming}}
     \end{itemize}
     \end{itemize}
 }
-
 
 
 \section{Compositionality, category theory, and functional programming}
@@ -385,6 +346,8 @@ programming}\label{compositionality-and-functional-programming}}
 \item Expressing algorithms in a functional/categorical way is not only more elegant, concise and less error-prone, but provides numerous more tangible benefits, such as automatic parallelisation and distribution of algorithms
 \end{itemize}
 }
+
+
 
 \begin{frame}[fragile]
   \frametitle{Imperative pseudo--code}
@@ -428,7 +391,6 @@ programming}\label{compositionality-and-functional-programming}}
   Not obvious that one of these is naturally parallel\ldots
 \end{frame}
 
-\begin{comment}
   
 \frame{
   \frametitle{Modern programming language design}
@@ -440,9 +402,7 @@ programming}\label{compositionality-and-functional-programming}}
     \end{itemize}
   }
 
-\end{comment}
 
-%\section{FP and CT}
 
 \subsection{Functional Programming}
 
@@ -478,7 +438,6 @@ programming}\label{compositionality-and-functional-programming}}
   \end{itemize}
 \end{frame}
 
-\begin{comment}
   
 \frame{
   \frametitle{Ideal languages for statistical computing}
@@ -496,7 +455,6 @@ programming}\label{compositionality-and-functional-programming}}
   \end{itemize}
   }
 
-\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Monadic collections (in Scala)}
@@ -518,7 +476,6 @@ programming}\label{compositionality-and-functional-programming}}
   \end{itemize}
 \end{frame}
 
-\begin{comment}
   
 \begin{frame}[fragile]
   \frametitle{Other monadic types: Option}
@@ -538,7 +495,6 @@ programming}\label{compositionality-and-functional-programming}}
     \end{itemize}
 \end{frame}
 
-\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Composing monadic functions}
@@ -576,17 +532,19 @@ programming}\label{compositionality-and-functional-programming}}
   \end{itemize}
 \end{frame}
 
+\end{comment}
+
 \begin{frame}[fragile]
-  \frametitle{Parallel monadic collections}
+  \frametitle{Parallel immutable collections}
   \begin{itemize}
   \item Using |map| to apply a \alert{pure} function to all of the elements in a collection can clearly be done in parallel
   \item So if the collection contains $n$ elements, then the computation time can be reduced from $O(n)$ to $O(1)$ (on infinite parallel hardware)
     \begin{itemize}
-    \item |Vector(3,5,7) map (_*2) = Vector(6,10,14)|
-    \item |Vector(3,5,7).par map (_*2) = ParVector(6,10,14)|
+    \item |Vector(3,5,7) map (_ * 2) = Vector(6,10,14)|
+%    \item |Vector(3,5,7).par map (_*2) = ParVector(6,10,14)|
     \end{itemize}
     \item We can carry out \alert{reductions} as \alert{folds} over collections:\\
-      |Vector(6,10,14).par reduce (_+_) = 30|
+      |Vector(6,10,14) reduce (_ + _) = 30|
       \item In general, sequential folds can not be parallelised, but...
   \end{itemize}
 \end{frame}
@@ -601,6 +559,8 @@ programming}\label{compositionality-and-functional-programming}}
   \item ``\alert{map--reduce}'' is just the pattern of processing large amounts of data in an immutable collection by first \alert{map}ping the data (in parallel) into a monoid and then tree-\alert{reduc}ing the result (in parallel), sometimes called |foldMap|
   \end{itemize}
 \end{frame}
+
+\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{Log-likelihood calculation for iid model}
@@ -617,19 +577,64 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \end{itemize}
 \end{frame}
 
+\end{comment}
+
 \begin{frame}[fragile]
   \frametitle{Distributed parallel collections with Apache Spark}
   \begin{itemize}
 %  \item We have already seen how parallel monadic collections can automatically parallelise ``map'' and ``reduce'' operations
-  \item \alert{Apache Spark} is a Scala library for Big Data analytics on (large) clusters of machines (in the cloud)
+  \item \alert{Apache Spark} (\url{spark.apache.org}) is a Scala library for distributed Big Data processing on (large) clusters of machines
   \item The basic datatype provided by Spark is an \alert{RDD} --- a resilient distributed dataset
-  \item An RDD is just a \alert{lazy}, \alert{distributed}, parallel monadic collection, supporting methods such as |map|, |flatMap|, |reduce|, etc., which can be used in exactly the same way as any other monadic collection
+  \item An RDD is just a \alert{lazy}, \alert{distributed}, parallel monadic collection, supporting methods such as |map|, |flatMap|, |reduce|, etc., which can be used in exactly the same way as any other Scala collection
   \item Code looks exactly the same whether the RDD is a small dataset on a laptop or terabytes in size, distributed over a large Spark cluster
-    \item Good framework for the development of scalable algorithms for Bayesian computation
+    \item It is a powerful framework for the development of scalable algorithms for Bayesian computation
   \end{itemize}
 \end{frame}
 
-\subsection{Category Theory}
+\begin{frame}
+  \frametitle{JAX}
+  \begin{itemize}
+  \item \alert{JAX} (\url{jax.readthedocs.io}) is a Python library embedding a DSL for automatic differentiation and JIT-compiling (array) functions to run very fast on (multiple) CPU or GPU
+  \item It is especially good at speeding up likelihood evaluations and (MCMC-based) sampling algorithms for complex models
+  \item It is not unheard of for MCMC algorithms to run 100 times faster than regular Python code, even on a single CPU (multiple cores and GPUs will speed things up further)
+  \item The JAX eDSL is \alert{pure functional array language}
+    \item Despite targetting a completely different kind of scalability to Spark, and being embedded in a very different language, the fundamental computational model is very similar: \alert{express algorithms in terms of lazy transformations of immutable data structures using pure functions}
+  \end{itemize}  
+\end{frame}
+
+\begin{frame}
+  \frametitle{JAX ecosystem}
+  \begin{itemize}
+  \item (Unnormalised) log-posteriors expressed in JAX can be sampled using a variety of different algorithms (including HMC and NUTS, via auto-diff) using \alert{BlackJAX} (\url{blackjax-devs.github.io/blackjax/})
+  \item The original Pyro uses PyTorch as a back-end, but the popular \alert{NumPyro} (\url{https://github.com/pyro-ppl/numpyro}) fork uses JAX for a back-end, leading to significant performance improvements
+  \item The PyMC4 project intended to use TensorFlow for a back-end, but this project was abandoned, and \alert{PyMC3} (\url{docs.pymc.io}) is now in the process of switching from Theano to JAX as a back-end (currently experimental, via NumPyro)
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{DEX}
+  \begin{itemize}
+  \item Although the conceptual computational model of JAX has a number of good features, the embedding of such a language in a dynamic, interpreted, imperative language such as Python has a number of limitations and drawbacks
+  \item A similar issue arises with Spark -- although it is possible to develop Spark applications in Python using PySpark, in practice most non-trivial applications are developed in Scala, for good reason
+  \item This motivates the development of a JAX-like array processing DSL in a strongly typed functional programming language
+    \item \alert{DEX} (\url{github.com/google-research/dex-lang}) is a new experimental (Haskell-like) language in this space with a number of interesting and desirable features
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{MCMC for a fully Bayesian logistic regression model}
+  \centerline{\alert{\url{github.com/darrenjw/logreg}}}
+  \begin{itemize}
+  \item (WIP) repo containing code examples for RW MH and MALA MCMC algorithms for a Bayesian analysis of a logistic regression model
+  \item Code in R, rjags, rstan, Python (with numpy), Python (with JAX), BlackJAX, Scala, Spark, etc.
+    \item Running on a single core on my laptop, a JAX version of an MCMC scheme runs 150 times faster than the same algorithm in regular Python with numpy
+  \end{itemize}
+\end{frame}
+
+
+
+\section{Category Theory}
 
 \begin{frame}[fragile]
   \frametitle{Category theory}
@@ -640,6 +645,8 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
     \item For every $x\in \operatorname{ob}(\mathcal{C})$ there exists an \alert{identity} morphism $\operatorname{id}_x: x\longrightarrow x$, with the property that for any $f: x\longrightarrow y$ we have $f = f\circ \operatorname{id}_x = \operatorname{id}_y\circ f$.
   \end{itemize}
 \end{frame}
+
+\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{Examples of categories}
@@ -657,8 +664,6 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
       \end{itemize}
   \end{itemize}
 \end{frame}
-
-\begin{comment}
   
 \begin{frame}[fragile]
   \frametitle{\textbf{Set} and \textbf{Hask}}
@@ -709,6 +714,27 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
       \item A functor $F:\mathcal{C}\longrightarrow\mathcal{C}$ is called an \alert{endofunctor} --- in the context of functional programming, the word functor usually refers to an endofunctor $F: \textbf{Set}\longrightarrow\textbf{Set}$
   \end{itemize}
 \end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Laziness, composition, laws and optimisations}
+  \begin{itemize}
+    \item Laziness allows some optimisations to be performed that would be difficult to automate otherwise
+    \item Consider a dataset |rdd: RDD[T]|, functions |f: T => U|, |g: U => V|, and a binary operation |op: (V,V) => V| for monoidal type |V|
+    \item We can map the two functions and then reduce with:
+      \begin{itemize}
+      \item |rdd map f map g reduce op|
+        \item to get a value of type |V|, all computed in parallel
+      \end{itemize}
+    \item However, re-writing this as:
+      \begin{itemize}
+      \item |rdd map (g compose f) reduce op|
+        \item would eliminate an intermediate collection, but is equivalent due to the 2nd functor law (\alert{map fusion})
+      \end{itemize}
+      \item Category theory \alert{laws} often correspond to \alert{optimisations} that can be applied to code without affecting results --- Spark can do these optimisations \alert{automatically} due to lazy evaluation
+  \end{itemize}
+\end{frame}
+
 
 \begin{frame}[fragile]
   \frametitle{Natural transformations}
@@ -787,26 +813,6 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
-\subsection{Scalable modelling and computation}
-
-\begin{frame}[fragile]
-  \frametitle{Laziness, composition, laws and optimisations}
-  \begin{itemize}
-    \item Laziness allows some optimisations to be performed that would be difficult to automate otherwise
-    \item Consider a dataset |rdd: RDD[T]|, functions |f: T => U|, |g: U => V|, and a binary operation |op: (V,V) => V| for monoidal type |V|
-    \item We can map the two functions and then reduce with:
-      \begin{itemize}
-      \item |rdd map f map g reduce op|
-        \item to get a value of type |V|, all computed in parallel
-      \end{itemize}
-    \item However, re-writing this as:
-      \begin{itemize}
-      \item |rdd map (g compose f) reduce op|
-        \item would eliminate an intermediate collection, but is equivalent due to the 2nd functor law (\alert{map fusion})
-      \end{itemize}
-      \item Category theory \alert{laws} often correspond to \alert{optimisations} that can be applied to code without affecting results --- Spark can do these optimisations \alert{automatically} due to lazy evaluation
-  \end{itemize}
-\end{frame}
 
 \begin{comment}
 
@@ -877,8 +883,6 @@ and then define instances for standard (serial) collections (eg. |Vector|), para
   \end{itemize}
 \end{frame}
 
-\end{comment}
-
 \begin{frame}[fragile]
 \frametitle{Scalable ABC}
 \begin{itemize}
@@ -899,8 +903,6 @@ pars.map(summ compose simModel).
 using map--fusion to avoid constructing a collection of synthetic datasets
 \end{itemize}
 \end{frame}
-
-\begin{comment}
 
 \begin{frame}[fragile]
 \frametitle{A scalable particle filter}
@@ -1039,12 +1041,15 @@ val poisson = Dglm.poisson(linear)
 \begin{frame}[fragile]
   \frametitle{Comonads for statistical computation}
   \begin{itemize}
-  \item Monads are good for operations that can be carried out on data points independently
+  \item Monads are good for sequencing operations that can be carried out on data points independently
     \item For computations requiring knowledge of some kind of local neighbourhood structure, \alert{Comonads} are a better fit
     \item |coflatMap| will take a function representing a \alert{local computation} producing one value for the new structure, and then extend this to generate all values associated with the comonad
       \item Useful for defining linear filters, Gibbs samplers, convolutional neural networks, etc.
-    \end{itemize}
+\item Concepts from category theory are often useful for providing abstractions which make convenient computations that might otherwise seem cumbersome within a pure functional programming language
+  \end{itemize}
 \end{frame}
+
+\begin{comment}
 
 \begin{frame}[fragile]
 \frametitle{Linear filters for Streams and Images}  
@@ -1081,8 +1086,6 @@ def pims = Stream.iterate(pim0)(_.coflatMap(fil))
 \end{lstlisting}
 \end{frame}
 
-\begin{comment}
-
 \begin{frame}[fragile]
 \frametitle{Gibbs sampling (an Ising model)}
 \begin{lstlisting}[language=scala]
@@ -1105,7 +1108,6 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
 \end{lstlisting}
 \end{frame}
 
-\end{comment}
 
 
 \begin{frame}
@@ -1132,9 +1134,9 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
   \end{itemize}
 \end{frame}
 
-\section{Probability monads}
+\end{comment}
 
-\subsection{Composing random variables}
+\section{Probability monads}
 
 \begin{frame}[fragile]
   \frametitle{Composing random variables with the probability monad}
@@ -1185,8 +1187,6 @@ MarkovChain(initialState)(kernel).steps.
 \end{itemize}
 \end{frame}
 
-\end{comment}
-
 \begin{frame}
   \frametitle{Probability monad foundations}
   Mathematically, what \alert{exactly} is a probability monad $P$\,?
@@ -1227,8 +1227,6 @@ MarkovChain(initialState)(kernel).steps.
 And several others...
 \end{frame}
 
-\begin{comment}
-
 %\subsection{Monads for UQ}
 
 \begin{frame}[fragile]
@@ -1264,8 +1262,6 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
   \end{itemize}
 \end{frame}
 
-\end{comment}
-
 \subsection{Implementations of probability monads}
 
 \begin{frame}[fragile]
@@ -1279,7 +1275,6 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
     \end{itemize}
 \end{frame}
 
-\begin{comment}
   
 \begin{frame}
   \frametitle{\texttt{Gen} for property-based testing}
@@ -1291,8 +1286,6 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
     \item \texttt{ScalaCheck} in Scala and \texttt{QuickCheck} in Haskell are well-known examples of property-based testing libraries
     \end{itemize}
 \end{frame}
-
-\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{\texttt{Dist} for Bayesian conditioning via SMC}
@@ -1318,8 +1311,6 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
 
 \subsection{Probabilistic programming}
 
-\begin{comment}
-  
 \begin{frame}[fragile]
 \frametitle{Example --- Bayesian logistic regression model in Rainier}
 \begin{lstlisting}[language=scala]
@@ -1386,6 +1377,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \end{itemize}
 \end{frame}
 
+\begin{comment}
 
 
 \section{Summary and conclusions}
@@ -1404,7 +1396,6 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 \end{frame}
 
 
-\begin{comment}
 
 \begin{frame}
   \frametitle{Summary}
@@ -1440,6 +1431,38 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 
 \end{comment}
 
+\hypertarget{conclusion}{%
+\section{Conclusion}\label{conclusion}}
+
+\begin{frame}{Summary}
+\protect\hypertarget{summary}{}
+
+\begin{itemize}
+
+\item
+  All of the programming languages commonly used for Bayesian
+  computation are poorly suited to the task
+\item
+  Functional programming languages borrowing ideas from \alert{Cartesian
+  closed categories} provide an excellent foundation for scalable
+  modelling and computation, including probabilistic and differentiable (array) programming
+  \begin{itemize}
+  
+  \item
+    Concepts from category theory, such as \alert{functors},
+    \alert{monads} and \alert{comonads} provide a useful framework for
+    organising computation
+  \end{itemize}
+\item
+  This isn't about one particular programming language or language syntax --- it is about a class of
+  languages (statically typed compiled functional programming languages with type
+    inference and higher-kinded types) and algorithmic approaches (lazy transformation of immutable data structures with pure functions)
+\end{itemize}
+
+\end{frame}
+
+
+
 \begin{frame}
   \frametitle{References}
 
@@ -1451,7 +1474,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   
   \begin{thebibliography}{}
 
-%  \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
+\bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
 
 \bibitem{} Fong, B., Spivak, D., Tuy\'eras, R. (2019) \alert{Backprop as Functor: A compositional perspective on supervised learning}, \emph{arXiv}, 1711.10455.
    
@@ -1459,14 +1482,16 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 
 \bibitem{} Heunen, C., Kammar, O., Staton, S., Yang, H. (2017) \alert{A convenient category for higher-order probability theory}, \emph{32nd ACM/IEEE LICS.}, 1--12.
      
-    \bibitem{} Law, J., Wilkinson, D. J. (2018) \alert{Composable models for online Bayesian analysis of streaming data}, \emph{Statistics and Computing}, \textbf{28}(6):1119--1137.
+ %   \bibitem{} Law, J., Wilkinson, D. J. (2018) \alert{Composable models for online Bayesian analysis of streaming data}, \emph{Statistics and Computing}, \textbf{28}(6):1119--1137.
 
       \bibitem{} Law, J., Wilkinson, D. J. (2019) \alert{Functional probabilistic programming for scalable Bayesian modelling}, \emph{arXiv}, 1908.02062.
       
 %    \bibitem{} Meijer, E., Fokkinga, M., Paterson, R. (1991) \alert{Functional programming with bananas, lenses, envelopes and barbed wire}. In: Hughes J. (eds) \emph{Functional Programming Languages and Computer Architecture}. FPCA 1991. Lecture Notes in Computer Science, vol 523. Springer.
 
-    \bibitem{} Park, S., Pfenning, F., Thrun, S. (2008) \alert{A probabilistic language based on sampling functions}, \emph{TOPLAS}, \textbf{31}(1):4.
+%    \bibitem{} Park, S., Pfenning, F., Thrun, S. (2008) \alert{A probabilistic language based on sampling functions}, \emph{TOPLAS}, \textbf{31}(1):4.
 
+\bibitem{} Paszke, A. \emph{et al} (2021) \alert{Getting to the point. Index sets and parallelism-preserving autodiff for pointful array programming}, \emph{arXiv}, 2104.05372.
+        
 %\bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A., Ghahramani, Z. and Gordon, A. D. (2015) \alert{Practical probabilistic programming with monads}, \emph{Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell}, 165--176.
 
 \bibitem{} \'{S}cibior, A., Kammar, O., Gharamani, Z. (2018) \alert{Functional programming for modular Bayesian inference}, \emph{Proc.\ ACM Prog.\ Lang.}, \textbf{2}(ICFP): 83.
@@ -1483,8 +1508,10 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 
   \vspace*{0.8ex}
 
-  Rainier:
-  \alert{\url{rainier.fit}} \hfill My blog:  \alert{\url{darrenjw.wordpress.com}}
+Further information: \alert{\url{github.com/darrenjw/talks}}
+  
+ % Rainier:
+ % \alert{\url{rainier.fit}} \hfill My blog:  \alert{\url{darrenjw.wordpress.com}}
 
 %  For more about Scala and FP: \alert{\url{darrenjw.wordpress.com}}
 

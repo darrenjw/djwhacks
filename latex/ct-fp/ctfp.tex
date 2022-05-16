@@ -108,14 +108,14 @@ Durham University, UK}
   language
 \item
   All of the languages commonly used are very old, dating back to the
-  dawn of the computing age, and quite unsuitable for scalable and
+  dawn of the computing age, and are quite unsuitable for scalable and
   efficient Bayesian computation
 \item
   Interpreted dynamic languages such as R, Python and Matlab are far too
   slow, among many other things
 \item
   Languages such as C, C++, Java and Fortran are much faster, but are
-  also very poorly suited to the development of efficient, well-tested,
+  also very poorly suited to the development of efficient, well-tested, compositional,
   scalable code, able to take advantage of modern computing hardware
 \end{itemize}
 
@@ -187,8 +187,8 @@ Durham University, UK}
 
 \item
   Modern computing platforms feature processors with many cores, and
-  possibly many such processors - parallel programming is required to
-  properly exploit this
+  possibly many such processors --- parallel programming is required to
+  properly exploit these
 \item
   Most of the notorious difficulties associated with parallel
   programming revolve around \alert{shared mutable state}
@@ -603,6 +603,17 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \end{frame}
 
 \begin{frame}
+  \frametitle{Functional algorithms}
+  \begin{itemize}
+  \item By expressing algorithms in a functional style (eg. lazy transformations of immutable data structures with pure functions), we allow many code optimisations to be automatically applied
+  \item \alert{Pure functional} algorithms are relatively easy to \alert{analyse}, \alert{optimise}, \alert{compile}, \alert{parallelise}, \alert{distribute}, \alert{differentiate}, push to GPU, etc.
+  \item These optimisations can typically be done \alert{automatically} by the library, compiler, framework, etc., without significant user intervention
+    \item It is very difficult (often impossible) to analyse and reason about imperative code in a similar way
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
   \frametitle{JAX ecosystem}
   \begin{itemize}
   \item (Unnormalised) log-posteriors expressed in JAX can be sampled using a variety of different algorithms (including HMC and NUTS, via auto-diff) using \alert{BlackJAX} (\url{blackjax-devs.github.io/blackjax/})
@@ -632,6 +643,12 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Log-likelihood in JAX and Scala}
+
+  CODE SNIPPETS HERE!
+  
+\end{frame}
 
 
 \section{Category Theory}
@@ -835,8 +852,6 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
-\end{comment}
-
 \begin{frame}[fragile]
   \frametitle{Typeclasses for Monoid, Functor, Monad and Comonad}
 %  \begin{itemize}
@@ -861,8 +876,6 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \end{lstlisting}
 \end{frame}
 
-\begin{comment}
-  
 \begin{frame}[fragile]
   \frametitle{A generic collection typeclass}
   \begin{itemize}
@@ -1340,7 +1353,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \item This in turn enables a fully \alert{compositional} approach to the (scalable) development of (hierarchical) probabilistic models
   \item Model components can be easily ``re-used'' in order to build big models from small
   \item eg. a regression model component can be re-used to create a hierarchical random effects model over related regressions
-    \item In some well-known PPLs (eg. BUGS), this would require manual copy-and-pasting of code, wrapping with a ``for loop'', and manual hacking in of an extra array index into all array references --- not at all compositional!
+    \item In some well-known PPLs, this would require manual copy-and-pasting of code, wrapping with a ``for loop'', and manual hacking in of an extra array index into all array references --- not at all compositional!
   \end{itemize}
 \end{frame}
 
@@ -1444,7 +1457,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   computation are poorly suited to the task
 \item
   Functional programming languages borrowing ideas from \alert{Cartesian
-  closed categories} provide an excellent foundation for scalable
+  closed categories} provide an excellent foundation for scalable, compositional
   modelling and computation, including probabilistic and differentiable (array) programming
   \begin{itemize}
   
@@ -1456,7 +1469,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 \item
   This isn't about one particular programming language or language syntax --- it is about a class of
   languages (statically typed compiled functional programming languages with type
-    inference and higher-kinded types) and algorithmic approaches (lazy transformation of immutable data structures with pure functions)
+    inference and higher-kinded types) and algorithmic approaches (eg. lazy transformation of immutable data structures with pure functions)
 \end{itemize}
 
 \end{frame}
@@ -1466,32 +1479,36 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 \begin{frame}
   \frametitle{References}
 
-  \setbeamerfont{bibliography item}{size=\footnotesize}
-  \setbeamerfont{bibliography entry author}{size=\footnotesize}
-  \setbeamerfont{bibliography entry title}{size=\footnotesize}
-  \setbeamerfont{bibliography entry location}{size=\footnotesize}
-  \setbeamerfont{bibliography entry note}{size=\footnotesize}
+  \setbeamerfont{bibliography item}{size=\scriptsize}
+  \setbeamerfont{bibliography entry author}{size=\scriptsize}
+  \setbeamerfont{bibliography entry title}{size=\scriptsize}
+  \setbeamerfont{bibliography entry location}{size=\scriptsize}
+  \setbeamerfont{bibliography entry note}{size=\scriptsize}
   
   \begin{thebibliography}{}
-
+    
 \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
 
 \bibitem{} Fong, B., Spivak, D., Tuy\'eras, R. (2019) \alert{Backprop as Functor: A compositional perspective on supervised learning}, \emph{arXiv}, 1711.10455.
    
 %   \bibitem{} Fritz, T., Perrone, P. (2017) \alert{A probability monad as the colimit of finite powers}, \emph{arXiv:1712.05363}.
 
-\bibitem{} Heunen, C., Kammar, O., Staton, S., Yang, H. (2017) \alert{A convenient category for higher-order probability theory}, \emph{32nd ACM/IEEE LICS.}, 1--12.
+%\bibitem{} Heunen, C., Kammar, O., Staton, S., Yang, H. (2017) \alert{A convenient category for higher-order probability theory}, \emph{32nd ACM/IEEE LICS.}, 1--12.
      
  %   \bibitem{} Law, J., Wilkinson, D. J. (2018) \alert{Composable models for online Bayesian analysis of streaming data}, \emph{Statistics and Computing}, \textbf{28}(6):1119--1137.
 
       \bibitem{} Law, J., Wilkinson, D. J. (2019) \alert{Functional probabilistic programming for scalable Bayesian modelling}, \emph{arXiv}, 1908.02062.
-      
+
+\bibitem{} van der Meulen, F., Schauer, M. (2020) \alert{Automatic backward filtering forward guiding for Markov processes and graphical models}, \emph{arXiv}, 2010.03509.
+        
 %    \bibitem{} Meijer, E., Fokkinga, M., Paterson, R. (1991) \alert{Functional programming with bananas, lenses, envelopes and barbed wire}. In: Hughes J. (eds) \emph{Functional Programming Languages and Computer Architecture}. FPCA 1991. Lecture Notes in Computer Science, vol 523. Springer.
 
 %    \bibitem{} Park, S., Pfenning, F., Thrun, S. (2008) \alert{A probabilistic language based on sampling functions}, \emph{TOPLAS}, \textbf{31}(1):4.
 
 \bibitem{} Paszke, A. \emph{et al} (2021) \alert{Getting to the point. Index sets and parallelism-preserving autodiff for pointful array programming}, \emph{arXiv}, 2104.05372.
-        
+
+\bibitem{} Särkkä, S., García-Fernández, A. F. (2019) \alert{Temporal parallelization of Bayesian smoothers}, \emph{arXiv}, 1905.13002.
+  
 %\bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A., Ghahramani, Z. and Gordon, A. D. (2015) \alert{Practical probabilistic programming with monads}, \emph{Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell}, 165--176.
 
 \bibitem{} \'{S}cibior, A., Kammar, O., Gharamani, Z. (2018) \alert{Functional programming for modular Bayesian inference}, \emph{Proc.\ ACM Prog.\ Lang.}, \textbf{2}(ICFP): 83.
@@ -1515,7 +1532,7 @@ Further information: \alert{\url{github.com/darrenjw/talks}}
 
 %  For more about Scala and FP: \alert{\url{darrenjw.wordpress.com}}
 
-Web: \alert{\url{darrenjw.github.io}} \hfill Twitter: \url{@darrenjw}
+\alert{\url{darrenjw.github.io}} \hfill \url{@darrenjw}
   
 \end{frame}
 

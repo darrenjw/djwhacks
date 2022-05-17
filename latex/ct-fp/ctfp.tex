@@ -598,7 +598,7 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \item It is especially good at speeding up likelihood evaluations and (MCMC-based) sampling algorithms for complex models
   \item It is not unheard of for MCMC algorithms to run 100 times faster than regular Python code, even on a single CPU (multiple cores and GPUs will speed things up further)
   \item The JAX eDSL is \alert{pure functional array language}
-    \item Despite targetting a completely different kind of scalability to Spark, and being embedded in a very different language, the fundamental computational model is very similar: \alert{express algorithms in terms of lazy transformations of immutable data structures using pure functions}
+    \item Despite targeting a completely different kind of scalability to Spark, and being embedded in a very different language, the fundamental computational model is very similar: \alert{express algorithms in terms of lazy transformations of immutable data structures using pure functions}
   \end{itemize}  
 \end{frame}
 
@@ -639,9 +639,12 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \begin{itemize}
   \item (WIP) repo containing code examples for RW MH and MALA MCMC algorithms for a Bayesian analysis of a logistic regression model
   \item Code in R, rjags, rstan, Python (with numpy), Python (with JAX), BlackJAX, Scala, Spark, etc.
-    \item Running on a single core on my laptop, a JAX version of an MCMC scheme runs 150 times faster than the same algorithm in regular Python with numpy
+  \item Running on a single core on my laptop, a JAX version of an MCMC scheme runs over 100 times faster than the same algorithm in regular Python with numpy
+    \item \emph{tl;dr} if you have a small-to-medium sized problem, and the only thing you care about is speed, somehow express your log-posterior in JAX and then sample it with BlackJAX
   \end{itemize}
 \end{frame}
+
+\begin{comment}
 
 \begin{frame}
   \frametitle{Log-likelihood in JAX and Scala}
@@ -650,6 +653,7 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   
 \end{frame}
 
+\end{comment}
 
 \section{Category Theory}
 

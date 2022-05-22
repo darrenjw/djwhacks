@@ -43,13 +43,12 @@ col, set,start,end,deltat,zip},
 
 \begin{document}
 
-\title[Markov process simulation and Bayesian inference]{Modular algorithms for Markov process simulation and Bayesian parameter inference}
-\author[Darren Wilkinson --- Stuttgart, 26/11/20]{\textbf{\large Darren Wilkinson} \\
+\title{Fully Bayesian parameter inference for Markov processes}
+\author[Darren Wilkinson --- Durham, 26/5/22]{\textbf{\large Darren Wilkinson} \\
 \url{@darrenjw}\\
 \alert{\url{darrenjw.github.io}}\\
-Newcastle University, U.K.\\ and\\
-The Alan Turing Institute, U.K.}
-\date{Stuttgart Research Center Systems Biology Seminar\\Online\\26th November 2020}
+Durham University, U.K.}
+\date{Bayesian inference in HEP\\Durham\\26th May 2022\\\alert{\url{github.com/darrenjw/talks}}}
 
 \frame{\titlepage}
 
@@ -61,7 +60,7 @@ The Alan Turing Institute, U.K.}
 %\item Stochastic reaction networks: Modelling, simulation and inference
 \item Stochastic reaction networks, stochastic simulation and partially observed Markov process (POMP) models
   \item Modularity: separating model representation from simulation algorithm
-  \item Well-mixed versus reaction--diffusion
+%  \item Well-mixed versus reaction--diffusion
   \item Likelihood-free MCMC for POMP models: separating simulation from inference
     \item Likelihood-free PMMH pMCMC, ABC and ABC--SMC
 %\item Likelihood-free (PMMH) pMCMC --- exact fully Bayesian joint inference for the model state and static parameters
@@ -70,7 +69,8 @@ The Alan Turing Institute, U.K.}
 %\item (Adaptive) ABC(--SMC)
 %\item Comparing pMCMC and ABC
   %\item Hybrid ABC/pMCMC approaches
-\item Functional programming approaches for scalable scientific and statistical computing 
+      %\item Functional programming approaches for scalable scientific and statistical computing
+ \item Programming languages and libraries for MCMC-based fully Bayesian inference
 \end{itemize}
 }
 
@@ -104,8 +104,6 @@ The Alan Turing Institute, U.K.}
 \item A rather sophisticated hybrid multi-scale algorithm would be required to simulate this process very accurately and very fast... 
 \end{itemize}
 }
-
-\end{comment}
 
 %\subsection{Modularity}
 
@@ -171,7 +169,6 @@ Y &\longrightarrow \emptyset \tag{predator death}
 \end{itemize}
 }
 
-\begin{comment}
 
 \frame{
 \frametitle{Discrete stochastic diffusion on a 1d lattice}
@@ -182,7 +179,6 @@ Y &\longrightarrow \emptyset \tag{predator death}
 \end{itemize}
 }
 
-\end{comment}
 
 \frame{
 \frametitle{Stochastic kinetics of diffusion}
@@ -197,8 +193,6 @@ Y &\longrightarrow \emptyset \tag{predator death}
 \item This defines a Markov jump process which we can solve exactly or simulate using the Gillespie algorithm
 \end{itemize}
 }
-
-\begin{comment}
 
 \frame{
 \frametitle{Finite differences}
@@ -230,8 +224,6 @@ dX_t = D\Delta X_t\,dt +  \sqrt{D}\nabla\operatorname{diag}\left\{\sqrt{(I+B\tra
 \end{itemize}
 }
 
-\end{comment}
-
 \frame{
 \frametitle{Discrete stochastic diffusion on a 2d lattice}
 \centerline{\includegraphics[height=0.4\textheight]{2d}}
@@ -253,7 +245,6 @@ So $\Delta X_{i,j,t} = X_{i-1,j,t}+X_{i+1,j,t}+X_{i,j-1,t}+X_{i,j+1,t}-4X_{i,j,t
 \end{center}
 }
 
-\begin{comment}
 
   \frame{
 \frametitle{Spatial CLE approximation}
@@ -272,8 +263,6 @@ So $\Delta X_{i,j,t} = X_{i-1,j,t}+X_{i+1,j,t}+X_{i,j-1,t}+X_{i,j+1,t}-4X_{i,j,t
 \end{center}
 }
 
-\end{comment}
-
 \frame{
 \frametitle{Lotka--Volterra SPDE dynamics (via the spatial CLE)}
 \begin{center}
@@ -281,8 +270,6 @@ So $\Delta X_{i,j,t} = X_{i-1,j,t}+X_{i+1,j,t}+X_{i,j-1,t}+X_{i,j+1,t}-4X_{i,j,t
 \movie{\includegraphics[height=0.85\textheight]{dsrd2d}}{sgrd2dv3.mp4}
 \end{center}
 }
-
-\begin{comment}
 
 \frame{
 \frametitle{Lotka--Volterra SPDE dynamics (3 seeds)}
@@ -293,12 +280,13 @@ So $\Delta X_{i,j,t} = X_{i-1,j,t}+X_{i+1,j,t}+X_{i,j-1,t}+X_{i,j+1,t}-4X_{i,j,t
 \end{center}
 }
 
-\end{comment}
-
 \frame{
   \frametitle{Lotka--Volterra reaction--diffusion SPDE}
     \vspace*{-5cm}\centerline{\includegraphics[width=1.2\textwidth]{figs/ch09scle2dex2}}
 }
+
+\end{comment}
+
 
 
 \frame{
@@ -550,6 +538,8 @@ the RN derivative of the true (unconditioned) diffusion wrt the proposal process
 }
 
 
+\begin{comment}
+
 %\subsection{ABC approaches}
 
 
@@ -589,8 +579,6 @@ the RN derivative of the true (unconditioned) diffusion wrt the proposal process
 \end{itemize}
 }
 
-\begin{comment}
-
 \frame{
 \frametitle{Summary statistics for POMP models}
 \begin{itemize}
@@ -601,8 +589,6 @@ the RN derivative of the true (unconditioned) diffusion wrt the proposal process
 \item The individual components of $s(\cdot)$ are on different scales, so need to re-weight (eg. by standardising) before applying a simple metric such as Euclidean distance
 \end{itemize}
 }
-
-\end{comment}
 
 \frame{
 \frametitle{Issues with simple rejection ABC}
@@ -639,7 +625,6 @@ is a suitable metric on data space
 \end{itemize}
 }
 
-\begin{comment}
 
 \frame{
 \frametitle{ABC--SMC algorithm}
@@ -689,7 +674,6 @@ with obvious particle approximation, leading to the desired weight
 \end{itemize}
 }
 
-\end{comment}
 
 
 
@@ -711,6 +695,8 @@ with obvious particle approximation, leading to the desired weight
 \item It's hard to know how well you are doing when working ``blind''
 \end{itemize}
 }
+
+\end{comment}
 
 \frame{
 \frametitle{Pros and cons of pMCMC}
@@ -768,8 +754,6 @@ with obvious particle approximation, leading to the desired weight
 \item The reliance of likelihood free algorithms on \alert{forward} simulation fundamentally limits their effectiveness and utility for many challenging problems --- inference is fundamentally about \alert{conditional} simulation --- other ways of modularising models and inferential algorithms are also worth considering
 \end{itemize}
 }
-
-\end{comment}
 
 %\section{Functional approaches to computation}
 
@@ -841,6 +825,49 @@ with obvious particle approximation, leading to the desired weight
     \centerline{\alert{\url{https://github.com/darrenjw/smfsb}}}
   }
 
+\end{comment}
+
+\frame{
+  \frametitle{Languages and libraries for MCMC}
+  \begin{itemize}
+  \item Various approaches to creating MCMC algorithms for particular problems:
+    \begin{itemize}
+    \item Use a stand-alone probabilistic programming language (PPL)
+    \item Use a PPL embedded in a general purpose programming language (eg. Python or R)
+      \item Write a custom sampler in an appropriate programming language (using scientific libraries, tensor computation frameworks, auto-diff frameworks, etc.)
+    \end{itemize}
+  \item Stand-alone PPLs:
+    \begin{itemize}
+    \item \alert{JAGS} is old, but quite general and widely used. It can be very inefficient for large, complex models. There are interfaces, \texttt{rjags} and \texttt{PyJAGS}, for using it from R and Python.
+      \item \alert{Stan} is now probably the most popular PPL. It is typically much more efficient than JAGS for complex models, but uses gradients, so can't (directly) handle discrete parameters. There are interfaces such as \texttt{rstan} and \texttt{PyStan} for using it from R and Python.
+      \end{itemize}
+    \end{itemize}
+  }
+
+\frame{
+  \frametitle{Python ecosystem for Bayesian inference and MCMC}
+  \begin{itemize}
+  \item \alert{PyMC3} is probably the most popular PPL embedded in Python. It uses Theano for a backend. PyMC4 was going to use TensorFlow, but this was abandoned. PyMC3 is currenly moving to a JAX backend (currently experimental, via NumPyro), but will eventually support multiple backends, via Aesara (a fork of Theano)
+  \item \alert{Pyro} uses PyTorch as a back-end, but the popular \alert{NumPyro} fork uses JAX
+    \item \alert{JAX} is a pure functional eDSL for tensor/array computation and automatic differentiation. It can JIT-compile to run very fast on (multiple) CPU and GPU. It turns out to be extremely well-suited to sampling applications such as MCMC. If you are doing any kind of ML in Python, it's worth spending some time learning about JAX. \alert{BlackJAX} is a library of samplers for log-posteriors described using JAX.
+  \end{itemize}
+}
+
+\frame{
+  \frametitle{Functional languages for scalable Bayesian computation}
+  \begin{itemize}
+  \item JAX is a pure functional DSL embedded in Python
+  \item Functional languages are easier to analyse, optimise, compile, parallelise, distribute, automatically differentiate, etc., than imperative languages
+    \item MCMC for logistic regression using multiple languages and libraries: \alert{\url{github.com/darrenjw/logreg}}
+  \item \alert{DEX} is a new experimental stand-alone language for array processing and automatic differentiation (written in Haskell)
+  \item \alert{Scala} is a general-purpose language well-suited to building scalable samplers
+    \item \alert{Apache Spark} is a Scala framework for distributing big data ML workloads over a cluster
+  \end{itemize}
+
+  
+
+\mbox{}\hfill \alert{\url{github.com/darrenjw/talks}}
+}
 
 
 \end{document}

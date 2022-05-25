@@ -59,10 +59,11 @@ Durham University, U.K.}
 \begin{itemize}
 %\item Stochastic reaction networks: Modelling, simulation and inference
 \item Stochastic reaction networks, stochastic simulation and partially observed Markov process (POMP) models
-  \item Modularity: separating model representation from simulation algorithm
-%  \item Well-mixed versus reaction--diffusion
+%  \item Modularity: separating model representation from simulation algorithm
+    %  \item Well-mixed versus reaction--diffusion
+    \item Bayesian inference for latent process models using MCMC
   \item Likelihood-free MCMC for POMP models: separating simulation from inference
-    \item Likelihood-free PMMH pMCMC, ABC and ABC--SMC
+%    \item Likelihood-free PMMH pMCMC, ABC and ABC--SMC
 %\item Likelihood-free (PMMH) pMCMC --- exact fully Bayesian joint inference for the model state and static parameters
 %\item Efficient (PMMH) pMCMC for diffusion processes
 %\item Efficient (PMMH) pMCMC for Markov jump processes
@@ -285,7 +286,6 @@ So $\Delta X_{i,j,t} = X_{i-1,j,t}+X_{i+1,j,t}+X_{i,j-1,t}+X_{i,j+1,t}-4X_{i,j,t
     \vspace*{-5cm}\centerline{\includegraphics[width=1.2\textwidth]{figs/ch09scle2dex2}}
 }
 
-\end{comment}
 
 
 
@@ -298,6 +298,8 @@ So $\Delta X_{i,j,t} = X_{i-1,j,t}+X_{i+1,j,t}+X_{i,j-1,t}+X_{i,j+1,t}-4X_{i,j,t
     \item Model exchange formats, such as SBML, can be useful for understanding some of the issues
     \end{itemize}
   }
+
+\end{comment}
 
 %\section{Bayesian inference}
 
@@ -340,6 +342,8 @@ In this context there are 3 main classes of MC algorithms:
 \end{itemize}
 }
 
+\begin{comment}
+
 \frame{
 \frametitle{Modularity and model decoupling for inference}
 \small
@@ -350,6 +354,8 @@ In this context there are 3 main classes of MC algorithms:
 \item There is no reason why efficient likelihood-based MCMC algorithms can't also be decoupled from the model representation, but doing so for a reasonably large and flexible class of models seems to be beyond the programming skills of most statisticians...
 \end{itemize}
 }
+
+\end{comment}
 
 %\subsection{POMP Models}
 
@@ -374,6 +380,7 @@ measurement error model)
 \end{itemize}
 }
 
+
 \frame{
 \frametitle{Bayesian inference for latent process models}
 \begin{itemize}
@@ -384,6 +391,24 @@ measurement error model)
 \item Joint model $\pi(\theta,\mathbf{x},\mathcal{Y}) = \pi(\theta)\pi(\mathbf{x}|\theta)\pi(\mathcal{Y}|\mathbf{x},\theta)$
 \item \alert{Posterior distribution} $\pi(\theta,\mathbf{x}|\mathcal{Y}) \propto \pi(\theta,\mathbf{x},\mathcal{Y})$
 \item If using Monte Carlo methods, easy to marginalise out $\mathbf{x}$ from samples from the posterior to get samples from the parameter posterior $\pi(\theta|\mathcal{Y})$
+\end{itemize}
+}
+
+\frame{
+\frametitle{Bayesian inference using MCMC}
+\begin{itemize}
+\item Given an unnormalised (posterior) probability distribution, we typically use MCMC methods to generate samples from it
+\item The methods used are typically (but not always) ``exact'' in the sense that the equilibrium distribution of the Markov chain is the exact posterior distribution:
+  \begin{itemize}
+\item Metropolis--Hastings (MH) (and various component-wise variants, including Gibbs sampling) --- requires only an unnormalised distribution
+\item Unadjusted Langevin algorithm --- typically approximate, and requires gradients
+\item  Metropolis adjusted Langevin algorithm (MALA) --- exact
+\item Hamiltonian Monte Carlo (HMC) --- requires gradients
+\item NUTS --- improvement on HMC
+\item Riemannian manifold HMC --- requires Hessians
+\item Piecewise deterministic Markov processes (PDMP) --- requires gradients, and more
+  \end{itemize}
+  \item But what if you can't even evaluate the posterior density?
 \end{itemize}
 }
 
@@ -696,8 +721,6 @@ with obvious particle approximation, leading to the desired weight
 \end{itemize}
 }
 
-\end{comment}
-
 \frame{
 \frametitle{Pros and cons of pMCMC}
 \begin{itemize}
@@ -710,8 +733,6 @@ with obvious particle approximation, leading to the desired weight
 \end{itemize}
 }
 
-\begin{comment}
-  
 \frame{
 \frametitle{ABC--SMC and PMMH}
 \begin{itemize}
@@ -735,6 +756,8 @@ with obvious particle approximation, leading to the desired weight
 \end{itemize}
 }
 
+\end{comment}
+
 
 \frame{
 \frametitle{Likelihood free inference}
@@ -755,6 +778,8 @@ with obvious particle approximation, leading to the desired weight
 \end{itemize}
 }
 
+\begin{comment}
+  
 %\section{Functional approaches to computation}
 
 

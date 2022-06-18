@@ -49,6 +49,7 @@ object ScalaJsTest:
       )
     )
 
+
   @JSExport
   def main(canvas: html.Canvas): Unit =
     val ctx = canvas.getContext("2d")
@@ -60,7 +61,11 @@ object ScalaJsTest:
       clear()
       render(ctx)
     run
-
+    import cats.effect.unsafe.implicits.*
+    import cats.effect.unsafe.implicits.global
+    import cats.effect.*
+    val program = IO.println("Hello, World!")
+    //program.unsafeRunSync()
 
 
 // eof

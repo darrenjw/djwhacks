@@ -15,6 +15,10 @@ import spire.*
 import spire.math.*
 import spire.implicits.*
 
+//import cats.effect.unsafe.implicits.*
+//import cats.effect.unsafe.implicits.global
+import cats.effect.*
+
 @JSExportTopLevel("JsApp")
 object ScalaJsTest:
 
@@ -51,7 +55,7 @@ object ScalaJsTest:
 
 
   @JSExport
-  def main(canvas: html.Canvas): Unit =
+  def main(canvas: html.Canvas) =
     val ctx = canvas.getContext("2d")
                     .asInstanceOf[dom.CanvasRenderingContext2D]
     def clear() =
@@ -61,10 +65,7 @@ object ScalaJsTest:
       clear()
       render(ctx)
     run
-    import cats.effect.unsafe.implicits.*
-    import cats.effect.unsafe.implicits.global
-    import cats.effect.*
-    val program = IO.println("Hello, World!")
+    //val program = IO.println("Hello, World!")
     //program.unsafeRunSync()
 
 

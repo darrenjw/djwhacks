@@ -39,4 +39,20 @@ stack build && stack exec new-project-exe
 
 ```
 
+## New(ish) Cabal
 
+```bash
+mkdir myfirstapp
+cd myfirstapp
+cabal init
+
+cabal v1-run
+
+# OR
+
+cabal init myfirstapp -n
+cd myfirstapp
+
+cabal run myfirstapp
+
+```

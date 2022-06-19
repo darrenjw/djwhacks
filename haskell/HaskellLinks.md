@@ -6,6 +6,7 @@ A few links for Haskell programming...
 * [HaskellWiki](https://en.wikibooks.org/wiki/Haskell)
   * [Typeclassopedia](https://wiki.haskell.org/Typeclassopedia)
 * [Getting started (with Stack)](https://haskell-lang.org/get-started)
+* [Hoogle](https://hoogle.haskell.org/)
 * [Hackage](https://hackage.haskell.org/)
   * [Kalman](https://hackage.haskell.org/package/kalman)
 * [Stackage](https://stackage.org/)

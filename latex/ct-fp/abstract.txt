@@ -64,3 +64,8 @@ Typical implementations of models and algorithms for Bayesian computation lack s
 Bio:
 
 Darren Wilkinson is Professor of Statistics at Durham University, UK. His current research interests involve applications of Bayesian statistics to a variety of challenging big data problems in molecular biology and engineering, and understanding the extent to which category theory and pure functional programming can provide a foundation for more scalable approaches Bayesian modelling and computation. He is especially interested in parameter inference for dynamic models, on-line inference for high-velocity time series data, probabilistic programming, and the use of approximate models and emulators for rendering computationally prohibitive algorithms for expensive models more tractable. 
+
+
+Imp
+
+

@@ -74,12 +74,12 @@ col, set,start,end,deltat,zip},
 
 \begin{document}
 
-\title{Compositional approaches to scalable modelling and Bayesian computation}
+\title{Compositional approaches to scalable Bayesian computation}
 \author{\textbf{\large Darren Wilkinson} \\
 \url{@darrenjw}\hfill \alert{\url{darrenjw.github.io}}\\
 \vspace{2ex}%
 Durham University, UK}
-\date{\textbf{Improbable Webinar}\\27th June 2022\\\mbox{}\hfill\alert{\url{github.com/darrenjw/talks}}
+\date{\textbf{Laplace's Demon Webinar}\\17th May 2022\\\mbox{}\hfill\alert{\url{github.com/darrenjw/talks}}
 }
   
 \frame{\titlepage}
@@ -102,8 +102,7 @@ Durham University, UK}
 
 \item
   For non-trivial problems, Bayesian computation typically relies on
-  computationally intensive methods, such as MCMC, SMC or ABC --- similar
-  structure to stochastic simulation models 
+  computationally intensive methods, such as MCMC, SMC or ABC
 \item
   These often require a custom implementation in some programming
   language
@@ -619,7 +618,7 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \begin{itemize}
   \item (Unnormalised) log-posteriors expressed in JAX can be sampled using a variety of different algorithms (including HMC and NUTS, via auto-diff) using \alert{BlackJAX} (\url{blackjax-devs.github.io/blackjax/})
   \item The original Pyro uses PyTorch as a back-end, but the popular \alert{NumPyro} (\url{https://github.com/pyro-ppl/numpyro}) fork uses JAX for a back-end, leading to significant performance improvements
-  \item The PyMC4 project intended to use TensorFlow for a back-end, but this project was abandoned, and \alert{PyMC(3)} (\url{docs.pymc.io}) is switching from Theano to Aesara with JAX as a back-end
+  \item The PyMC4 project intended to use TensorFlow for a back-end, but this project was abandoned, and \alert{PyMC3} (\url{docs.pymc.io}) is now in the process of switching from Theano to JAX as a back-end (currently experimental, via NumPyro)
   \end{itemize}
 \end{frame}
 
@@ -1062,7 +1061,7 @@ val poisson = Dglm.poisson(linear)
   \item Monads are good for sequencing operations that can be carried out on data points independently
     \item For computations requiring knowledge of some kind of local neighbourhood structure, \alert{Comonads} are a better fit
     \item |coflatMap| will take a function representing a \alert{local computation} producing one value for the new structure, and then extend this to generate all values associated with the comonad
-      \item Useful for defining (linear) filters, Gibbs samplers, CNNs, time-stepping agents in an ABM, \emph{etc.}
+      \item Useful for defining linear filters, Gibbs samplers, convolutional neural networks, etc.
 \item Concepts from category theory are often useful for providing abstractions which make convenient computations that might otherwise seem cumbersome within a pure functional programming language
   \end{itemize}
 \end{frame}
@@ -1362,7 +1361,6 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \end{itemize}
 \end{frame}
 
-\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{Representation independence using the \emph{free} monad}
@@ -1385,7 +1383,6 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \end{itemize}
 \end{frame}
 
-\end{comment}
 
 \begin{frame}
   \frametitle{Compositionality of inference algorithms}

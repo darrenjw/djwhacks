@@ -96,7 +96,15 @@ git checkout master
 git merge good-branch
 ```
 
-## Undo a commit
+## Undo changes
+
+### Undo changes since last commit
+
+```bash
+git reset HEAD --hard
+```
+
+### Undo a commit
 
 If you commit a change you regret and you haven't yet pushed it, you can undo it with:
 ```bash

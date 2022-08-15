@@ -51,11 +51,21 @@ def stepLV (th: Fin 3=>Float) (x: Fin 2=>Int) (t: Float) (k: Key) : (Fin 2=>Int)
             xs := nx
             ts := nt
             Continue
-      
+
+
+-- test out the function...
 k = new_key 42
+th = [1.0, 0.005, 0.6]
+stepLV th [50, 100] 2.0 k
 
-stepLV [1.0, 0.005, 0.6] [50, 100] 2.0 k
+kern = \k x. stepLV th x 2.0 k
+kern k [50, 100]
 
+ts = markov_chain k [50, 100] kern 50
+tsf = for i. for j. i_to_f ts.i.j
+tsv = to_tsv tsf
+tsv
+unsafe_io do write_file "lv.tsv" tsv
 
 
 

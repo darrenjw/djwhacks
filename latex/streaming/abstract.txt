@@ -1,3 +1,28 @@
+
+
+## Abstract for Mersyside RSS presentation (Real time modelling, September 2022):
+
+Streaming data modelling for real-time monitoring and forecasting
+
+A key challenge of modern data science is the development of scalable
+algorithms for extracting useful information from large, complex,
+heterogeneous and ever-growing data sets in (near) real-time. A
+promising approach is to combine sequential statistical modelling with
+computational frameworks for streaming data processing, making
+significant use of functional programming approaches. This talk will
+introduce some of the basic concepts, and illustrate the techniques in
+the context of real-time urban flood forecasting. Fusion of highly
+non-Gaussian point and areal spatial data from environmental sensors
+provides a challenging use case for on-line statistical modelling.
+
+This work was supported by UKRI-NERC and The Alan Turing Institute.
+
+
+
+
+
+## Abstract for Turing project presentation (November 2021):
+
 Streaming data modelling for real-time monitoring and forecasting
 
 This project is addressing a key challenge of modern data science: the

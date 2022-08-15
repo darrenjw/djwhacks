@@ -1,0 +1,34 @@
+-- sandpit.dx
+
+-- experiments
+
+
+-- need to figure out "while" loops, or "repeat untils", etc.
+
+-- using "iter"
+x = yield_state 1 \st.
+  iter \_.
+    s = get st
+    s2 = 2*s
+    st := s2
+    if (s2 > 1000)
+      then
+        Done ()
+      else
+        Continue
+
+x
+
+-- "iter" actually defined using "while"
+y = yield_state 1 \st.
+  while do
+    s = get st
+    s2 = 2*s
+    st := s2
+    if (s2 > 1000)
+      then
+        False
+      else
+        True
+
+y

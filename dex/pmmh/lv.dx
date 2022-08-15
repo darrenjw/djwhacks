@@ -1,0 +1,63 @@
+'# Simulate an LV model
+
+import djwutils -- load up my Dex utils from the logreg repo
+
+
+-- Random exponentials
+def rande (k: Key) : Float =
+  neg $ log $ rand k
+
+def rande_vec {n} [Ix n] (k:Key) : n=>Float =
+  for i. rande (ixkey k i)
+
+def randExp (r: Float) (k: Key) : Float =
+  (rande k) / r
+
+
+-- Transition kernel for the LV process
+def stepLV (th: Fin 3=>Float) (x: Fin 2=>Int) (t: Float) (k: Key) : (Fin 2=>Int) =
+  yield_state x \xs.
+    with_state 0.0 \ts.
+    with_state k \ks.
+      iter \_.
+        cx = get xs
+        ct = get ts
+        k0 = get ks
+        [k1, k2] = split_key k0
+        h1 = th.(0@_)*(i_to_f cx.(0@_))
+        h2 = th.(1@_)*(i_to_f (cx.(0@_)*cx.(1@_)))
+        h3 = th.(2@_)*(i_to_f cx.(1@_))
+        h0 = h1 + h2 + h3
+        nt = if ((h0 < 1.0e-10) || (cx.(0@_) > 1000000))
+          then
+            1.0e99
+          else
+            ct + (randExp h0 k0)
+        if (nt >= t)
+          then
+            Done ()
+          else
+            u = rand k1
+            nx = if (u < (h1/h0))
+              then
+                cx + [1, 0]
+              else
+                if (u < ((h1+h2)/h0))
+                  then
+                    cx + [-1, 1]
+                  else
+                    cx + [0, -1]
+            ks := k2
+            xs := nx
+            ts := nt
+            Continue
+      
+k = new_key 42
+
+stepLV [1.0, 0.005, 0.6] [50, 100] 2.0 k
+
+
+
+
+
+-- eof

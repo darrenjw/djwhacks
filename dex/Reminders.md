@@ -15,4 +15,11 @@ dex --backend llvm-mc script myScript.dx
 dex --backend llvm-cuda script myScript.dx
 
 
+
+make install
+make tests
+make run-tests/linalg-tests
+make run-examples/regression
+
+
 ```

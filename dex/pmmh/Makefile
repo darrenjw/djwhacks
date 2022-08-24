@@ -26,5 +26,8 @@ repl:
 sandpit:
 	dex --lib-path $(LIBPATH) script sandpit.dx
 
+random:
+	dex --lib-path $(LIBPATH) script random-tests.dx
+
 
 # eof

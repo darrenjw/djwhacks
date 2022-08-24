@@ -1,0 +1,41 @@
+-- random-tests.dx
+-- understanding and testing Dex random number generation
+
+import djwutils
+
+k = new_key 42
+
+-- single draws
+
+rand k
+randn k
+bern 0.5 k
+poisson 5.0 k
+binom 50 0.5 k
+
+exponential 2.0 k
+gaussian 5.0 2.0 k
+
+g = gaussian 5.0 2.0
+[k1, k2] = split_key k
+g k
+g k1
+g k2
+
+-- drawing vectors
+
+x: (Fin 10)=>Float = randn_vec k
+x
+
+rand_vec 10 randn k
+rand_vec 8 (poisson 5.0) k
+rand_vec 15 (binom 20 0.5) k
+rand_vec 15 (binom 20 0.5) k1
+rand_vec 15 (binom 20 0.5) k2
+
+
+
+
+-- eof
+
+

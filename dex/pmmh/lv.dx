@@ -21,7 +21,7 @@ def stepLV (th: Fin 3=>Float) (x: Fin 2=>Int) (t: Float) (k: Key) : (Fin 2=>Int)
           then
             1.0e99
           else
-            ct + (exponential h0 k0)
+            ct + (expon h0 k0)
         if (nt >= t)
           then
             Done ()

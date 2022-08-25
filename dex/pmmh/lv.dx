@@ -2,6 +2,7 @@
 
 import djwutils -- load up my Dex utils from the logreg repo
 
+import stats -- WIP stats library, currently in logreg repo
 
 -- Transition kernel for the LV process
 def stepLV (th: Fin 3=>Float) (x: Fin 2=>Int) (t: Float) (k: Key) : (Fin 2=>Int) =
@@ -21,7 +22,7 @@ def stepLV (th: Fin 3=>Float) (x: Fin 2=>Int) (t: Float) (k: Key) : (Fin 2=>Int)
           then
             1.0e99
           else
-            ct + (expon h0 k0)
+            ct + (exponential h0 k0)
         if (nt >= t)
           then
             Done ()

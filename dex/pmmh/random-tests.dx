@@ -39,12 +39,6 @@ rand_mat 3 5 (poisson 8) k
 
 -- some very basic testing
 
-def meanAndVar {n} (v: n=>Float) : (Float & Float) =
-  m = mean v
-  ss = sum for i. sq (v.i - m)
-  v = ss / ((n_to_f (size n)) - 1.0)
-  (m, v)
-
 meanAndVar $ rand_vec 1000000 rand k                         -- (0.5, 0.08333)
 meanAndVar $ rand_vec 1000000 randn k                        -- (0, 1)
 meanAndVar $ rand_vec 1000000 (gaussian 1.0 2.0) k           -- (1, 4)
@@ -56,6 +50,7 @@ meanAndVar $ map n_to_f $ rand_vec 1000000 (poisson 0.1) k   -- (0.1, 0.1)
 meanAndVar $ map n_to_f $ rand_vec 1000000 (poisson 50.0) k  -- (50, 50)
 meanAndVar $ map n_to_f $ rand_vec 1000000 (binom 20 0.5) k  -- (10, 5)
 meanAndVar $ map n_to_f $ rand_vec 1000000 (binom 100 0.1) k -- (10, 9)
+meanAndVar $ rand_vec 1000000 (geometric 0.1) k              -- (10, 90)
 
 -- categorical from log-probs returning indices - useful for picking reactions, multinomial resampling, etc.
 meanAndVar $ map (\n. n_to_f (ordinal n)) $ rand_vec 1000000 (categorical (log [0.1,0.6,0.3])) k  -- (1.2, 0.36)

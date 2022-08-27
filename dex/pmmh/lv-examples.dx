@@ -1,0 +1,48 @@
+'# Simulate an LV model
+
+import djwutils -- load up my Dex utils from the logreg repo
+import stats -- WIP stats library, currently in logreg repo
+
+import lv
+
+-- test out the function...
+k = new_key 42
+th = [1.0, 0.005, 0.6]
+stepLV th 2.0 [50, 100] k
+
+'## Coarse simulation
+
+kern = stepLV th 2.0
+kern [50, 100] k
+
+ts = markov_chain [50, 100] kern 50 k
+
+tsf = for i. for j. i_to_f ts.i.j
+tsv = to_tsv tsf
+tsv
+unsafe_io do write_file "lv-examples.tsv" tsv
+
+import plot
+
+'### Prey
+
+:html show_plot $ y_plot $ map i_to_f (transpose ts).(0@_)
+
+'### Predator
+
+:html show_plot $ y_plot $ map i_to_f (transpose ts).(1@_)
+
+'## Fine simulation
+
+
+ts2 = markov_chain [50, 100] (stepLV th 0.02) 1000 k
+
+'### Prey
+
+:html show_plot $ y_plot $ map i_to_f (transpose ts2).(0@_)
+
+'### Predator
+
+:html show_plot $ y_plot $ map i_to_f (transpose ts2).(1@_)
+
+-- eof

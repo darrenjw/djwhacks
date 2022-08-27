@@ -39,18 +39,18 @@ rand_mat 3 5 (poisson 8) k
 
 -- some very basic testing
 
-meanAndVar $ rand_vec 1000000 rand k                         -- (0.5, 0.08333)
-meanAndVar $ rand_vec 1000000 randn k                        -- (0, 1)
-meanAndVar $ rand_vec 1000000 (gaussian 1.0 2.0) k           -- (1, 4)
-meanAndVar $ rand_vec 1000000 (exponential 2.0) k            -- (0.5, 0.25)
-meanAndVar $ rand_vec 1000000 (uniform 0 1) k                -- (0.5, 0.08333)
-meanAndVar $ rand_vec 1000000 (uniform 3 7) k                -- (5, 1.3333)
-meanAndVar $ map n_to_f $ rand_vec 1000000 (poisson 5.0) k   -- (5, 5)
-meanAndVar $ map n_to_f $ rand_vec 1000000 (poisson 0.1) k   -- (0.1, 0.1)
-meanAndVar $ map n_to_f $ rand_vec 1000000 (poisson 50.0) k  -- (50, 50)
-meanAndVar $ map n_to_f $ rand_vec 1000000 (binom 20 0.5) k  -- (10, 5)
-meanAndVar $ map n_to_f $ rand_vec 1000000 (binom 100 0.1) k -- (10, 9)
-meanAndVar $ map n_to_f $ rand_vec 1000000 (geometric 0.1) k -- (10, 90)
+meanAndVar $ rand_vec 1000000 rand k                            -- (0.5, 0.0833)
+meanAndVar $ rand_vec 1000000 randn k                           -- (0, 1)
+meanAndVar $ rand_vec 1000000 (gaussian 1.0 2.0) k              -- (1, 4)
+meanAndVar $ rand_vec 1000000 (exponential 2.0) k               -- (0.5, 0.25)
+meanAndVar $ rand_vec 1000000 (uniform 0 1) k                   -- (0.5, 0.0833)
+meanAndVar $ rand_vec 1000000 (uniform 3 7) k                   -- (5, 1.3333)
+meanAndVar $ map n_to_f $ rand_vec 1000000 (poisson 5.0) k      -- (5, 5)
+meanAndVar $ map n_to_f $ rand_vec 1000000 (poisson 0.1) k      -- (0.1, 0.1)
+meanAndVar $ map n_to_f $ rand_vec 1000000 (poisson 50.0) k     -- (50, 50)
+meanAndVar $ map n_to_f $ rand_vec 1000000 (binomial 20 0.5) k  -- (10, 5)
+meanAndVar $ map n_to_f $ rand_vec 1000000 (binomial 100 0.1) k -- (10, 9)
+meanAndVar $ map n_to_f $ rand_vec 1000000 (geometric 0.1) k    -- (10, 90)
 
 -- categorical from log-probs returning indices - useful for picking reactions, multinomial resampling, etc.
 meanAndVar $ map (\n. n_to_f (ordinal n)) $ rand_vec 1000000 (categorical (log [0.1,0.6,0.3])) k  -- (1.2, 0.36)

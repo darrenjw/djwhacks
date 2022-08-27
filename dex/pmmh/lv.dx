@@ -1,11 +1,11 @@
-'# Simulate an LV model
+'# Lotka-Volterra model
+The transition kernel of the discrete stochastic L-V process
 
 import djwutils -- load up my Dex utils from the logreg repo
-
 import stats -- WIP stats library, currently in logreg repo
 
 -- Transition kernel for the LV process
-def stepLV (th: Fin 3=>Float) (x: Fin 2=>Int) (t: Float) (k: Key) : (Fin 2=>Int) =
+def stepLV (th: Fin 3=>Float) (t: Float) (x: Fin 2=>Int) (k: Key) : (Fin 2=>Int) =
   yield_state x \xs.
     with_state 0.0 \ts.
      with_state k \ks.
@@ -41,21 +41,6 @@ def stepLV (th: Fin 3=>Float) (x: Fin 2=>Int) (t: Float) (k: Key) : (Fin 2=>Int)
             xs := nx
             ts := nt
             Continue
-
-
--- test out the function...
-k = new_key 42
-th = [1.0, 0.005, 0.6]
-stepLV th [50, 100] 2.0 k
-
-kern = \x k. stepLV th x 2.0 k
-kern [50, 100] k
-
-ts = markov_chain [50, 100] kern 50 k
-tsf = for i. for j. i_to_f ts.i.j
-tsv = to_tsv tsf
-tsv
-unsafe_io do write_file "lv.tsv" tsv
 
 
 

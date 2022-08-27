@@ -5,20 +5,24 @@ UTILPATH=/home/ndjw1/src/git/logreg/Dex
 LIBPATH=BUILTIN_LIBRARIES:$(UTILPATH):.
 
 FORCE:
-	make lv.tsv
+	make lv.html
 
 %.tsv: %.dx
 	time dex --lib-path $(LIBPATH) script $<
 
-%.out: %.tsv
-	./analyse.R $< > $@
-	mv Rplots.pdf $@.pdf
+%.html: %.dx
+	time dex --lib-path $(LIBPATH) script $< --outfmt html > $@
+
+.PRECIOUS: %.html
+%: %.html
+	make $<
+	xdg-open $<
 
 edit:
 	emacs Makefile *.md *.R *.py *.dx &
 
 clean:
-	rm -f *.out *.tsv *~ *.pdf
+	rm -f *.out *.tsv *.html *~ *.pdf
 
 repl:
 	dex --lib-path $(LIBPATH) repl

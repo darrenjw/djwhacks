@@ -32,3 +32,35 @@ y = yield_state 1 \st.
         True
 
 y
+
+
+-- figure out typeclasses to see how to define a Dist type...
+
+interface Dist d a
+  draw : d -> Key -> a
+  logpdf : d -> a -> Float
+
+data ExponentialDist = Exponential Float
+
+def lpdf (e: ExponentialDist) (x: Float) : Float = case e of
+  Exponential r -> (log r) - (r * x)
+
+def drw (e: ExponentialDist) (k: Key) : Float = case e of
+  Exponential r -> (log1p (-(rand k))) / -r
+
+ex = Exponential 0.1
+lpdf ex 2.0
+drw ex (new_key 42)
+
+instance Dist ExponentialDist Float
+  draw = (\e k. drw e k)
+  logpdf = (\e x. lpdf e x)
+  
+exd:Float = draw ex (new_key 42)
+exd
+logpdf ex 2.0
+
+
+-- eof
+
+

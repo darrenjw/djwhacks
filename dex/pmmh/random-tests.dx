@@ -1,5 +1,5 @@
 -- random-tests.dx
--- understanding and testing Dex random number generation
+-- Understanding and testing Dex random number generation
 
 import djwutils
 
@@ -11,18 +11,18 @@ k = new_key 42
 
 rand k
 randn k
-bern 0.5 k
-poisson 5.0 k
-binom 50 0.5 k
+draw (Bernoulli 0.5) k :: Bool
+draw (Poisson 5.0) k :: Nat
+draw (Binomial 50 0.5) k :: Nat
 
-exponential 2.0 k
-gaussian 5.0 2.0 k
+draw (Exponential 2.0) k :: Float
+draw (Gaussian 5.0 2.0) k :: Float
 
-g = gaussian 5.0 2.0
+g = Gaussian 5.0 2.0
 [k1, k2] = split_key k
-g k
-g k1
-g k2
+draw g k :: Float
+draw g k1 :: Float
+draw g k2 :: Float
 
 -- drawing vectors (and matrices)
 
@@ -30,33 +30,33 @@ x: (Fin 10)=>Float = randn_vec k
 x
 
 rand_vec 10 randn k
-rand_vec 8 (poisson 5.0) k
-rand_vec 15 (binom 20 0.5) k
-rand_vec 15 (binom 20 0.5) k1
-rand_vec 15 (binom 20 0.5) k2
+rand_vec 8 (draw $ Poisson 5.0) k :: Fin 8=>Nat
+rand_vec 15 (draw $ Binomial 20 0.5) k :: Fin 15=>Nat
+rand_vec 15 (draw $ Binomial 20 0.5) k1 :: Fin 15=>Nat
+rand_vec 15 (draw $ Binomial 20 0.5) k2 :: Fin 15=>Nat
 
-rand_mat 3 5 (poisson 8) k
+rand_mat 3 5 (draw $ Poisson 8) k :: Fin 3=>Fin 5=>Nat
 
 -- some very basic testing
 
-meanAndVar $ rand_vec 1000000 rand k                            -- (0.5, 0.0833)
-meanAndVar $ rand_vec 1000000 randn k                           -- (0, 1)
-meanAndVar $ rand_vec 1000000 (gaussian 1.0 2.0) k              -- (1, 4)
-meanAndVar $ rand_vec 1000000 (exponential 2.0) k               -- (0.5, 0.25)
-meanAndVar $ rand_vec 1000000 (uniform 0 1) k                   -- (0.5, 0.0833)
-meanAndVar $ rand_vec 1000000 (uniform 3 7) k                   -- (5, 1.3333)
-meanAndVar $ map n_to_f $ rand_vec 1000000 (poisson 5.0) k      -- (5, 5)
-meanAndVar $ map n_to_f $ rand_vec 1000000 (poisson 0.1) k      -- (0.1, 0.1)
-meanAndVar $ map n_to_f $ rand_vec 1000000 (poisson 50.0) k     -- (50, 50)
-meanAndVar $ map n_to_f $ rand_vec 1000000 (binomial 20 0.5) k  -- (10, 5)
-meanAndVar $ map n_to_f $ rand_vec 1000000 (binomial 100 0.1) k -- (10, 9)
-meanAndVar $ map n_to_f $ rand_vec 1000000 (geometric 0.1) k    -- (10, 90)
+mean_and_var $ rand_vec 1000000 rand k                            -- (0.5, 0.0833)
+mean_and_var $ rand_vec 1000000 randn k                           -- (0, 1)
+mean_and_var $ rand_vec 1000000 (draw $ Gaussian 1.0 2.0) k       -- (1, 4)
+mean_and_var $ rand_vec 1000000 (draw $ Exponential 2.0) k        -- (0.5, 0.25)
+mean_and_var $ rand_vec 1000000 (draw $ Uniform 0 1) k            -- (0.5, 0.0833)
+mean_and_var $ rand_vec 1000000 (draw $ Uniform 3 7) k            -- (5, 1.3333)
+mean_and_var $ map n_to_f $ rand_vec 1000000 (draw $ Poisson 5.0) k      -- (5, 5)
+mean_and_var $ map n_to_f $ rand_vec 1000000 (draw $ Poisson 0.1) k      -- (0.1, 0.1)
+mean_and_var $ map n_to_f $ rand_vec 1000000 (draw $ Poisson 50.0) k     -- (50, 50)
+mean_and_var $ map n_to_f $ rand_vec 1000000 (draw $ Binomial 20 0.5) k  -- (10, 5)
+mean_and_var $ map n_to_f $ rand_vec 1000000 (draw $ Binomial 100 0.1) k -- (10, 9)
+mean_and_var $ map n_to_f $ rand_vec 1000000 (draw $ Geometric 0.1) k    -- (10, 90)
 
 -- categorical from log-probs returning indices - useful for picking reactions, multinomial resampling, etc.
-meanAndVar $ map (\n. n_to_f (ordinal n)) $ rand_vec 1000000 (categorical (log [0.1,0.6,0.3])) k  -- (1.2, 0.36)
+mean_and_var $ map (\n. n_to_f (ordinal n)) $ rand_vec 1000000 (categorical (log [0.1,0.6,0.3])) k  -- (1.2, 0.36)
 
 -- double-check no bad samples on big runs... (infinity, nan, etc.)
-meanAndVar $ rand_vec 10000000 (exponential 2.0) k       -- (0.5, 0.25)
+mean_and_var $ rand_vec 10000000 (draw $ Exponential 2.0) k       -- (0.5, 0.25)
 
 
 

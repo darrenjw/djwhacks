@@ -36,9 +36,10 @@ y
 
 -- figure out typeclasses to see how to define a Dist type...
 
+
 interface Dist d a
-  draw : d -> Key -> a
   logpdf : d -> a -> Float
+  draw : d -> Key -> a
 
 data ExponentialDist = Exponential Float
 
@@ -59,6 +60,64 @@ instance Dist ExponentialDist Float
 exd:Float = draw ex (new_key 42)
 exd
 logpdf ex 2.0
+
+
+interface Foo a
+  foo : a -> String
+
+interface [Foo a] Bar a
+  bar : a -> String
+
+instance Foo Int
+  foo = (\a. show a)
+
+instance Bar Int
+  bar = (\a. show a)
+
+foo (10::Int)
+bar (10::Int)
+
+
+
+-- Non-negative float type...
+-- For probabilities, probability densities, and many other things...
+
+data NonNegFloat = LogFloat Float
+
+instance Mul NonNegFloat
+  mul = \(LogFloat la) (LogFloat lb). LogFloat $ la + lb
+  one = LogFloat 0.0
+
+instance Fractional NonNegFloat
+  divide = \(LogFloat la) (LogFloat lb). LogFloat $ la - lb
+
+instance Add NonNegFloat
+  add = \(LogFloat la) (LogFloat lb).
+    if (la > lb)
+      then LogFloat $ la + log1p (exp (lb - la))
+      else LogFloat $ lb + log1p (exp (la - lb))
+  zero = LogFloat (-infinity)
+
+def f_to_nnf (a:Float) : NonNegFloat = LogFloat $ log a
+
+def get_raw ((LogFloat la):NonNegFloat) : Float = exp la
+
+def get_log ((LogFloat la):NonNegFloat) : Float = la
+
+-- usage examples/tests
+
+rp = [0.1, 0.3, 0.2, 0.1]
+nnp = map f_to_nnf rp
+(get_raw $ sum nnp) ~~ sum rp
+(get_raw $ prod nnp) ~~ prod rp
+get_raw (f_to_nnf 0.0) ~~ 0.0
+get_raw (f_to_nnf 0.5) ~~ 0.5
+get_raw (f_to_nnf 1.0) ~~ 1.0
+get_raw (f_to_nnf 2.0) ~~ 2.0
+get_raw (f_to_nnf 0.1 + f_to_nnf 0.2) ~~ 0.3
+get_raw (f_to_nnf 0.4 * f_to_nnf 0.5) ~~ 0.2
+get_raw (divide (f_to_nnf 0.4) (f_to_nnf 0.5)) ~~ 0.8
+
 
 
 -- eof

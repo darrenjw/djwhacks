@@ -4,9 +4,11 @@
 ```bash
 dex
 
+dex -h
+
 dex repl
 
-dex script myScript.dx
+dex script myScript.dx -O
 
 dex --lib-path BUILTIN_LIBRARIES:. script myScript.dx
 

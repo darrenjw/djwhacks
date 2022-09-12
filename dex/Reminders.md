@@ -75,6 +75,7 @@ cmake --build .
 ln -s bin/clang-12 ~/.local/bin/clang++-12
 
 # Download, build and install Dex
+cd
 wget https://github.com/google-research/dex-lang/archive/refs/heads/main.zip
 unzip main.zip
 cd dex-lang-main

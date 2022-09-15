@@ -121,9 +121,17 @@ get_raw (divide (f_to_nnf 0.4) (f_to_nnf 0.5)) ~~ 0.8
 
 -- why can't we define Functor (etc.)?
 
---interface Functor f a
--- fmap : {b} -> (a -> b) -> f a -> f b
+--interface Functor f
+--  fmap : (a:Type) ?-> (b:Type) ?-> (a -> b) -> (f a) -> (f b)
 
+data Pair a = MkPair a a
+
+def fmap {a b} (fab: a -> b) ((MkPair a1 a2): Pair a) : Pair b =
+  MkPair (fab a1) (fab a2)
+
+:t fmap
+
+fmap show (MkPair 1.5 2.5)
 
 -- eof
 

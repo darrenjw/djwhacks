@@ -119,6 +119,11 @@ get_raw (f_to_nnf 0.4 * f_to_nnf 0.5) ~~ 0.2
 get_raw (divide (f_to_nnf 0.4) (f_to_nnf 0.5)) ~~ 0.8
 
 
+-- why can't we define Functor (etc.)?
+
+--interface Functor f a
+-- fmap : {b} -> (a -> b) -> f a -> f b
+
 
 -- eof
 

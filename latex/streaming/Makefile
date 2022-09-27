@@ -1,7 +1,8 @@
 # Makefile
 
 #FILE=djw-streaming
-FILE=djw-turing
+#FILE=djw-turing
+FILE=djw-liverpool
 
 
 CONTENT=$(FILE)-content
@@ -27,7 +28,7 @@ $(FILE)-nup.pdf: $(FILE).pdf
 	pandoc -t beamer -Vtheme:metropolis $< -o $@
 
 clean:
-	rm -f *~ $(FILE).pdf $(CONTENT).tex *.nav *.aux
+	rm -f *~ $(FILE).pdf *.nav *.aux
 
 edit:
 	emacs Makefile $(FILE).tex *.txt *.md &

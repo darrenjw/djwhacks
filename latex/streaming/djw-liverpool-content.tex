@@ -608,6 +608,46 @@ for high-resolution short-term forecasting of precipitation fields,
 
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{Motivation}
+\bigskip
+\bigskip
+\begin{itemize}
+\item \alert{Flood PREPARED} --- \emph{Predicting Rainfall Events by Physical Analytics of REaltime Data}
+  \item Large NERC (UK) funded multi-disciplinary project at Newcastle, involving engineers, hydrological modellers, computer scientists, statisticians, ... 
+\item Make cities more resilient to surface water flooding
+\item Real-time analysis to allow for earlier and more geographically precise warning
+\item Use-case focusing on Newcastle-upon-Tyne, UK
+  \item Data feeds from Newcastle's Urban Observatory project:  \alert{\url{http://urbanobservatory.ac.uk/}}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Our challenges}
+\bigskip
+\begin{itemize}
+\item  Develop a probabilistic spatio-temporal rainfall model
+\medskip
+\begin{itemize}
+\item make use of all available rain-related data sources
+\medskip
+\item be able to forecast rainfall intensity in real-time
+\medskip
+\item high-resolution in both space and time
+\end{itemize} 
+\bigskip
+\item Predictions from our model will form inputs for a hydrological flood model
+\medskip
+\begin{itemize}
+\item Hydrological flood model takes input on a regular lattice grid
+\end{itemize}
+\bigskip
+\item There is a second phase concerned with \emph{data assimilation} for the hydrological urban flood model, but not discussing that today
+\end{itemize}
+\end{frame}
+
+
 \begin{frame}{Synthesising point and areal data (Flood-PREPARED)}
 \protect\hypertarget{synthesising-point-and-areal-data-flood-prepared}{}
 
@@ -617,6 +657,464 @@ for high-resolution short-term forecasting of precipitation fields,
 \caption{Rainfall data}
 \end{figure}
 
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Rain field evolution}
+\begin{itemize}
+\item Suppose the (latent) rain field process exists on a regular lattice grid containing $N$ locations
+\bigskip
+\item $\theta_{t,i,j} \in \mathbb{R}$ denotes location $(i,j)$ at time $t$
+\begin{itemize}
+\medskip
+\item $\theta_{t,i,j} > 0 \Longrightarrow$ rainfall mm/h
+\medskip
+\item $\theta_{t,i,j} \leq 0 \Longrightarrow$ zero rainfall 
+\end{itemize}
+\bigskip
+\item Suppose location $(i,j)$ is influenced by its first order neighbours from previous time step
+\medskip
+\[
+\begin{matrix}
+    & \theta_{t,i-1,j} & \\
+    \theta_{t,i,j-1} & \theta_{t,i,j} & \theta_{t,i,j+1} & \\
+    & \theta_{t,i+1,j} &  \\
+\end{matrix} \to \quad \theta_{t+1,i,j}
+\]
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\begin{itemize}
+\item Specifically
+\begin{align*}
+\theta_{t+1,i,j} = \beta_1 \theta_{t,i,j} + \beta_2 \theta_{t,i,j-1} + &\beta_3 \theta_{t,i-1,j} \\
+& + \beta_4 \theta_{t,i+1,j} + \beta_5  \theta_{t,i,j+1} + \; \textit{noise}
+\end{align*}
+\item Let $\thetavec_t =  ( \theta_{t,1:\nr,1}, \theta_{t,1:\nr,2},\dots,\theta_{t,1:\nr,\nc})^\text{T}$
+\bigskip
+\item Evolution is
+\begin{equation*}
+\thetavec_t = G \thetavec_{t-1} + \vec{w}_t, \qquad \vec{w}_t \sim \N_N(\vec{0}, W_t),
+\end{equation*}
+\begin{equation*}
+``G" =  \begin{bmatrix}
+. & \beta_3 & .\\
+\beta_2 & \beta_1 & \beta_5\\
+. & \beta_4 & .\\
+\end{bmatrix}
+\end{equation*}
+\end{itemize}
+\end{frame}
+
+\begin{comment}
+
+\frame{
+\frametitle{STAR(1) (forward) model}
+\begin{center}
+\movie{\includegraphics[height=0.85\textheight]{star1frame}}{../19-05-Montreal/fig/star1prior.mp4}
+\end{center}
+}
+
+\end{comment}
+
+
+\begin{frame}
+\frametitle{Gauge data}
+\begin{itemize}
+\item Each of the $\Ng$ rain gauges are within a single grid cell
+\begin{itemize}
+\medskip
+\item numerous gauges may be within the same grid cell
+\end{itemize}
+\medskip
+\item Let $\tilde{y}^\g_{ti}$ be observation from gauge $i$ at time $t$
+\begin{itemize}
+\medskip
+\item observations are in mm/h
+\end{itemize}
+\medskip
+\item The measurements of the latent rain field ($\tilde{y}^\g_{ti}$) are censored below zero
+\medskip
+\item Treat observations of zero as \textit{unobserved} (negative) values
+\medskip
+\item Suppose there exists a (partially observed) process $\vec{Y}_t^\g \in \mathbb{R}^\Ng$ such that
+\begin{equation*}
+\qquad \qquad \tilde{Y}_{ti}^\g = Y_{ti}^\g \; \mathbb{I}(Y_{ti}^\g > 0), \qquad \text{for} \; i=1,\dots,\Ng.
+\end{equation*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{itemize}
+\bigskip
+\item Assume
+\begin{equation*}
+\qquad  \Ygt = \mathcal{I}^\g \thetavec_t + \mu^\g \vec1 +  \gamG + \vec\epsilon^\g_t,  \qquad \vec\epsilon^{\g}_t \sim \N_\Ng(\vec0,(1/\phig) \INGNG ),
+\end{equation*}
+\bigskip
+\vspace{-0.7cm}
+\item  $\mathcal{I}^\g$ is an $\Ng \times N$ dimensional matrix where row~$i$ contains a 1 in the column corresponding to the grid location of rain gauge~$i$, and zeros in the remaining columns
+\bigskip
+\item $\mu^\g \in \mathbb{R}$ represents the mean gauge observation
+\bigskip
+\item $\gamG \in \mathbb{R}^\Ng$ is a vector of gauge specific biases (random effects)
+\bigskip
+\item $\phig \in \mathbb{R}_{>0}$ is the gauge precision
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Radar data}
+\begin{itemize}
+\item Radar provides radar reflectivity factor, Z
+\bigskip
+\item The Z/R relation is
+\[
+Z = aR^b
+\]
+where $R$ is the rain rate in mm/h
+\bigskip
+\item $a$ and $b$ depend on the rain droplet distribution
+\bigskip
+\item Typically $a \in (200,600)$ and $b \in(1.4,2.0)$
+\begin{itemize}
+\medskip
+\item we choose $a=296$ and $b = 1.47$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{comment}
+\begin{frame}
+\begin{itemize}
+\bigskip
+\item Radar observations are not equally distributed over the field
+\medskip
+\begin{itemize}
+\item elevation angle of $3^\circ$ 
+\medskip
+\item radial resolution of $150$m
+\medskip
+\item angular resolution of $1^\circ$
+\end{itemize}
+\bigskip
+\item Map (converted) radar observations $R$ onto the lattice grid
+\bigskip
+\item Let $\tilde{y}^\tr_{ti}$ be the average of the values that fall within grid cell $i$
+\bigskip
+\item The measurements of the latent rain field ($\tilde{y}^\tr_{ti}$) are censored below zero
+\bigskip
+\end{itemize}
+\end{frame}
+\end{comment}
+
+\begin{frame}
+\begin{itemize}
+\item Treat observations of zero as \textit{unobserved} (negative) values
+\bigskip
+\item Suppose there exists a (partially observed) process $\vec{Y}_t^\tr \in \mathbb{R}^N$ such that
+\begin{equation*}
+\qquad \qquad \tilde{Y}_{ti}^\tr = Y_{ti}^\tr  \; \mathbb{I}(Y_{ti}^\tr > 0), \qquad \text{for} \; i=1,\dots,N.
+\end{equation*}
+\item Assume
+\begin{equation*}
+\qquad  \qquad  \vec{Y}_t^\tr = \psi \thetavec_t + \mu^\tr \vec1 + \vec\epsilon^{\text{r}}_t,    \qquad \vec\epsilon^{\text{r}}_t \sim \N_N(\vec0,1/\phir \INN )
+\end{equation*}
+\item $\psi \in \mathbb{R}$ is a scaling parameter to calibrate the radar observations to the rain field
+\medskip
+\item $\mu^\tr \in \mathbb{R}$ represents the mean radar field
+\medskip
+\item $\phir \in \mathbb{R}_{>0}$ is the radar precision
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{The model}
+The full model is
+\begin{align*}
+\hspace{2cm} \tilde{\vec{Y}}_{t}^\tr &= \vec{Y}_{t}^\tr  \; \mathbb{I}(\vec{Y}_{t}^\tr > \vec{0}), \\
+ \tilde{\vec{Y}}_{t}^\g &= \vec{Y}_{t}^\g  \; \mathbb{I}(\vec{Y}_{t}^\g > \vec{0}), \\
+\Yrt &= \psi \thetavec_t + \mu^\tr \vec1 + \vec\epsilon^{\text{r}}_t,   & \vec\epsilon^{\text{r}}_t &\sim \N_N(\vec0,1/\phir \INN ), \\
+\Ygt &= \mathcal{I}^\g \thetavec_t + \mu^\g \vec1 + \gamG + \vec\epsilon^\g_t,  &\vec\epsilon^{\g}_t &\sim \N_\Ng(\vec0,1/\phig \INGNG ), \\
+\thetavec_t &= G\thetavec_{t-1} + \vec{w}_t, & \vec{w}_t &\sim \N_{N}(\vec0,1/\phi^\theta \INN),
+\end{align*}
+\bigskip
+where
+\begin{equation*}
+``G" =  \begin{bmatrix}
+. & \beta_3 & .\\
+\beta_2 & \beta_1 & \beta_5\\
+. & \beta_4 & .\\
+\end{bmatrix}
+\end{equation*}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Model semantics}
+  \begin{itemize}
+\item  The radar data provides a useful high-resolution overview of where rain is, and where it is moving
+\item Rain gauge data is useful for calibrating the radar data in terms of actual water hitting the ground
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Censored DLM}
+If we let $\tilde{\vec{y}}_t=
+\left(\begin{matrix}
+\tilde{\vec{y}}_t^\tr \\
+\tilde{\vec{y}}_t^\g
+\end{matrix}\right)$, then an equivalent model specification is
+\begin{align*}
+\hspace{1cm} \tilde{\vec{Y}}_{t} &= \vec{Y}_{t}^*  \; \mathbb{I}(\vec{Y}_{t}^* > \vec{0}), \\
+\Yt  &= \vec{Y}_{t}^* - (\mu^\tr \lrvec + \mu^\g \lgvec + \Mg\gamG) \\
+\Yt  &= F \thetavec_t  + \vec{v}_t, & \vec{v}_t &\sim \N_{N+\Ng}(\vec0,V ),\\
+\thetavec_t &= G\thetavec_{t-1} + \vec{w}_t, & \vec{w}_t &\sim \N_{N}(\vec0,1/\phi^\theta \INN),
+\end{align*}
+\bigskip
+where
+\[
+F = 
+\begin{bmatrix}
+\psi \INN \\
+\mathcal{I}^\g
+\end{bmatrix},
+\qquad
+V = 
+\begin{bmatrix}
+1/\phir \INN & 0_{N\times\Ng}\\
+0_{\Ng\times N} & 1/\phig \INGNG
+\end{bmatrix}
+\]
+\end{frame}
+
+
+
+
+\subsection{Bayesian Inference}
+\begin{frame}
+\frametitle{Bayesian Inference via MCMC}
+\bigskip
+\begin{itemize}
+\item Let $\D_o=\{\tilde{y}^\tr_{ti},\tilde{y}^\g_{tj} : \tilde{y}_{ti}^\tr \neq 0 \lor \tilde{y}_{tj}^\g \neq 0, \forall \; t,i,j \}$ be the collection of \textit{observed data}
+\bigskip
+\item Let $\D_c=\{\tilde{y}^\tr_{ti},\tilde{y}^\g_{tj} : \tilde{y}_{ti}^\tr = 0 \lor \tilde{y}_{tj}^\g=0, \forall \; t,i,j \}$ be the collection of censored (\textit{unobserved}) data
+\bigskip
+\item Let $\vec{\rho}= ( \phir,\phig,\betavec,\mu^\tr,\mu^\g,\psi,\gamG)$
+\bigskip
+\item Unknown parameters are $(\thetavec_{0:T}$, $\vec{\rho}, \D_c)$
+
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Bayesian Inference via MCMC}
+\bigskip
+\begin{itemize}
+\item Given a ``sensible'' prior it is fairly straightforward to draw posterior samples of $\vec{\rho}$ from $\pi(\vec\rho|\D_o,\D_c,\thetavec_{0:T})$
+\bigskip
+\item It is also straightforward to draw from $\pi(\D_c|\D_o,\vec\rho,\thetavec_{0:T})$
+\bigskip
+\item State inference is typically achieved by drawing $\thetavec_{0:T}$ from $\pi(\thetavec_{0:T}|\D, \vec\rho)$ using the FFBS algorithm
+\bigskip
+\item Unfortunately the FFBS algorithm is not practical when the dimension of the state and/or observation is large
+\end{itemize}
+\end{frame}
+
+
+
+\begin{comment}
+\begin{frame}
+\frametitle{FFBS Issues}
+\begin{itemize}
+\item Each component of $(\thetavec_{0:T}, \vec{Y}_{1:T})$ is Gaussian $\Longrightarrow$ all marginal/conditional distributions are also Gaussian
+\bigskip
+\item The Kalman Filter is a mechanism for determining the first and second moments of all the relevant Gaussian distributions
+\bigskip
+\item We can then ``backwards sample'' from the appropriate distributions to obtain (Gibbs) draws for $\thetavec_{0:T}$
+\bigskip
+\item A general FFBS algorithm is
+\medskip
+\begin{itemize}
+\item Run the Kalman Filter
+\medskip
+\item For $t=T,\dots,0$ draw $\thetavec_t| \cdot \sim \N_N(\cdot,\cdot)$
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{The Kalman Filter}
+\small
+Assuming $\thetavec_0 \sim \N_N(\mvec_0,C_0)$, then for each time $t=1,\dots$
+\begin{itemize}
+\item The one-step-ahead predictive distribution of the states is
+\[
+\thetavec_t|\vec{y}_{1:t-1} \sim \N_N(\vec{a}_t,R_t) \qquad \text{where} \qquad 
+\begin{matrix*}[l]
+\vec{a}_t = G_t \mvec_{t-1} \\
+R_t = G_tC_{t-1}G_t' + W_t\\
+\end{matrix*} 
+\]
+\item The one-step-ahead predictive distribution of the observations is
+\[
+\vec{Y}_t|\vec{y}_{1:t-1} \sim \N_N(\vec{f}_t, Q_t) \qquad \text{where} \qquad 
+\begin{matrix*}[l]
+\vec{f}_t = F_t \vec{a}_t \\
+ Q_t = F_tR_tF_t' + V_t
+\end{matrix*} \hspace{0.5cm}
+\] 
+\item The filtering distribution of the state at time $t$ is
+\[
+\phantom{_{-1}} \thetavec_t|\vec{y}_{1:t} \sim \N_N(\mvec_t,C_t) \qquad \text{where} \qquad
+\begin{matrix*}[l]
+\mvec_t = \vec{a}_t + K_t\vec{e}_t \\
+C_t = R_t - K_tF_tR_t
+\end{matrix*} \
+\] 
+$\vec{e}_t = \vec{y}_t-\vec{f}_t$ is the residual error and $K_t = R_tF_t'Q_t^{-1}$ is the Kalman gain
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{The Kalman Filter}
+\small
+Assuming $\thetavec_0 \sim \N_N(\mvec_0,C_0)$, then for each time $t=1,\dots$
+\begin{itemize}
+\item The one-step-ahead predictive distribution of the states is
+\[
+\thetavec_t|\vec{y}_{1:t-1} \sim \N_N(\vec{a}_t,R_t) \qquad \text{where} \qquad 
+\begin{matrix*}[l]
+\vec{a}_t = G_t \mvec_{t-1} \\
+\red{R_t = G_tC_{t-1}G_t' + W_t}\\
+\end{matrix*} 
+\]
+\item The one-step-ahead predictive distribution of the observations is
+\[
+\vec{Y}_t|\vec{y}_{1:t-1} \sim \N_N(\vec{f}_t, Q_t) \qquad \text{where} \qquad 
+\begin{matrix*}[l]
+\vec{f}_t = F_t \vec{a}_t \\
+\red{ Q_t = F_tR_tF_t' + V_t}
+\end{matrix*} \hspace{0.5cm}
+\] 
+\item The filtering distribution of the state at time $t$ is
+\[
+\phantom{_{-1}} \thetavec_t|\vec{y}_{1:t} \sim \N_N(\mvec_t,C_t) \qquad \text{where} \qquad
+\begin{matrix*}[l]
+\mvec_t = \vec{a}_t + K_t\vec{e}_t \\
+\red{C_t = R_t - K_tF_tR_t}
+\end{matrix*} \
+\] 
+$\vec{e}_t = \vec{y}_t-\vec{f}_t$ is the residual error and \red{$K_t = R_tF_t'Q_t^{-1}$} is the Kalman gain
+\end{itemize}
+\end{frame}
+
+\end{comment}
+
+
+\begin{frame}
+\frametitle{The Ensemble Kalman Smoother (EnKS)}
+\bigskip
+\begin{itemize}
+\item The EnKS is an approximate (forward only) method for obtaining posterior draws from $\pi(\thetavec_{0:T}|\D, \vec\rho)$
+\bigskip
+\item Consider a collection of~$\Ne$ particles (an ensemble) that are ``draws'' from the appropriate distributions
+\bigskip
+\item Propagate and shift the particles such that the expectation and variance (of the ensemble members) is that of the true distribution
+\bigskip
+\item Exact samples of $\thetavec_{0:T}$ are obtained as $\Ne \to \infty$ 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\small
+Initialise: draw $\vec\theta_{0|0}^j \indep \N_N(\mvec_0, C_0)$ for $j=1,\dots,\Ne$ \\
+For $t=1,\dots,T$
+\begin{enumerate}
+\item Forecast step: for $j=1,\dots,\Ne$
+\begin{itemize}
+\item Let $\tilde\thetavec_\tgtm^j = G\thetavec_\tmgtm^j$ 
+\item Let $\thetavec_\tgtm^j = \tilde\thetavec_\tgtm^j + \vec{w}_t^j$ where  $\vec{w}^j_t \indep \N_N(\vec{0},W_t)$ 
+\end{itemize}
+\item Smoothing step: for $j=1,\dots,\Ne$
+\begin{itemize}
+\item Generate pseudo-observations $\tilde{\vec{y}}^j_t = F_t \vec{\theta}_\tgtm^j + \vec{v}_t^j$ where $\vec{v}_t^j \indep \N_N(\vec{0}, V_t)$
+\item For $\ell=0,\dots,t$
+\begin{itemize}
+\item Compute (the smoothed state) $\vec\theta_{\ell|t}^j = \vec\theta_{\ell|t-1}^j + \hat{K}_{\ell,t}(\vec{y}_t - \tilde{\vec{y}}^j_t)$
+\end{itemize}
+\end{itemize}
+\end{enumerate}
+$\hat{K}_{\ell,t} = \Sigma_{\ell,\tgtm}^{\theta y} \left( \Sigma_{t,\tgtm}^{yy} \right)^{-1}$ is the (ensemble based) approx Kalman gain \\
+\phantom{row} 
+$\Sigma^{\theta y}_{\ell t|t-1} = \text{Cov}(\Theta_{\ell|t-1},\tilde{Y}_\tgtm)$ is the sample cross-covariance of the ensembles of states $\Theta_{\ell|t-1}$ and pseudo observations $\tilde{Y}_\tgtm$
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Real data analysis}
+  \mbox{} \hfill $N = 36 \times 36$ \quad $\Ne=100$
+\begin{figure}[h!]
+\begin{center}
+        \includegraphics[width=0.8\linewidth, clip, trim = 0 0 0 0]{post_med_uq_radar_location.pdf} \vspace{0.5cm}
+                \includegraphics[width=0.8\linewidth, clip, trim = 0 0 0 0]{post_med_uq_radar_location_2.pdf}
+\end{center}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Deployment in the live demonstrator system}
+  \begin{itemize}
+  \item The model is deployed into the live demonstrator in two components
+  \item Static parameter estimation is run off-line, but regularly updated
+  \item Conditional on the static parameters, the short-term forecasting model is run on-line, generating forecasted spatio-temporal rainfall fields
+  \item The forecasted rainfall fields are used as input for the hydrodynamical urban flood-forecasting model
+    \item The urban flood forecasting model is run on-line and coupled to other decision support components
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+\centerline{\includegraphics[height=\textheight]{h_3600}}
+\end{frame}
+
+\begin{frame}
+\centerline{\includegraphics[height=\textheight]{h_7200}}
+\end{frame}
+
+\begin{frame}
+\centerline{\includegraphics[height=\textheight]{h_10800}}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Application Summary}
+  \begin{itemize}
+  \item Censored continuous fields can be a useful model for spatial data containing many zeros
+  \item Lattice Markov spatio-temporal models can be cast in the DLM framework
+    \item Serious computational challenges associated with large spatio-temporal models
+%  \item Complex models, data, inference and forecasting algorithms lead to non-trivial software engineering challenges in addition to the usual algorithmic and computational challenges
+%  \item CS principles of modularity and compositionality are important for developing scalable and re-usable models and algorithms
+%    \item Statisticians have many powerful (exact) Monte Carlo Bayesian inference algorithms appropriate for both state and parameter inference for Markov processes, but these don't always scale well to very high dimensions
+  \item EnKF algorithms can be usefully embedded into Bayesian parameter inference algorithms
+    \item EnKF/S can be useful for sampling (tractable) DLMs (in preference to FFBS) if the state dimension is very high
+  \end{itemize}
+  \vfill
+
+% \alert{\url{darrenjw.github.io}} \hfill \url{@darrenjw}
+  
 \end{frame}
 
 

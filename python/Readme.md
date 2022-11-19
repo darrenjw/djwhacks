@@ -13,8 +13,7 @@ Reminders for `virtualenv`: https://pythonbasics.org/virtualenv/
 virtualenv -p python3 myEnv
 
 ./myEnv/bin/activate
-
-
+source ./myEnv/bin/activate
 
 deactivate
 ```

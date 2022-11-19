@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys,random
 
@@ -10,7 +10,7 @@ def pwgen(n):
       sys.stdout.write(str(ri))
     else:
       sys.stdout.write(chr(ri+87))
-  print
+  print("")
 
 
 if __name__=='__main__':

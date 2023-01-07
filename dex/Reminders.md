@@ -47,7 +47,7 @@ Add something like:
 
 ```
 
-to your `.emacs` file.
+to your `~/.emacs` file.
 
 
 ## Installation

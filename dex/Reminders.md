@@ -37,6 +37,19 @@ make run-examples/regression
 
 ```
 
+## Emacs editing mode
+
+Add something like:
+
+```lisp
+;; Dex mode
+(load "~/path/to/dex-lang/misc/dex.el")
+
+```
+
+to your `.emacs` file.
+
+
 ## Installation
 
 ### Ubuntu

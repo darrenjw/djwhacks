@@ -74,17 +74,16 @@ col, set,start,end,deltat,zip},
 
 \begin{document}
 
-\title{Functional languages for data science\\(at scale)}
+\title{Compositional approaches to scalable modelling and Bayesian computation}
 \author{\textbf{\large Darren Wilkinson} \\
 \url{@darrenjw}\hfill \alert{\url{darrenjw.github.io}}\\
 \vspace{2ex}%
 Durham University, UK}
-\date{\textbf{DUDSS meeting}\\19th January 2023\\\mbox{}\hfill\alert{\url{github.com/darrenjw/talks}}
+\date{\textbf{Improbable Webinar}\\27th June 2022\\\mbox{}\hfill\alert{\url{github.com/darrenjw/talks}}
 }
   
 \frame{\titlepage}
 
-\begin{comment}
 
 \frame{
   \frametitle{Overview}
@@ -93,27 +92,8 @@ Durham University, UK}
   \tableofcontents
 }
 
-\end{comment}
 
-
-% \section{Background}
-
-
-\frame{
-\frametitle{Current data science languages}
-\begin{itemize}
-\item Currently, the most popular programming languages for data science are R and Python
-  \begin{itemize}
-  \item R is a language specifically designed for statistical computing, and is great for exploratory data analysis, visualisation and statistical modelling
-  \item Python is a general purpose programming language that is very effective for data science when used in conjunction with appropriate libraries, and has good interfaces to a variety of specialised machine learning frameworks
-    \end{itemize}
-  \item All aspiring data scientists should be very familiar with at least one of R and Python (ideally both), and nothing in this talk changes that!
-    \item In this talk we will examine the limitations of commonly used languages, and why modern functional programming languages might make a better future data science platform
-\end{itemize}
-}
-
-
-
+\section{Background}
 
 \begin{frame}{Background}
 \protect\hypertarget{background}{}
@@ -121,15 +101,16 @@ Durham University, UK}
 \begin{itemize}
 
 \item
-  For non-trivial problems, statistical computation and machine learning typically relies on
-  computationally intensive methods%, such as MCMC, SMC or ABC
+  For non-trivial problems, Bayesian computation typically relies on
+  computationally intensive methods, such as MCMC, SMC or ABC --- similar
+  structure to stochastic simulation models 
 \item
   These often require a custom implementation in some programming
   language
 \item
   All of the languages commonly used are very old, dating back to the
   dawn of the computing age, and are quite unsuitable for scalable and
-  efficient statistical computation
+  efficient Bayesian computation
 \item
   Interpreted dynamic languages such as R, Python and Matlab are far too
   slow, among many other things
@@ -227,13 +208,6 @@ Durham University, UK}
 
 \end{frame}
 
-
-\begin{frame}
-  \frametitle{What does ChatGPT think?}
-\centerline{\includegraphics[width=\textwidth]{cgpt1}}
-\end{frame}
-
-
 \begin{frame}{Compositionality}
 \protect\hypertarget{compositionality}{}
 
@@ -260,8 +234,6 @@ Durham University, UK}
 \end{itemize}
 
 \end{frame}
-
-\begin{comment}
 
 \section{Bayesian computation}
 
@@ -301,10 +273,10 @@ Durham University, UK}
 \end{frame}
 
 
-% \begin{comment}
+\begin{comment}
 
 
-% \section{Background}
+\section{Background}
 
 
 \frame{
@@ -355,6 +327,7 @@ Durham University, UK}
 \subsection{Compositionality}
 
 
+
 \frame{
 \frametitle{Compositionality and modelling}
 \begin{itemize}
@@ -376,7 +349,6 @@ Durham University, UK}
 }
 
 
-\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Imperative pseudo--code}
@@ -420,8 +392,6 @@ Durham University, UK}
   Not obvious that one of these is naturally parallel\ldots
 \end{frame}
 
-
-\begin{comment}
   
 \frame{
   \frametitle{Modern programming language design}
@@ -432,6 +402,7 @@ Durham University, UK}
     \item Modern functional programming languages are emerging as better suited to modern hardware
     \end{itemize}
   }
+
 
 
 \subsection{Functional Programming}
@@ -446,8 +417,6 @@ Durham University, UK}
   \end{itemize}
   }
 
-\end{comment}
-
 
 \frame{
   \frametitle{Functional programming}
@@ -458,8 +427,6 @@ Durham University, UK}
   \item Functions are first class objects, and \alert{higher-order functions} (HOFs) are used extensively --- functions which return a function or accept a function as argument
   \end{itemize}
   }
-
-\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{Concurrency, parallel programming and shared mutable state}
@@ -472,10 +439,9 @@ Durham University, UK}
   \end{itemize}
 \end{frame}
 
-\end{comment}
   
 \frame{
-  \frametitle{Ideal languages for statistical computing and ML}
+  \frametitle{Ideal languages for statistical computing}
   \begin{itemize}
   \item We should approach the problem of statistical modelling and efficient computation in a modular, composable, functional way
   \item To do this we need programming languages which are:
@@ -489,13 +455,6 @@ Durham University, UK}
     \item \alert{Scala} is a popular language which meets the above constraints
   \end{itemize}
   }
-
-
-\begin{frame}
-  \frametitle{What does ChatGPT think?}
-\centerline{\includegraphics[width=\textwidth]{cgpt2}}
-\end{frame}
-
 
 
 \begin{frame}[fragile]
@@ -516,7 +475,6 @@ Durham University, UK}
       |= List(List(1,2),List(3,4),List(5,6),List(7,8))|
     \end{itemize}
   \end{itemize}
-  \mbox{}\hfill\alert{[Scastie]}
 \end{frame}
 
   
@@ -562,8 +520,6 @@ Durham University, UK}
   \end{itemize}
 \end{frame}
 
-\begin{comment}
-
 \begin{frame}[fragile]
   \frametitle{Other monadic types: Prob/Gen/Rand}
   \begin{itemize}
@@ -605,7 +561,7 @@ Durham University, UK}
   \end{itemize}
 \end{frame}
 
-% \begin{comment}
+\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{Log-likelihood calculation for iid model}
@@ -622,7 +578,7 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \end{itemize}
 \end{frame}
 
-% \end{comment}
+\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Distributed parallel collections with Apache Spark}
@@ -647,17 +603,6 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}  
 \end{frame}
 
-
-\begin{frame}
-\centerline{\includegraphics[width=0.9\textwidth]{cgpt3}}
-\end{frame}
-
-
-\begin{frame}
-\centerline{\includegraphics[width=0.85\textwidth]{cgpt4}}
-\end{frame}
-
-
 \begin{frame}
   \frametitle{Functional algorithms}
   \begin{itemize}
@@ -668,8 +613,7 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
-\begin{comment}
-  
+
 \begin{frame}
   \frametitle{JAX ecosystem}
   \begin{itemize}
@@ -679,31 +623,25 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
-\end{comment}
 
 \begin{frame}
-  \frametitle{Dex}
+  \frametitle{DEX}
   \begin{itemize}
   \item Although the conceptual computational model of JAX has a number of good features, the embedding of such a language in a dynamic, interpreted, imperative language such as Python has a number of limitations and drawbacks
   \item A similar issue arises with Spark -- although it is possible to develop Spark applications in Python using PySpark, in practice most non-trivial applications are developed in Scala, for good reason
   \item This motivates the development of a JAX-like array processing DSL in a strongly typed functional programming language
-    \item \alert{Dex} (\url{github.com/google-research/dex-lang}) is a new experimental (Haskell-like) language in this space with a number of interesting and desirable features
+    \item \alert{DEX} (\url{github.com/google-research/dex-lang}) is a new experimental (Haskell-like) language in this space with a number of interesting and desirable features
   \end{itemize}
 \end{frame}
-
-\begin{frame}
-\centerline{\includegraphics[height=0.95\textheight]{cgpt5}}
-\end{frame}
-
 
 \begin{frame}
   \frametitle{MCMC for a fully Bayesian logistic regression model}
   \centerline{\alert{\url{github.com/darrenjw/logreg}}}
   \begin{itemize}
-  \item Repo containing code examples for various MCMC algorithms for a Bayesian analysis of a logistic regression model
-  \item Code in R, rjags, rstan, Python (with numpy), Python (with JAX), BlackJAX, numPyro, PyMC, Scala, Spark, Haskell, Dex, C
+  \item (WIP) repo containing code examples for RW MH, MALA, UL, and HMC MCMC algorithms for a Bayesian analysis of a logistic regression model
+  \item Code in R, rjags, rstan, Python (with numpy), Python (with JAX), BlackJAX, numPyro, PyMC, Scala, Spark, Haskell, Julia, C, etc.
   \item Running on a single core on my laptop, a JAX version of an MCMC scheme runs over 100 times faster than the same algorithm in regular Python with numpy
-    \item \emph{tl;dr} if you have a relatively simple small-to-medium sized Bayesian model, and the only thing you care about is speed, somehow express your log-posterior in JAX and then sample it with BlackJAX
+    \item \emph{tl;dr} if you have a relatively simple small-to-medium sized problem, and the only thing you care about is speed, somehow express your log-posterior in JAX and then sample it with BlackJAX
   \end{itemize}
 \end{frame}
 
@@ -715,6 +653,8 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   CODE SNIPPETS HERE!
   
 \end{frame}
+
+\end{comment}
 
 \section{Category Theory}
 
@@ -728,6 +668,7 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
+\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{Examples of categories}
@@ -774,6 +715,7 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
+\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Functors}
@@ -845,11 +787,13 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
+\begin{comment}
 
 \begin{frame}
 \centerline{\includegraphics[height=0.9\textheight]{monad-is}}
 \end{frame}
 
+\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Kleisli category}
@@ -868,11 +812,14 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
+\begin{comment}
 
 \begin{frame}
 \centerline{\includegraphics[height=0.9\textheight]{say-monad}}
 \end{frame}
 
+
+\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Comonads}
@@ -888,6 +835,8 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
+
+\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{Distributed computation}
@@ -1105,6 +1054,7 @@ val poisson = Dglm.poisson(linear)
 \end{lstlisting}
 \end{frame}
 
+\end{comment}
 
 \begin{frame}[fragile]
   \frametitle{Comonads for statistical computation}
@@ -1117,6 +1067,7 @@ val poisson = Dglm.poisson(linear)
   \end{itemize}
 \end{frame}
 
+\begin{comment}
 
 \begin{frame}[fragile]
 \frametitle{Linear filters for Streams and Images}  
@@ -1201,6 +1152,7 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
   \end{itemize}
 \end{frame}
 
+\end{comment}
 
 \section{Probability monads}
 
@@ -1230,6 +1182,7 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
   \end{itemize}
 \end{frame}
 
+\begin{comment}
 
 \begin{frame}[fragile]
 \frametitle{MCMC as a Stream}
@@ -1396,6 +1349,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 \end{lstlisting}
 \end{frame}
 
+\end{comment}
 
 \begin{frame}
   \frametitle{Composing probabilistic programs}
@@ -1408,6 +1362,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \end{itemize}
 \end{frame}
 
+\begin{comment}
 
 \begin{frame}[fragile]
   \frametitle{Representation independence using the \emph{free} monad}
@@ -1430,6 +1385,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \end{itemize}
 \end{frame}
 
+\end{comment}
 
 \begin{frame}
   \frametitle{Compositionality of inference algorithms}
@@ -1441,9 +1397,10 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \end{itemize}
 \end{frame}
 
+\begin{comment}
 
 
-%\section{Summary and conclusions}
+\section{Summary and conclusions}
 
 %\subsection{Summary}
 
@@ -1457,6 +1414,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 \item Monadic composition is \alert{the} \emph{canonical} approach to constructing flexible, composable PPLs (and AD systems, and deep NNs, ...)
   \end{itemize}
 \end{frame}
+
 
 
 \begin{frame}
@@ -1473,11 +1431,8 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \end{itemize}
 \end{frame}
 
-\end{comment}
 
-
-
-% \subsection{Conclusions}
+\subsection{Conclusions}
 
 \frame{
   \frametitle{Conclusions}
@@ -1490,12 +1445,14 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
     \item \alert{Functional}
       \item and support \alert{concurrency}, \alert{parallelism}, \alert{typeclasses} and \alert{higher-kinded types}
     \end{itemize}
-  \item \alert{Scala} and \alert{Spark} provide a nice illustration of the power of this approach, but there are other interesting languages, including: Haskell, Idris, OCaml, Dex, \ldots
+  \item \alert{Scala} and \alert{Spark} provide a nice illustration of the power of this approach, but there are other interesting languages, including: Haskell, Idris, OCaml, Frege, Eta, PureScript, \ldots
   \end{itemize}
   }
 
-% \end{comment}
+\end{comment}
 
+\hypertarget{conclusion}{%
+\section{Conclusion}\label{conclusion}}
 
 \begin{frame}{Summary}
 \protect\hypertarget{summary}{}
@@ -1503,8 +1460,8 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 \begin{itemize}
 
 \item
-  All of the programming languages commonly used for statistical
-  computation and ML are poorly suited to the task
+  All of the programming languages commonly used for Bayesian
+  computation are poorly suited to the task
 \item
   Functional programming languages borrowing ideas from \alert{Cartesian
   closed categories} provide an excellent foundation for scalable, compositional
@@ -1524,16 +1481,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 
 \end{frame}
 
-\frame{
-  \frametitle{Further information}
-  \vfill
-\centerline{\url{https://github.com/darrenjw/talks/}}
-  \vfill
-}
 
-
-
-\begin{comment}
 
 \begin{frame}
   \frametitle{References}
@@ -1595,7 +1543,6 @@ Further information: \alert{\url{github.com/darrenjw/talks}}
   
 \end{frame}
 
-\end{comment}
 
 
 \end{document}

@@ -1,6 +1,6 @@
 # Makefile
 
-UTILPATH=/home/ndjw1/src/git/logreg/Dex
+UTILPATH=/home/darren/src/git/logreg/Dex
 
 LIBPATH=BUILTIN_LIBRARIES:$(UTILPATH):.
 

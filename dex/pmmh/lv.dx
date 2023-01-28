@@ -2,7 +2,7 @@
 The transition kernel of the discrete stochastic L-V process
 
 import djwutils -- load up my Dex utils from the logreg repo
-import stats -- WIP stats library, currently in logreg repo
+import stats
 
 -- Transition kernel for the LV process
 def stepLV (th: Fin 3=>Float) (t: Float) (x: Fin 2=>Int) (k: Key) : (Fin 2=>Int) =

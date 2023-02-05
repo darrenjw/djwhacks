@@ -19,7 +19,8 @@ libraryDependencies  ++= Seq(
   "org.typelevel" %% "cats-free" % "2.8.0",
   "org.typelevel" %% "cats-laws" % "2.8.0",
   "org.typelevel" %% "cats-effect" % "3.2.2",
-  "org.typelevel" %% "discipline-core" % "1.1.5"
+  "org.typelevel" %% "discipline-core" % "1.1.5",
+  "org.scalanlp" %% "breeze" % "2.1.0"
 )
 
 val monocleVersion = "3.0.0"
@@ -43,7 +44,10 @@ resolvers ++= Seq(
     "https://oss.sonatype.org/content/repositories/releases/"
 )
 
-scalaVersion := "3.1.2"
+scalaVersion := "3.2.1"
+
+fork := true
+
 
 
 // eof

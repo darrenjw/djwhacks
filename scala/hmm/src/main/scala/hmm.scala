@@ -1,15 +1,34 @@
 /*
 hmm.scala
-Stub for Scala Cats code
+
+HMM implementations
+
 */
 
 import cats.*
 import cats.implicits.*
-import cats.effect.{IO, IOApp}
+import cats.effect.{IOApp, IO, ExitCode}
 
-object CatsApp extends IOApp.Simple:
+import breeze.linalg.*
+import breeze.numerics.*
 
-  val l = List(1,2) |+| List(3,4)
+object HmmApp extends IOApp.Simple:
 
-  def run = IO{ println(l) }
+  def readData : IO[List[Double]] = IO {
+    scala.io.Source.fromFile("short.txt").getLines.toList.map(_.toDouble)
+  }
 
+
+  def forwardStep[A](x: A, pi: DenseVector[Double], P: DenseMatrix[Double],
+      f: (Int, A) => Double): DenseVector[Double] = ???
+
+  def forward[A](x: List[A], pi0: DenseVector[Double])(
+      f: (Int, A) => Double)(P: DenseMatrix[Double]) : List[DenseVector[Double]] = ???
+
+
+
+
+  def run = for
+    x <- readData
+    _ <- IO.println(x)
+  yield ExitCode.Success

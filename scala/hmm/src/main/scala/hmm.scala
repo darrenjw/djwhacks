@@ -44,7 +44,7 @@ object HmmApp extends IOApp.Simple:
 
 
 
-  // Some lens based functions (illustrative - not for big data sets)
+  // Some lens based functions (illustrative - not for big data sets - will blow stack)
 
   def lens[A](la: List[A], P: DMD, f: A => DVD): Lens[DVD, DVD] =
     val ll = la.map(a => Lens(forwardStep(P, f)(_, a))((s: DVD) => backStep(P)(s, _)))
@@ -71,6 +71,8 @@ object HmmApp extends IOApp.Simple:
     _ <- IO.println(x)
     smo = smooth(x, pi0)(model)(P)
     _ <- IO.println(smo)
+    _ <- IO.println(smo.head)
+    _ <- IO.println(smo.drop(1).head)
     l = lens(x, P, model)
     _ <- IO.println(l.get(pi0))
     res = l.replace(l.get(pi0))(pi0)

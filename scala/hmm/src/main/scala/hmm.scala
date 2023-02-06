@@ -14,14 +14,14 @@ import breeze.numerics.*
 import breeze.stats.distributions.Gaussian
 import breeze.stats.distributions.Rand.VariableSeed.randBasis
 
+import monocle.Lens
+
 type DVD = DenseVector[Double]
 type DMD = DenseMatrix[Double]
 
 object HmmApp extends IOApp.Simple:
 
-  def readData : IO[List[Double]] = IO(
-    scala.io.Source.fromFile("short.txt").getLines.toList.map(_.toDouble)
-  )
+  // Some generic HMM functions
 
   def forwardStep[A](P: DMD, f: A => DVD)(pi: DVD, a: A): DVD =
     val unn = f(a) *:* (P.t * pi)
@@ -31,10 +31,11 @@ object HmmApp extends IOApp.Simple:
     la.scanLeft(pi0)(forwardStep(P, f))
 
   def backStep[A](P: DMD)(s: DVD, f: DVD): DVD =
-    f *:* (P * (s /:/ (P.t * f)))
+    f *:* (P * (s /:/ (P.t * f))) // could explicitly normalise for stability if necessary
 
   def back[A](fpl: List[DVD])(P: DMD): List[DVD] =
-    val rev = fpl.drop(1).reverse
+    val rev = fpl.//drop(1). // don't drop one here to smooth back to time 0
+      reverse
     val init = rev.head
     rev.drop(1).scanLeft(init)(backStep(P)).reverse
 
@@ -43,16 +44,35 @@ object HmmApp extends IOApp.Simple:
 
 
 
+  // Some lens based functions (illustrative - not for big data sets)
 
+  def lens[A](la: List[A], P: DMD, f: A => DVD): Lens[DVD, DVD] =
+    val ll = la.map(a => Lens(forwardStep(P, f)(_, a))((s: DVD) => backStep(P)(s, _)))
+    // compose the list of lenses into a single lens and return the composed lens
+    ll reduce (_ andThen _)
+
+
+  // Set up example
+
+  def readData : IO[List[Double]] = IO(
+    scala.io.Source.fromFile("short.txt").getLines.toList.map(_.toDouble)
+  )
 
   val pi0 = DenseVector(0.5, 0.5)
+
   val P = DenseMatrix((0.9, 0.1), (0.1, 0.9))
+
+  def model(x: Double): DVD =
+    DenseVector(Gaussian(0.0, 1.0).pdf(x), Gaussian(3.0, 1.0).pdf(x))
+
 
   def run = for
     x <- readData
     _ <- IO.println(x)
-    smo = smooth(x, pi0)(
-      (x: Double) => DenseVector(Gaussian(0.0, 1.0).pdf(x), Gaussian(3.0, 1.0).pdf(x)))(
-      P)
+    smo = smooth(x, pi0)(model)(P)
     _ <- IO.println(smo)
+    l = lens(x, P, model)
+    _ <- IO.println(l.get(pi0))
+    res = l.replace(l.get(pi0))(pi0)
+    _ <- IO.println(res)
   yield ExitCode.Success

@@ -44,15 +44,20 @@ object HmmApp extends IOApp.Simple:
 
 
   // Show how to do forward filtering with a (parallel) prefix scan
-  // illustrative - will underflow for big data sets currently - but easy to fix
-  // eg. could have a combine operation that rescales after multiply
+
+  // Currently using a linked list, so not actually parallel
 
   def forwardPS[A](la: List[A], pi0: DVD)(f: A => DVD)(P: DMD): List[DVD] =
     val lfap = la map (a => P * diag(f(a)))
-    val ps = lfap.scan(DenseMatrix.eye[Double](P.rows))(_ * _)
+    val ps = lfap.scan(DenseMatrix.eye[Double](P.rows))(multScale)
     val unn = ps map (_.t * pi0)
     val s = unn map (sum(_))
     (unn zip s) map ((vi, si) => vi / si)
+
+  def multScale(a: DMD, b: DMD): DMD =
+    val c = a * b
+    c / max(c) // scale by max to prevent numerical underflow
+
 
 
   // Some lens based functions

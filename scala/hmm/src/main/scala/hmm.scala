@@ -43,8 +43,20 @@ object HmmApp extends IOApp.Simple:
     back(forward(la, pi0)(f)(P))(P)
 
 
+  // Show how to do forward filtering with a (parallel) prefix scan
+  // illustrative - will underflow for big data sets currently - but easy to fix
+  // eg. could have a combine operation that rescales after multiply
 
-  // Some lens based functions (illustrative - not for big data sets - will blow stack)
+  def forwardPS[A](la: List[A], pi0: DVD)(f: A => DVD)(P: DMD): List[DVD] =
+    val lfap = la map (a => P * diag(f(a)))
+    val ps = lfap.scan(DenseMatrix.eye[Double](P.rows))(_ * _)
+    val unn = ps map (_.t * pi0)
+    val s = unn map (sum(_))
+    (unn zip s) map ((vi, si) => vi / si)
+
+
+  // Some lens based functions
+  //  illustrative - not for big data sets - will blow stack
 
   def lens[A](la: List[A], P: DMD, f: A => DVD): Lens[DVD, DVD] =
     val ll = la.map(a => Lens(forwardStep(P, f)(_, a))((s: DVD) => backStep(P)(s, _)))
@@ -77,4 +89,8 @@ object HmmApp extends IOApp.Simple:
     _ <- IO.println(l.get(pi0))
     res = l.replace(l.get(pi0))(pi0)
     _ <- IO.println(res)
+    fo = forward(x, pi0)(model)(P)
+    _ <- IO.println(fo)
+    fops = forwardPS(x, pi0)(model)(P)
+    _ <- IO.println(fops)
   yield ExitCode.Success

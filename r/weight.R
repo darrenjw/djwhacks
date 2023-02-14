@@ -21,9 +21,9 @@ plot(weekDate, bmi, type="l", col=4, lwd=2, ylim=c(20, 28),
 abline(h=25, col=2, lwd=1.5)
 abline(h=23, col=3)
 abline(h=21, col=5)
-abline(v=ymd("2019-03-05", tz="UTC"), col=5)
-abline(v=ymd("2020-03-14", tz="UTC"), col=5)
-abline(v=ymd("2022-01-04", tz="UTC"), col=5)
+abline(v=ymd("2019-03-05", tz="UTC"), col=5) # RIP RJB
+abline(v=ymd("2020-03-14", tz="UTC"), col=5) # First Covid lockdown
+abline(v=ymd("2022-01-04", tz="UTC"), col=5) # Started at Durham
 
 ## eof
 

@@ -27,6 +27,7 @@ object TsqrApp extends IOApp.Simple:
     val diff = a - b
     (sum(diff *:* diff) < tol)
 
+  @annotation.tailrec
   def tsqr(x: DMD, blockSize: Int = 2000, threshold: Int = 5000): DMD =
     val n = x.rows
     val m = x.cols

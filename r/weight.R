@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 ## weight.R
 ## Little script to plot my weight data over time
 ## Data extracted from an Excel spreadsheet

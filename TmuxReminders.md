@@ -1,4 +1,4 @@
-# Tmux reminders
+# tmux reminders
 
 ```bash
 tmux ls

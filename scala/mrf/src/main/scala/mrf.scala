@@ -194,7 +194,7 @@ object MrfApp extends IOApp.Simple:
     def mhKernel(pi: PImage[Double]): Double = {
       val sum = pi.up.extract+pi.down.extract+pi.left.extract+pi.right.extract
       val x0 = pi.extract
-      val x1 = x0 + Gaussian(0.0, 0.1).draw() // tune this!
+      val x1 = x0 + Gaussian(0.0, 1.0).draw() // tune this!
       val lap = v(-w*sum)(x0) - v(-w*sum)(x1)
       if (math.log(Uniform(0,1).draw()) < lap) x1 else x0
     }
@@ -268,15 +268,20 @@ object MrfApp extends IOApp.Simple:
   // Quartic MRF model sampler - HMC version
   def quartExampleHMC: IO[Unit] = IO {
     import breeze.stats.*
-    val w = 4.0
+    val w = 3.0
     val bdm = DenseMatrix.tabulate(500,600){
       case (i,j) => Gaussian(0,1.0).draw()
     } // random init
     val pim0 = PImage(0,0,BDM2I(bdm))
-    def v(l: Double)(x: Double): Double = l*x - 2*x*x +x*x*x*x
-    def lpi(pim: PImage[Double]): Double = ???
-    def glpi(pim: PImage[Double]): PImage[Double] = ???
-    val kern: PImage[Double] => PImage[Double] = hmcKernel(lpi, glpi)
+    def v(x: Double): Double = -2*x*x + x*x*x*x
+    def gv(x: Double): Double = -4*x + 4*x*x*x
+    def lpi(pim: PImage[Double]): Double = pim.
+      coflatMap(pim => w*pim.extract*(pim.right.extract + pim.down.extract) - v(pim.extract)).
+      reduce(_+_)
+    def glpi(pim: PImage[Double]): PImage[Double] = pim.
+      coflatMap(pim => w*(pim.up.extract+pim.down.extract+pim.left.extract+pim.right.extract) -
+        gv(pim.extract))
+    val kern: PImage[Double] => PImage[Double] = hmcKernel(lpi, glpi, 0.1, 50)
     def pims = LazyList.iterate(pim0)(kern)
     // render
     import breeze.plot.*
@@ -284,7 +289,7 @@ object MrfApp extends IOApp.Simple:
     //fig.visible = false
     fig.width = 1000
     fig.height = 800
-    pims.take(100).zipWithIndex.foreach{case (pim,i) => {
+    pims.take(20).zipWithIndex.foreach{case (pim,i) => {
       print(s"$i ")
       fig.clear()
       val p = fig.subplot(1,1,0)
@@ -299,6 +304,8 @@ object MrfApp extends IOApp.Simple:
   }
 
 
+
+  // def run = quartExample
 
   def run = quartExampleHMC
 

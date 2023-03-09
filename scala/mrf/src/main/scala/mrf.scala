@@ -14,6 +14,7 @@ import breeze.stats.distributions.Rand.VariableSeed.randBasis
 import scala.collection.parallel.immutable.ParVector
 import scala.collection.parallel.CollectionConverters.*
 
+import annotation.tailrec
 
 
 object MrfApp extends IOApp.Simple:
@@ -24,7 +25,7 @@ object MrfApp extends IOApp.Simple:
     def apply(x: Int, y: Int): T = data(x*h+y)
     def map[S](f: T => S): Image[S] = Image(w, h, data map f)
     def updated(x: Int, y: Int, value: T): Image[T] =
-      Image(w,h,data.updated(x*h+y,value))
+      Image(w, h, data.updated(x*h+y, value))
   }
 
   // Pointed image (with a focus/cursor)
@@ -44,32 +45,49 @@ object MrfApp extends IOApp.Simple:
     def up: PImage[T] = {
       val py = y-1
       val ny = if (py >= 0) py else (py + image.h)
-      PImage(x,ny,image)
+      PImage(x, ny, image)
     }
     def down: PImage[T] = {
       val py = y+1
       val ny = if (py < image.h) py else (py - image.h)
-      PImage(x,ny,image)
+      PImage(x, ny, image)
     }
     def left: PImage[T] = {
       val px = x-1
       val nx = if (px >= 0) px else (px + image.w)
-      PImage(nx,y,image)
+      PImage(nx, y, image)
     }
     def right: PImage[T] = {
       val px = x+1
       val nx = if (px < image.w) px else (px - image.w)
-      PImage(nx,y,image)
+      PImage(nx, y, image)
     }
   }
 
   // Provide evidence that PImage is a Cats Comonad
-  given Comonad[PImage] with {
+  given Comonad[PImage] with
     def extract[A](wa: PImage[A]) = wa.extract
     def coflatMap[A,B](wa: PImage[A])(f: PImage[A] => B): PImage[B] =
       wa.coflatMap(f)
     def map[A,B](wa: PImage[A])(f: A => B): PImage[B] = wa.map(f)
-  }
+
+  // Provide evidence that PImage is a Cats Apply
+  given Apply[PImage] with
+    def map[A,B](wa: PImage[A])(f: A => B): PImage[B] = wa.map(f)
+    def ap[A, B](ff: PImage[A=>B])(fa: PImage[A]): PImage[B] =
+      PImage(ff.x, ff.y, Image(ff.image.w, ff.image.h, (ff.image.data zip fa.image.data).map((ffi, fai) => ffi(fai))))
+
+  // Provide evidence that PImage is a Cats Reducible
+  given Reducible[PImage] with
+    def foldLeft[A, B](fa: PImage[A], b: B)(f: (B, A) => B): B =
+      fa.image.data.foldLeft(b)(f)
+    def foldRight[A, B](fa: PImage[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
+      fa.image.data.foldRight(lb)(f)
+    def reduceLeftTo[A, B](fa: PImage[A])(f: A => B)(g: (B, A) => B): B =
+      fa.image.data.tail.foldLeft(f(fa.image.data.head))(g)
+    def reduceRightTo[A, B](fa: PImage[A])(f: A => B)(g: (A, Eval[B]) => Eval[B]): Eval[B] =
+      fa.image.data.init.foldRight(Eval.later(f(fa.image.data.last)))(g)
+
 
   // convert to and from Breeze matrices
   import breeze.linalg.{Vector => BVec, _}
@@ -161,9 +179,11 @@ object MrfApp extends IOApp.Simple:
   }
 
 
+  import breeze.stats.distributions.{Gaussian, Uniform}
+
+
   // Quartic MRF model sampler
   def quartExample: IO[Unit] = IO {
-    import breeze.stats.distributions.{Gaussian, Uniform}
     import breeze.stats.*
     val w = 4.0
     val bdm = DenseMatrix.tabulate(500,600){
@@ -205,8 +225,80 @@ object MrfApp extends IOApp.Simple:
   }
 
 
+  def mhKern[S](
+      logPost: S => Double, rprop: S => S,
+      dprop: (S, S) => Double = (n: S, o: S) => 1.0
+    ): (S) => S =
+      val r = Uniform(0.0,1.0)
+      x0 =>
+        val x = rprop(x0)
+        val ll0 = logPost(x0)
+        val ll = logPost(x)
+        val a = ll - ll0 + dprop(x0, x) - dprop(x, x0)
+        if (math.log(r.draw()) < a) x else x0
+
+  def hmcKernel[F[_]: Apply](lpi: F[Double] => Double, glpi: F[Double] => F[Double],
+      eps: Double = 1e-4, l: Int = 10)(using Reducible[F]): F[Double] => F[Double] =
+    def add(p: F[Double], q: F[Double]): F[Double] = (p product q) map ((pi, qi) => pi + qi)
+    def scale(s: Double, p: F[Double]): F[Double] = p map (pi => s * pi)
+    def leapf(q: F[Double], p: F[Double]): (F[Double], F[Double]) =
+      @tailrec def go(q0: F[Double], p0: F[Double], l: Int): (F[Double], F[Double]) =
+        val q = add(q0, scale(eps, p0))
+        val p = if (l > 1)
+          add(p0, scale(eps, glpi(q)))
+        else
+          add(p0, scale(0.5*eps, glpi(q)))
+        if (l == 1)
+          (q, p)
+        else
+          go(q, p, l-1)
+      go(q, add(p, scale(0.5*eps, glpi(q))), l)
+    def alpi(x: (F[Double], F[Double])): Double =
+      val (q, p) = x
+      lpi(q) - 0.5*(p.map(pi => pi*pi).reduce(_+_))
+    def rprop(x: (F[Double], F[Double])): (F[Double], F[Double]) =
+      val (q, p) = x
+      leapf(q, p)
+    val mhk = mhKern(alpi, rprop)
+    (q: F[Double]) =>
+      val p = q map (qi => Gaussian(0, 1.0).draw())
+      mhk((q, p))._1
+
+
+  // Quartic MRF model sampler - HMC version
+  def quartExampleHMC: IO[Unit] = IO {
+    import breeze.stats.*
+    val w = 4.0
+    val bdm = DenseMatrix.tabulate(500,600){
+      case (i,j) => Gaussian(0,1.0).draw()
+    } // random init
+    val pim0 = PImage(0,0,BDM2I(bdm))
+    def v(l: Double)(x: Double): Double = l*x - 2*x*x +x*x*x*x
+    def lpi(pim: PImage[Double]): Double = ???
+    def glpi(pim: PImage[Double]): PImage[Double] = ???
+    val kern: PImage[Double] => PImage[Double] = hmcKernel(lpi, glpi)
+    def pims = LazyList.iterate(pim0)(kern)
+    // render
+    import breeze.plot.*
+    val fig = Figure("MRF sampler")
+    //fig.visible = false
+    fig.width = 1000
+    fig.height = 800
+    pims.take(100).zipWithIndex.foreach{case (pim,i) => {
+      print(s"$i ")
+      fig.clear()
+      val p = fig.subplot(1,1,0)
+      p.title = s"MRF: frame $i"
+      val mat = I2BDM(pim.image)
+      p += image(mat)
+      fig.refresh()
+      println(" "+mean(mat)+" "+(max(mat) - min(mat)))
+      //fig.saveas(f"mrf$i%04d.png")
+    }}
+    //println()
+  }
 
 
 
-  def run = quartExample
+  def run = quartExampleHMC
 

@@ -139,6 +139,12 @@ object Mrf:
       mhk((q, p))._1
 
 
+
+
+// Examples...
+
+
+
 object IsingGibbs extends IOApp.Simple:
 
   import Mrf.*
@@ -301,7 +307,7 @@ object QuartMrfHmc extends IOApp.Simple:
     //fig.visible = false
     fig.width = 1000
     fig.height = 800
-    pims.take(20).zipWithIndex.foreach{case (pim,i) => {
+    pims.take(500).zipWithIndex.foreach{case (pim,i) => {
       print(s"$i ")
       fig.clear()
       val p = fig.subplot(1,1,0)

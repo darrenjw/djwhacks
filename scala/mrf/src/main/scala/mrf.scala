@@ -10,6 +10,7 @@ import cats.effect.{IO, IOApp}
 import breeze.linalg.*
 import breeze.numerics.*
 import breeze.stats.distributions.Rand.VariableSeed.randBasis
+import breeze.stats.distributions.{Gaussian, Uniform}
 
 import scala.collection.parallel.immutable.ParVector
 import scala.collection.parallel.CollectionConverters.*
@@ -17,7 +18,7 @@ import scala.collection.parallel.CollectionConverters.*
 import annotation.tailrec
 
 
-object MrfApp extends IOApp.Simple:
+object Mrf:
 
   // Basic image class
   case class Image[T](w: Int, h: Int, data: ParVector[T]) {
@@ -98,133 +99,6 @@ object MrfApp extends IOApp.Simple:
     new DenseMatrix(im.h,im.w,im.data.toArray)
 
 
-
-
-  // Ising model Gibbs sampler
-  def isingExample: IO[Unit] = IO {
-    import breeze.stats.distributions.{Binomial,Bernoulli}
-    val beta = 0.4
-    val bdm = DenseMatrix.tabulate(500,600){
-      case (i,j) => (new Binomial(1,0.2)).draw()
-    }.map(_*2 - 1) // random matrix of +/-1s
-    val pim0 = PImage(0,0,BDM2I(bdm))
-    def gibbsKernel(pi: PImage[Int]): Int = {
-      val sum = pi.up.extract+pi.down.extract+pi.left.extract+pi.right.extract
-      val p1 = math.exp(beta*sum)
-      val p2 = math.exp(-beta*sum)
-      val probplus = p1/(p1+p2)
-      if (new Bernoulli(probplus).draw()) 1 else -1
-    }
-    def oddKernel(pi: PImage[Int]): Int =
-      if ((pi.x+pi.y) % 2 != 0) pi.extract else gibbsKernel(pi)
-    def evenKernel(pi: PImage[Int]): Int =
-      if ((pi.x+pi.y) % 2 == 0) pi.extract else gibbsKernel(pi)
-    //def pims = LazyList.iterate(pim0)(_.coflatMap(gibbsKernel))
-    def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
-    // render
-    import breeze.plot.*
-    val fig = Figure("MRF sampler")
-    //fig.visible = false
-    fig.width = 1000
-    fig.height = 800
-    pims.take(10).zipWithIndex.foreach{case (pim,i) => {
-      print(s"$i ")
-      fig.clear()
-      val p = fig.subplot(1,1,0)
-      p.title = s"MRF: frame $i"
-      p += image(I2BDM(pim.image.map{_.toDouble}))
-      fig.refresh()
-      //fig.saveas(f"mrf$i%04d.png")
-    }}
-    println()
-  }
-
-  // GMRF model Gibbs sampler
-  def gmrfExample: IO[Unit] = IO {
-    import breeze.stats.distributions.{Gaussian}
-    import breeze.stats.*
-    val beta = 0.25
-    val bdm = DenseMatrix.tabulate(500,600){
-      case (i,j) => Gaussian(0,1.0).draw()
-    } // random init
-    val pim0 = PImage(0,0,BDM2I(bdm))
-    def gibbsKernel(pi: PImage[Double]): Double = {
-      val sum = pi.up.extract+pi.down.extract+pi.left.extract+pi.right.extract
-      Gaussian(beta*sum, 1.0).draw()
-    }
-    def oddKernel(pi: PImage[Double]): Double =
-      if ((pi.x+pi.y) % 2 != 0) pi.extract else gibbsKernel(pi)
-    def evenKernel(pi: PImage[Double]): Double =
-      if ((pi.x+pi.y) % 2 == 0) pi.extract else gibbsKernel(pi)
-    //def pims = LazyList.iterate(pim0)(_.coflatMap(gibbsKernel))
-    def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
-    // render
-    import breeze.plot.*
-    val fig = Figure("MRF sampler")
-    //fig.visible = false
-    fig.width = 1000
-    fig.height = 800
-    pims.take(200).zipWithIndex.foreach{case (pim,i) => {
-      print(s"$i ")
-      fig.clear()
-      val p = fig.subplot(1,1,0)
-      p.title = s"MRF: frame $i"
-      val mat = I2BDM(pim.image)
-      p += image(mat)
-      fig.refresh()
-      println(" "+mean(mat)+" "+(max(mat) - min(mat)))
-      //fig.saveas(f"mrf$i%04d.png")
-    }}
-    //println()
-  }
-
-
-  import breeze.stats.distributions.{Gaussian, Uniform}
-
-
-  // Quartic MRF model sampler
-  def quartExample: IO[Unit] = IO {
-    import breeze.stats.*
-    val w = 4.0
-    val bdm = DenseMatrix.tabulate(500,600){
-      case (i,j) => Gaussian(0,1.0).draw()
-    } // random init
-    val pim0 = PImage(0,0,BDM2I(bdm))
-    def v(l: Double)(x: Double): Double = l*x - 2*x*x +x*x*x*x
-    def mhKernel(pi: PImage[Double]): Double = {
-      val sum = pi.up.extract+pi.down.extract+pi.left.extract+pi.right.extract
-      val x0 = pi.extract
-      val x1 = x0 + Gaussian(0.0, 1.0).draw() // tune this!
-      val lap = v(-w*sum)(x0) - v(-w*sum)(x1)
-      if (math.log(Uniform(0,1).draw()) < lap) x1 else x0
-    }
-    def oddKernel(pi: PImage[Double]): Double =
-      if ((pi.x+pi.y) % 2 != 0) pi.extract else mhKernel(pi)
-    def evenKernel(pi: PImage[Double]): Double =
-      if ((pi.x+pi.y) % 2 == 0) pi.extract else mhKernel(pi)
-    //def pims = LazyList.iterate(pim0)(_.coflatMap(mhKernel))
-    def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
-    // render
-    import breeze.plot.*
-    val fig = Figure("MRF sampler")
-    //fig.visible = false
-    fig.width = 1000
-    fig.height = 800
-    pims.take(500).zipWithIndex.foreach{case (pim,i) => {
-      print(s"$i ")
-      fig.clear()
-      val p = fig.subplot(1,1,0)
-      p.title = s"MRF: frame $i"
-      val mat = I2BDM(pim.image)
-      p += image(mat)
-      fig.refresh()
-      println(" "+mean(mat)+" "+(max(mat) - min(mat)))
-      //fig.saveas(f"mrf$i%04d.png")
-    }}
-    //println()
-  }
-
-
   def mhKern[S](
       logPost: S => Double, rprop: S => S,
       dprop: (S, S) => Double = (n: S, o: S) => 1.0
@@ -265,10 +139,148 @@ object MrfApp extends IOApp.Simple:
       mhk((q, p))._1
 
 
-  // Quartic MRF model sampler - HMC version
-  def quartExampleHMC: IO[Unit] = IO {
+object IsingGibbs extends IOApp.Simple:
+
+  import Mrf.*
+ 
+  // Ising model Gibbs sampler
+  def run: IO[Unit] = IO {
+    import breeze.stats.distributions.{Binomial,Bernoulli}
+    val beta = 0.4
+    val bdm = DenseMatrix.tabulate(500,600){
+      case (i,j) => (new Binomial(1,0.2)).draw()
+    }.map(_*2 - 1) // random matrix of +/-1s
+    val pim0 = PImage(0,0,BDM2I(bdm))
+    def gibbsKernel(pi: PImage[Int]): Int = {
+      val sum = pi.up.extract+pi.down.extract+pi.left.extract+pi.right.extract
+      val p1 = math.exp(beta*sum)
+      val p2 = math.exp(-beta*sum)
+      val probplus = p1/(p1+p2)
+      if (new Bernoulli(probplus).draw()) 1 else -1
+    }
+    def oddKernel(pi: PImage[Int]): Int =
+      if ((pi.x+pi.y) % 2 != 0) pi.extract else gibbsKernel(pi)
+    def evenKernel(pi: PImage[Int]): Int =
+      if ((pi.x+pi.y) % 2 == 0) pi.extract else gibbsKernel(pi)
+    //def pims = LazyList.iterate(pim0)(_.coflatMap(gibbsKernel))
+    def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
+    // render
+    import breeze.plot.*
+    val fig = Figure("MRF sampler")
+    //fig.visible = false
+    fig.width = 1000
+    fig.height = 800
+    pims.take(50).zipWithIndex.foreach{case (pim,i) => {
+      print(s"$i ")
+      fig.clear()
+      val p = fig.subplot(1,1,0)
+      p.title = s"MRF: frame $i"
+      p += image(I2BDM(pim.image.map{_.toDouble}))
+      fig.refresh()
+      //fig.saveas(f"mrf$i%04d.png")
+    }}
+    println()
+  }
+
+object GmrfGibbs extends IOApp.Simple:
+
+  import Mrf.*
+ 
+  // GMRF model Gibbs sampler
+  def run: IO[Unit] = IO {
+    import breeze.stats.distributions.{Gaussian}
     import breeze.stats.*
-    val w = 3.0
+    val beta = 0.25
+    val bdm = DenseMatrix.tabulate(500,600){
+      case (i,j) => Gaussian(0,1.0).draw()
+    } // random init
+    val pim0 = PImage(0,0,BDM2I(bdm))
+    def gibbsKernel(pi: PImage[Double]): Double = {
+      val sum = pi.up.extract+pi.down.extract+pi.left.extract+pi.right.extract
+      Gaussian(beta*sum, 1.0).draw()
+    }
+    def oddKernel(pi: PImage[Double]): Double =
+      if ((pi.x+pi.y) % 2 != 0) pi.extract else gibbsKernel(pi)
+    def evenKernel(pi: PImage[Double]): Double =
+      if ((pi.x+pi.y) % 2 == 0) pi.extract else gibbsKernel(pi)
+    //def pims = LazyList.iterate(pim0)(_.coflatMap(gibbsKernel))
+    def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
+    // render
+    import breeze.plot.*
+    val fig = Figure("MRF sampler")
+    //fig.visible = false
+    fig.width = 1000
+    fig.height = 800
+    pims.take(200).zipWithIndex.foreach{case (pim,i) => {
+      print(s"$i ")
+      fig.clear()
+      val p = fig.subplot(1,1,0)
+      p.title = s"MRF: frame $i"
+      val mat = I2BDM(pim.image)
+      p += image(mat)
+      fig.refresh()
+      println(" "+mean(mat)+" "+(max(mat) - min(mat)))
+      //fig.saveas(f"mrf$i%04d.png")
+    }}
+    //println()
+  }
+
+
+object QuartMrfMh extends IOApp.Simple:
+
+  import Mrf.*
+ 
+  // Quartic MRF model sampler
+  def run: IO[Unit] = IO {
+    import breeze.stats.*
+    val w = 0.5
+    val bdm = DenseMatrix.tabulate(500,600){
+      case (i,j) => Gaussian(0,1.0).draw()
+    } // random init
+    val pim0 = PImage(0,0,BDM2I(bdm))
+    def v(l: Double)(x: Double): Double = l*x - 2*x*x + x*x*x*x
+    def mhKernel(pi: PImage[Double]): Double = {
+      val sum = pi.up.extract+pi.down.extract+pi.left.extract+pi.right.extract
+      val x0 = pi.extract
+      val x1 = x0 + Gaussian(0.0, 1.0).draw() // tune this!
+      val lap = v(-w*sum)(x0) - v(-w*sum)(x1)
+      if (math.log(Uniform(0,1).draw()) < lap) x1 else x0
+    }
+    def oddKernel(pi: PImage[Double]): Double =
+      if ((pi.x+pi.y) % 2 != 0) pi.extract else mhKernel(pi)
+    def evenKernel(pi: PImage[Double]): Double =
+      if ((pi.x+pi.y) % 2 == 0) pi.extract else mhKernel(pi)
+    //def pims = LazyList.iterate(pim0)(_.coflatMap(mhKernel))
+    def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
+    // render
+    import breeze.plot.*
+    val fig = Figure("MRF sampler")
+    //fig.visible = false
+    fig.width = 1000
+    fig.height = 800
+    pims.take(100).zipWithIndex.foreach{case (pim,i) => {
+      print(s"$i ")
+      fig.clear()
+      val p = fig.subplot(1,1,0)
+      p.title = s"MRF: frame $i"
+      val mat = I2BDM(pim.image)
+      p += image(mat)
+      fig.refresh()
+      println(" "+mean(mat)+" "+(max(mat) - min(mat)))
+      //fig.saveas(f"mrf$i%04d.png")
+    }}
+    //println()
+  }
+
+
+object QuartMrfHmc extends IOApp.Simple:
+
+  import Mrf.*
+ 
+  // Quartic MRF model sampler - HMC version
+  def run: IO[Unit] = IO {
+    import breeze.stats.*
+    val w = 0.5
     val bdm = DenseMatrix.tabulate(500,600){
       case (i,j) => Gaussian(0,1.0).draw()
     } // random init
@@ -277,11 +289,11 @@ object MrfApp extends IOApp.Simple:
     def gv(x: Double): Double = -4*x + 4*x*x*x
     def lpi(pim: PImage[Double]): Double = pim.
       coflatMap(pim => w*pim.extract*(pim.right.extract + pim.down.extract) - v(pim.extract)).
-      reduce(_+_)
+        reduce(_+_)
     def glpi(pim: PImage[Double]): PImage[Double] = pim.
       coflatMap(pim => w*(pim.up.extract+pim.down.extract+pim.left.extract+pim.right.extract) -
         gv(pim.extract))
-    val kern: PImage[Double] => PImage[Double] = hmcKernel(lpi, glpi, 0.1, 50)
+    val kern: PImage[Double] => PImage[Double] = hmcKernel(lpi, glpi, 0.01, 100)
     def pims = LazyList.iterate(pim0)(kern)
     // render
     import breeze.plot.*
@@ -303,9 +315,4 @@ object MrfApp extends IOApp.Simple:
     //println()
   }
 
-
-
-  // def run = quartExample
-
-  def run = quartExampleHMC
 

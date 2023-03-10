@@ -9,7 +9,7 @@ import cats.*
 import cats.implicits.*
 import cats.effect.{IO, IOApp}
 
-import breeze.linalg.*
+import breeze.linalg.{Vector => BVec, *}
 import breeze.numerics.*
 import breeze.stats.distributions.Rand.VariableSeed.randBasis
 import breeze.stats.distributions.{Gaussian, Uniform}
@@ -22,49 +22,43 @@ import annotation.tailrec
 object Mrf:
 
   // Basic image class
-  case class Image[T](w: Int, h: Int, data: ParVector[T]) {
+  case class Image[T](w: Int, h: Int, data: ParVector[T]):
   //case class Image[T](w: Int, h: Int, data: Vector[T]) {
     def apply(x: Int, y: Int): T = data(x*h+y)
     def map[S](f: T => S): Image[S] = Image(w, h, data map f)
     def updated(x: Int, y: Int, value: T): Image[T] =
       Image(w, h, data.updated(x*h+y, value))
-  }
 
   // Pointed image (with a focus/cursor) - comonadic
-  case class PImage[T](x: Int, y: Int, image: Image[T]) {
+  case class PImage[T](x: Int, y: Int, image: Image[T]):
     def extract: T = image(x, y)
     def map[S](f: T => S): PImage[S] = PImage(x, y, image map f)
     def coflatMap[S](f: PImage[T] => S): PImage[S] = PImage(
       x, y, Image(image.w, image.h,
-      (0 until (image.w * image.h)).toVector.par.map(i => {
-      //(0 until (image.w * image.h)).toVector.map(i => {
+      (0 until (image.w * image.h)).toVector.par.map(i =>
+      //(0 until (image.w * image.h)).toVector.map(i =>
         val xx = i / image.h
         val yy = i % image.h
         f(PImage(xx, yy, image))
-      })))
+      )))
     // now a few methods for navigation - not part of the comonad interface
     // using periodic boundary conditions
-    def up: PImage[T] = {
+    def up: PImage[T] =
       val py = y-1
       val ny = if (py >= 0) py else (py + image.h)
       PImage(x, ny, image)
-    }
-    def down: PImage[T] = {
+    def down: PImage[T] =
       val py = y+1
       val ny = if (py < image.h) py else (py - image.h)
       PImage(x, ny, image)
-    }
-    def left: PImage[T] = {
+    def left: PImage[T] =
       val px = x-1
       val nx = if (px >= 0) px else (px + image.w)
       PImage(nx, y, image)
-    }
-    def right: PImage[T] = {
+    def right: PImage[T] =
       val px = x+1
       val nx = if (px < image.w) px else (px - image.w)
       PImage(nx, y, image)
-    }
-  }
 
   // Provide evidence that PImage is a Cats Comonad
   given Comonad[PImage] with
@@ -93,7 +87,6 @@ object Mrf:
   // TODO: override reduce
 
   // convert to and from Breeze matrices
-  import breeze.linalg.{Vector => BVec, _}
   def BDM2I[T](m: DenseMatrix[T]): Image[T] =
     Image(m.cols, m.rows, m.data.toVector.par)
     //Image(m.cols, m.rows, m.data.toVector)
@@ -147,15 +140,14 @@ object Mrf:
 
   // TODO: factor out the plotting
 
-  def plotFields[A: Numeric](s: LazyList[PImage[A]]): IO[Unit] = IO {
+  def plotFields[A: Numeric](s: LazyList[PImage[A]], save: Boolean = false): IO[Unit] = IO {
     import breeze.plot.*
     import breeze.stats.*
     import math.Numeric.Implicits.infixNumericOps
     val fig = Figure("MRF sampler")
-    //fig.visible = false
     fig.width = 1000
     fig.height = 800
-    s.zipWithIndex.foreach{case (pim,i) => {
+    s.zipWithIndex.foreach{case (pim,i) =>
       print(s"$i ")
       fig.clear()
       val p = fig.subplot(1,1,0)
@@ -164,9 +156,9 @@ object Mrf:
       p += image(mat)
       fig.refresh()
       println(" "+mean(mat)+" "+(max(mat) - min(mat)))
-      //fig.saveas(f"mrf$i%04d.png")
-    }}
-    //println()
+      if (save)
+        fig.saveas(f"mrf$i%04d.png")
+    }
   }
 
   // TODO: write a few pixels to a CSV file
@@ -189,13 +181,12 @@ object IsingGibbs extends IOApp.Simple:
       case (i,j) => (new Binomial(1,0.2)).draw()
     }.map(_*2 - 1) // random matrix of +/-1s
     val pim0 = PImage(0,0,BDM2I(bdm))
-    def gibbsKernel(pi: PImage[Int]): Int = {
+    def gibbsKernel(pi: PImage[Int]): Int =
       val sum = pi.up.extract+pi.down.extract+pi.left.extract+pi.right.extract
       val p1 = math.exp(beta*sum)
       val p2 = math.exp(-beta*sum)
       val probplus = p1/(p1+p2)
       if (new Bernoulli(probplus).draw()) 1 else -1
-    }
     def oddKernel(pi: PImage[Int]): Int =
       if ((pi.x+pi.y) % 2 != 0) pi.extract else gibbsKernel(pi)
     def evenKernel(pi: PImage[Int]): Int =
@@ -208,17 +199,14 @@ object IsingGibbs extends IOApp.Simple:
 object GmrfGibbs extends IOApp.Simple:
   import Mrf.*
   def run: IO[Unit] =
-    import breeze.stats.distributions.{Gaussian}
-    import breeze.stats.*
     val beta = 0.25
     val bdm = DenseMatrix.tabulate(500,600){
       case (i,j) => Gaussian(0,1.0).draw()
     } // random init
     val pim0 = PImage(0,0,BDM2I(bdm))
-    def gibbsKernel(pi: PImage[Double]): Double = {
+    def gibbsKernel(pi: PImage[Double]): Double =
       val sum = pi.up.extract+pi.down.extract+pi.left.extract+pi.right.extract
       Gaussian(beta*sum, 1.0).draw()
-    }
     def oddKernel(pi: PImage[Double]): Double =
       if ((pi.x+pi.y) % 2 != 0) pi.extract else gibbsKernel(pi)
     def evenKernel(pi: PImage[Double]): Double =
@@ -231,20 +219,18 @@ object GmrfGibbs extends IOApp.Simple:
 object QuartMrfMh extends IOApp.Simple:
   import Mrf.*
   def run: IO[Unit] =
-    import breeze.stats.*
     val w = 0.5
     val bdm = DenseMatrix.tabulate(500,600){
       case (i,j) => Gaussian(0,1.0).draw()
     } // random init
     val pim0 = PImage(0,0,BDM2I(bdm))
     def v(l: Double)(x: Double): Double = l*x - 2*x*x + x*x*x*x
-    def mhKernel(pi: PImage[Double]): Double = {
+    def mhKernel(pi: PImage[Double]): Double =
       val sum = pi.up.extract+pi.down.extract+pi.left.extract+pi.right.extract
       val x0 = pi.extract
       val x1 = x0 + Gaussian(0.0, 1.0).draw() // tune this!
       val lap = v(-w*sum)(x0) - v(-w*sum)(x1)
       if (math.log(Uniform(0,1).draw()) < lap) x1 else x0
-    }
     def oddKernel(pi: PImage[Double]): Double =
       if ((pi.x+pi.y) % 2 != 0) pi.extract else mhKernel(pi)
     def evenKernel(pi: PImage[Double]): Double =
@@ -257,7 +243,6 @@ object QuartMrfMh extends IOApp.Simple:
 object QuartMrfHmc extends IOApp.Simple:
   import Mrf.*
   def run: IO[Unit] =
-    import breeze.stats.*
     val w = 0.5
     val bdm = DenseMatrix.tabulate(500,600){
       case (i,j) => Gaussian(0,1.0).draw()

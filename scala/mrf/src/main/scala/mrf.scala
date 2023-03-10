@@ -89,6 +89,7 @@ object Mrf:
     def reduceRightTo[A, B](fa: PImage[A])(f: A => B)(g: (A, Eval[B]) => Eval[B]): Eval[B] =
       fa.image.data.init.foldRight(Eval.later(f(fa.image.data.last)))(g)
 
+  // TODO: override reduce
 
   // convert to and from Breeze matrices
   import breeze.linalg.{Vector => BVec, _}
@@ -98,6 +99,8 @@ object Mrf:
   def I2BDM(im: Image[Double]): DenseMatrix[Double] = 
     new DenseMatrix(im.h,im.w,im.data.toArray)
 
+
+  // TODO: add thinnable typeclass and lazylist instance
 
   def mhKern[S](
       logPost: S => Double, rprop: S => S,
@@ -139,7 +142,30 @@ object Mrf:
       mhk((q, p))._1
 
 
+  // TODO: factor out the plotting
+  def plotFields[A: Numeric](s: LazyList[PImage[A]]): IO[Unit] = IO {
+    import breeze.plot.*
+    import breeze.stats.*
+    import math.Numeric.Implicits.infixNumericOps
+    val fig = Figure("MRF sampler")
+    //fig.visible = false
+    fig.width = 1000
+    fig.height = 800
+    s.zipWithIndex.foreach{case (pim,i) => {
+      print(s"$i ")
+      fig.clear()
+      val p = fig.subplot(1,1,0)
+      p.title = s"MRF: frame $i"
+      val mat = I2BDM(pim.image.map(_.toDouble))
+      p += image(mat)
+      fig.refresh()
+      println(" "+mean(mat)+" "+(max(mat) - min(mat)))
+      //fig.saveas(f"mrf$i%04d.png")
+    }}
+    //println()
+  }
 
+  // TODO: write a few pixels to a CSV file
 
 // Examples...
 
@@ -150,7 +176,7 @@ object IsingGibbs extends IOApp.Simple:
   import Mrf.*
  
   // Ising model Gibbs sampler
-  def run: IO[Unit] = IO {
+  def run: IO[Unit] =
     import breeze.stats.distributions.{Binomial,Bernoulli}
     val beta = 0.4
     val bdm = DenseMatrix.tabulate(500,600){
@@ -170,23 +196,7 @@ object IsingGibbs extends IOApp.Simple:
       if ((pi.x+pi.y) % 2 == 0) pi.extract else gibbsKernel(pi)
     //def pims = LazyList.iterate(pim0)(_.coflatMap(gibbsKernel))
     def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
-    // render
-    import breeze.plot.*
-    val fig = Figure("MRF sampler")
-    //fig.visible = false
-    fig.width = 1000
-    fig.height = 800
-    pims.take(50).zipWithIndex.foreach{case (pim,i) => {
-      print(s"$i ")
-      fig.clear()
-      val p = fig.subplot(1,1,0)
-      p.title = s"MRF: frame $i"
-      p += image(I2BDM(pim.image.map{_.toDouble}))
-      fig.refresh()
-      //fig.saveas(f"mrf$i%04d.png")
-    }}
-    println()
-  }
+    plotFields(pims.take(50))
 
 object GmrfGibbs extends IOApp.Simple:
 

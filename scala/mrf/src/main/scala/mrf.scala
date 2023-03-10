@@ -138,32 +138,35 @@ object Mrf:
 
   // Impure code below (wrapped in IO)
 
-  // TODO: factor out the plotting
-
-  def plotFields[A: Numeric](s: LazyList[PImage[A]], save: Boolean = false): IO[Unit] = IO {
+  def plotFields[A: Numeric](s: LazyList[PImage[A]], showPlots: Boolean = true,
+      saveFrames: Boolean = false): IO[Unit] = IO {
     import breeze.plot.*
     import breeze.stats.*
     import math.Numeric.Implicits.infixNumericOps
     val fig = Figure("MRF sampler")
-    fig.width = 1000
-    fig.height = 800
+    if (showPlots)
+      fig.width = 1000
+      fig.height = 800
+    else
+      fig.visible = false
     s.zipWithIndex.foreach{case (pim,i) =>
       print(s"$i ")
-      fig.clear()
-      val p = fig.subplot(1,1,0)
-      p.title = s"MRF: frame $i"
       val mat = I2BDM(pim.image.map(_.toDouble))
-      p += image(mat)
-      fig.refresh()
-      println(" "+mean(mat)+" "+(max(mat) - min(mat)))
-      if (save)
+      println(" mean:"+mean(mat)+" range:"+(max(mat) - min(mat)))
+      if (showPlots)
+        fig.clear()
+        val p = fig.subplot(1,1,0)
+        p.title = s"MRF: frame $i"
+        p += image(mat)
+        fig.refresh()
+      if (saveFrames)
         fig.saveas(f"mrf$i%04d.png")
     }
   }
 
   // TODO: write a few pixels to a CSV file
 
-
+  // TODO: write proper image frames to disk?
 
 
 // ******************************************************************************************

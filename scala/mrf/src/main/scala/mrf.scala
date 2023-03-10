@@ -1,6 +1,8 @@
 /*
 mrf.scala
-Stub for Scala Cats code
+ 
+MRF simulation code
+
 */
 
 import cats.*
@@ -17,7 +19,6 @@ import scala.collection.parallel.CollectionConverters.*
 
 import annotation.tailrec
 
-
 object Mrf:
 
   // Basic image class
@@ -29,7 +30,7 @@ object Mrf:
       Image(w, h, data.updated(x*h+y, value))
   }
 
-  // Pointed image (with a focus/cursor)
+  // Pointed image (with a focus/cursor) - comonadic
   case class PImage[T](x: Int, y: Int, image: Image[T]) {
     def extract: T = image(x, y)
     def map[S](f: T => S): PImage[S] = PImage(x, y, image map f)
@@ -142,7 +143,10 @@ object Mrf:
       mhk((q, p))._1
 
 
+  // Impure code below (wrapped in IO)
+
   // TODO: factor out the plotting
+
   def plotFields[A: Numeric](s: LazyList[PImage[A]]): IO[Unit] = IO {
     import breeze.plot.*
     import breeze.stats.*
@@ -167,15 +171,17 @@ object Mrf:
 
   // TODO: write a few pixels to a CSV file
 
-// Examples...
 
 
 
+// ******************************************************************************************
+// Runnable examples...
+// ******************************************************************************************
+
+
+// Ising model Gibbs sampler
 object IsingGibbs extends IOApp.Simple:
-
   import Mrf.*
- 
-  // Ising model Gibbs sampler
   def run: IO[Unit] =
     import breeze.stats.distributions.{Binomial,Bernoulli}
     val beta = 0.4
@@ -198,12 +204,10 @@ object IsingGibbs extends IOApp.Simple:
     def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
     plotFields(pims.take(50))
 
+// GMRF model Gibbs sampler
 object GmrfGibbs extends IOApp.Simple:
-
   import Mrf.*
- 
-  // GMRF model Gibbs sampler
-  def run: IO[Unit] = IO {
+  def run: IO[Unit] =
     import breeze.stats.distributions.{Gaussian}
     import breeze.stats.*
     val beta = 0.25
@@ -221,33 +225,12 @@ object GmrfGibbs extends IOApp.Simple:
       if ((pi.x+pi.y) % 2 == 0) pi.extract else gibbsKernel(pi)
     //def pims = LazyList.iterate(pim0)(_.coflatMap(gibbsKernel))
     def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
-    // render
-    import breeze.plot.*
-    val fig = Figure("MRF sampler")
-    //fig.visible = false
-    fig.width = 1000
-    fig.height = 800
-    pims.take(200).zipWithIndex.foreach{case (pim,i) => {
-      print(s"$i ")
-      fig.clear()
-      val p = fig.subplot(1,1,0)
-      p.title = s"MRF: frame $i"
-      val mat = I2BDM(pim.image)
-      p += image(mat)
-      fig.refresh()
-      println(" "+mean(mat)+" "+(max(mat) - min(mat)))
-      //fig.saveas(f"mrf$i%04d.png")
-    }}
-    //println()
-  }
+    plotFields(pims.take(200))
 
-
+// Quartic MRF model sampler - MH version
 object QuartMrfMh extends IOApp.Simple:
-
   import Mrf.*
- 
-  // Quartic MRF model sampler
-  def run: IO[Unit] = IO {
+  def run: IO[Unit] =
     import breeze.stats.*
     val w = 0.5
     val bdm = DenseMatrix.tabulate(500,600){
@@ -268,33 +251,12 @@ object QuartMrfMh extends IOApp.Simple:
       if ((pi.x+pi.y) % 2 == 0) pi.extract else mhKernel(pi)
     //def pims = LazyList.iterate(pim0)(_.coflatMap(mhKernel))
     def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
-    // render
-    import breeze.plot.*
-    val fig = Figure("MRF sampler")
-    //fig.visible = false
-    fig.width = 1000
-    fig.height = 800
-    pims.take(100).zipWithIndex.foreach{case (pim,i) => {
-      print(s"$i ")
-      fig.clear()
-      val p = fig.subplot(1,1,0)
-      p.title = s"MRF: frame $i"
-      val mat = I2BDM(pim.image)
-      p += image(mat)
-      fig.refresh()
-      println(" "+mean(mat)+" "+(max(mat) - min(mat)))
-      //fig.saveas(f"mrf$i%04d.png")
-    }}
-    //println()
-  }
+    plotFields(pims.take(100))
 
-
+// Quartic MRF model sampler - HMC version
 object QuartMrfHmc extends IOApp.Simple:
-
   import Mrf.*
- 
-  // Quartic MRF model sampler - HMC version
-  def run: IO[Unit] = IO {
+  def run: IO[Unit] =
     import breeze.stats.*
     val w = 0.5
     val bdm = DenseMatrix.tabulate(500,600){
@@ -311,24 +273,8 @@ object QuartMrfHmc extends IOApp.Simple:
         gv(pim.extract))
     val kern: PImage[Double] => PImage[Double] = hmcKernel(lpi, glpi, 0.01, 100)
     def pims = LazyList.iterate(pim0)(kern)
-    // render
-    import breeze.plot.*
-    val fig = Figure("MRF sampler")
-    //fig.visible = false
-    fig.width = 1000
-    fig.height = 800
-    pims.take(500).zipWithIndex.foreach{case (pim,i) => {
-      print(s"$i ")
-      fig.clear()
-      val p = fig.subplot(1,1,0)
-      p.title = s"MRF: frame $i"
-      val mat = I2BDM(pim.image)
-      p += image(mat)
-      fig.refresh()
-      println(" "+mean(mat)+" "+(max(mat) - min(mat)))
-      //fig.saveas(f"mrf$i%04d.png")
-    }}
-    //println()
-  }
+    plotFields(pims.take(20))
 
+
+// eof
 

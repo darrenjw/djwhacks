@@ -225,7 +225,7 @@ object GmrfGibbs extends IOApp.Simple:
       if ((pi.x+pi.y) % 2 == 0) pi.extract else gibbsKernel(pi)
     //def pims = LazyList.iterate(pim0)(_.coflatMap(gibbsKernel))
     def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
-    plotFields(pims.take(200))
+    plotFields(pims.take(100))
 
 // Quartic MRF model sampler - MH version
 object QuartMrfMh extends IOApp.Simple:

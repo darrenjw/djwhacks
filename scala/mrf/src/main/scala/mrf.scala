@@ -71,7 +71,9 @@ object Mrf:
   given Apply[PImage] with
     def map[A,B](wa: PImage[A])(f: A => B): PImage[B] = wa.map(f)
     def ap[A, B](ff: PImage[A=>B])(fa: PImage[A]): PImage[B] =
-      PImage(ff.x, ff.y, Image(ff.image.w, ff.image.h, (ff.image.data zip fa.image.data).map((ffi, fai) => ffi(fai))))
+      PImage(ff.x, ff.y,
+        Image(ff.image.w, ff.image.h,
+          (ff.image.data zip fa.image.data).map((ffi, fai) => ffi(fai))))
 
   // Provide evidence that PImage is a Cats Reducible
   given Reducible[PImage] with
@@ -93,8 +95,18 @@ object Mrf:
   def I2BDM(im: Image[Double]): DenseMatrix[Double] = 
     new DenseMatrix(im.h,im.w,im.data.toArray)
 
+  // Thinnable typeclass and instance for LazyLists
+  trait Thinnable[F[_]]:
+    extension [T](ft: F[T])
+      def thin(th: Int): F[T]
 
-  // TODO: add thinnable typeclass and lazylist instance
+  given Thinnable[LazyList] with
+    extension [T](s: LazyList[T])
+      def thin(th: Int): LazyList[T] =
+        val ss = s.drop(th-1)
+        if (ss.isEmpty) LazyList.empty else
+          ss.head #:: ss.tail.thin(th)
+
 
   def mhKern[S](
       logPost: S => Double, rprop: S => S,
@@ -139,7 +151,7 @@ object Mrf:
   // Impure code below (wrapped in IO)
 
   def plotFields[A: Numeric](s: LazyList[PImage[A]], showPlots: Boolean = true,
-      saveFrames: Boolean = false): IO[Unit] = IO {
+      savePixels: Boolean = true, saveFrames: Boolean = false): IO[Unit] = IO {
     import breeze.plot.*
     import breeze.stats.*
     import math.Numeric.Implicits.infixNumericOps
@@ -149,6 +161,8 @@ object Mrf:
       fig.height = 800
     else
       fig.visible = false
+    val fs = new java.io.FileWriter("mrf.csv")
+    fs.write("P1,P2,P3\n")
     s.zipWithIndex.foreach{case (pim,i) =>
       print(s"$i ")
       val mat = I2BDM(pim.image.map(_.toDouble))
@@ -161,7 +175,10 @@ object Mrf:
         fig.refresh()
       if (saveFrames)
         fig.saveas(f"mrf$i%04d.png")
+      if (savePixels)
+        fs.write(""+mat(0,0)+","+mat(0,1)+","+mat(10,10)+"\n")
     }
+    fs.close()
   }
 
   // TODO: write a few pixels to a CSV file
@@ -222,8 +239,9 @@ object GmrfGibbs extends IOApp.Simple:
 object QuartMrfMh extends IOApp.Simple:
   import Mrf.*
   def run: IO[Unit] =
-    val w = 0.5
-    val bdm = DenseMatrix.tabulate(500,600){
+    val w = 0.4
+    //val bdm = DenseMatrix.tabulate(500,600){
+    val bdm = DenseMatrix.tabulate(200,300){
       case (i,j) => Gaussian(0,1.0).draw()
     } // random init
     val pim0 = PImage(0,0,BDM2I(bdm))
@@ -240,14 +258,15 @@ object QuartMrfMh extends IOApp.Simple:
       if ((pi.x+pi.y) % 2 == 0) pi.extract else mhKernel(pi)
     //def pims = LazyList.iterate(pim0)(_.coflatMap(mhKernel))
     def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
-    plotFields(pims.take(100))
+    plotFields(pims.thin(200).take(400))
 
 // Quartic MRF model sampler - HMC version
 object QuartMrfHmc extends IOApp.Simple:
   import Mrf.*
   def run: IO[Unit] =
-    val w = 0.5
-    val bdm = DenseMatrix.tabulate(500,600){
+    val w = 0.4
+    //val bdm = DenseMatrix.tabulate(500,600){
+    val bdm = DenseMatrix.tabulate(200,300){
       case (i,j) => Gaussian(0,1.0).draw()
     } // random init
     val pim0 = PImage(0,0,BDM2I(bdm))
@@ -261,7 +280,7 @@ object QuartMrfHmc extends IOApp.Simple:
         gv(pim.extract))
     val kern: PImage[Double] => PImage[Double] = hmcKernel(lpi, glpi, 0.01, 100)
     def pims = LazyList.iterate(pim0)(kern)
-    plotFields(pims.take(20))
+    plotFields(pims.thin(10).take(400))
 
 
 // eof

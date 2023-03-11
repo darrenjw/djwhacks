@@ -17,6 +17,8 @@ import breeze.stats.distributions.{Gaussian, Uniform}
 import scala.collection.parallel.immutable.ParVector
 import scala.collection.parallel.CollectionConverters.*
 
+import java.awt.image.BufferedImage
+
 import annotation.tailrec
 
 object Mrf:
@@ -28,6 +30,23 @@ object Mrf:
     def map[S](f: T => S): Image[S] = Image(w, h, data map f)
     def updated(x: Int, y: Int, value: T): Image[T] =
       Image(w, h, data.updated(x*h+y, value))
+
+  case object Image:
+    def mkImage[A: Numeric](im: Image[A]): BufferedImage =
+      import math.Numeric.Implicits.infixNumericOps
+      val canvas = new BufferedImage(im.w, im.h, BufferedImage.TYPE_INT_RGB)
+      val wr = canvas.getRaster
+      val mx = im.data.map(_.toDouble).reduce((x, y) => math.max(x,y))
+      val mn = im.data.map(_.toDouble).reduce((x, y) => math.min(x,y))
+      for (i <- 0 until im.w)
+        for (j <- 0 until im.h)
+          val level = round(255 * (im(i, j).toDouble - mn) / (mx - mn)).toInt
+          wr.setSample(i, j, 0, level)
+          wr.setSample(i, j, 1, level)
+          wr.setSample(i, j, 2, 255)
+      canvas
+    def saveImage[A: Numeric](im: Image[A], fileName: String): Unit =
+      javax.imageio.ImageIO.write(mkImage(im), "png", new java.io.File(fileName+".png"))
 
   // Pointed image (with a focus/cursor) - comonadic
   case class PImage[T](x: Int, y: Int, image: Image[T]):
@@ -85,8 +104,8 @@ object Mrf:
       fa.image.data.tail.foldLeft(f(fa.image.data.head))(g)
     def reduceRightTo[A, B](fa: PImage[A])(f: A => B)(g: (A, Eval[B]) => Eval[B]): Eval[B] =
       fa.image.data.init.foldRight(Eval.later(f(fa.image.data.last)))(g)
-
-  // TODO: override reduce
+    // optionally override reduce
+    def reduce[A](fa: PImage[A])(f: (A, A) => A): A = fa.image.data.reduce(f)
 
   // convert to and from Breeze matrices
   def BDM2I[T](m: DenseMatrix[T]): Image[T] =
@@ -107,7 +126,7 @@ object Mrf:
         if (ss.isEmpty) LazyList.empty else
           ss.head #:: ss.tail.thin(th)
 
-
+  // a MH kernel as needed for HMC
   def mhKern[S](
       logPost: S => Double, rprop: S => S,
       dprop: (S, S) => Double = (n: S, o: S) => 1.0
@@ -120,6 +139,7 @@ object Mrf:
         val a = ll - ll0 + dprop(x0, x) - dprop(x, x0)
         if (math.log(r.draw()) < a) x else x0
 
+  // a HMC kernel
   def hmcKernel[F[_]: Apply](lpi: F[Double] => Double, glpi: F[Double] => F[Double],
       eps: Double = 1e-4, l: Int = 10)(using Reducible[F]): F[Double] => F[Double] =
     def add(p: F[Double], q: F[Double]): F[Double] = (p product q) map ((pi, qi) => pi + qi)
@@ -174,14 +194,12 @@ object Mrf:
         p += image(mat)
         fig.refresh()
       if (saveFrames)
-        fig.saveas(f"mrf$i%04d.png")
+        Image.saveImage(pim.image, f"mrf-$i%04d")
       if (savePixels)
         fs.write(""+mat(0,0)+","+mat(0,1)+","+mat(10,10)+"\n")
     }
     fs.close()
   }
-
-  // TODO: write a few pixels to a CSV file
 
   // TODO: write proper image frames to disk?
 
@@ -239,48 +257,49 @@ object GmrfGibbs extends IOApp.Simple:
 object QuartMrfMh extends IOApp.Simple:
   import Mrf.*
   def run: IO[Unit] =
-    val w = 0.4
-    //val bdm = DenseMatrix.tabulate(500,600){
-    val bdm = DenseMatrix.tabulate(200,300){
-      case (i,j) => Gaussian(0,1.0).draw()
+    val w = 0.45
+    val bdm = DenseMatrix.tabulate(1080, 1920){
+    //val bdm = DenseMatrix.tabulate(500, 600){
+    //val bdm = DenseMatrix.tabulate(200, 300){
+      case (i,j) => Gaussian(0, 1.0).draw()
     } // random init
-    val pim0 = PImage(0,0,BDM2I(bdm))
+    val pim0 = PImage(0, 0, BDM2I(bdm))
     def v(l: Double)(x: Double): Double = l*x - 2*x*x + x*x*x*x
     def mhKernel(pi: PImage[Double]): Double =
-      val sum = pi.up.extract+pi.down.extract+pi.left.extract+pi.right.extract
+      val sum = pi.up.extract + pi.down.extract + pi.left.extract + pi.right.extract
       val x0 = pi.extract
       val x1 = x0 + Gaussian(0.0, 1.0).draw() // tune this!
       val lap = v(-w*sum)(x0) - v(-w*sum)(x1)
-      if (math.log(Uniform(0,1).draw()) < lap) x1 else x0
+      if (math.log(Uniform(0, 1).draw()) < lap) x1 else x0
     def oddKernel(pi: PImage[Double]): Double =
       if ((pi.x+pi.y) % 2 != 0) pi.extract else mhKernel(pi)
     def evenKernel(pi: PImage[Double]): Double =
       if ((pi.x+pi.y) % 2 == 0) pi.extract else mhKernel(pi)
     //def pims = LazyList.iterate(pim0)(_.coflatMap(mhKernel))
     def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
-    plotFields(pims.thin(200).take(400))
+    plotFields(pims.thin(200).take(20), showPlots=false, saveFrames=true)
 
 // Quartic MRF model sampler - HMC version
 object QuartMrfHmc extends IOApp.Simple:
   import Mrf.*
   def run: IO[Unit] =
-    val w = 0.4
-    //val bdm = DenseMatrix.tabulate(500,600){
-    val bdm = DenseMatrix.tabulate(200,300){
-      case (i,j) => Gaussian(0,1.0).draw()
+    val w = 0.45
+    val bdm = DenseMatrix.tabulate(500, 600){
+    //val bdm = DenseMatrix.tabulate(200, 300){
+      case (i,j) => Gaussian(0, 1.0).draw()
     } // random init
-    val pim0 = PImage(0,0,BDM2I(bdm))
+    val pim0 = PImage(0, 0, BDM2I(bdm))
     def v(x: Double): Double = -2*x*x + x*x*x*x
     def gv(x: Double): Double = -4*x + 4*x*x*x
     def lpi(pim: PImage[Double]): Double = pim.
-      coflatMap(pim => w*pim.extract*(pim.right.extract + pim.down.extract) - v(pim.extract)).
-        reduce(_+_)
+      coflatMap(pim => w*pim.extract*(pim.right.extract + pim.down.extract) -
+        v(pim.extract)).reduce(_+_)
     def glpi(pim: PImage[Double]): PImage[Double] = pim.
-      coflatMap(pim => w*(pim.up.extract+pim.down.extract+pim.left.extract+pim.right.extract) -
-        gv(pim.extract))
+      coflatMap(pim => w*(pim.up.extract + pim.down.extract + pim.left.extract +
+        pim.right.extract) - gv(pim.extract))
     val kern: PImage[Double] => PImage[Double] = hmcKernel(lpi, glpi, 0.01, 100)
     def pims = LazyList.iterate(pim0)(kern)
-    plotFields(pims.thin(10).take(400))
+    plotFields(pims.thin(10).take(100), showPlots=false, saveFrames=true)
 
 
 // eof

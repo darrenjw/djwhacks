@@ -83,7 +83,7 @@ object QuartMrfMh extends IOApp.Simple:
       if ((pi.x+pi.y) % 2 == 0) pi.extract else mhKernel(pi)
     //def pims = LazyList.iterate(pim0)(_.coflatMap(mhKernel))
     def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
-    plotFields(pims.thin(20).take(100), showPlots=false, saveFrames=true)
+    plotFields(pims.thin(100).take(3000), showPlots=false, saveFrames=false)
 
 // Quartic MRF model sampler - HMC version
 object QuartMrfHmc extends IOApp.Simple:
@@ -103,9 +103,9 @@ object QuartMrfHmc extends IOApp.Simple:
     def glpi(pim: PImage[Double]): PImage[Double] = pim.
       coflatMap(pim => w*(pim.up.extract + pim.down.extract + pim.left.extract +
         pim.right.extract) - gv(pim.extract))
-    val kern: PImage[Double] => PImage[Double] = hmcKernel(lpi, glpi, 0.01, 100)
+    val kern: PImage[Double] => PImage[Double] = hmcKernel(lpi, glpi, 0.01, 20)
     def pims = LazyList.iterate(pim0)(kern)
-    plotFields(pims.thin(20).take(200), showPlots=false, saveFrames=true)
+    plotFields(pims.thin(100).take(3000), showPlots=false, saveFrames=false)
 
 
 

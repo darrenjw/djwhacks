@@ -1,5 +1,5 @@
 /*
-ML-GA.scala
+ML-GA-AD.scala
 
 Simple gradient ascent algorithm for maximum likelihood estimation
 of a logistic regression model, applied to the Pima data
@@ -12,11 +12,9 @@ import annotation.tailrec
 import torch.Device.{CPU, CUDA}
 import torch.*
 
-type TD = Tensor[Float64]
+object GradientAscentAD:
 
-object GradientAscent:
-
-  @main def run() =
+  @main def runAd() =
     val device = if torch.cuda.isAvailable then CUDA else CPU
     println("First read and process the data")
     val df = smile.read.csv("pima.data", delimiter=" ", header=false)
@@ -35,22 +33,32 @@ object GradientAscent:
     println(p)
 
     println("Now define log likelihood and gradient")
-    def ll(beta: TD): Double =
-      ((ones + (((y*2 - ones)*matmul(X, beta))*(-1)).exp).log*(-1)).sum.item
+    def ll(beta: TD): TD =
+      ((ones + (((y*2 - ones)*(X matmul beta))*(-1)).exp).log*(-1)).sum
     def gll(beta: TD): TD =
-      matmul(X.t, (y - ones / (ones + (matmul(X, beta)*(-1)).exp)))
+      beta.requiresGrad = true
+      val ll0 = ll(beta)
+      ll0.requiresGrad = true
+      ll0.backward()
+      val g = beta.grad
+      g match
+        case gd: TD => gd
+        case _ =>
+          println("Error - no gradient")
+          zerosLike(beta)
 
     println("Now define a function for gradient ascent")
     def oneStep(learningRate: Double)(b0: TD): TD =
       b0 + gll(b0)*learningRate
     def ascend(step: TD => TD, init: TD,
         maxIts: Int = 10000, tol: Double = 1e-8, verb: Boolean = true): TD =
-      @tailrec def go(b0: TD, ll0: Double, itsLeft: Int): TD =
+      @tailrec def go(b0: TD, ll0: TD, itsLeft: Int): TD =
         if (verb)
           println(s"$itsLeft : $ll0")
+          println(s"$b0")
         val b1 = step(b0)
         val ll1 = ll(b1)
-        if ((math.abs(ll0 - ll1) < tol)|(itsLeft < 1))
+        if ((math.abs((ll0 - ll1).item) < tol)|(itsLeft < 1))
           b1
         else
           go(b1, ll1, itsLeft - 1)
@@ -58,7 +66,17 @@ object GradientAscent:
 
     println("Now run a simple gradient ascent algorithm")
     // Better choose a reasonable init as gradient ascent is terrible...
-    val init = Tensor(Seq(-9.8, 0.1, 0, 0, 0, 0, 1.8, 0))
+    val init = Tensor(Seq(-9.8, 0.1, 0, 0, 0, 0, 1.8, 0), requiresGrad=true)
+    println(init)
+    //val ll0 = ll(init)
+    val ll0 = ((ones + (((y*2 - ones)*(X matmul init))*(-1)).exp).log*(-1)).sum
+    ll0.requiresGrad = true
+    println(ll0)
+    println("here0")
+    ll0.backward()
+    println("here1")
+    println(init.grad)
+    println("Optimising now...")
     val opt = ascend(oneStep(1e-6), init)
     println("Inits: " + init)
     println("Init ll: " + ll(init))

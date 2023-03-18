@@ -6,44 +6,44 @@ of a logistic regression model, applied to the Pima data
 
 */
 
-import breeze.linalg.*
-import breeze.numerics.*
 import smile.data.pimpDataFrame
 import annotation.tailrec
 
-type DVD = DenseVector[Double]
+import torch.Device.{CPU, CUDA}
+import torch.*
 
 object GradientAscent:
 
-
   @main def run() =
+    val device = if torch.cuda.isAvailable then CUDA else CPU
     println("First read and process the data")
     val df = smile.read.csv("pima.data", delimiter=" ", header=false)
     print(df)
-    val y = DenseVector(df.select("V8").
+    val y = Tensor(df.select("V8").
       map(_(0).asInstanceOf[String]).
-      map(s => if (s == "Yes") 1.0 else 0.0).toArray)
+      map(s => if (s == "Yes") 1.0 else 0.0).toArray.toIndexedSeq)
     println(y)
-    val x = DenseMatrix(df.drop("V8").toMatrix.toArray:_*)
+    val x = Tensor(df.drop("V8").toMatrix.toArray.flatten.toIndexedSeq).
+      reshape(df.nrow, df.ncol - 1)
     println(x)
-    val ones = DenseVector.ones[Double](x.rows)
-    val X = DenseMatrix.horzcat(ones.toDenseMatrix.t, x)
+    val ones = onesLike(y)
+    val X = cat(Seq(ones.reshape(df.nrow, 1), x), dim=1)
     println(X)
-    val p = X.cols
+    val p = X.shape(1)
     println(p)
 
     println("Now define log likelihood and gradient")
-    def ll(beta: DVD): Double =
-      sum(-log(ones + exp(-1.0*(2.0*y - ones)*:*(X * beta))))
-    def gll(beta: DVD): DVD =
-      (X.t)*(y - ones/:/(ones + exp(-X*beta)))
+    def ll(beta: Tensor[Float64]): Double =
+      ((ones + (((y*2 - ones)*matmul(X, beta))*(-1)).exp).log*(-1)).sum.item
+    def gll(beta: Tensor[Float64]): Tensor[Float64] =
+      matmul(X.t, (y - ones / (ones + (matmul(X, beta)*(-1)).exp)))
 
     println("Now define a functions for gradient ascent")
-    def oneStep(learningRate: Double)(b0: DVD): DVD =
-      b0 + learningRate*gll(b0)
-    def ascend(step: DVD => DVD, init: DVD, maxIts: Int = 10000,
-        tol: Double = 1e-8, verb: Boolean = true): DVD =
-      @tailrec def go(b0: DVD, ll0: Double, itsLeft: Int): DVD =
+    def oneStep(learningRate: Double)(b0: Tensor[Float64]): Tensor[Float64] =
+      b0 + gll(b0)*learningRate
+    def ascend(step: Tensor[Float64] => Tensor[Float64], init: Tensor[Float64],
+        maxIts: Int = 10000, tol: Double = 1e-8, verb: Boolean = true): Tensor[Float64] =
+      @tailrec def go(b0: Tensor[Float64], ll0: Double, itsLeft: Int): Tensor[Float64] =
         if (verb)
           println(s"$itsLeft : $ll0")
         val b1 = step(b0)
@@ -56,7 +56,7 @@ object GradientAscent:
 
     println("Now run a simple gradient ascent algorithm")
     // Better choose a reasonable init as gradient ascent is terrible...
-    val init = DenseVector(-9.8, 0.1, 0, 0, 0, 0, 1.8, 0)
+    val init = Tensor(Seq(-9.8, 0.1, 0, 0, 0, 0, 1.8, 0))
     val opt = ascend(oneStep(1e-6), init)
     println("Inits: " + init)
     println("Init ll: " + ll(init))

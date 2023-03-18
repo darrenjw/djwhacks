@@ -29,7 +29,8 @@ libraryDependencies  ++= Seq(
 resolvers ++= Resolver.sonatypeOssRepos("snapshots")
 
 libraryDependencies ++= Seq(
-  "dev.storch" %% "core" % "0.0-cd47abc-SNAPSHOT",
+  // "dev.storch" %% "core" % "0.0-cd47abc-SNAPSHOT",
+  "dev.storch" %% "core" % "0.0-f79ce0c-SNAPSHOT", // publishLocal
   "org.bytedeco" % "pytorch" % "1.13.1-1.5.9-SNAPSHOT",
   "org.bytedeco" % "pytorch" % "1.13.1-1.5.9-SNAPSHOT" classifier "linux-x86_64-gpu",
   "org.bytedeco" % "openblas" % "0.3.21-1.5.9-SNAPSHOT" classifier "linux-x86_64",

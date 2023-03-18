@@ -12,6 +12,8 @@ import annotation.tailrec
 import torch.Device.{CPU, CUDA}
 import torch.*
 
+type TD = Tensor[Float64]
+
 object GradientAscent:
 
   @main def run() =
@@ -33,17 +35,17 @@ object GradientAscent:
     println(p)
 
     println("Now define log likelihood and gradient")
-    def ll(beta: Tensor[Float64]): Double =
+    def ll(beta: TD): Double =
       ((ones + (((y*2 - ones)*matmul(X, beta))*(-1)).exp).log*(-1)).sum.item
-    def gll(beta: Tensor[Float64]): Tensor[Float64] =
+    def gll(beta: TD): TD =
       matmul(X.t, (y - ones / (ones + (matmul(X, beta)*(-1)).exp)))
 
     println("Now define a functions for gradient ascent")
-    def oneStep(learningRate: Double)(b0: Tensor[Float64]): Tensor[Float64] =
+    def oneStep(learningRate: Double)(b0: TD): TD =
       b0 + gll(b0)*learningRate
-    def ascend(step: Tensor[Float64] => Tensor[Float64], init: Tensor[Float64],
-        maxIts: Int = 10000, tol: Double = 1e-8, verb: Boolean = true): Tensor[Float64] =
-      @tailrec def go(b0: Tensor[Float64], ll0: Double, itsLeft: Int): Tensor[Float64] =
+    def ascend(step: TD => TD, init: TD,
+        maxIts: Int = 10000, tol: Double = 1e-8, verb: Boolean = true): TD =
+      @tailrec def go(b0: TD, ll0: Double, itsLeft: Int): TD =
         if (verb)
           println(s"$itsLeft : $ll0")
         val b1 = step(b0)

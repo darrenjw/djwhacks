@@ -16,7 +16,7 @@ int main() {
   double e;
   e = 1.0;
   denom = 1;
-  for (i=1;i<20;i++) {
+  for (i=1; i<20; i++) {
     denom *= i;
     e += 1.0/denom;
     printf("%d: %f\n", i, e);

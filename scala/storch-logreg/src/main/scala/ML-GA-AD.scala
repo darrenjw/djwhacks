@@ -49,7 +49,7 @@ object GradientAscentAD:
 
     println("Now define a function for gradient ascent")
     def oneStep(learningRate: Double)(b0: TD): TD =
-      b0 + gll(b0)*learningRate
+      (b0 + gll(b0)*learningRate).detach()
     def ascend(step: TD => TD, init: TD,
         maxIts: Int = 10000, tol: Double = 1e-8, verb: Boolean = true): TD =
       @tailrec def go(b0: TD, ll0: TD, itsLeft: Int): TD =

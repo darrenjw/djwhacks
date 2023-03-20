@@ -7,5 +7,11 @@ In increasing order of complexity:
 * [factor.c](factor.c) - factor a number into its prime factors
 
 
+## Some ideas for extra examples
+
+* Square root via Newton's method
+* Sin via recursion
+* Dereferenced typdefed structs...
+* A simple canvas drawing app, with a bunch of examples (sierpinski triangles, menger sponge, fractal trees, GoL, Langton's ant, etc.)
 
 

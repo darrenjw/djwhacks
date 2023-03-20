@@ -14,5 +14,5 @@ In increasing order of complexity:
 * Dereferenced typdefed structs...
 * A simple canvas drawing app, with a bunch of examples (sierpinski triangles, menger sponge, fractal trees, GoL, Langton's ant, etc.), but just writing image to disk
 * Using an external library - eg. an image library?
-* Very basic Gtk application?
+* Very basic Gtk application - eg. rendering an image in a window?
 

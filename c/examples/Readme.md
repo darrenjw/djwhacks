@@ -2,10 +2,10 @@
 
 In increasing order of complexity:
 
-* [e.c](e.c) - compute e from its series expansion
-* [prime.c](prime.c) - test if a number (provided as a command line arg) is prime
-* [factor.c](factor.c) - factor a number into its prime factors
-* [sqrt.c](sqrt.c) - square root a number using Newton's method
+* [e.c](e.c) - compute e from its series expansion (for loop)
+* [prime.c](prime.c) - test if a number (provided as a command line arg) is prime (separate function)
+* [factor.c](factor.c) - factor a number into its prime factors (recursive function)
+* [sqrt.c](sqrt.c) - square root a number using Newton's method (while loop)
 
 ## Some ideas for extra examples
 

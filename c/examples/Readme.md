@@ -7,6 +7,7 @@ In increasing order of complexity:
 * [factor.c](factor.c) - factor a number into its prime factors *(recursive function)*
 * [sqrt.c](sqrt.c) - square root a number using Newton's method *(while loop)*
 * [sin.c](sin.c) - compute the sin of a number (in radians) using trig *(recursive function)*
+* [stats.c](stats.c) - compute mean and std-dev of numbers *(reading data from stdin, arrays)*
 
 ## Some ideas for extra examples
 

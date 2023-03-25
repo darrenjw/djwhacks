@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 
 double mySin(double x) {
   double sx3;
-  if (x < 1.0e-5)
+  if (fabs(x) < 1.0e-5)
     return(x);
   else {
     sx3 = mySin(x/3);

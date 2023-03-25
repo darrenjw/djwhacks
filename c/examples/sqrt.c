@@ -31,7 +31,7 @@ double mySqrt(double x) {
   double sx;
   sx = x;
   while (fabs(sx*sx - x) > 1.0e-8) {
-    sx = sx - (sx*sx-x)/(2*sx);
+    sx = (sx + x/sx)/2;
   }
   return(sx);
 }

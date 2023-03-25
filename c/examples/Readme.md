@@ -8,7 +8,7 @@ In increasing order of complexity:
 * [sqrt.c](sqrt.c) - square root a number using Newton's method *(while loop)*
 * [sin.c](sin.c) - compute the sin of a number (in radians) using trig *(recursive function)*
 * [stats.c](stats.c) - compute mean and std-dev of numbers *(reading data from stdin, arrays)*
-* [statsp.c](stats.c) - compute mean and std-dev of numbers *(use pointers rather than explicit array indexing)*
+* [statsp.c](statsp.c) - compute mean and std-dev of numbers *(use pointers rather than explicit array indexing)*
 
 ## Some ideas for extra examples
 

@@ -2,11 +2,11 @@
 
 In increasing order of complexity:
 
-* [e.c](e.c) - compute e from its series expansion (for loop)
-* [prime.c](prime.c) - test if a number (provided as a command line arg) is prime (separate function)
-* [factor.c](factor.c) - factor a number into its prime factors (recursive function)
-* [sqrt.c](sqrt.c) - square root a number using Newton's method (while loop)
-* [sin.c](sin.c) - compute the sin of a number (in radians) using trig (recursive function)
+* [e.c](e.c) - compute e from its series expansion *(for loop)*
+* [prime.c](prime.c) - test if a number (provided as a command line arg) is prime *(separate function)*
+* [factor.c](factor.c) - factor a number into its prime factors *(recursive function)*
+* [sqrt.c](sqrt.c) - square root a number using Newton's method *(while loop)*
+* [sin.c](sin.c) - compute the sin of a number (in radians) using trig *(recursive function)*
 
 ## Some ideas for extra examples
 

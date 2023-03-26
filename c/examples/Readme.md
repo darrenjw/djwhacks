@@ -13,8 +13,9 @@ In increasing order of complexity:
 ## Some ideas for extra examples
 
 * Dereferenced typdefed structs (vector type with alloc, free, get, set)
+* Simple GSL example
 * A simple canvas drawing app, with a bunch of examples (sierpinski triangles, menger sponge, fractal trees, GoL, Langton's ant, etc.), but just writing image to disk
-* Using an external library - eg. an image library?
+* Using an external library (other than GSL) - eg. an image library?
 * Very basic Gtk application - eg. rendering an image in a window?
 
 ## Some links

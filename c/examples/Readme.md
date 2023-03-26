@@ -17,3 +17,12 @@ In increasing order of complexity:
 * Using an external library - eg. an image library?
 * Very basic Gtk application - eg. rendering an image in a window?
 
+## Some links
+
+* [gcc](https://gcc.gnu.org/)
+* [clang](https://clang.llvm.org/)
+* [GNU](https://directory.fsf.org/wiki/GNU)
+    * [GNU C library](https://www.gnu.org/software/libc/manual/html_node/index.html)
+	    * [Math](https://www.gnu.org/software/libc/manual/html_node/Mathematics.html)
+    * [GNU Scientific library](https://www.gnu.org/software/gsl/doc/html/index.html)
+

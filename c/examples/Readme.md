@@ -24,5 +24,6 @@ In increasing order of complexity:
 * [GNU](https://directory.fsf.org/wiki/GNU)
     * [GNU C library](https://www.gnu.org/software/libc/manual/html_node/index.html)
 	    * [Math](https://www.gnu.org/software/libc/manual/html_node/Mathematics.html)
+    * [gdb](https://sourceware.org/gdb/current/onlinedocs/gdb.html/)
     * [GNU Scientific library](https://www.gnu.org/software/gsl/doc/html/index.html)
 

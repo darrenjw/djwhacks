@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-# mcmc-mh.py
-# MCMC with MH (using torch)
+# mcmc-mh-gpu.py
+# MCMC with MH (using torch) - GPU version
 
 import os
 import pandas as pd
 import numpy as np
 import torch
 
-print("MCMC with MH using pyTorch")
+print("MCMC with MH using pyTorch (GPU version)")
 
 print("First read and process the data (using regular Python)")
 df = pd.read_csv("pima.data", sep=" ", header=None)
@@ -25,8 +25,8 @@ print(y)
 # TODO: try moving everything to the GPU
 
 print("Now MCMC using Torch")
-X = torch.from_numpy(X)
-y = torch.from_numpy(y)
+X = torch.from_numpy(X).to("cuda")
+y = torch.from_numpy(y).to("cuda")
 
 print(X)
 print(y)
@@ -34,7 +34,7 @@ print(y)
 def ll(beta):
     return torch.sum(-torch.log(1 + torch.exp(-(2*y - 1)*(X @ beta))))
 
-prior_sd = torch.tensor([10,1,1,1,1,1,1,1], dtype=torch.float64)
+prior_sd = torch.tensor([10,1,1,1,1,1,1,1], dtype=torch.float64, device="cuda")
 prior_dist = torch.distributions.normal.Normal(0.0, prior_sd)
 
 def lprior(beta):
@@ -43,7 +43,8 @@ def lprior(beta):
 def lpost(beta):
     return ll(beta) + lprior(beta)
 
-init = torch.tensor([-9.8, 0.1, 0, 0, 0, 0, 1.8, 0], dtype=torch.float64)
+init = torch.tensor([-9.8, 0.1, 0, 0, 0, 0, 1.8, 0], dtype=torch.float64,
+                    device="cuda")
 print("Init:")
 print(init)
 print(ll(init))
@@ -83,19 +84,19 @@ def mcmc(init, kernel, thin = 10, iters = 10000, verb = True):
             print(str(i), end=" ", flush=True)
         for j in range(thin):
             x, ll = kernel(x, ll)
-        mat[i,:] = x.detach()
+        mat[i,:] = x.detach().cpu()
     if (verb):
         print("\nDone.", flush=True)
     return mat
 
-pre = torch.tensor([10.,1.,1.,1.,1.,1.,5.,1.], dtype=torch.float64)
+pre = torch.tensor([10.,1.,1.,1.,1.,1.,5.,1.], dtype=torch.float64, device="cuda")
 
 def rprop(beta):
     return beta + 0.02*torch.normal(mean=0, std=pre)
 
 out = mcmc(init, mhKernel(lpost, rprop), thin=100)
 print(out)
-np.savetxt("out-mh.tsv", out, delimiter='\t')
+np.savetxt("out-mh-gpu.tsv", out, delimiter='\t')
 
 print("Goodbye.")
 

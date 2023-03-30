@@ -37,27 +37,27 @@ object GradientAscentAD:
       ((ones + (((y*2 - ones)*(X matmul beta))*(-1)).exp).log*(-1)).sum
 
     def gll(beta: TD): TD =
-      beta.requiresGrad = true
-      val ll0 = ll(beta)
-      ll0.requiresGrad = true
+      val beta1 = beta.clone().detach()
+      beta1.requiresGrad = true
+      val ll0 = ll(beta1)
+      //ll0.requiresGrad = true
       ll0.backward()
-      val g = beta.grad
+      val g = beta1.grad
       g match
-        case gd: TD => gd
+        case gd: TD => gd.clone().detach()
         case _ =>
           println("Error - no gradient")
-          zerosLike(beta)
+          zerosLike(beta1.clone().detach())
 
     println("Now define functions for gradient ascent")
     def oneStep(learningRate: Double)(b0: TD): TD =
-      (b0 + gll(b0)*learningRate).clone().detach()
+      b0 + gll(b0)*learningRate
 
     def ascend(step: TD => TD, init: TD,
         maxIts: Int = 10000, tol: Double = 1e-8, verb: Boolean = true): TD =
       @tailrec def go(b0: TD, ll0: TD, itsLeft: Int): TD =
         if (verb)
-          println(s"$itsLeft : $ll0")
-          println(s"$b0")
+          println(s"$itsLeft : $ll0 : $b0")
         val b1 = step(b0)
         val ll1 = ll(b1)
         if ((math.abs((ll0 - ll1).item) < tol)|(itsLeft < 1))
@@ -71,8 +71,9 @@ object GradientAscentAD:
     val init = Tensor(Seq(-9.8, 0.1, 0, 0, 0, 0, 1.8, 0))
     println("Inits: " + init)
     println("Init ll: " + ll(init))
+    println("Init gll: " + gll(init))
     println("Optimising now...")
-    val opt = ascend(oneStep(1e-6), init.clone().detach())
+    val opt = ascend(oneStep(1e-6), init)
     println("Inits: " + init)
     println("Init ll: " + ll(init))
     println("Opt: " + opt)

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-# mcmc-mh.py
-# MCMC with MH (using torch)
+# mcmc-hmc.py
+# MCMC with HMC (using torch)
 
 import os
 import pandas as pd
 import numpy as np
 import torch
 
-print("MCMC with MH using pyTorch")
+print("MCMC with HMC using pyTorch")
 
 print("First read and process the data (using regular Python)")
 df = pd.read_csv("pima.data", sep=" ", header=None)
@@ -41,36 +41,58 @@ def lpost(beta):
     return ll(beta) + lprior(beta)
 
 init = torch.tensor([-9.8, 0.1, 0, 0, 0, 0, 1.8, 0], dtype=torch.float64)
+
 print("Init:")
 print(init)
 print(ll(init))
 print(lprior(init))
 print(lpost(init))
 
-# Don't need this for MH, but leave here anyway
-def gll(beta):
+def glp(beta):
+    beta = beta.detach()
     beta.requires_grad = True
-    ll0 = ll(beta)
+    ll0 = lpost(beta)
     ll0.backward()
     g = beta.grad
     return g
 
-print(gll(init))
+print(glp(init))
 
 def mhKernel(lpost, rprop):
-    def kernel(x, ll):
+    def kernel(x):
         prop = rprop(x)
-        lp = lpost(prop)
-        a = lp - ll
-        if (np.log(np.random.rand()) < a.item()):
+        a = lpost(prop) - lpost(x)
+        if (np.log(np.random.rand()) < a):
             x = prop
-            ll = lp
-        return x, ll
+        return x
     return kernel
         
+def hmcKernel(lpi, glpi, eps = 1e-4, l=10, dmm = 1):
+    sdmm = np.sqrt(dmm)
+    def leapf(q, p):    
+        p = p + 0.5*eps*glpi(q)
+        for i in range(l):
+            q = q + eps*p/dmm
+            if (i < l-1):
+                p = p + eps*glpi(q)
+            else:
+                p = p + 0.5*eps*glpi(q)
+        return (q, -p)
+    def alpi(x):
+        (q, p) = x
+        return lpi(q) - 0.5*torch.sum((p**2)/dmm)
+    def rprop(x):
+        (q, p) = x
+        return leapf(q, p)
+    mhk = mhKernel(alpi, rprop)
+    def kern(q):
+        d = len(q)
+        p = torch.normal(mean=0, std=sdmm)
+        return mhk((q, p))[0]
+    return kern
+
 def mcmc(init, kernel, thin = 10, iters = 10000, verb = True):
     p = len(init)
-    ll = -np.inf
     mat = torch.zeros([iters, p])
     x = init
     if (verb):
@@ -79,20 +101,17 @@ def mcmc(init, kernel, thin = 10, iters = 10000, verb = True):
         if (verb):
             print(str(i), end=" ", flush=True)
         for j in range(thin):
-            x, ll = kernel(x, ll)
+            x = kernel(x)
         mat[i] = x.detach()
     if (verb):
         print("\nDone.", flush=True)
     return mat
 
-pre = torch.tensor([10.,1.,1.,1.,1.,1.,5.,1.], dtype=torch.float64)
+pre = torch.tensor([100.,1.,1.,1.,1.,1.,25.,1.], dtype=torch.float64)
 
-def rprop(beta):
-    return beta + 0.02*torch.normal(mean=0, std=pre)
-
-out = mcmc(init, mhKernel(lpost, rprop), thin=1000)
+out = mcmc(init, hmcKernel(lpost, glp, eps=1e-3, l=50, dmm=1/pre), thin=10)
 print(out)
-np.savetxt("out-mh.tsv", out.numpy(), delimiter='\t')
+np.savetxt("out-hmc.tsv", out.numpy(), delimiter='\t')
 
 print("Goodbye.")
 

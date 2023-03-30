@@ -21,9 +21,6 @@ X = np.hstack((np.ones((n,1)), X))
 print(X)
 print(y)
 
-
-# TODO: try moving everything to the GPU
-
 print("Now MCMC using Torch")
 X = torch.from_numpy(X)
 y = torch.from_numpy(y)

@@ -74,7 +74,7 @@ def mhKernel(lpost, rprop):
 def mcmc(init, kernel, thin = 10, iters = 10000, verb = True):
     p = len(init)
     ll = -np.inf
-    mat = np.zeros((iters, p))
+    mat = torch.zeros([iters, p])
     x = init
     if (verb):
         print(str(iters) + " iterations")
@@ -83,7 +83,7 @@ def mcmc(init, kernel, thin = 10, iters = 10000, verb = True):
             print(str(i), end=" ", flush=True)
         for j in range(thin):
             x, ll = kernel(x, ll)
-        mat[i,:] = x.detach()
+        mat[i] = x.detach()
     if (verb):
         print("\nDone.", flush=True)
     return mat
@@ -95,7 +95,7 @@ def rprop(beta):
 
 out = mcmc(init, mhKernel(lpost, rprop), thin=100)
 print(out)
-np.savetxt("out-mh.tsv", out, delimiter='\t')
+np.savetxt("out-mh.tsv", out.numpy(), delimiter='\t')
 
 print("Goodbye.")
 

@@ -1,15 +1,21 @@
 /*
 lamp-test.scala
-Stub for Scala Cats code
+Test of lamp
 */
 
 import cats.*
 import cats.implicits.*
 import cats.effect.{IO, IOApp}
 
-object CatsApp extends IOApp.Simple:
+object LampApp extends IOApp.Simple:
 
-  val l = List(1,2) |+| List(3,4)
+  def run = IO{
 
-  def run = IO{ println(l) }
+    println("lamp test")
+    val tCpu = aten.ATen.eye_0(2L,aten.TensorOptions.dtypeFloat)
+    println(tCpu)
+    val tGpu = aten.ATen.eye_0(2L,aten.TensorOptions.dtypeFloat.cuda)
+    println(tGpu)
+
+  }
 

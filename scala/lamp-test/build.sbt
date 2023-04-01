@@ -20,9 +20,7 @@ libraryDependencies  ++= Seq(
   "org.typelevel" %% "cats-laws" % "2.8.0",
   "org.typelevel" %% "cats-effect" % "3.2.2",
   "org.typelevel" %% "discipline-core" % "1.1.5",
-  "io.github.pityka" %% "lamp-data" % "0.0.100",
-  "io.github.pityka" %% "aten-scala-core" % "0.0.0+109-227b5d12",
-  "io.github.pityka" % "aten-scala-jni-linux" % "0.0.0+109-227b5d12"
+  "io.github.pityka" %% "lamp-data" % "0.0.100"
 )
 
 val monocleVersion = "3.0.0"

@@ -1,6 +1,8 @@
 /*
 nspl-test.scala
-Stub for Scala Cats code
+
+Test of nspl (and resurrected saddle)
+
 */
 
 import cats.*
@@ -9,7 +11,8 @@ import cats.effect.{IO, IOApp}
 
 import org.nspl.*
 import org.nspl.awtrenderer.*
-
+import org.nspl.data.HistogramData
+import org.nspl.saddle.*
 import org.saddle.*
 
 import scala.util.Random.nextDouble
@@ -34,7 +37,22 @@ object NsplApp extends IOApp.Simple:
   //show(plot.build)
   pngToFile(File("test.png"), plot.build, width=1500)
 
-  val df = csv.CsvParser.parseFileWithHeader[Double](java.io.File("mcmc.csv"))
+  // Try plotting some MCMC output
+  val dfe = csv.CsvParser.parseFileWithHeader[Double](File("mcmc.csv"),
+    recordSeparator="\n") // Unix line endings...
+  println(dfe)
+  val df = dfe.toOption.get // Yikes!
+
+  val p1 = boxplot(df.colSlice(0,10), boxColor=Color.red)(par)
+  pngToFile(File("bp.png"), p1.build, width=2000)
+
+  val p2 = xyplot(HistogramData(df.colAt(0).toVec.toSeq, 50) -> bar(
+    strokeColor=Color.red, fill=Color.grey2))(par)
+  pngToFile(File("hist.png"), p2.build, width=1000)
+
+  val p3 = xyplot((df.colAt(0).toVec, line(color=Color.red)))(par)
+  pngToFile(File("trace.png"), p3.build, width=1500)
+
 
   }
 

@@ -9,10 +9,10 @@ In increasing order of complexity:
 * [sin.c](sin.c) - compute the sin of a number (in radians) using trig *(recursive function)*
 * [stats.c](stats.c) - compute mean and std-dev of numbers *(reading data from stdin, arrays)*
 * [statsp.c](statsp.c) - compute mean and std-dev of numbers *(use pointers rather than explicit array indexing)*
+* [statsv.c](statsp.c) - compute mean and std-dev of numbers *(use a typedef'd struct as a vector type)*
 
 ## Some ideas for extra examples
 
-* Dereferenced typdefed structs (vector type with alloc, free, get, set)
 * Simple GSL example
 * A simple canvas drawing app, with a bunch of examples (sierpinski triangles, menger sponge, fractal trees, GoL, Langton's ant, etc.), but just writing image to disk
 * Using an external library (other than GSL) - eg. an image library?

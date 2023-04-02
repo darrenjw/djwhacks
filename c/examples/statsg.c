@@ -37,8 +37,8 @@ int main(int argc, char *argv[]) {
   printf("Read: %ld.\n", n);
   x = gsl_vector_alloc(n);
   gsl_vector_fscanf(stdin, x);
-  mn = gsl_stats_mean((*x).data, (*x).stride, (*x).size);
-  sd = gsl_stats_sd_m((*x).data, (*x).stride, (*x).size, mn);
+  mn = gsl_stats_mean(x->data, x->stride, x->size);
+  sd = gsl_stats_sd_m(x->data, x->stride, x->size, mn);
   printf("Mean is: %f and stdev is %f.\n", mn, sd);
   exit(0);
 }

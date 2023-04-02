@@ -63,13 +63,14 @@ int main(int argc, char *argv[]) {
 vector * vector_alloc(long n) {
   vector *x;
   x = malloc(sizeof(vector));
-  (*x).len = n;
-  (*x).v = calloc(n, sizeof(double));
+  //(*x).len = n; // could use this - but arrow notation nicer
+  x->len = n;
+  x->v = calloc(n, sizeof(double));
   return(x);
 }
 
 void vector_free(vector * x) {
-  free((*x).v);
+  free(x->v);
   free(x);
 }
 
@@ -78,7 +79,7 @@ double vector_get(vector * x, long i) {
     perror("vector_get index out of bounds\n");
     exit(EXIT_FAILURE);
   }
-  return((*x).v[i]);
+  return(x->v[i]);
 }
 
 void vector_set(vector * x, long i, double xi) {
@@ -86,11 +87,11 @@ void vector_set(vector * x, long i, double xi) {
     perror("vector_set index out of bounds\n");
     exit(EXIT_FAILURE);
   }
-  (*x).v[i] = xi;
+  x->v[i] = xi;
 }
 
 long vector_len(vector * x) {
-  return ((*x).len);
+  return (x->len);
 }
 
 

@@ -101,11 +101,12 @@ double mean(vector *x) {
 
 double stddev(vector *x, double m) {
   long i, n;
-  double ss;
+  double ss, xi;
   n = vector_len(x);
   ss = 0.0;
   for (i=0; i<n; i++) {
-    ss += (vector_get(x,i) - m)*(vector_get(x,i) - m);
+    xi = vector_get(x,i);
+    ss += (xi - m)*(xi-m);
   }
   return(sqrt(ss/(n-1)));
 }

@@ -10,10 +10,10 @@ In increasing order of complexity:
 * [stats.c](stats.c) - compute mean and std-dev of numbers *(reading data from stdin, arrays)*
 * [statsp.c](statsp.c) - compute mean and std-dev of numbers *(use pointers rather than explicit array indexing)*
 * [statsv.c](statsv.c) - compute mean and std-dev of numbers *(use a typedef'd struct as a vector type)*
+* [statsg.c](statsg.c) - compute mean and std-dev of numbers *(using the GSL)*
 
 ## Some ideas for extra examples
 
-* Simple GSL example
 * A simple canvas drawing app, with a bunch of examples (sierpinski triangles, menger sponge, fractal trees, GoL, Langton's ant, etc.), but just writing image to disk
 * Using an external library (other than GSL) - eg. an image library?
 * Very basic Gtk application - eg. rendering an image in a window?

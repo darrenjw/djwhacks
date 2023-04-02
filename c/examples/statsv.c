@@ -7,9 +7,9 @@ The number of numbers should be provided as a command line argument
 
 The actual numbers should be entered one per line or piped in
 
-eg. ./stats 5 < fiveNumbers.txt
+eg. ./statsv 5 < fiveNumbers.txt
 
-Requires math library: compile with "-lm". eg. "gcc stats.c -lm"
+Requires math library: compile with "-lm". eg. "gcc statsv.c -lm"
 
  */
 

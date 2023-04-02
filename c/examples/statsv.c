@@ -74,10 +74,18 @@ void vector_free(vector * x) {
 }
 
 double vector_get(vector * x, long i) {
+  if ((i < 0)|(i >= vector_len(x))) {
+    perror("vector_get index out of bounds\n");
+    exit(EXIT_FAILURE);
+  }
   return((*x).v[i]);
 }
 
 void vector_set(vector * x, long i, double xi) {
+  if ((i < 0)|(i >= vector_len(x))) {
+    perror("vector_set index out of bounds\n");
+    exit(EXIT_FAILURE);
+  }
   (*x).v[i] = xi;
 }
 

@@ -21,7 +21,7 @@ x
 
 -- "iter" actually defined using "while"
 y = yield_state 1 \st.
-  while do
+  while \.
     s = get st
     s2 = 2*s
     st := s2
@@ -37,42 +37,42 @@ y
 -- figure out typeclasses to see how to define a Dist type...
 
 
-interface Dist d a
-  logpdf : d -> a -> Float
-  draw : d -> Key -> a
+interface Dist(d, a)
+  logpdf : (d, a) -> Float
+  draw : (d, Key) -> a
 
-data ExponentialDist = Exponential Float
+data ExponentialDist = Exponential(Float)
 
-def lpdf (e: ExponentialDist) (x: Float) : Float = case e of
+def lpdf(e: ExponentialDist, x: Float) -> Float = case e of
   Exponential r -> (log r) - (r * x)
 
-def drw (e: ExponentialDist) (k: Key) : Float = case e of
+def drw(e: ExponentialDist, k: Key) -> Float = case e of
   Exponential r -> (log1p (-(rand k))) / -r
 
 ex = Exponential 0.1
 lpdf ex 2.0
 drw ex (new_key 42)
 
-instance Dist ExponentialDist Float
-  draw = (\e k. drw e k)
-  logpdf = (\e x. lpdf e x)
+instance Dist(ExponentialDist, Float)
+  def draw(e, k) = drw e k
+  def logpdf(e, a) = lpdf e a
   
 exd:Float = draw ex (new_key 42)
 exd
 logpdf ex 2.0
 
 
-interface Foo a
-  foo : a -> String
+interface Foo(a)
+  foo : (a) -> String
 
-interface [Foo a] Bar a
-  bar : a -> String
+interface Bar(a, given () (Foo(a)))
+  bar : (a) -> String
 
-instance Foo Int
-  foo = (\a. show a)
+instance Foo(Int)
+  def foo(a) = show a
 
-instance Bar Int
-  bar = (\a. show a)
+instance Bar(Int)
+  def bar(a) = show a
 
 foo (10::Int)
 bar (10::Int)
@@ -82,27 +82,39 @@ bar (10::Int)
 -- Non-negative float type...
 -- For probabilities, probability densities, and many other things...
 
-data NonNegFloat = LogFloat Float
+data NonNegFloat = LogFloat(Float)
 
-instance Mul NonNegFloat
-  mul = \(LogFloat la) (LogFloat lb). LogFloat $ la + lb
+instance Mul(NonNegFloat)
+  def (*)(lfa, lfb) =
+    LogFloat la = lfa
+    LogFloat lb = lfb
+    LogFloat $ la + lb
   one = LogFloat 0.0
 
-instance Fractional NonNegFloat
-  divide = \(LogFloat la) (LogFloat lb). LogFloat $ la - lb
+instance Fractional(NonNegFloat)
+  def divide(lfa, lfb) =
+    LogFloat la = lfa
+    LogFloat lb = lfb
+    LogFloat $ la - lb
 
-instance Add NonNegFloat
-  add = \(LogFloat la) (LogFloat lb).
+instance Add(NonNegFloat)
+  def (+)(lfa, lfb) =
+    LogFloat la = lfa
+    LogFloat lb = lfb
     if (la > lb)
       then LogFloat $ la + log1p (exp (lb - la))
       else LogFloat $ lb + log1p (exp (la - lb))
   zero = LogFloat (-infinity)
 
-def f_to_nnf (a:Float) : NonNegFloat = LogFloat $ log a
+def f_to_nnf(a:Float) -> NonNegFloat = LogFloat $ log a
 
-def get_raw ((LogFloat la):NonNegFloat) : Float = exp la
+def get_raw(lfa: NonNegFloat) -> Float =
+  LogFloat la = lfa
+  exp la
 
-def get_log ((LogFloat la):NonNegFloat) : Float = la
+def get_log(lfa:NonNegFloat) -> Float =
+  LogFloat la = lfa
+  la
 
 -- usage examples/tests
 
@@ -118,20 +130,6 @@ get_raw (f_to_nnf 0.1 + f_to_nnf 0.2) ~~ 0.3
 get_raw (f_to_nnf 0.4 * f_to_nnf 0.5) ~~ 0.2
 get_raw (divide (f_to_nnf 0.4) (f_to_nnf 0.5)) ~~ 0.8
 
-
--- why can't we define Functor (etc.)?
-
---interface Functor f
---  fmap : (a:Type) ?-> (b:Type) ?-> (a -> b) -> (f a) -> (f b)
-
-data Pair a = MkPair a a
-
-def fmap {a b} (fab: a -> b) ((MkPair a1 a2): Pair a) : Pair b =
-  MkPair (fab a1) (fab a2)
-
-:t fmap
-
-fmap show (MkPair 1.5 2.5)
 
 -- eof
 

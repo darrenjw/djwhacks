@@ -1,12 +1,13 @@
 
 -- why can't we define Functor (etc.)?
 
---interface Functor f
---  fmap : (a:Type) ?-> (b:Type) ?-> (a -> b) -> (f a) -> (f b)
+--interface Functor(f, a, b)
+--  fmap : ((a) -> b, f(a)) -> f(b)
 
-data Pair a = MkPair a a
+data Pair(a) = MkPair(a, a)
 
-def fmap {a b} (fab: a -> b) ((MkPair a1 a2): Pair a) : Pair b =
+def fmap(fab: (a) -> b, ap: Pair(a)) -> Pair(b) given (a, b) =
+  MkPair(a1, a2) = ap
   MkPair (fab a1) (fab a2)
 
 :t fmap

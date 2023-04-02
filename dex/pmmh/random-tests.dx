@@ -9,14 +9,14 @@ k = new_key 42
 
 rand k
 randn k
-draw (Bernoulli 0.5) k :: Bool
-draw (Poisson 5.0) k :: Nat
-draw (Binomial 50 0.5) k :: Nat
+draw Bernoulli.new(0.5) k :: Bool
+draw Poisson.new(5.0) k :: Nat
+draw Binomial.new(50,0.5) k :: Nat
 
-draw (Exponential 2.0) k :: Float
-draw (Normal 5.0 2.0) k :: Float
+draw Exponential.new(2.0) k :: Float
+draw Normal.new(5.0, 2.0) k :: Float
 
-g = Normal 5.0 2.0
+g = Normal.new(5.0, 2.0)
 [k1, k2] = split_key k
 draw g k :: Float
 draw g k1 :: Float
@@ -28,12 +28,12 @@ x: (Fin 10)=>Float = randn_vec k
 x
 
 rand_vec 10 randn k
-rand_vec 8 (draw $ Poisson 5.0) k :: Fin 8=>Nat
-rand_vec 15 (draw $ Binomial 20 0.5) k :: Fin 15=>Nat
-rand_vec 15 (draw $ Binomial 20 0.5) k1 :: Fin 15=>Nat
-rand_vec 15 (draw $ Binomial 20 0.5) k2 :: Fin 15=>Nat
+rand_vec 8 (\k. draw Poisson.new(5.0) k) k :: Fin 8=>Nat
+rand_vec 15 (\k. draw Binomial.new(20, 0.5) k) k :: Fin 15=>Nat
+rand_vec 15 (\k. draw Binomial.new(20, 0.5) k) k1 :: Fin 15=>Nat
+rand_vec 15 (\k. draw Binomial.new(20, 0.5) k) k2 :: Fin 15=>Nat
 
-rand_mat 3 5 (draw $ Poisson 8) k :: Fin 3=>Fin 5=>Nat
+rand_mat 3 5 (\k. draw Poisson.new(8) k) k :: Fin 3=>Fin 5=>Nat
 
 -- some very basic testing
 
@@ -41,33 +41,34 @@ mean_and_variance $ rand_vec 1000000 rand k
 -- ~ (0.5, 0.0833)
 mean_and_variance $ rand_vec 1000000 randn k
 -- ~ (0, 1)
-mean_and_variance $ rand_vec 1000000 (draw $ Normal 1.0 2.0) k :: (Fin 1000000=>Float)
+mean_and_variance $ rand_vec 1000000 (\k. draw Normal.new(1.0, 2.0) k) k :: (Fin 1000000=>Float)
 -- ~ (1, 4)
-mean_and_variance $ rand_vec 1000000 (draw $ Exponential 2.0) k :: (Fin 1000000=>Float)
+mean_and_variance $ rand_vec 1000000 (\k. draw Exponential.new(2.0) k) k :: (Fin 1000000=>Float)
 -- ~ (0.5, 0.25)
-mean_and_variance $ rand_vec 1000000 (draw $ Uniform 0 1) k :: (Fin 1000000=>Float)
+mean_and_variance $ rand_vec 1000000 (\k. draw Uniform.new(0, 1) k) k :: (Fin 1000000=>Float)
 -- ~ (0.5, 0.0833)
-mean_and_variance $ rand_vec 1000000 (draw $ Uniform 3 7) k :: (Fin 1000000=>Float)
+mean_and_variance $ rand_vec 1000000 (\k. draw Uniform.new(3, 7) k) k :: (Fin 1000000=>Float)
 -- ~ (5, 1.3333)
-mean_and_variance $ map n_to_f $ rand_vec 1000000 (draw $ Poisson 5.0) k
+mean_and_variance $ map n_to_f $ rand_vec 1000000 (\k. draw Poisson.new(5.0) k) k
 -- ~ (5, 5)
-mean_and_variance $ map n_to_f $ rand_vec 1000000 (draw $ Poisson 0.1) k
+mean_and_variance $ map n_to_f $ rand_vec 1000000 (\k. draw Poisson.new(0.1) k) k
 -- ~ (0.1, 0.1)
-mean_and_variance $ map n_to_f $ rand_vec 1000000 (draw $ Poisson 50.0) k
+mean_and_variance $ map n_to_f $ rand_vec 1000000 (\k. draw Poisson.new(50.0) k) k
 -- ~ (50, 50)
-mean_and_variance $ map n_to_f $ rand_vec 1000000 (draw $ Binomial 20 0.5) k
+mean_and_variance $ map n_to_f $ rand_vec 1000000 (\k. draw Binomial.new(20, 0.5) k) k
 -- ~ (10, 5)
-mean_and_variance $ map n_to_f $ rand_vec 1000000 (draw $ Binomial 100 0.1) k
+mean_and_variance $ map n_to_f $ rand_vec 1000000 (\k. draw Binomial.new(100, 0.1) k) k
 -- ~ (10, 9)
-mean_and_variance $ map n_to_f $ rand_vec 1000000 (draw $ Geometric 0.1) k
+mean_and_variance $ map n_to_f $ rand_vec 1000000 (\k. draw Geometric.new(0.1) k) k
 -- ~ (10, 90)
 
 -- categorical from log-probs returning indices - useful for picking reactions, multinomial resampling, etc.
-mean_and_variance $ map (\n. n_to_f (ordinal n)) $ rand_vec 1000000 (categorical (log [0.1,0.6,0.3])) k
+mean_and_variance $ map (\n. n_to_f (ordinal n)) $ rand_vec 1000000 (
+  \k. categorical (log [0.1,0.6,0.3]) k) k
 -- ~ (1.2, 0.36)
 
 -- double-check no bad samples on big runs... (infinity, nan, etc.)
-mean_and_variance $ rand_vec 10000000 (draw $ Exponential 2.0) k :: (Fin 10000000=>Float)
+mean_and_variance $ rand_vec 10000000 (\k. draw Exponential.new(2.0) k) k :: (Fin 10000000=>Float)
 -- ~ (0.5, 0.25)
 
 

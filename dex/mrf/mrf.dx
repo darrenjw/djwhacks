@@ -23,7 +23,8 @@ struct PImage(a) =
 def blank_pim(rows: Nat, cols: Nat) -> PImage(Float) =
   PImage.new(0, 0, blank_im(rows, cols))
 
-def pixels(pim: PImage(a)) -> (pix_type (pim.im)) given (a) =
+--def pixels(pim: PImage(a)) -> (pix_type (pim.im)) given (a) =
+def pixels(pim: PImage(a)) -> _=>_=>a given (a) =
   MkIm(rows, cols, pixels) = pim.im
   pixels
 
@@ -110,10 +111,10 @@ im_chain = for i:(Fin its). chain[i].im
 im_chain
 :t im_chain
 
-pix_chain = for i:(Fin its).
+pix_chain : (Fin its)=>(Fin rows)=>(Fin cols)=>Float = for i:(Fin its).
   im = im_chain[i] :: Image(Float)
-  MkIm(r, c, px) = im
-  px :: (Fin r)=>(Fin c)=>Float
+  MkIm(r, c, px) : Image(Float) = im
+  px
 pix_chain
 :t pix_chain
 

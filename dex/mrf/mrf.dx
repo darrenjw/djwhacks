@@ -1,20 +1,31 @@
 '# mrf.dx
-## Simulate a (quartic) MRF using a comonadic image
+## Simulate a quartic MRF using parallel Metropolis-Hastings MCMC on a comonadic image
 
-'### Basic image type:
+'### Basic image
 
 data Image(a) = MkIm(rows: Nat, cols: Nat, pixels: (Fin rows => Fin cols => a))
 
-def blank(rows: Nat, cols: Nat) -> Image(Float) =
+def blank_im(rows: Nat, cols: Nat) -> Image(Float) =
   t = for i:(Fin rows). for j:(Fin cols). 0.0
   MkIm(rows, cols, t)
 
-'### Pointed image type
+def pix_type(im: Image(a)) -> Type given (a) =
+  MkIm(r, c, p) = im
+  (Fin r)=>(Fin c)=>a
+
+'### Comonadic pointed image
 
 struct PImage(a) =
   row: Nat
   col: Nat
   im: Image(a)
+
+def blank_pim(rows: Nat, cols: Nat) -> PImage(Float) =
+  PImage.new(0, 0, blank_im(rows, cols))
+
+def pixels(pim: PImage(a)) -> (pix_type (pim.im)) given (a) =
+  MkIm(rows, cols, pixels) = pim.im
+  pixels
 
 -- periodic boundary conditions
 def move(pim: PImage(a), rd: Int, cd: Int) -> PImage(a) given (a) =
@@ -35,14 +46,92 @@ def cobind(pim: PImage(a), f: (PImage(a)) -> b) -> PImage(b) given (a, b) =
   p2 = for i:(Fin r). for j:(Fin c). f(PImage.new(ordinal i, ordinal j, pim.im))
   PImage.new(pim.row, pim.col, MkIm(r, c, p2))
 
+def cobindr(pim: PImage(a), f: (PImage(a), Key) -> b, k: Key) -> PImage(b) given (a, b) =
+  MkIm(r, c, pix) = pim.im
+  -- TODO: Need to split keys!
+  p2 = for i:(Fin r). for j:(Fin c). f(PImage.new(ordinal i, ordinal j, pim.im), k)
+  PImage.new(pim.row, pim.col, MkIm(r, c, p2))
+
+'### Kernel for a quartic field
+
+-- coupling constant
+w = 0.45
+
+-- potential function
+def v(l: Float, x: Float) -> Float = l*x - 2*x*x + x*x*x*x
+
+def mhKern(pi: PImage(Float), k: Key) -> Float =
+  [k1, k2] = split_key k
+  sn = sum $ map extract $ neighbours pi
+  x0 = extract pi
+  x1 = x0 + randn k1 -- tune this
+  lap = v(-w*sn, x0) - v(-w*sn, x1)
+  if ((log $ rand k2) < lap)
+    then x1
+    else x0
+
+-- TODO: Need odd/even kernels
+
+'### Markov chain utilities
+
+def step_n(n: Nat, kern: (s, Key) -> s,
+    state: s, k: Key) -> s given (s|Data) =
+  yield_state state \st.
+    for i:(Fin n).
+      st := kern (get st) (ixkey k i)
+
+def markov_chain(init: s, kern: (s, Key) -> s, its: Nat,
+    k: Key) -> Fin its => s given (s|Data) =
+  with_state init \st.
+    for i:(Fin its).
+      x = kern (get st) (ixkey k i)
+      st := x
+      x
+
+'### Simulate the quartic MRF
+
+rows = 2
+cols = 3
+its = 5
+
+def kern(pim: PImage(Float), k: Key) -> PImage(Float) =
+  cobindr pim mhKern k
+
+chain = markov_chain(blank_pim(rows, cols), kern, its, new_key 42)
+chain
+:t chain
+
+c0 = chain[0@(Fin its)]
+pixels(c0)
+c1 = chain[1@(Fin its)]
+pixels(c1)
+
+im_chain = for i:(Fin its). chain[i].im
+im_chain
+:t im_chain
+
+pix_chain = for i:(Fin its).
+  im = im_chain[i] :: Image(Float)
+  MkIm(r, c, px) = im
+  px :: (Fin r)=>(Fin c)=>Float
+pix_chain
+:t pix_chain
+
 '#### Sandpit...
 
 t1 = [[1, 2], [3, 4], [5, 6]]
+t1
+sum t1
+sum $ sum t1
 i1 = MkIm(3, 2, t1)
 i1
 
-i2 = blank 3 5
+i2 = blank_im 3 5
 i2
+
+pix_type i2
+
+blank_pim 3 3
 
 pi1 = PImage.new(0, 1, i1)
 pi1
@@ -51,11 +140,15 @@ move pi1 (-1) 0
 neighbours pi1
 map extract $ neighbours pi1
 
-def kern(pim: PImage(Nat)) -> Float =
+def kern1(pim: PImage(Nat)) -> Float =
   s = sum $ map extract $ neighbours pim
   (n_to_f s) / 4.0
 
-cobind pi1 kern
+cobind pi1 kern1
+
+pix = pixels(pi1)
+pix
+pix[1@(Fin 3)]
 
 'End of the sandpit.
 

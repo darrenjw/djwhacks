@@ -1,0 +1,68 @@
+'# mrf.dx
+## Simulate a (quartic) MRF using a comonadic image
+
+'### Basic image type:
+
+data Image(a) = MkIm(rows: Nat, cols: Nat, pixels: (Fin rows => Fin cols => a))
+
+def blank(rows: Nat, cols: Nat) -> Image(Float) =
+  t = for i:(Fin rows). for j:(Fin cols). 0.0
+  MkIm(rows, cols, t)
+
+'### Pointed image type
+
+struct PImage(a) =
+  row: Nat
+  col: Nat
+  im: Image(a)
+
+-- periodic boundary conditions
+def move(pim: PImage(a), rd: Int, cd: Int) -> PImage(a) given (a) =
+  MkIm(rows, cols, pixels) = pim.im
+  rNew = mod (n_to_i pim.row + rd) (n_to_i rows)
+  cNew = mod (n_to_i pim.col + cd) (n_to_i cols)
+  PImage.new(unsafe_i_to_n rNew, unsafe_i_to_n cNew, pim.im)
+  
+def neighbours(pim: PImage(a)) -> Fin 4 => PImage(a) given (a|Data) =
+  [move(pim, 0, 1), move(pim, 1, 0), move(pim, -1, 0), move(pim, 0, -1)]
+
+def extract(pim: PImage(a)) -> a given (a) =
+  MkIm(r, c, pix) = pim.im
+  pix[pim.row@(Fin r), pim.col@(Fin c)]
+
+def cobind(pim: PImage(a), f: (PImage(a)) -> b) -> PImage(b) given (a, b) =
+  MkIm(r, c, pix) = pim.im
+  p2 = for i:(Fin r). for j:(Fin c). f(PImage.new(ordinal i, ordinal j, pim.im))
+  PImage.new(pim.row, pim.col, MkIm(r, c, p2))
+
+'#### Sandpit...
+
+t1 = [[1, 2], [3, 4], [5, 6]]
+i1 = MkIm(3, 2, t1)
+i1
+
+i2 = blank 3 5
+i2
+
+pi1 = PImage.new(0, 1, i1)
+pi1
+extract pi1
+move pi1 (-1) 0
+neighbours pi1
+map extract $ neighbours pi1
+
+def kern(pim: PImage(Nat)) -> Float =
+  s = sum $ map extract $ neighbours pim
+  (n_to_f s) / 4.0
+
+cobind pi1 kern
+
+'End of the sandpit.
+
+
+
+
+
+-- eof
+
+

@@ -36,7 +36,6 @@ def cobind(pim: PImage(r, c, a), f: (PImage(r, c, a)) -> b) -> PImage(r, c, b)
 
 def cobindr(pim: PImage(r, c, a), f: (PImage(r, c, a), Key) -> b, k: Key) -> PImage(r, c, b)
     given (r|Ix, c|Ix, a, b) =
-  -- TODO: Need to split keys!
   p2 = for i:r. for j:c. f(PImage.new(i, j, pim.im), ixkey (ixkey k j) i)
   PImage.new(pim.row, pim.col, p2)
 
@@ -58,7 +57,15 @@ def mhKern(pi: PImage(r, c, Float), k: Key) -> Float given (r|Ix, c|Ix) =
     then x1
     else x0
 
--- TODO: Need odd/even kernels
+def oddKern(pi: PImage(r, c, Float), k: Key) -> Float given (r|Ix, c|Ix) =
+  if (mod ((ordinal pi.row) + (ordinal pi.col)) 2 == 1)
+    then mhKern(pi, k)
+    else extract pi
+
+def evenKern(pi: PImage(r, c, Float), k: Key) -> Float given (r|Ix, c|Ix) =
+  if (mod ((ordinal pi.row) + (ordinal pi.col)) 2 == 0)
+    then mhKern(pi, k)
+    else extract pi
 
 '### Markov chain utilities
 
@@ -78,37 +85,47 @@ def markov_chain(init: s, kern: (s, Key) -> s, its: Nat,
 
 '### Simulate the quartic MRF
 
+--rows = 20
+--cols = 30
 rows = 200
 cols = 300
-its = 20
+its = 40 -- number of iterations to run (after thinning)
+thin = 10 -- thinning interval
+
+def kernSync(pim: PImage(r, c, Float), k: Key) -> PImage(r, c, Float) given (r|Ix, c|Ix) =
+  cobindr(pim, mhKern, k)
 
 def kern(pim: PImage(r, c, Float), k: Key) -> PImage(r, c, Float) given (r|Ix, c|Ix) =
-  cobindr(pim, mhKern, k)
+  [k1, k2] = split_key k
+  cobindr(cobindr(pim, oddKern, k1), evenKern, k2)
 
 init = blank_pim(rows, cols)
 :t init
 
-chain = markov_chain(init, kern, its, new_key 42)
+chain = markov_chain(init, \s k. step_n thin kern s k, its, new_key 42)
 :t chain
 
 im_chain = for i:(Fin its). chain[i].im
 :t im_chain
 
--- Converts a given 2D matrix to a greyscale image (from schrodinger example)
--- TODO: doesn't treat negative values correctly?!
 def toImg(xs:n=>m=>Float) -> (n=>m=>Fin 3=>Float) given (n|Ix, m|Ix) =
-  scale = 1. / maximum (map maximum xs)
+  mx = maximum (map maximum xs)
+  mn = minimum (map minimum xs)
   for h.
-    for w c. scale * xs[h, w]
+    for w.
+      lev = (xs[h, w] - mn) / (mx - mn)
+      [lev, lev, 1.0]
 
--- :html imshow $ toImg im_chain[4@_]
+'Write the final frame to disk.
+
+png = img_to_png $ toImg im_chain[unsafe_i_to_n(n_to_i its - 1)@_]
+unsafe_io \. write_file "qmrf.png" png
+
+'Animate the chain.
 
 :html imseqshow $ map toImg im_chain
 
-
-
-
-
+'**The animated sequence will appear above here, but note that it may take some considerable time to generate.**
 
 -- eof
 

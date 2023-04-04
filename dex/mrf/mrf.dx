@@ -3,7 +3,7 @@
 
 '### Comonadic pointed image
 
-struct PImage(r, c, a) =
+struct PImage(r|Ix, c|Ix, a) =
   row: r
   col: c
   im: r=>c=>a
@@ -11,16 +11,6 @@ struct PImage(r, c, a) =
 def blank_pim(rows: Nat, cols: Nat) -> PImage(Fin rows, Fin cols, Float) =
   bi = for i:(Fin rows). for j:(Fin cols). 0.0
   PImage.new(0@(Fin rows), 0@(Fin cols), bi)
-
-blank_pim(2, 3)
-
-blank_pim(3, 4)
-
-init = blank_pim(2, 3)
-
-init
-
-
 
 -- periodic boundary conditions
 def move(pim: PImage(r, c, a), rd: Int, cd: Int) -> PImage(r, c, a) given (r|Ix, c|Ix, a) =
@@ -33,7 +23,7 @@ def move(pim: PImage(r, c, a), rd: Int, cd: Int) -> PImage(r, c, a) given (r|Ix,
 def neighbours(pim: PImage(r, c, a)) -> Fin 4 => PImage(r, c, a) given (r|Ix, c|Ix, a|Data) =
   [move(pim, 0, 1), move(pim, 1, 0), move(pim, -1, 0), move(pim, 0, -1)]
 
-def extract(pim: PImage(r, c, a)) -> a given (r, c, a) =
+def extract(pim: PImage(r, c, a)) -> a given (r|Ix, c|Ix, a) =
   pim.im[pim.row, pim.col]
 
 def cobind(pim: PImage(r, c, a), f: (PImage(r, c, a)) -> b) -> PImage(r, c, b)
@@ -85,75 +75,33 @@ def markov_chain(init: s, kern: (s, Key) -> s, its: Nat,
 
 '### Simulate the quartic MRF
 
+rows = 3
+cols = 4
 its = 5
 
 def kern(pim: PImage(r, c, Float), k: Key) -> PImage(r, c, Float) given (r|Ix, c|Ix) =
   cobindr(pim, mhKern, k)
 
-blank_pim(2, 3)
-
-init = blank_pim(2, 3)
-
+init = blank_pim(rows, cols)
 init
 
-
-
 chain = markov_chain(init, kern, its, new_key 42)
-
 chain
 
 :t chain
 
 c0 = chain[0@(Fin its)]
-pixels(c0)
+c0.im
+
 c1 = chain[1@(Fin its)]
-pixels(c1)
+c1.im
 
 im_chain = for i:(Fin its). chain[i].im
 im_chain
 :t im_chain
 
-pix_chain : (Fin its)=>(Fin rows)=>(Fin cols)=>Float = for i:(Fin its).
-  im = im_chain[i] :: Image(Float)
-  MkIm(r, c, px) : Image(Float) = im
-  px
-pix_chain
-:t pix_chain
 
-'#### Sandpit...
 
-t1 = [[1, 2], [3, 4], [5, 6]]
-t1
-sum t1
-sum $ sum t1
-i1 = MkIm(3, 2, t1)
-i1
-
-i2 = blank_im 3 5
-i2
-
-pix_type i2
-
-blank_pim 3 3
-
-pi1 = PImage.new(0, 1, i1)
-pi1
-extract pi1
-move pi1 (-1) 0
-neighbours pi1
-map extract $ neighbours pi1
-
-def kern1(pim: PImage(Nat)) -> Float =
-  s = sum $ map extract $ neighbours pim
-  (n_to_f s) / 4.0
-
-cobind pi1 kern1
-
-pix = pixels(pi1)
-pix
-pix[1@(Fin 3)]
-
-'End of the sandpit.
 
 
 

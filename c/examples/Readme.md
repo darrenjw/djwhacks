@@ -11,6 +11,8 @@ In increasing order of complexity:
 * [statsp.c](statsp.c) - compute mean and std-dev of numbers *(use pointers rather than explicit array indexing)*
 * [statsv.c](statsv.c) - compute mean and std-dev of numbers *(use a typedef'd struct as a vector type)*
 * [statsg.c](statsg.c) - compute mean and std-dev of numbers *(using the GSL)*
+* [canvas1.c](canvas1.c) - first attempt at a canvas drawing app *(writing a file)*
+
 
 ## Some ideas for extra examples
 

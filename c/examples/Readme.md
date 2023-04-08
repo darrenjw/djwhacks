@@ -12,6 +12,7 @@ In increasing order of complexity:
 * [statsv.c](statsv.c) - compute mean and std-dev of numbers *(use a typedef'd struct as a vector type)*
 * [statsg.c](statsg.c) - compute mean and std-dev of numbers *(using the GSL)*
 * [canvas1.c](canvas1.c) - first attempt at a canvas drawing app *(writing a file)*
+* [canvas2.c](canvas2.c) - extended canvas drawing app *(lines and filled triangles)*
 
 
 ## Some ideas for extra examples

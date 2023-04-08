@@ -65,8 +65,8 @@ object QuartMrfMh extends IOApp.Simple:
   def run: IO[Unit] =
     val w = 0.45
     //val bdm = DenseMatrix.tabulate(1080, 1920){
-    //val bdm = DenseMatrix.tabulate(500, 600){
-    val bdm = DenseMatrix.tabulate(200, 300){
+    val bdm = DenseMatrix.tabulate(500, 700){
+    //val bdm = DenseMatrix.tabulate(200, 300){
       case (i,j) => Gaussian(0, 1.0).draw()
     } // random init
     val pim0 = PImage(0, 0, BDM2I(bdm))
@@ -83,7 +83,8 @@ object QuartMrfMh extends IOApp.Simple:
       if ((pi.x+pi.y) % 2 == 0) pi.extract else mhKernel(pi)
     //def pims = LazyList.iterate(pim0)(_.coflatMap(mhKernel))
     def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
-    plotFields(pims.thin(100).take(3000), showPlots=false, saveFrames=false)
+    //plotFields(pims.thin(100).take(3000), showPlots=false, saveFrames=false)
+    plotFields(pims.thin(50).take(50), showPlots=false, saveFrames=true)
 
 // Quartic MRF model sampler - HMC version
 object QuartMrfHmc extends IOApp.Simple:

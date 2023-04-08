@@ -13,7 +13,7 @@ struct PImage(r|Ix, c|Ix, a) =
 
 def blank_pim(rows: Nat, cols: Nat) -> PImage(Fin rows, Fin cols, Float) =
   bi = for i:(Fin rows). for j:(Fin cols). 0.0
-  PImage.new(0@(Fin rows), 0@(Fin cols), bi)
+  PImage(0@(Fin rows), 0@(Fin cols), bi)
 
 -- periodic boundary conditions
 def move(pim: PImage(r, c, a), rd: Int, cd: Int) -> PImage(r, c, a) given (r|Ix, c|Ix, a) =
@@ -21,7 +21,7 @@ def move(pim: PImage(r, c, a), rd: Int, cd: Int) -> PImage(r, c, a) given (r|Ix,
   cols = size c
   rNew = mod (n_to_i (ordinal pim.row) + rd) (n_to_i rows)
   cNew = mod (n_to_i (ordinal pim.col) + cd) (n_to_i cols)
-  PImage.new((unsafe_i_to_n rNew)@r, (unsafe_i_to_n cNew)@c, pim.im)
+  PImage((unsafe_i_to_n rNew)@r, (unsafe_i_to_n cNew)@c, pim.im)
   
 def neighbours(pim: PImage(r, c, a)) -> Fin 4 => PImage(r, c, a) given (r|Ix, c|Ix, a|Data) =
   [move(pim, 0, 1), move(pim, 1, 0), move(pim, -1, 0), move(pim, 0, -1)]
@@ -31,13 +31,13 @@ def extract(pim: PImage(r, c, a)) -> a given (r|Ix, c|Ix, a) =
 
 def cobind(pim: PImage(r, c, a), f: (PImage(r, c, a)) -> b) -> PImage(r, c, b)
     given (r|Ix, c|Ix, a, b) =
-  p2 = for i:r. for j:c. f(PImage.new(i, j, pim.im))
-  PImage.new(pim.row, pim.col, p2)
+  p2 = for i:r. for j:c. f(PImage(i, j, pim.im))
+  PImage(pim.row, pim.col, p2)
 
 def cobindr(pim: PImage(r, c, a), f: (PImage(r, c, a), Key) -> b, k: Key) -> PImage(r, c, b)
     given (r|Ix, c|Ix, a, b) =
-  p2 = for i:r. for j:c. f(PImage.new(i, j, pim.im), ixkey (ixkey k j) i)
-  PImage.new(pim.row, pim.col, p2)
+  p2 = for i:r. for j:c. f(PImage(i, j, pim.im), ixkey (ixkey k j) i)
+  PImage(pim.row, pim.col, p2)
 
 '### Kernel for a quartic field
 
@@ -90,7 +90,7 @@ def markov_chain(init: s, kern: (s, Key) -> s, its: Nat,
 rows = 200
 cols = 300
 its = 40 -- number of iterations to run (after thinning)
-thin = 10 -- thinning interval
+thin = 30 -- thinning interval
 
 def kernSync(pim: PImage(r, c, Float), k: Key) -> PImage(r, c, Float) given (r|Ix, c|Ix) =
   cobindr(pim, mhKern, k)

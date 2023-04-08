@@ -83,7 +83,7 @@ void image_write(image * im, char * fileName) {
   for (j=0;j<(im->h);j++) {
     for (i=0;i<(im->w);i++) {
       c = image_get(im, i, j);
-	fprintf(s, "%d %d %d\n", c.r, c.g, c.b);
+      fprintf(s, "%d %d %d\n", c.r, c.g, c.b);
     }
   }
   fclose(s);

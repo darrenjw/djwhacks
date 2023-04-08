@@ -45,7 +45,7 @@ void sierp(image *, int, int, int, int, int, int, int, colour);
 int main(int argc, char *argv[]) {
   image *im;
   int i;
-  // show construction on Sierpinski triangle
+  // show construction of Sierpinski triangle
   im = image_alloc(1000, 200);
   for (i=0;i<5;i++) {
     sierp(im, i, 200*i, 180, 200*i + 180, 180, 200*i + 90, 20, red);

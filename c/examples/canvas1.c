@@ -72,6 +72,8 @@ void image_set(image * im, int x, int y, colour c) {
   im->pixels[y*(im->w) + x] = c;
 }
 
+// Output in the plain ASCII "P3" PPM format
+// https://netpbm.sourceforge.net/doc/ppm.html
 void image_write(image * im, char * fileName) {
   FILE *s;
   int i,j;

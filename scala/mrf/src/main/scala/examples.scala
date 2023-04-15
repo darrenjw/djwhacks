@@ -44,7 +44,7 @@ object PottsGibbs extends IOApp.Simple:
   import Mrf.*
   def run: IO[Unit] =
     import breeze.stats.distributions.Multinomial
-    val beta = 1.15 // coupling constant
+    val beta = 1.1 // coupling constant
     val q = 4 // number of colours
     val p0 = DenseVector.fill(q)(1.0)
     val bdm = DenseMatrix.tabulate(500,600){

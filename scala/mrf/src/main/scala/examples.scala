@@ -44,7 +44,7 @@ object PottsGibbs extends IOApp.Simple:
   import Mrf.*
   def run: IO[Unit] =
     import breeze.stats.distributions.Multinomial
-    val beta = 0.2 // coupling constant
+    val beta = 1.15 // coupling constant
     val q = 4 // number of colours
     val p0 = DenseVector.fill(q)(1.0)
     val bdm = DenseMatrix.tabulate(500,600){
@@ -58,14 +58,14 @@ object PottsGibbs extends IOApp.Simple:
     def gibbsKernel(pi: PImage[Int]): Int =
       val p = DenseVector.tabulate(q){
         case i => matching(pi)(i).toDouble }
-      (new Multinomial(exp(p))).draw()
+      (new Multinomial(exp(beta*p))).draw()
     def oddKernel(pi: PImage[Int]): Int =
       if ((pi.x+pi.y) % 2 != 0) pi.extract else gibbsKernel(pi)
     def evenKernel(pi: PImage[Int]): Int =
       if ((pi.x+pi.y) % 2 == 0) pi.extract else gibbsKernel(pi)
     //def pims = LazyList.iterate(pim0)(_.coflatMap(gibbsKernel))
     def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
-    plotFields(pims.take(50))
+    plotFields(pims.thin(20).take(50), showPlots=false, saveFrames=true)
 
 // GMRF model Gibbs sampler
 object GmrfGibbs extends IOApp.Simple:

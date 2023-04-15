@@ -46,12 +46,24 @@ void sierp(image *, int, int, int, int, int, int, int, colour);
 int main(int argc, char *argv[]) {
   image *im;
   int i;
-  im = image_alloc(200, 200);
+  im = image_alloc(500, 200);
   image_circle(im, 100, 100, 80, red);
   image_circle_fill(im, 100, 100, 60, green);
+  image_tri(im, 225, 10, 250, 50, 200, 50, red);
+  image_quad(im, 250, 50, 300, 50, 300, 150, 250, 150, blue);
+  image_quad(im, 350, 20, 450, 20, 450, 40, 350, 40, black);
+  image_quad(im, 350, 50, 400, 70, 450, 150, 370, 130, red);
   image_write(im, "test4.ppm");
   free(im);
 }
+
+
+void image_quad(image * im, int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3, colour c) {
+  // assume coords in cyclic order
+  image_tri(im, x0, y0, x1, y1, x2, y2, c);
+  image_tri(im, x0, y0, x2, y2, x3, y3, c);
+}
+
 
 
 void image_circle(image * im, int x, int y, int r, colour c) {
@@ -127,14 +139,14 @@ void image_tri(image *im, int x0, int y0, int x1, int y1,
     tmp=y0; y0=y1; y1=tmp;
   }
   // fill in with horizontal lines
-  if (y1 > y0) {
-    for (y=y0;y<y1;y++) {
+  if (y1>y0) {
+    for (y=y0;y<=y1;y++) {
       x = x0 + (x1-x0)*(y-y0)/(y1-y0);
       xp = x0 + (x2-x0)*(y-y0)/(y2-y0);
       image_line(im, x, y, xp, y, c);
     }
   }
-  if (y2 > y1) {
+  if (y2>y1) {
     for (y=y1;y<=y2;y++) {
       x = x1 + (x2-x1)*(y-y1)/(y2-y1);
       xp = x0 + (x2-x0)*(y-y0)/(y2-y0);

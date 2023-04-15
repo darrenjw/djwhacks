@@ -61,7 +61,7 @@ void image_line(image *im, int x0, int y0, int x1, int y1, colour c) {
     }
     if (xd > 0) {
       for (i=x0;i<=x1;i++) {
-	tmp = y0 + i*(y1-y0)/xd;
+	tmp = y0 + (i-x0)*(y1-y0)/xd;
 	image_set(im, i, tmp, c);
       }
     }
@@ -72,7 +72,7 @@ void image_line(image *im, int x0, int y0, int x1, int y1, colour c) {
     }
     if (yd > 0) {
       for (i=y0;i<=y1;i++) {
-	tmp = x0 + i*(x1-x0)/yd;
+	tmp = x0 + (i-y0)*(x1-x0)/yd;
 	image_set(im, tmp, i, c);
       }
     }

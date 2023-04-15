@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
   image *im;
   int i;
   im = image_alloc(700, 900);
-  fern(im, 3, 300, 850, 300, 800);
+  fern(im, 18, 300, 850, 300, 800);
   image_write(im, "test5.ppm");
   free(im);
 }
@@ -57,14 +57,15 @@ int main(int argc, char *argv[]) {
 
 void fern(image * im, int lev, double x0, double y0, double x1, double y1) {
   double th, l, xd, yd, xd2, yd2, x2, y2, tc, vs, hs, vr;
-  printf("%d\n", lev);
+  //printf("%d\n", lev);
   tc = 0.1; // thickness coef
   hs = 0.4; // horizontal shrink factor
-  vs = 0.96; // vertical shrink factor
-  vr = 0.04; // vertical rotation angle (radians)
+  vs = 0.95; // vertical shrink factor
+  vr = 0.03; // vertical rotation angle (radians)
   l = sqrt((x1-x0)*(x1-x0) + (y1-y0)*(y1-y0));
   th = tc*l;
-  image_line_thick(im, (int) x0, (int) y0, (int) x1, (int) y1, th, darkGreen);
+  //image_line(im, round(x0), round(y0), round(x1), round(y1), darkGreen);
+  image_line_thick(im, round(x0), round(y0), round(x1), round(y1), th, darkGreen);
   if (lev > 0) {
     xd = x1 - x0;
     yd = y1 - y0;
@@ -72,7 +73,7 @@ void fern(image * im, int lev, double x0, double y0, double x1, double y1) {
     xd2 = xd*hs;
     yd2 = yd*hs;
     x2 = x1 + yd2;
-    y2 = y1 + xd2;
+    y2 = y1 - xd2;
     fern(im, lev - 1, x1, y1, x2, y2);
     // right branch
     xd2 = xd*hs;
@@ -94,7 +95,7 @@ void fern(image * im, int lev, double x0, double y0, double x1, double y1) {
 void image_line_thick(image * im, int x0, int y0, int x1, int y1, double th, colour c) {
   double gr, ang;
   int xd, yd;
-  if (th <= 1.2) {
+  if (th <= 1.5) {
     image_line(im, x0, y0, x1, y1, c);
   }
   else {
@@ -102,8 +103,12 @@ void image_line_thick(image * im, int x0, int y0, int x1, int y1, double th, col
       gr = (y1 - y0)/(x1 - x0);
     else
       gr = INFINITY;
-    gr = -1.0/gr;
-    ang = atan(gr);
+    if (gr != 0) {
+      gr = -1.0/gr;
+      ang = atan(gr);
+    }
+    else 
+      ang = asin(1.0);
     xd = th*cos(ang)/2.0;
     yd = th*sin(ang)/2.0;
     image_quad(im, x0+xd, y0+yd, x1+xd, y1+yd, x1-xd, y1-yd, x0-xd, y0-yd, c);
@@ -144,6 +149,7 @@ void image_circle_fill(image * im, int x, int y, int r, colour c) {
 
 void image_line(image *im, int x0, int y0, int x1, int y1, colour c) {
   int i, xd, yd, tmp;
+  //printf("line from (%d,%d) to (%d,%d)\n",x0,y0,x1,y1);
   image_set(im, x0, y0, c); // make sure at least one pixel set
   xd = abs(x1 - x0);
   yd = abs(y1 - y0);
@@ -154,7 +160,7 @@ void image_line(image *im, int x0, int y0, int x1, int y1, colour c) {
     }
     if (xd > 0) {
       for (i=x0;i<=x1;i++) {
-	tmp = y0 + i*(y1-y0)/xd;
+	tmp = y0 + (i-x0)*(y1-y0)/xd;
 	image_set(im, i, tmp, c);
       }
     }
@@ -165,7 +171,7 @@ void image_line(image *im, int x0, int y0, int x1, int y1, colour c) {
     }
     if (yd > 0) {
       for (i=y0;i<=y1;i++) {
-	tmp = x0 + i*(x1-x0)/yd;
+	tmp = x0 + (i-y0)*(x1-x0)/yd;
 	image_set(im, tmp, i, c);
       }
     }
@@ -231,7 +237,8 @@ colour image_get(image * im, int x, int y) {
 
 void image_set(image * im, int x, int y, colour c) {
   //printf("%d %d : %d %d %d\n", x, y, c.r, c.g, c.b);
-  im->pixels[y*(im->w) + x] = c;
+  if ((x>=0)&(y>=0)&(x < im->w)&(y < im->h))
+    im->pixels[y*(im->w) + x] = c;
 }
 
 // Output in the plain ASCII "P3" PPM format

@@ -20,9 +20,9 @@ object IsingGibbs extends IOApp.Simple:
   import Mrf.*
   def run: IO[Unit] =
     import breeze.stats.distributions.{Binomial,Bernoulli}
-    val beta = 0.4
+    val beta = 0.43 // coupling constant
     val bdm = DenseMatrix.tabulate(500,600){
-      case (i,j) => (new Binomial(1,0.2)).draw()
+      case (i,j) => (new Binomial(1, 0.5)).draw()
     }.map(_*2 - 1) // random matrix of +/-1s
     val pim0 = PImage(0,0,BDM2I(bdm))
     def gibbsKernel(pi: PImage[Int]): Int =
@@ -37,7 +37,7 @@ object IsingGibbs extends IOApp.Simple:
       if ((pi.x+pi.y) % 2 == 0) pi.extract else gibbsKernel(pi)
     //def pims = LazyList.iterate(pim0)(_.coflatMap(gibbsKernel))
     def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
-    plotFields(pims.take(50))
+    plotFields(pims.thin(20).take(50), showPlots=false, saveFrames=true)
 
 // Potts model Gibbs sampler
 object PottsGibbs extends IOApp.Simple:
@@ -85,7 +85,7 @@ object GmrfGibbs extends IOApp.Simple:
       if ((pi.x+pi.y) % 2 == 0) pi.extract else gibbsKernel(pi)
     //def pims = LazyList.iterate(pim0)(_.coflatMap(gibbsKernel))
     def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
-    plotFields(pims.take(100))
+    plotFields(pims.thin(20).take(50), showPlots=false, saveFrames=true)
 
 // Quartic MRF model sampler - MH version
 object QuartMrfMh extends IOApp.Simple:

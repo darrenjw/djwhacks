@@ -1,9 +1,9 @@
 /*
-canvas4.c
+canvas5.c
 
-Fourth attempt at a very simple canvas drawing app
+Fifth attempt at a very simple canvas drawing app
 
-Add open and filled circles, and filled quads
+A fractal fern
 
 */
 
@@ -21,6 +21,7 @@ colour white = {255, 255, 255};
 colour black = {0, 0, 0};
 colour red = {255, 0, 0};
 colour green = {0, 255, 0};
+colour darkGreen = {0, 150, 0};
 colour blue = {0, 0, 255};
 
 typedef struct {
@@ -42,33 +43,72 @@ void image_circle(image *, int, int, int, colour);
 void image_circle_fill(image *, int, int, int, colour);
 void image_quad(image *, int, int, int, int, int, int, int, int, colour);
 
+void fern(image *, int, double, double, double, double);
+
 int main(int argc, char *argv[]) {
   image *im;
   int i;
-  im = image_alloc(500, 200);
-  image_circle(im, 100, 100, 80, red);
-  image_circle_fill(im, 100, 100, 60, green);
-  image_tri(im, 225, 10, 250, 50, 200, 50, red);
-  image_quad(im, 250, 50, 300, 50, 300, 150, 250, 150, blue);
-  image_quad(im, 350, 20, 450, 20, 450, 40, 350, 40, black);
-  image_quad(im, 350, 50, 400, 70, 450, 150, 370, 130, red);
-  image_line_thick(im, 300, 20, 350, 180, 12.0, green);
-  image_write(im, "test4.ppm");
+  im = image_alloc(700, 900);
+  fern(im, 3, 300, 850, 300, 800);
+  image_write(im, "test5.ppm");
   free(im);
 }
+
+
+void fern(image * im, int lev, double x0, double y0, double x1, double y1) {
+  double th, l, xd, yd, xd2, yd2, x2, y2, tc, vs, hs, vr;
+  printf("%d\n", lev);
+  tc = 0.1; // thickness coef
+  hs = 0.4; // horizontal shrink factor
+  vs = 0.96; // vertical shrink factor
+  vr = 0.04; // vertical rotation angle (radians)
+  l = sqrt((x1-x0)*(x1-x0) + (y1-y0)*(y1-y0));
+  th = tc*l;
+  image_line_thick(im, (int) x0, (int) y0, (int) x1, (int) y1, th, darkGreen);
+  if (lev > 0) {
+    xd = x1 - x0;
+    yd = y1 - y0;
+    // left branch
+    xd2 = xd*hs;
+    yd2 = yd*hs;
+    x2 = x1 + yd2;
+    y2 = y1 + xd2;
+    fern(im, lev - 1, x1, y1, x2, y2);
+    // right branch
+    xd2 = xd*hs;
+    yd2 = yd*hs;
+    x2 = x1 - yd2;
+    y2 = y1 + xd2;
+    fern(im, lev - 1, x1, y1, x2, y2);
+    // top branch
+    xd2 = xd*vs;
+    yd2 = yd*vs;
+    x2 = x1 + cos(vr)*xd2 - sin(vr)*yd2;
+    y2 = y1 + sin(vr)*xd2 + cos(vr)*yd2;
+    fern(im, lev - 1, x1, y1, x2, y2);
+  }
+}
+
 
 
 void image_line_thick(image * im, int x0, int y0, int x1, int y1, double th, colour c) {
   double gr, ang;
   int xd, yd;
-  gr = (y1-y0)/(x1-x0);
-  gr = -1.0/gr;
-  ang = atan(gr);
-  xd = th*cos(ang)/2.0;
-  yd = th*sin(ang)/2.0;
-  image_quad(im, x0+xd, y0+yd, x1+xd, y1+yd, x1-xd, y1-yd, x0-xd, y0-yd, c);
+  if (th <= 1.2) {
+    image_line(im, x0, y0, x1, y1, c);
+  }
+  else {
+    if (x1 != x0)
+      gr = (y1 - y0)/(x1 - x0);
+    else
+      gr = INFINITY;
+    gr = -1.0/gr;
+    ang = atan(gr);
+    xd = th*cos(ang)/2.0;
+    yd = th*sin(ang)/2.0;
+    image_quad(im, x0+xd, y0+yd, x1+xd, y1+yd, x1-xd, y1-yd, x0-xd, y0-yd, c);
+  }
 }
-
 
 void image_quad(image * im, int x0, int y0, int x1, int y1, int x2, int y2, int x3, int y3, colour c) {
   // assume coords in cyclic order

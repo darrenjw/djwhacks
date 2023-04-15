@@ -36,6 +36,7 @@ colour image_get(image *, int, int);
 void image_set(image *, int, int, colour);
 void image_write(image *, char *);
 void image_line(image *, int, int, int, int, colour);
+void image_line_thick(image *, int, int, int, int, double, colour);
 void image_tri(image *, int, int, int, int, int, int, colour);
 void image_circle(image *, int, int, int, colour);
 void image_circle_fill(image *, int, int, int, colour);
@@ -53,8 +54,21 @@ int main(int argc, char *argv[]) {
   image_quad(im, 250, 50, 300, 50, 300, 150, 250, 150, blue);
   image_quad(im, 350, 20, 450, 20, 450, 40, 350, 40, black);
   image_quad(im, 350, 50, 400, 70, 450, 150, 370, 130, red);
+  image_line_thick(im, 300, 20, 350, 180, 12.0, green);
   image_write(im, "test4.ppm");
   free(im);
+}
+
+
+void image_line_thick(image * im, int x0, int y0, int x1, int y1, double th, colour c) {
+  double gr, ang;
+  int xd, yd;
+  gr = (y1-y0)/(x1-x0);
+  gr = -1.0/gr;
+  ang = atan(gr);
+  xd = th*cos(ang)/2.0;
+  yd = th*sin(ang)/2.0;
+  image_quad(im, x0+xd, y0+yd, x1+xd, y1+yd, x1-xd, y1-yd, x0-xd, y0-yd, c);
 }
 
 
@@ -63,8 +77,6 @@ void image_quad(image * im, int x0, int y0, int x1, int y1, int x2, int y2, int 
   image_tri(im, x0, y0, x1, y1, x2, y2, c);
   image_tri(im, x0, y0, x2, y2, x3, y3, c);
 }
-
-
 
 void image_circle(image * im, int x, int y, int r, colour c) {
   int i,j;

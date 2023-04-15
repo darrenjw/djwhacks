@@ -14,6 +14,7 @@ In increasing order of complexity:
 * [canvas1.c](canvas1.c) - first attempt at a canvas drawing app *(writing a file)*
 * [canvas2.c](canvas2.c) - extended canvas drawing app *(lines and filled triangles)*
 * [canvas3.c](canvas3.c) - extended canvas drawing app *(Sierpinski triangles)*
+* [canvas4.c](canvas4.c) - extended canvas drawing app *(circles and thick lines)*
 
 
 ## Some ideas for extra examples

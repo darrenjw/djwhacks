@@ -39,6 +39,34 @@ object IsingGibbs extends IOApp.Simple:
     def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
     plotFields(pims.take(50))
 
+// Potts model Gibbs sampler
+object PottsGibbs extends IOApp.Simple:
+  import Mrf.*
+  def run: IO[Unit] =
+    import breeze.stats.distributions.Multinomial
+    val beta = 0.2 // coupling constant
+    val q = 4 // number of colours
+    val p0 = DenseVector.fill(q)(1.0)
+    val bdm = DenseMatrix.tabulate(500,600){
+      case (i,j) => (new Multinomial(p0)).draw()}
+    val pim0 = PImage(0,0,BDM2I(bdm))
+    def matching(pi: PImage[Int])(i: Int): Int =
+      (if (pi.up.extract == i) 1 else 0) +
+      (if (pi.down.extract == i) 1 else 0) +
+      (if (pi.left.extract == i) 1 else 0) +
+      (if (pi.right.extract == i) 1 else 0)
+    def gibbsKernel(pi: PImage[Int]): Int =
+      val p = DenseVector.tabulate(q){
+        case i => matching(pi)(i).toDouble }
+      (new Multinomial(exp(p))).draw()
+    def oddKernel(pi: PImage[Int]): Int =
+      if ((pi.x+pi.y) % 2 != 0) pi.extract else gibbsKernel(pi)
+    def evenKernel(pi: PImage[Int]): Int =
+      if ((pi.x+pi.y) % 2 == 0) pi.extract else gibbsKernel(pi)
+    //def pims = LazyList.iterate(pim0)(_.coflatMap(gibbsKernel))
+    def pims = LazyList.iterate(pim0)(_.coflatMap(oddKernel).coflatMap(evenKernel))
+    plotFields(pims.take(50))
+
 // GMRF model Gibbs sampler
 object GmrfGibbs extends IOApp.Simple:
   import Mrf.*

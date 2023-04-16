@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
   image *im;
   int i;
   im = image_alloc(700, 900);
-  fern(im, 15, 300, 850, 300, 800, 1.0);
+  fern(im, 17, 300, 850, 300, 750, 1.0);
   image_write(im, "test5.ppm");
   free(im);
 }
@@ -58,10 +58,10 @@ int main(int argc, char *argv[]) {
 void fern(image * im, int lev, double x0, double y0, double x1, double y1, double squ) {
   double th, l, xd, yd, xd2, yd2, x2, y2, tc, vs, hs, sq, vr;
   //printf("%d\n", lev);
-  tc = 0.1; // thickness coef
+  tc = 0.05; // thickness coef
   hs = 0.4; // horizontal shrink factor
-  sq = 0.2; // horizontal squish factor
-  vs = 0.97; // vertical shrink factor
+  sq = 0.5; // horizontal squish factor
+  vs = 0.9; // vertical shrink factor
   vr = 0.03; // vertical rotation angle (radians)
   l = sqrt((x1-x0)*(x1-x0) + (y1-y0)*(y1-y0));
   th = tc*l;
@@ -75,19 +75,19 @@ void fern(image * im, int lev, double x0, double y0, double x1, double y1, doubl
     yd2 = yd*hs*squ;
     x2 = x1 + yd2;
     y2 = y1 - xd2;
-    fern(im, lev - 1, x1, y1, x2, y2, sq);
+    fern(im, lev - 1, x1, y1, x2, y2, sq*squ);
     // right branch
     xd2 = xd*hs*squ;
     yd2 = yd*hs*squ;
-    x2 = x1 - yd2;
-    y2 = y1 + xd2;
-    fern(im, lev - 1, x1, y1, x2, y2, sq);
+    x2 = x0 + 0.6*(x1-x0) - yd2;
+    y2 = y0 + 0.6*(y1-y0) + xd2;
+    fern(im, lev - 1, x0 + 0.6*(x1-x0), y0 + 0.6*(y1-y0), x2, y2, sq*squ);
     // top branch
     xd2 = xd*vs;
     yd2 = yd*vs;
     x2 = x1 + cos(vr)*xd2 - sin(vr)*yd2;
     y2 = y1 + sin(vr)*xd2 + cos(vr)*yd2;
-    fern(im, lev - 1, x1, y1, x2, y2, 1.0);
+    fern(im, lev - 1, x1, y1, x2, y2, squ);
   }
 }
 

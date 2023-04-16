@@ -63,7 +63,7 @@ object IsingExch extends IOApp.Simple:
       (bo, po)
 
   def processChain(ch: LazyList[Double]): IO[Unit] =
-    val chain = ch.thin(10).take(1000) // thin and its specified here
+    val chain = ch.drop(100).thin(5).take(10000) // burn, thin and its specified here
     IO {
       val fs = new java.io.FileWriter("exch.csv")
       fs.write("beta\n")

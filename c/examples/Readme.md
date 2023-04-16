@@ -15,11 +15,11 @@ In increasing order of complexity:
 * [canvas2.c](canvas2.c) - extended canvas drawing app *(lines and filled triangles)*
 * [canvas3.c](canvas3.c) - extended canvas drawing app *(Sierpinski triangles)*
 * [canvas4.c](canvas4.c) - extended canvas drawing app *(circles and thick lines)*
+* [canvas5.c](canvas5.c) - extended canvas drawing app *(fractal fern)*
 
 
 ## Some ideas for extra examples
 
-* A simple canvas drawing app, with a bunch of examples (sierpinski triangles, menger sponge, fractal trees, GoL, Langton's ant, etc.), but just writing image to disk
 * Using an external library (other than GSL) - eg. an image library?
 * Very basic Gtk application - eg. rendering an image in a window?
 

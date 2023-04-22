@@ -15,7 +15,8 @@ In increasing order of complexity:
 * [canvas2.c](canvas2.c) - extended canvas drawing app *(lines and filled triangles)*
 * [canvas3.c](canvas3.c) - extended canvas drawing app *(Sierpinski triangles)*
 * [canvas4.c](canvas4.c) - extended canvas drawing app *(circles and thick lines)*
-* [canvas5.c](canvas5.c) - extended canvas drawing app *(fractal fern)*
+* [canvas5.c](canvas5.c) - canvas drawing example *(fractal fern)*
+* [canvas6.c](canvas6.c) - Mandelbrot set *(complex numbers)*
 
 
 ## Some ideas for extra examples

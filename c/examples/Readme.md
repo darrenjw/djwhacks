@@ -17,12 +17,14 @@ In increasing order of complexity:
 * [canvas4.c](canvas4.c) - extended canvas drawing app *(circles and thick lines)*
 * [canvas5.c](canvas5.c) - canvas drawing example *(fractal fern)*
 * [canvas6.c](canvas6.c) - drawing the Mandelbrot set *(complex numbers)*
+* [magick.c](magick.c) - drawing the Mandelbrot set on an ImageMagick image *(MagickWand API)*
 
 
 ## Some ideas for extra examples
 
-* Using an external library (other than GSL) - eg. an image library?
 * Very basic Gtk application - eg. rendering an image in a window?
+* Multi-file project (the canvas app with examples?)
+
 
 ## Some links
 

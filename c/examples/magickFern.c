@@ -17,7 +17,7 @@ gcc -o magickFern magickFern.c `pkg-config --cflags --libs MagickWand` -lm
 #include <stdlib.h>
 #include <wand/MagickWand.h>
 
-void fern(PixelWand *, DrawingWand *, int, double, double, double, double, double);
+void fern(DrawingWand *, int, double, double, double, double, double);
 
 
 int main(int argc, char **argv) {
@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
   PixelSetColor(c_wand, "darkGreen");
   DrawSetStrokeColor(d_wand, c_wand);
   DrawSetStrokeAntialias(d_wand, 1);
-  fern(c_wand, d_wand, 15, 400, 870, 400, 770, 0.7);
+  fern(d_wand, 15, 400, 870, 400, 770, 0.7);
   MagickDrawImage(m_wand, d_wand);
   MagickWriteImage(m_wand, "test8.jpg");
 
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 }
 
 
-void fern(PixelWand * c_wand, DrawingWand * d_wand, int lev, double x0, double y0, double x1, double y1, double squ) {
+void fern(DrawingWand * d_wand, int lev, double x0, double y0, double x1, double y1, double squ) {
   double th, l, xd, yd, xd2, yd2, x2, y2, tc, vs, hs, sq, vr, rbf;
   //printf("%d\n", lev);
   tc = 0.05; // thickness coef
@@ -69,19 +69,19 @@ void fern(PixelWand * c_wand, DrawingWand * d_wand, int lev, double x0, double y
     yd2 = yd*hs*squ;
     x2 = x1 + (1.0/sqrt(2))*xd2 + (1.0/sqrt(2))*yd2;
     y2 = y1 - (1.0/sqrt(2))*xd2 + (1.0/sqrt(2))*yd2;
-    fern(c_wand, d_wand, lev - 1, x1, y1, x2, y2, sq*squ);
+    fern(d_wand, lev - 1, x1, y1, x2, y2, sq*squ);
     // right branch
     xd2 = xd*hs*squ;
     yd2 = yd*hs*squ;
     x2 = x0 + rbf*(x1-x0) + (1.0/sqrt(2))*xd2 - (1.0/sqrt(2))*yd2;
     y2 = y0 + rbf*(y1-y0) + (1.0/sqrt(2))*xd2 + (1.0/sqrt(2))*yd2;
-    fern(c_wand, d_wand, lev - 1, x0 + rbf*(x1-x0), y0 + rbf*(y1-y0), x2, y2, sq*squ);
+    fern(d_wand, lev - 1, x0 + rbf*(x1-x0), y0 + rbf*(y1-y0), x2, y2, sq*squ);
     // top branch
     xd2 = xd*vs;
     yd2 = yd*vs;
     x2 = x1 + cos(vr)*xd2 - sin(vr)*yd2;
     y2 = y1 + sin(vr)*xd2 + cos(vr)*yd2;
-    fern(c_wand, d_wand, lev - 1, x1, y1, x2, y2, squ);
+    fern(d_wand, lev - 1, x1, y1, x2, y2, squ);
   }
 }
 

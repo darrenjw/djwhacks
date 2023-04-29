@@ -17,11 +17,14 @@ In increasing order of complexity:
 * [canvas4.c](canvas4.c) - extended canvas drawing app *(circles and thick lines)*
 * [canvas5.c](canvas5.c) - canvas drawing example *(fractal fern)*
 * [canvas6.c](canvas6.c) - drawing the Mandelbrot set *(complex numbers)*
+* [canvas7.c](canvas7.c) - drawing the Lorenz attractor *(Euler integration of ODEs)*
 * [magick.c](magick.c) - drawing the Mandelbrot set on an ImageMagick image *(MagickWand API)*
 
 
 ## Some ideas for extra examples
 
+* Lorenz attractor (integrating ODEs)
+* Fern with the magic wand API
 * Very basic Gtk application - eg. rendering an image in a window?
 * Multi-file project (the canvas app with examples?)
 

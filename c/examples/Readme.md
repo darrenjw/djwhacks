@@ -19,12 +19,11 @@ In increasing order of complexity:
 * [canvas6.c](canvas6.c) - drawing the Mandelbrot set *(complex numbers)*
 * [canvas7.c](canvas7.c) - drawing the Lorenz attractor *(Euler integration of ODEs)*
 * [magick.c](magick.c) - drawing the Mandelbrot set on an ImageMagick image *(MagickWand API)*
+* [magickFern.c](magickFern.c) - drawing a fern on an ImageMagick image *(more MagickWand API)*
 
 
 ## Some ideas for extra examples
 
-* Lorenz attractor (integrating ODEs)
-* Fern with the magic wand API
 * Very basic Gtk application - eg. rendering an image in a window?
 * Multi-file project (the canvas app with examples?)
 
@@ -37,5 +36,7 @@ In increasing order of complexity:
     * [GNU C library](https://www.gnu.org/software/libc/manual/html_node/index.html)
 	    * [Math](https://www.gnu.org/software/libc/manual/html_node/Mathematics.html)
     * [gdb](https://sourceware.org/gdb/current/onlinedocs/gdb.html/)
+    * [make](https://www.gnu.org/software/make/)
     * [GNU Scientific library](https://www.gnu.org/software/gsl/doc/html/index.html)
+* [MagickWand API](https://imagemagick.org/script/magick-wand.php)
 

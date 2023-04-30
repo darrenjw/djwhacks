@@ -38,5 +38,6 @@ In increasing order of complexity:
     * [gdb](https://sourceware.org/gdb/current/onlinedocs/gdb.html/)
     * [make](https://www.gnu.org/software/make/)
     * [GNU Scientific library](https://www.gnu.org/software/gsl/doc/html/index.html)
-* [MagickWand API](https://imagemagick.org/script/magick-wand.php)
+* [ImageMagick](https://imagemagick.org/)
+    * [MagickWand API](https://imagemagick.org/script/magick-wand.php)
 

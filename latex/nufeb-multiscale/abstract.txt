@@ -1,3 +1,12 @@
+
+BioInference 2:
+
+Statistical emulation for individual-based models of microbial community dynamics
+
+
+
+
+
 Lancaster STORi abstract:
 
 Multiscale modelling of open engineered biological systems

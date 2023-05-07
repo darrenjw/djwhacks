@@ -5,7 +5,7 @@ import djwutils -- load up my Dex utils from the logreg repo
 import stats
 
 -- Transition kernel for the LV process
-def stepLV (th: Fin 3=>Float) (t: Float) (x: Fin 2=>Int) (k: Key) : (Fin 2=>Int) =
+def stepLV(th: Fin 3=>Float, t: Float, x: Fin 2=>Int, k: Key) -> (Fin 2=>Int) =
   yield_state x \xs.
     with_state 0.0 \ts.
      with_state k \ks.
@@ -14,15 +14,15 @@ def stepLV (th: Fin 3=>Float) (t: Float) (x: Fin 2=>Int) (k: Key) : (Fin 2=>Int)
         ct = get ts
         k0 = get ks
         [k1, k2] = split_key k0
-        h1 = th.(0@_)*(i_to_f cx.(0@_))
-        h2 = th.(1@_)*(i_to_f (cx.(0@_)*cx.(1@_)))
-        h3 = th.(2@_)*(i_to_f cx.(1@_))
+        h1 = th[0@_]*(i_to_f cx[0@_])
+        h2 = th[1@_]*(i_to_f (cx[0@_]*cx[1@_]))
+        h3 = th[2@_]*(i_to_f cx[1@_])
         h0 = h1 + h2 + h3
-        nt = if ((h0 < 1.0e-10) || (cx.(0@_) > 1000000))
+        nt = if ((h0 < 1.0e-10) || (cx[0@_] > 1000000))
           then
             1.0e99
           else
-            ct + draw (Exponential h0) k0
+            ct + draw(Exponential.new(h0), k0)
         if (nt >= t)
           then
             Done ()

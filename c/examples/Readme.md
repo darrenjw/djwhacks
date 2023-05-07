@@ -9,14 +9,23 @@ In increasing order of complexity:
 * [sin.c](sin.c) - compute the sin of a number (in radians) using trig *(recursive function)*
 * [stats.c](stats.c) - compute mean and std-dev of numbers *(reading data from stdin, arrays)*
 * [statsp.c](statsp.c) - compute mean and std-dev of numbers *(use pointers rather than explicit array indexing)*
+* [statsv.c](statsv.c) - compute mean and std-dev of numbers *(use a typedef'd struct as a vector type)*
+* [statsg.c](statsg.c) - compute mean and std-dev of numbers *(using the GSL)*
+* [canvas1.c](canvas1.c) - first attempt at a canvas drawing app *(writing a file)*
+* [canvas2.c](canvas2.c) - extended canvas drawing app *(lines and filled triangles)*
+* [canvas3.c](canvas3.c) - canvas drawing example *(Sierpinski triangles)*
+* [canvas4.c](canvas4.c) - extended canvas drawing app *(circles and thick lines)*
+* [canvas5.c](canvas5.c) - canvas drawing example *(fractal fern)*
+* [canvas6.c](canvas6.c) - drawing the Mandelbrot set *(complex numbers)*
+* [canvas7.c](canvas7.c) - drawing the Lorenz attractor *(Euler integration of ODEs)*
+* [magick.c](magick.c) - drawing the Mandelbrot set on an ImageMagick image *(MagickWand API)*
+* [magickFern.c](magickFern.c) - drawing a fern on an ImageMagick image *(more MagickWand API)*
+* [window.c](window.c) - simple GTK app to display an image *(GUI toolkit)*
 
 ## Some ideas for extra examples
 
-* Dereferenced typdefed structs (vector type with alloc, free, get, set)
-* Simple GSL example
-* A simple canvas drawing app, with a bunch of examples (sierpinski triangles, menger sponge, fractal trees, GoL, Langton's ant, etc.), but just writing image to disk
-* Using an external library (other than GSL) - eg. an image library?
-* Very basic Gtk application - eg. rendering an image in a window?
+* Multi-file project (the canvas app with examples?)
+
 
 ## Some links
 
@@ -26,5 +35,9 @@ In increasing order of complexity:
     * [GNU C library](https://www.gnu.org/software/libc/manual/html_node/index.html)
 	    * [Math](https://www.gnu.org/software/libc/manual/html_node/Mathematics.html)
     * [gdb](https://sourceware.org/gdb/current/onlinedocs/gdb.html/)
+    * [make](https://www.gnu.org/software/make/)
     * [GNU Scientific library](https://www.gnu.org/software/gsl/doc/html/index.html)
+* [ImageMagick](https://imagemagick.org/)
+    * [MagickWand API](https://imagemagick.org/script/magick-wand.php)
+* [GTK](https://www.gtk.org/)
 

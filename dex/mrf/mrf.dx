@@ -1,0 +1,132 @@
+'# mrf.dx
+## Simulate a quartic MRF using parallel Metropolis-Hastings MCMC on a comonadic image
+
+import png
+import plot
+
+'### Comonadic pointed image
+
+struct PImage(r|Ix, c|Ix, a) =
+  row: r
+  col: c
+  im: r=>c=>a
+
+def blank_pim(rows: Nat, cols: Nat) -> PImage(Fin rows, Fin cols, Float) =
+  bi = for i:(Fin rows). for j:(Fin cols). 0.0
+  PImage(0@(Fin rows), 0@(Fin cols), bi)
+
+-- periodic boundary conditions
+def move(pim: PImage(r, c, a), rd: Int, cd: Int) -> PImage(r, c, a) given (r|Ix, c|Ix, a) =
+  rows = size r
+  cols = size c
+  rNew = mod (n_to_i (ordinal pim.row) + rd) (n_to_i rows)
+  cNew = mod (n_to_i (ordinal pim.col) + cd) (n_to_i cols)
+  PImage((unsafe_i_to_n rNew)@r, (unsafe_i_to_n cNew)@c, pim.im)
+  
+def neighbours(pim: PImage(r, c, a)) -> Fin 4 => PImage(r, c, a) given (r|Ix, c|Ix, a|Data) =
+  [move(pim, 0, 1), move(pim, 1, 0), move(pim, -1, 0), move(pim, 0, -1)]
+
+def extract(pim: PImage(r, c, a)) -> a given (r|Ix, c|Ix, a) =
+  pim.im[pim.row, pim.col]
+
+def cobind(pim: PImage(r, c, a), f: (PImage(r, c, a)) -> b) -> PImage(r, c, b)
+    given (r|Ix, c|Ix, a, b) =
+  p2 = for i:r. for j:c. f(PImage(i, j, pim.im))
+  PImage(pim.row, pim.col, p2)
+
+def cobindr(pim: PImage(r, c, a), f: (PImage(r, c, a), Key) -> b, k: Key) -> PImage(r, c, b)
+    given (r|Ix, c|Ix, a, b) =
+  p2 = for i:r. for j:c. f(PImage(i, j, pim.im), ixkey (ixkey k j) i)
+  PImage(pim.row, pim.col, p2)
+
+'### Kernel for a quartic field
+
+-- coupling constant
+w = 0.45
+
+-- potential function
+def v(l: Float, x: Float) -> Float = l*x - 2*x*x + x*x*x*x
+
+def mhKern(pi: PImage(r, c, Float), k: Key) -> Float given (r|Ix, c|Ix) =
+  [k1, k2] = split_key k
+  sn = sum $ map extract $ neighbours pi
+  x0 = extract pi
+  x1 = x0 + randn k1 -- tune this
+  lap = v(-w*sn, x0) - v(-w*sn, x1)
+  if ((log $ rand k2) < lap)
+    then x1
+    else x0
+
+def oddKern(pi: PImage(r, c, Float), k: Key) -> Float given (r|Ix, c|Ix) =
+  if (mod ((ordinal pi.row) + (ordinal pi.col)) 2 == 1)
+    then mhKern(pi, k)
+    else extract pi
+
+def evenKern(pi: PImage(r, c, Float), k: Key) -> Float given (r|Ix, c|Ix) =
+  if (mod ((ordinal pi.row) + (ordinal pi.col)) 2 == 0)
+    then mhKern(pi, k)
+    else extract pi
+
+'### Markov chain utilities
+
+def step_n(n: Nat, kern: (s, Key) -> s,
+    state: s, k: Key) -> s given (s|Data) =
+  yield_state state \st.
+    for i:(Fin n).
+      st := kern (get st) (ixkey k i)
+
+def markov_chain(init: s, kern: (s, Key) -> s, its: Nat,
+    k: Key) -> Fin its => s given (s|Data) =
+  st <- with_state init
+  for i:(Fin its).
+    x = kern (get st) (ixkey k i)
+    st := x
+    x
+
+'### Simulate the quartic MRF
+
+--rows = 20
+--cols = 30
+rows = 200
+cols = 300
+its = 40 -- number of iterations to run (after thinning)
+thin = 30 -- thinning interval
+
+def kernSync(pim: PImage(r, c, Float), k: Key) -> PImage(r, c, Float) given (r|Ix, c|Ix) =
+  cobindr(pim, mhKern, k)
+
+def kern(pim: PImage(r, c, Float), k: Key) -> PImage(r, c, Float) given (r|Ix, c|Ix) =
+  [k1, k2] = split_key k
+  cobindr(cobindr(pim, oddKern, k1), evenKern, k2)
+
+init = blank_pim(rows, cols)
+:t init
+
+chain = markov_chain(init, \s k. step_n thin kern s k, its, new_key 42)
+:t chain
+
+im_chain = for i:(Fin its). chain[i].im
+:t im_chain
+
+def toImg(xs:n=>m=>Float) -> (n=>m=>Fin 3=>Float) given (n|Ix, m|Ix) =
+  mx = maximum (map maximum xs)
+  mn = minimum (map minimum xs)
+  for h.
+    for w.
+      lev = (xs[h, w] - mn) / (mx - mn)
+      [lev, lev, 1.0]
+
+'Write the final frame to disk.
+
+png = img_to_png $ toImg im_chain[unsafe_i_to_n(n_to_i its - 1)@_]
+unsafe_io \. write_file "qmrf.png" png
+
+'Animate the chain.
+
+:html imseqshow $ map toImg im_chain
+
+'**The animated sequence will appear above here, but note that it may take some considerable time to generate.**
+
+-- eof
+
+

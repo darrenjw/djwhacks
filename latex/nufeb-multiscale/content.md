@@ -1,78 +1,21 @@
 
 # Outline
 
-* The NUFEB project
-* NUFEB exemplar: Wastewater treatment plants
+* Wastewater treatment
 * Modelling across scales
 * Microscale modelling of complex bacterial community growth
 * Statistical emulation of the microscale model
 * Mesoscale modelling and emulation as an upscaling strategy
 
-# The NUFEB project
 
-* NUFEB: *Newcastle University Frontiers in Engineering Biology*
-* `research.ncl.ac.uk/nufeb/`
-* £5.5M EPSRC Frontiers in Engineering award
-* Roughly 12 investigators at Newcastle, across Engineering, Maths & Stats, Computing Science, similar number of RAs
-* Collaboration with *Northumbrian Water* --- `www.nwl.co.uk`
-* Project title:
+# Wastewater treatment plants
 
-**A new frontier in design:**
-
-**the simulation of open engineered biological systems**
-
-* Concerned with the multi-scale stochastic simulation of complex biological communities in an open environmental system, with a view to using simulation for designing engineering interventions to improve performance
-* Exemplar application: Wastewater treatment systems
-
-# NUFEB exemplar: Wastewater treatment plants
-
-* Wastewater treatment plants (WTPs) are an ideal example of a multi-scale open engineered biological system
+* Wastewater treatment plants (WTPs) are a good example of a multi-scale open engineered biological system
 * There are roughly $10^{18}$ individual bacteria in a typical plant
 * Macro-scale characteristics of WTPs are the consequence of micro-scale features of a vast number of individual bacteria acting together in complex ecological communities
 * The properties of cells at the microscale level dictate the behaviour of a WTP at the macroscale
 * Need to model and understand the interaction of microbes at a fine scale to accurately capture macroscale responses
 * Need to transfer this fine-scale information to the engineered macroscale process in a computationally efficient way
-
-# Two different water treatment technologies
-
-Micro-scale modelling similar, but different up-scaling strategies
-
-*From Wikipedia:*
-
-## Activated sludge systems
-
-Treating wastewater in large tanks using aeration and a biological floc composed of bacteria and protozoa
-
-## Trickling filter
-
-Consists of a fixed bed of rocks, lava, coke, gravel, or plastic, or other media over which sewage or other wastewater flows downward and causes a layer of microbial slime (biofilm) to grow, covering the bed of media
-
-Aerobic conditions are maintained by splashing, diffusion, and usually by natural convection of air if the filter medium is porous
-
-# Data and measurements for model validation and calibration
-
-## Micro-scale
-
-We have laboratory facilities for growing and measuring biological, chemical and mechanical properties of flocs and biofilms
-
-## Bench-scale
-
-We can run bench-scale experiments in chemostats and similar devices for testing our meso-scale upscaling
-
-## Pilot plant
-
-We also have a pilot plant facility for experiments at the macro-scale
-
-# BE:WISE
-
-**Biological Engineering: Wastewater Innovation at Scale**
-
-* Pilot plant facility for model validation and testing
-* The largest wastewater treatment research facility in Europe, developing innovations for sustainable wastewater treatment
-* Located at a WTP run by Northumbrian Water
-* Funded by a £1.2 million grant from the EPSRC, and with funding from Newcastle University and Northumbrian Water, BE:WISE is an international centre of research excellence and demonstration for wastewater management technology
-* The BE:WISE facility is made available to academic researchers worldwide.
-* `research.ncl.ac.uk/bewise`
 
 # Modelling across scales
 
@@ -138,13 +81,9 @@ $$\frac{\partial S}{\partial t} + \vec{U}\cdot\nabla S = \nabla\cdot(D_e\nabla S
 
 # NUFEB IB Models
 
-## NUFEB 1
+## NUFEB open-source modelling software
 
-* The NUFEB 1 model is free open source software on GitHub, built on top of LAMMPS: https://github.com/nufeb/NUFEB
-
-## NUFEB 2
-
-* The NUFEB 2 model is in use internally, and will be released on publication
+* The NUFEB model is free open source software on GitHub, built on top of LAMMPS: https://github.com/nufeb/NUFEB
 * Microbes and nutrients: many microbial species, gas and liquid nutrients
 * Biological features: Monod-based growth, energy-based growth, cell division, EPS production, cell death
 * Chemical features: pH, gas-liquid transfer, thermodynamics
@@ -286,16 +225,6 @@ where $\mathbf{y}_t$ is a state vector and $\mathbf{x}_t$ represents the model i
 
 # Summary and conclusions
 
-## Exemplar application
-
-* We have a very good IB model of bacterial communities in fluid and biofilm allowing detailed study of fine-scale properties and characteristics
-* We have successfully developed accurate and well-calibrated statistical emulators of the fine-scale model
-* We can use the emulator for model validation and calibration against small-scale experimental data
-* We are developing continuum models for understanding system behaviour at larger spatial and temporal scales
-* Fine-scale characteristics determine macro-scale behaviour by using emulators to couple scales in a computationally efficient way
-
-# Summary and conclusions
-
 ## General
 
 * Spatially explicit IB models are an invaluable tool for understanding the stochasticity and heterogeneity of complex biological system behaviour
@@ -303,52 +232,26 @@ where $\mathbf{y}_t$ is a state vector and $\mathbf{x}_t$ represents the model i
 * Statistical emulators have many applications in the design and analysis of complex computer experiments
 * Emulators are a promising tools for coupling scales in multi-scale modelling problems
 
-# Acknowledgements 1: Funders and collaborators
+# Acknowledgements
 
-![NUFEB](figs/NUFEB){height=20%}
-![EPSRC](figs/epsrc){height=30%}
-
-.
-
-.
-
-![Newcastle University](figs/Newcastle_Master_Col){height=10%}
- . . . . . . 
-![ORNL](figs/ornl){height=10%} 
+* EPSRC
+* Newcastle University
+* Northumbrian Water
+* Mott MacDonald
+* Oak Ridge National Laboratory
 
 .
 
 .
 
-![NWL](figs/NWL){height=10%} . . . . . . .
-![MM](figs/mm){height=10%}
-
-# Acknowledgements 2: Newcastle People
-
-## Investigators
-
-* Engineering: **Tom Curtis**, Dana Ofiteru, Jinju Chen, Ben Bridgens, Russel Davenport
-* Maths & Stats: DJW, David Swailes
-* Computing: Steve McGough, Paolo Zuliani, Anil Wipat
-* Biology: Steve Rushton
-
-## Modelling RAs
-
-* Engineering: *Pahala Jayathilake*, Prashant Gupta, Ben Allen, Andrew Coughtree, Rebeca Gonzales-Cabaleiro
-* Maths & Stats: *Oluwole Oyebamiji*
-* Computing: *Bowen Li*, Curtis Madsen
-* Biology: Prashant Gupta
+The NUFEB project involved many investigators and researchers at Newcastle University, and was led by *Prof Tom Curtis* (Engineering)
 
 # References
 
-## Papers
-
-* Pahala Gedara, J. *et al.* (2017) A mechanistic individual-based model of microbial communities, *PLoS ONE*, **12**(8):e0181965.
 * Oyebamiji, O. *et al.* (2017) Gaussian process emulation of an individual-based model simulation of microbial communities, *Journal of Computational Science*, **22**: 69-84.
-* Oyebamiji, O. *et al.* (2017) A surrogate-based approach to modelling the impact of hydrodynamic shear stress on biofilm deformation, in submission.
+* Oyebamiji, O. *et al.* (2018) A Bayesian approach to modelling the impact of hydrodynamic shear stress on biofilm deformation, *PLoS ONE*, **13**(4): e0195484.
+* Oyebamiji, O. *et al.* (2019) Bayesian emulation and calibration of an individual-based model of microbial communities, *Journal of Computational Science*, **30**: 194-208.
+* Gogulancea, V. *et al* (2019) Individual based model links thermodynamics, chemical speciation and environmental conditions to microbial growth, *Frontiers in Microbiology*, **10**:1871.
 
-## Web
-
-* http://research.ncl.ac.uk/nufeb
-* http://tinyurl.com/darrenjw
+https://research.ncl.ac.uk/nufeb \hfill  https://darrenjw.github.io/
 

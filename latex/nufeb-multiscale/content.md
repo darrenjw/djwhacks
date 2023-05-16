@@ -93,8 +93,8 @@ $$\frac{\partial S}{\partial t} + \vec{U}\cdot\nabla S = \nabla\cdot(D_e\nabla S
 
 * The model can run up to order $10^6$ bacteria
 * Typically run for cubic volumes with side 200um (though particle numbers are the main limiting factor)
-* Current collaboration with Oak Ridge National Laboratory (ORNL, www.ornl.gov) on parallelisation of the code to run effectively on the ORNL supercomputer (and also some wet lab work for model validation)
-* Regardless, unlikely to scale to more than $10^8$ or $10^9$ bacteria in practice
+* Collaboration with Oak Ridge National Laboratory (ORNL, www.ornl.gov) on parallelisation of the code to run effectively on the ORNL supercomputer (and also some wet lab work for model validation)
+* Regardless, difficult to scale to more than $10^8$ or $10^9$ bacteria in practice
 * Still a long way off the $10^{18}$ bacteria in a typical full-scale WTP...
 
 # Statistical emulation of complex computer models
@@ -160,7 +160,7 @@ containing two parameters: an asymptotic variance, $\sigma^2$, and a correlation
 * To build a "good" emulator, we want residual uncertainty to be small. In 1d this is easy, but in higher dimensions we need to choose *design points* to *fill space* efficiently so that there aren't big gaps in parameter space for which we don't have a simulator run
 * The naive approach to this problem is to construct a *Cartesian product design* where many levels of each variable are considered in turn, but this approach becomes unworkable in more than 2 or 3 dimensions
 * *Latin hypercube designs* (LHDs) are a good way to choose design points to fill space in an efficient way
-* In more than 2 dimensions, Cartesian product designs are a very inefficient way of covering the design space, and LHDs are much better. In other words, naive *parameter scans are bad --- don't do them!*
+* In more than 2 dimensions, Cartesian product designs (naive parameter scans) are a very inefficient way of covering the design space, and LHDs are much better.
 
 # A 2D Latin hypercube design
 
@@ -185,7 +185,7 @@ $$ \mathsf{Y} \sim \mathcal{MN}(\mathsf{H}\mathsf{B},\mathsf{A},\Sigma) $$
 
 # Dynamic emulation
 
-* Our simulation model is a time evolving dynamical system
+* The simulation model is a time evolving dynamical system
 * Often desirable to emulate dynamical behaviour over time steps (much larger than the simulation time steps)
 * Regard the simulator as a dynamic function
 $$ \mathbf{y}_t = f(\mathbf{x}_t,\mathbf{y}_{t-1}) $$
@@ -206,7 +206,7 @@ where $\mathbf{y}_t$ is a state vector and $\mathbf{x}_t$ represents the model i
 
 # Mesoscale modelling
 
-* Not quite ready to model a full-scale WTP or even our pilot plant --- how big do we need to go before we can simply "multiply up" a representative volume?
+* Can't directly model a full-scale WTP or even a pilot plant --- but how big do we need to go before we can simply "multiply up" a representative volume?
 * Want to start with modelling experiments with bench-scale experiments within the pilot plant facility (with real wastewater)
 * Replicate flow cells consisting of channels approx 2cm wide and 40cm long
 * Waste water pulsed through them as slowly as practical for 2 weeks
@@ -221,7 +221,6 @@ where $\mathbf{y}_t$ is a state vector and $\mathbf{x}_t$ represents the model i
 * eg. the rate of growth of the biofilm given its current composition and (nutrient) environment
 * These rates can be provided by an emulator trained on runs from the individual-based model
 * Embedding fast approximate/stochastic emulators into the continuum model provides a natural bridge from the fine-scale information provided by the IB model to the next scale up
-* Work in progress...
 
 # Summary and conclusions
 
@@ -244,6 +243,8 @@ where $\mathbf{y}_t$ is a state vector and $\mathbf{x}_t$ represents the model i
 
 .
 
+.
+
 The NUFEB project involved many investigators and researchers at Newcastle University, and was led by *Prof Tom Curtis* (Engineering)
 
 # References
@@ -252,6 +253,8 @@ The NUFEB project involved many investigators and researchers at Newcastle Unive
 * Oyebamiji, O. *et al.* (2018) A Bayesian approach to modelling the impact of hydrodynamic shear stress on biofilm deformation, *PLoS ONE*, **13**(4): e0195484.
 * Oyebamiji, O. *et al.* (2019) Bayesian emulation and calibration of an individual-based model of microbial communities, *Journal of Computational Science*, **30**: 194-208.
 * Gogulancea, V. *et al* (2019) Individual based model links thermodynamics, chemical speciation and environmental conditions to microbial growth, *Frontiers in Microbiology*, **10**:1871.
+
+.
 
 https://research.ncl.ac.uk/nufeb \hfill  https://darrenjw.github.io/
 

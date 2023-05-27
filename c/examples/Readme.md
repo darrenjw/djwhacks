@@ -40,4 +40,4 @@ In increasing order of complexity:
 * [ImageMagick](https://imagemagick.org/)
     * [MagickWand API](https://imagemagick.org/script/magick-wand.php)
 * [GTK](https://www.gtk.org/)
-
+    * [Cairo](https://www.cairographics.org/documentation/)

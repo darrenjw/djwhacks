@@ -22,6 +22,7 @@ In increasing order of complexity:
 * [magickFern.c](magickFern.c) - drawing a fern on an ImageMagick image *(more MagickWand API)*
 * [cairo.c](cairo.c) - drawing the Mandelbrot set on an Cairo image *(Cairo canvas API)*
 * [window.c](window.c) - simple GTK app to load and display an image *(GUI toolkit)*
+* [window2.c](window2.c) - simple GTK app to draw an image using Cairo *(GUI toolkit)*
 
 ## Some ideas for extra examples
 

@@ -20,6 +20,7 @@ In increasing order of complexity:
 * [canvas7.c](canvas7.c) - drawing the Lorenz attractor *(Euler integration of ODEs)*
 * [magick.c](magick.c) - drawing the Mandelbrot set on an ImageMagick image *(MagickWand API)*
 * [magickFern.c](magickFern.c) - drawing a fern on an ImageMagick image *(more MagickWand API)*
+* [cairo.c](cairo.c) - drawing the Mandelbrot set on an Cairo image *(Cairo canvas API)*
 * [window.c](window.c) - simple GTK app to display an image *(GUI toolkit)*
 
 ## Some ideas for extra examples

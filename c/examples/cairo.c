@@ -52,7 +52,7 @@ void mand(cairo_t *cr, cairo_surface_t *surface, int w, int h, double complex tl
       if (lev == -1) { // in the set
 	cairo_set_source_rgb(cr, 0.0, 0.0, 0.1);
       } else { // not in the set
-	cairo_set_source_rgb(cr, (double) lev/max_its, 0.0, 0.0); // FIX!
+	cairo_set_source_rgb(cr, (double) lev/max_its, 0.0, 0.0);
       }
       cairo_rectangle(cr, i, j, 1, 1);
       cairo_fill(cr);

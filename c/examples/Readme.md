@@ -1,6 +1,6 @@
 # Some simple C examples for beginners
 
-In increasing order of complexity:
+In roughly increasing order of complexity:
 
 * [e.c](e.c) - compute e from its series expansion *(for loop)*
 * [prime.c](prime.c) - test if a number (provided as a command line arg) is prime *(separate function)*

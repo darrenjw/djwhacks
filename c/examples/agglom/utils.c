@@ -14,6 +14,7 @@ Utility functions required to generate the agglomeration process
 
 image * im;
 
+// copy the image to the GTK window
 void plot_image(cairo_t *cr) {
   int x, y;
   colour col;
@@ -28,6 +29,7 @@ void plot_image(cairo_t *cr) {
   }
 }
 
+// add one more pixel to the image
 void augment_image() {
   int x, y, dir;
   colour col = {255, 0, 0};
@@ -55,6 +57,7 @@ void augment_image() {
   image_set(im, x, y, col);
 }
 
+// check if this location is adjacent to an occupied pixel
 int is_adjacent(int x, int y) {
   int adj = 0;
   // up
@@ -76,6 +79,7 @@ int is_adjacent(int x, int y) {
   return adj;
 }
 
+// check if this pixel is occupied
 int is_occupied(int x, int y) {
   colour col;
   col = image_get(im, x, y);
@@ -85,6 +89,7 @@ int is_occupied(int x, int y) {
     return 0;
 }
 
+// initialise the image (with a line along half the bottom)
 void init_image() {
   int i;
   colour col = {0, 0, 0};

@@ -3,6 +3,8 @@ agglom.c
 
 Main runner program
 
+GTK crap
+
  */
 
 
@@ -34,7 +36,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_window_set_child(GTK_WINDOW(window), drawing_area);
   gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw_cb, NULL, NULL);
 
-  g_timeout_add(1, redraw, drawing_area);
+  g_timeout_add(1, redraw, drawing_area); // redraw every microsecond
   
   gtk_window_present(GTK_WINDOW(window));
 

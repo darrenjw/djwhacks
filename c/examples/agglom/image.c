@@ -1,7 +1,7 @@
 /*
-canvas1.c
+image.c
 
-First attempt at a very simple canvas drawing app
+A very basic image type for storing pixel colours
 
 */
 

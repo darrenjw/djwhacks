@@ -9,8 +9,8 @@ Function prototypes for functions in utils.c
 #include <cairo.h>
 
 // some useful "global" definitions
-#define WIDTH 600
-#define HEIGHT 500
+#define WIDTH 800
+#define HEIGHT 600
 
 // functions defined in utils.c
 void plot_image(cairo_t *);

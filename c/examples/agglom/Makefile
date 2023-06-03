@@ -6,7 +6,7 @@ CFLAGS=`pkg-config --cflags gtk4`
 
 LIBS=`pkg-config --libs gtk4` -lm
 
-HEADERS=utils.h
+HEADERS=utils.h image.h
 
 OBJECTS=agglom.o utils.o image.o
 
@@ -19,11 +19,16 @@ agglom: $(OBJECTS) $(HEADERS)
 run: agglom
 	./agglom
 
+
+
 edit:
 	emacs Makefile *.md *.h *.c &
 
 clean:
 	rm -f agglom *.o *~
+
+
+
 
 # eof
 

@@ -1,14 +1,20 @@
 # Makefile
 
+
+#CFLAGS=-Wall -Wextra -Wstrict-prototypes -g `pkg-config --cflags gtk4`
 CFLAGS=`pkg-config --cflags gtk4`
 
 LIBS=`pkg-config --libs gtk4` -lm
 
-agglom: agglom.o
-	gcc -o agglom agglom.o $(LIBS)
+HEADERS=utils.h
 
-%.o: %.c
-	gcc -c -o $@ $(CFLAGS) $< 
+OBJECTS=agglom.o utils.o image.o
+
+agglom: $(OBJECTS) $(HEADERS)
+	gcc $(OBJECTS) -o agglom $(LIBS)
+
+%.o: %.c $(HEADERS)
+	gcc -c -I. $(CFLAGS) $< -o $@ 
 
 run: agglom
 	./agglom

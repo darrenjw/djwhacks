@@ -23,6 +23,7 @@ In roughly increasing order of complexity:
 * [cairo.c](cairo.c) - drawing the Mandelbrot set on a Cairo image *(Cairo canvas API)*
 * [window.c](window.c) - simple GTK app to load and display an image *(GUI toolkit)*
 * [window2.c](window2.c) - simple GTK app to draw an image using Cairo *(more GUI toolkit)*
+* [agglom](agglom/) - simple multi-file GTK application *(multiple files, headers, Makefile)*
 
 ## Some ideas for extra examples
 

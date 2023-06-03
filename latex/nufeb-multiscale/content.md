@@ -5,7 +5,7 @@
 * Modelling across scales
 * Microscale modelling of complex bacterial community growth
 * Statistical emulation of the microscale model
-* Mesoscale modelling and emulation as an upscaling strategy
+* Emulation-based calibration of a computationally expensive simulation model
 
 
 # Wastewater treatment plants
@@ -96,6 +96,7 @@ $$\frac{\partial S}{\partial t} + \vec{U}\cdot\nabla S = \nabla\cdot(D_e\nabla S
 * Collaboration with Oak Ridge National Laboratory (ORNL, www.ornl.gov) on parallelisation of the code to run effectively on the ORNL supercomputer (and also some wet lab work for model validation)
 * Regardless, difficult to scale to more than $10^8$ or $10^9$ bacteria in practice
 * Still a long way off the $10^{18}$ bacteria in a typical full-scale WTP...
+* But perhaps not so far away from a reasonable "representative volume"...
 
 # Statistical emulation of complex computer models
 
@@ -182,6 +183,7 @@ where $\mathsf{H}$ is a design matrix where the $i$th row of $\mathsf{H}$ is a (
 * Assuming separability of the two covariance matrices, we get a matrix normal distribution for $n\times p$ output matrix $\mathsf{Y}$
 $$ \mathsf{Y} \sim \mathcal{MN}(\mathsf{H}\mathsf{B},\mathsf{A},\Sigma) $$
 * ie. $\operatorname{Var}(\boldsymbol{\operatorname{vec}} Y) = \Sigma \otimes \mathsf{A}$
+* Important to include a (linear/polynomial) model for the mean structure, and just use a GP for residual variation
 
 # Dynamic emulation
 
@@ -191,6 +193,18 @@ $$ \mathsf{Y} \sim \mathcal{MN}(\mathsf{H}\mathsf{B},\mathsf{A},\Sigma) $$
 $$ \mathbf{y}_t = f(\mathbf{x}_t,\mathbf{y}_{t-1}) $$
 where $\mathbf{y}_t$ is a state vector and $\mathbf{x}_t$ represents the model inputs at time $t$
 * Statistically model and emulate $f(\cdot,\cdot)$
+* Again, much better to incorporate a (linear) model for the mean and use a GP for residual variation
+
+# DLMGP emulator
+
+* A dynamic linear model (DLM) provides a sensible framework for dynamically modelling the mean behaviour
+* Using a GP for residual variation gives a DLMGP
+\begin{align*}
+y_t &= H_t\theta_t + e_t,\quad e_t \sim N(0, \nu_t \mathfrak{R}), \\
+\theta_t &= G\theta_{t-1} + w_t,\quad w_t \sim N(0,W),
+\end{align*}
+where $H_t$ is a dynamic covariate regression matrix, and $\mathfrak{R}$ is a GP correlation matrix
+* This model can be fit to data and used for prediction using a combination of DLM and GP theory
 
 # Emulation results
 
@@ -200,27 +214,24 @@ where $\mathbf{y}_t$ is a state vector and $\mathbf{x}_t$ represents the model i
 
 ![Emulation for biofilm](figs/olu-011.png){height=60%}
 
-# Emulation strategy
+# Multivariate Bayesian calibration model
 
-![Emulation for upscaling](figs/olu-008.png){height=60%}
+* Existing (simpler) IB model, iDynoMiCS, already validated against a benchmark biofilm modelling problem
+* NUFEB model more sophisticated, more scalable, incorporates more mechanisms, etc., but should be able to broadly replicate the behaviour of iDynoMiCS within its range of validity
+* Not an exact correspondance between the models, so can't just "copy" the parameters, but can _calibrate_ the NUFEB model against iDynoMiCS output, $\mathbf Z_t$
 
-# Mesoscale modelling
+\begin{align*}
+\mathbf
+Z_t(.) &= \operatorname{vec}\mathbf Y_t(\eta) + \boldsymbol\xi_{zt},\quad \boldsymbol\xi_{zt} \sim N(\mathbf 0, \Sigma_z) \\
+\mathbf Y_t(\eta) &= \mathbf H_t(\eta)\boldsymbol\Theta_t + \boldsymbol\epsilon_t,\quad \boldsymbol\epsilon_t \sim MN(\mathbf 0, \Sigma_t, \mathfrak{R}) \\
+\boldsymbol\Theta_t &= \mathbf G\boldsymbol\Theta_{t-1} + \boldsymbol\omega_t,\quad \boldsymbol\omega_t \sim MN(\mathbf 0, \Sigma_t, W_t)
+\end{align*}
 
-* Can't directly model a full-scale WTP or even a pilot plant --- but how big do we need to go before we can simply "multiply up" a representative volume?
-* Want to start with modelling experiments with bench-scale experiments within the pilot plant facility (with real wastewater)
-* Replicate flow cells consisting of channels approx 2cm wide and 40cm long
-* Waste water pulsed through them as slowly as practical for 2 weeks
-* Monitor biofilm formation and composition and wastewater composition over time
-* Develop a continuum computational model of this experiment
+Embed everything in an MCMC loop to estimate $\eta$
 
-# Emulation as an upscaling strategy
+# Calibrated models
 
-* Discretise continuum model in 2d, covering bottom of flow cell (eg. squares with side 200um)
-* Model flow velocity, $\mathbf{u}(\mathbf{x},t)$, water height $H(\mathbf{x},t)$, biofilm height, $h(\mathbf{x},t)$ and composition $\boldsymbol{\theta}(\mathbf{x},t)$, nutrient concentrations, $\boldsymbol{\phi}(\mathbf{x},t)$, etc.
-* In order to implement this model, many rates of change and numerical derivatives are required
-* eg. the rate of growth of the biofilm given its current composition and (nutrient) environment
-* These rates can be provided by an emulator trained on runs from the individual-based model
-* Embedding fast approximate/stochastic emulators into the continuum model provides a natural bridge from the fine-scale information provided by the IB model to the next scale up
+![](figs/id1.png){width=45% height=70%} ![](figs/id2.png){width=45% height=70%}
 
 # Summary and conclusions
 
@@ -229,7 +240,7 @@ where $\mathbf{y}_t$ is a state vector and $\mathbf{x}_t$ represents the model i
 * Spatially explicit IB models are an invaluable tool for understanding the stochasticity and heterogeneity of complex biological system behaviour
 * Developing realistic models of open biological systems in active fluid environments is challenging but possible
 * Statistical emulators have many applications in the design and analysis of complex computer experiments
-* Emulators are a promising tools for coupling scales in multi-scale modelling problems
+* Emulators are a particularly effective tools for calibrating the parameters of computationally expensive simulation models
 
 # Acknowledgements
 

@@ -34,7 +34,9 @@ void augment_image() {
   int x, y, dir;
   colour col = {0, 120, 40};
   x = rand() % WIDTH;
-  y = 0;
+  // select diffusion initialisation strategy below
+  //y = 0; // initialise with particle random on top row
+  y = rand() % HEIGHT; // initialise at a random point on image
   while (!is_adjacent(x,y)) {
     dir = rand() % 4;
     if (dir == 0)

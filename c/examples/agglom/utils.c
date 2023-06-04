@@ -93,6 +93,7 @@ int is_occupied(int x, int y) {
 void init_image() {
   int i;
   colour col = {0, 0, 0};
+  srand(time(NULL)); // seed the (crumby) random number generator
   im = image_alloc(WIDTH, HEIGHT);
   for (i=WIDTH/4; i<3*WIDTH/4; i++)
     image_set(im, i, HEIGHT-1, col);

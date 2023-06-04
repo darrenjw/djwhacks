@@ -18,9 +18,11 @@ static void draw_cb(GtkDrawingArea *drawing_area, cairo_t *cr, int width, int he
   plot_image(cr);
 }
 
-void redraw(GtkDrawingArea *drawing_area) {
+int redraw(gpointer data) {
+  GtkWidget *drawing_area = data;
   augment_image();
   gtk_widget_queue_draw(drawing_area);
+  return(1);
 }
 
 static void activate(GtkApplication *app, gpointer user_data) {
@@ -36,7 +38,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_window_set_child(GTK_WINDOW(window), drawing_area);
   gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw_cb, NULL, NULL);
 
-  g_timeout_add(1, redraw, drawing_area); // redraw every microsecond
+  g_timeout_add(10, redraw, drawing_area); // redraw every 10 microseconds (100 Hz)
   
   gtk_window_present(GTK_WINDOW(window));
 

@@ -32,9 +32,9 @@ void plot_image(cairo_t *cr) {
 // add one more pixel to the image
 void augment_image() {
   int x, y, dir;
-  colour col = {255, 0, 0};
+  colour col = {0, 120, 40};
   x = rand() % WIDTH;
-  y = rand() % HEIGHT;
+  y = 0;
   while (!is_adjacent(x,y)) {
     dir = rand() % 4;
     if (dir == 0)

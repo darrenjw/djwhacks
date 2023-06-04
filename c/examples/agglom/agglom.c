@@ -38,6 +38,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_window_set_child(GTK_WINDOW(window), drawing_area);
   gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(drawing_area), draw_cb, NULL, NULL);
 
+  // N.B. May need to lower the refresh rate on slow computers - try changing timeout to 100 microseconds if having problems
   g_timeout_add(10, redraw, drawing_area); // redraw every 10 microseconds (100 Hz)
   
   gtk_window_present(GTK_WINDOW(window));

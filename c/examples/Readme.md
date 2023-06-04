@@ -25,11 +25,6 @@ In roughly increasing order of complexity:
 * [window2.c](window2.c) - simple GTK app to draw an image using Cairo *(more GUI toolkit)*
 * [agglom](agglom/) - simple multi-file GTK application *(multiple files, headers, Makefile)*
 
-## Some ideas for extra examples
-
-* Multi-file project (the canvas app with examples?)
-
-
 ## Some links
 
 * [gcc](https://gcc.gnu.org/)

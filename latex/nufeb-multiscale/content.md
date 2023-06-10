@@ -218,7 +218,7 @@ where $H_t$ is a dynamic covariate regression matrix, and $\mathfrak{R}$ is a GP
 
 * Existing (simpler) IB model, iDynoMiCS, already validated against a benchmark biofilm modelling problem
 * NUFEB model more sophisticated, more scalable, incorporates more mechanisms, etc., but should be able to broadly replicate the behaviour of iDynoMiCS within its range of validity
-* Not an exact correspondance between the models, so can't just "copy" the parameters, but can _calibrate_ the NUFEB model against iDynoMiCS output, $\mathbf Z_t$
+* Not an exact correspondence between the models, so can't just "copy" the parameters, but can _calibrate_ the NUFEB model against iDynoMiCS output, $\mathbf Z_t$
 
 \begin{align*}
 \mathbf

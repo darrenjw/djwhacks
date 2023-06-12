@@ -2,18 +2,34 @@
 
 ## Versions
 
-* Scala: 2.11.8 (for Java 6/7, or Spark), or 2.12.4 for Java 8
-* Sbt: 0.13.16
-* Breeze: 0.13
-* Cats: 1.0.1
-* Ensime: 1.12.4
+* Scala: 3.3.0
+* Sbt: 1.8.0
+* Breeze: 2.1.0
 
+## Coursier
+
+https://get-coursier.io/docs/cli-installation
+
+```bash
+cs setup
+cs update
+```
+
+## Scala-cli
+
+https://scala-cli.virtuslab.org/docs/overview
+
+```bash
+scala-cli file.scala
+scala-cli --power package file.scala -o execFile
+```
 
 ## SBT
 
 ### SBT/Giter8 templates
 
 * `sbt new underscoreio/cats-seed.g8`
+* `sbt new darrenjw/fps.g8`
 * `sbt new darrenjw/breeze.g8`
 * `sbt new darrenjw/scala-glm.g8`
 

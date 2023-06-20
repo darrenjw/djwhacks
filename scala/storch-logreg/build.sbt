@@ -30,7 +30,8 @@ resolvers ++= Resolver.sonatypeOssRepos("snapshots")
 
 libraryDependencies ++= Seq(
   // "dev.storch" %% "core" % "0.0-cd47abc-SNAPSHOT",
-  "dev.storch" %% "core" % "0.0-875a245-SNAPSHOT", // publishLocal
+  //"dev.storch" %% "core" % "0.0-875a245-SNAPSHOT", // publishLocal
+  "dev.storch" %% "core" % "0.0-4d8a82f-SNAPSHOT", // publishLocal
   "org.bytedeco" % "pytorch" % "2.0.1-1.5.9-SNAPSHOT",
   "org.bytedeco" % "pytorch" % "2.0.1-1.5.9-SNAPSHOT" classifier "linux-x86_64-gpu",
   "org.bytedeco" % "openblas" % "0.3.21-1.5.9-SNAPSHOT" classifier "linux-x86_64",
@@ -61,7 +62,7 @@ resolvers ++= Seq(
     "https://oss.sonatype.org/content/repositories/releases/"
 )
 
-scalaVersion := "3.2.2"
+scalaVersion := "3.3.0"
 
 fork := true
 

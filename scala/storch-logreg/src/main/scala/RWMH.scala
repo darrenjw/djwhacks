@@ -104,15 +104,19 @@ object RWMHApp:
     println("Now RWMH MCMC...")
     val pre = Tensor(Seq(10.0,1.0,1.0,1.0,1.0,1.0,5.0,1.0))
     def rprop(beta: TD): TD =
-      beta + pre * torch.randn(Seq(p)) * 0.02
+      ( beta + pre * torch.randn(Seq(p)) * 0.02 ).clone().detach()
     val kern = mhKernel(ll, rprop)
-    val s = LazyList.iterate((opt, Double.NegativeInfinity))(kern) map (_._1)
-    val out = s.drop(150).thin(10).take(10000)
-    val aa: Array[Array[Double]] = out.toArray.map(_.toArray)
-    val odf = smile.data.DataFrame.of(aa)
-    print(odf)
-    smile.write.csv(odf, "lr-rwmh.csv")
-
-
+    val kernd = (p: (TD, Double)) =>
+      val kp = kern(p)
+      ( kp._1.clone().detach(), kp._2)
+    val s = LazyList.iterate((opt, Double.NegativeInfinity))(kernd) map (_._1)
+    val out = s.drop(150).thin(200).take(10000)
+    val os = new java.io.FileWriter("lr-rwmh.csv")
+    os.write("V1,V2,V3,V4,V5,V6,V7,V8\n")
+    out.foreach(it =>
+      os.write(it.toArray.toList.mkString(","))
+      os.write("\n")
+    )
+    os.close()
     println("Goodbye.")
 

@@ -14,20 +14,35 @@ import torch.*
 
 type TD = Tensor[Float64]
 
-import breeze.stats.distributions.{Uniform}
-import breeze.stats.distributions.Rand.VariableSeed.randBasis
+
+
+// a trait for stream-like things that can be thinned
+trait Thinnable[F[_]]:
+  extension [T](ft: F[T])
+    def thin(th: Int): F[T]
+
+// a thinnable instance for LazyList
+given Thinnable[LazyList] with
+  extension [T](s: LazyList[T])
+    def thin(th: Int): LazyList[T] =
+      val ss = s.drop(th-1)
+      if (ss.isEmpty) LazyList.empty else
+        ss.head #:: ss.tail.thin(th)
+
+
+
+
 
 def mhKernel[S](
     logPost: S => Double, rprop: S => S,
     dprop: (S, S) => Double = (n: S, o: S) => 1.0
   ): ((S, Double)) => (S, Double) =
-    val r = Uniform(0.0,1.0)
     state =>
       val (x0, ll0) = state
       val x = rprop(x0)
       val ll = logPost(x)
       val a = ll - ll0 + dprop(x0, x) - dprop(x, x0)
-      if (math.log(r.draw()) < a)
+      if (math.log(torch.rand(Seq(1)).item) < a)
         (x, ll)
       else
         (x0, ll0)
@@ -76,8 +91,6 @@ object RWMHApp:
       go(init, ll(init), maxIts)
 
 
-
-
     println("Now run a simple gradient ascent algorithm")
     // Better choose a reasonable init as gradient ascent is terrible...
     val init = Tensor(Seq(-9.8, 0.1, 0, 0, 0, 0, 1.8, 0))
@@ -86,7 +99,19 @@ object RWMHApp:
     println("Init ll: " + ll(init))
     println("Opt: " + opt)
     println("Opt ll: " + ll(opt))
+
+
     println("Now RWMH MCMC...")
+    val pre = Tensor(Seq(10.0,1.0,1.0,1.0,1.0,1.0,5.0,1.0))
+    def rprop(beta: TD): TD =
+      beta + pre * torch.randn(Seq(p)) * 0.02
+    val kern = mhKernel(ll, rprop)
+    val s = LazyList.iterate((opt, Double.NegativeInfinity))(kern) map (_._1)
+    val out = s.drop(150).thin(10).take(10000)
+    val aa: Array[Array[Double]] = out.toArray.map(_.toArray)
+    val odf = smile.data.DataFrame.of(aa)
+    print(odf)
+    smile.write.csv(odf, "lr-rwmh.csv")
 
 
     println("Goodbye.")

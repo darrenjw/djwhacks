@@ -5,7 +5,7 @@
 import numpy as np
 # import scipy as sp
 
-# class for Spn models
+# class for SPN models
 
 class Spn:
     
@@ -31,7 +31,7 @@ class Spn:
                 h0 = h.sum()
                 if (h0 > 1e06):
                     print("WARNING: hazard too large - terminating!")
-                    t = 1e99
+                    return(x)
                 if (h0 < 1e-10):
                     t = 1e99
                 else:
@@ -46,9 +46,7 @@ class Spn:
 
 def simTs(x0, t0, tt, dt, stepFun):
     n = int((tt-t0) // dt) + 1
-    print(n)
     u = len(x0)
-    print(u)
     mat = np.zeros((n, u))
     x = x0
     t = t0
@@ -59,7 +57,9 @@ def simTs(x0, t0, tt, dt, stepFun):
         mat[i,:] = x
     return mat
 
-# some example Spn models
+# TODO: want simSample, too
+
+# some example SPN models
     
 lv = Spn([[1,0],[1,1],[0,1]], [[2,0],[0,2],[0,0]],
          lambda x, t: np.array([x[0], 0.005*x[0]*x[1], 0.6*x[1]]),
@@ -73,10 +73,14 @@ print(lv.m)
 print(stepLv(lv.m, 0, 1.0))
 print(stepLv(lv.m, 0, 1.0))
          
-simTs(lv.m, 0, 100, 0.1, stepLv)
+out = simTs(lv.m, 0, 100, 0.1, stepLv)
 
-
-
+import matplotlib.pyplot as plt
+figure, axis = plt.subplots(2)
+for i in range(2):
+    axis[i].plot(range(out.shape[0]), out[:,i])
+    axis[i].set_title(f'Time series for variable {i}')
+plt.savefig("lv-ts.png")
 
 
 # eof

@@ -42,7 +42,22 @@ class Spn:
                 x = np.add(x, S[:,j].A1)
         return step
 
-# TODO: want stepPTS, too
+    def stepPTS(self, dt = 0.01):
+        S = (self.post - self.pre).T
+        u, v = S.shape
+        def step(x0, t0, deltat):
+            x = x0
+            t = t0
+            termt = t0 + deltat
+            while(True):
+                h = self.h(x, t)
+                r = np.random.poisson(h * dt)
+                x = np.add(x, S.dot(r).A1)
+                t = t + dt
+                if (t > termt):
+                    return x
+        return step
+    
 
     
 # some simulation functions
@@ -75,8 +90,11 @@ lv = Spn([[1,0],[1,1],[0,1]], [[2,0],[0,2],[0,0]],
          [50,100])
 
 sir = Spn([[1,1,0],[0,1,0]], [[0,2,0],[0,0,1]],
-          lambda x, t: np.array([0.1*x[0]*x[1], x[2]]),
+          lambda x, t: np.array([0.1*x[0]*x[1], x[1]]),
           [100,1,0])
+
+# TODO: a toy genetic toggle switch?
+
 
 # some test code
 if __name__ == '__main__':
@@ -88,27 +106,45 @@ if __name__ == '__main__':
     print(stepLv(lv.m, 0, 1.0))
     print(stepLv(lv.m, 0, 1.0))
 
-    print("First generate a time series")
+    print("First generate a LV time series")
     out = simTs(lv.m, 0, 100, 0.1, stepLv)
 
     import matplotlib.pyplot as plt
     figure, axis = plt.subplots(2)
     for i in range(2):
         axis[i].plot(range(out.shape[0]), out[:,i])
-        axis[i].set_title(f'Time series for variable {i}')
+        axis[i].set_title(f'Time series for LV variable {i}')
     plt.savefig("lv-ts.png")
 
-    print("Next look at a transition kernel (slow)")
-    mat = simSample(1000, lv.m, 0, 10, stepLv)
+    print("Next look at a LV transition kernel (slow)")
+    mat = simSample(100, lv.m, 0, 10, stepLv)
     figure, axis = plt.subplots(2)
     for i in range(2):
         axis[i].hist(mat[:,i],30)
-        axis[i].set_title(f'Histogram for variable {i}')
+        axis[i].set_title(f'Histogram for LV variable {i}')
     plt.savefig("lv-hist.png")
 
-    # TODO: SIR test
+    print("Generate a SIR time series")
+    out = simTs(sir.m, 0, 8, 0.01, stepSir)
 
-    # TODO: PTS test
+    import matplotlib.pyplot as plt
+    figure, axis = plt.subplots(3)
+    for i in range(3):
+        axis[i].plot(range(out.shape[0]), out[:,i])
+        axis[i].set_title(f'Time series for SIR variable {i}')
+    plt.savefig("sir-ts.png")
+
+
+    stepLvP = lv.stepPTS()
+    print("First generate a LV time series using PTS approx")
+    out = simTs(lv.m, 0, 100, 0.1, stepLvP)
+
+    import matplotlib.pyplot as plt
+    figure, axis = plt.subplots(2)
+    for i in range(2):
+        axis[i].plot(range(out.shape[0]), out[:,i])
+        axis[i].set_title(f'Time series for LV PTS variable {i}')
+    plt.savefig("lv-pts.png")
 
     
 # eof

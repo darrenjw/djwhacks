@@ -13,13 +13,14 @@
   Cell:PrmrCI2=0 s
   Cell:PrmrCro2=0 s
   Cell:Pre=1 s
+  Cell:PreCI2=0 s
   Cell:PreCII2=0 s
   Cell:mCI=0 s
   Cell:mCII=0 s
   Cell:mCro=0 s
 @parameters
   sigma = 0.5
-  deg = ????
+  deg = 0.05 # guess - missing from the paper (gamma_m in paper)
 @reactions
 @r=CIdimer
   2CI -> CI2
@@ -44,7 +45,7 @@
   cideg*CI : cideg=0.04
 @r=CroDeg
   Cro ->
-  crodeg*Cro : cideg=0.05
+  crodeg*Cro : crodeg=0.05
 @r=CIIdeg
   CII ->
   ciideg*CII : ciideg=0.12
@@ -81,7 +82,22 @@
 @r=mCIdeg
   mCI ->
   deg*mCI
+@r=mCrodeg
+  mCro ->
+  deg*mCro
+@r=mCIIdeg
+  mCII ->
+  deg*mCII
+@r=mCItl
+  mCI -> mCI + CI
+  sigma*mCI
+@r=mCrotl
+  mCro -> mCro + Cro
+  sigma*mCro
+@r=mCIItl
+  mCII -> mCII + CII
+  sigma*mCII
+		   
 
-  
 	
 				   

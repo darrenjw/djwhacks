@@ -1,5 +1,5 @@
 # sir.py
-# Deterministic SIR model, and fitting to data
+# Stochastic and deterministic SIR model, and fitting to data
 
 import scipy as sp
 import numpy as np
@@ -7,13 +7,31 @@ import numpy as np
 N = 200
 beta = 0.3
 gamma = 0.1
-i0 = 1 # initial number of infected
+i0 = 3 # initial number of infected
 
 # Don't bother with R in state since it can be recovered from
 # the conservation equation R = N - S - I
 
 init = np.array([N - i0, i0])
 
+# Do a stochastic simulation using the Gillespie algorithm
+
+# TODO: replace with elementary code?!
+import smfsb
+step = smfsb.sir.stepGillespie()
+gout = smfsb.simTs(smfsb.sir.m, 0, 99, 1, step)
+
+
+
+# Plot the stochastic realisation
+import matplotlib.pyplot as plt
+figure, axis = plt.subplots(2)
+for i in range(2):
+    axis[i].plot(range(100), gout[:,i])
+    axis[i].set_title(f'Time series for SIR variable {i}')
+plt.savefig("sir-ts-stoch.png")
+
+# Now do a deterministic model
 def sir(beta, gamma):
     def rhs(t, si):
         S = si[0]
@@ -34,12 +52,12 @@ figure, axis = plt.subplots(2)
 for i in range(2):
     axis[i].plot(out.t, out.y[i,:])
     axis[i].set_title(f'Time series for SIR variable {i}')
-plt.savefig("sir-ts.png")
+plt.savefig("sir-ts-ode.png")
 
-
-# Now attempt to recover beta and gamma parameters
-# based on observations of I only
-data = out.y[1,:]
+# Now pretend that we don't know the paramters and attempt to
+# recover beta and gamma parameters based on observations of I only
+#data = out.y[1,:]
+data = gout[:,1]
 
 def loss(bg):
     beta = bg[0]

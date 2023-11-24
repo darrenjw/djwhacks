@@ -90,8 +90,8 @@ lv = Spn([[1,0],[1,1],[0,1]], [[2,0],[0,2],[0,0]],
          [50,100])
 
 sir = Spn([[1,1,0],[0,1,0]], [[0,2,0],[0,0,1]],
-          lambda x, t: np.array([0.1*x[0]*x[1], x[1]]),
-          [100,1,0])
+          lambda x, t: np.array([0.3*x[0]*x[1]/200, 0.1*x[1]]),
+          [197, 3, 0])
 
 # TODO: a toy genetic toggle switch?
 
@@ -125,7 +125,7 @@ if __name__ == '__main__':
     plt.savefig("lv-hist.png")
 
     print("Generate a SIR time series")
-    out = simTs(sir.m, 0, 8, 0.01, stepSir)
+    out = simTs(sir.m, 0, 100, 0.1, stepSir)
 
     import matplotlib.pyplot as plt
     figure, axis = plt.subplots(3)

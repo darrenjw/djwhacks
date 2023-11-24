@@ -15,13 +15,28 @@ i0 = 3 # initial number of infected
 init = np.array([N - i0, i0])
 
 # Do a stochastic simulation using the Gillespie algorithm
-
-# TODO: replace with elementary code?!
-import smfsb
-step = smfsb.sir.stepGillespie()
-gout = smfsb.simTs(smfsb.sir.m, 0, 99, 1, step)
-
-
+gout = np.zeros((100, 2))
+t = 0; i = 0; x = init
+for i in range(100):
+    if (t >= i):
+        gout[i,:] = x
+    else:
+        while(True):
+            si = beta*x[0]*x[1]/N
+            ir = gamma*x[1]
+            h0 = si + ir
+            if (h0 < 1e-8):
+                t = 1e99
+            else:
+                t = t + np.random.exponential(1.0/h0)
+            if ((t >= i)|(h0 > 1e6)):
+                gout[i,:] = x
+                break
+            if (np.random.random() < si/h0):
+                x[0] = x[0] - 1
+                x[1] = x[1] + 1
+            else:
+                x[1] = x[1] - 1
 
 # Plot the stochastic realisation
 import matplotlib.pyplot as plt
@@ -55,22 +70,27 @@ for i in range(2):
 plt.savefig("sir-ts-ode.png")
 
 # Now pretend that we don't know the paramters and attempt to
-# recover beta and gamma parameters based on observations of I only
-#data = out.y[1,:]
-data = gout[:,1]
+# recover beta and gamma parameters based on stochastic observations
+data = gout
+print(data)
 
 def loss(bg):
+    print(bg)
     beta = bg[0]
     gamma = bg[1]
     out = sp.integrate.solve_ivp(sir(beta, gamma),
                 (0, 100), init, t_eval=range(100))
-    simI = out.y[1,:]
+    simI = out.y.T
     diff = simI - data
-    return np.sum(diff*diff)
+    l = np.sum(diff*diff)
+    print(l)
+    return l
+
+print(loss([0.3,0.1]))
 
 print("Running optimizer...")
-opt = sp.optimize.minimize(loss, [1, 1],
-            method='Nelder-Mead', bounds = ((0, None), (0, None)))
+opt = sp.optimize.minimize(loss, [0.2, 0.2],
+                           bounds=((0,5),(0,5)))
 
 print(opt)
 print("Estimated beta and gamma:")

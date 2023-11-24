@@ -5,6 +5,7 @@ import scipy as sp
 import numpy as np
 
 N = 200
+# N = 800 # better estimation with bigger population size (less stochastic)
 beta = 0.3
 gamma = 0.1
 i0 = 3 # initial number of infected
@@ -16,7 +17,7 @@ init = np.array([N - i0, i0])
 
 # Do a stochastic simulation using the Gillespie algorithm
 gout = np.zeros((100, 2))
-t = 0; i = 0; x = init
+t = 0; i = 0; x = init.copy()
 for i in range(100):
     if (t >= i):
         gout[i,:] = x
@@ -89,7 +90,7 @@ def loss(bg):
 print(loss([0.3,0.1]))
 
 print("Running optimizer...")
-opt = sp.optimize.minimize(loss, [0.2, 0.2],
+opt = sp.optimize.minimize(loss, [1, 1],
                            bounds=((0,5),(0,5)))
 
 print(opt)

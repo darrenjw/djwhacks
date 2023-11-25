@@ -3,41 +3,29 @@
 library(smfsb)
 library(smfsbSBML)
 
-## Modify StepGillespie to allow large hazards...
-StepGillespie <- function (N) 
-{
-    S = t(N$Post - N$Pre)
-    v = ncol(S)
-    return(function(x0, t0, deltat, ...) {
-        t = t0
-        x = x0
-        termt = t0 + deltat
-        repeat {
-            h = N$h(x, t, ...)
-            h0 = sum(h)
-            if (h0 < 1e-10) t = 1e+99 else if (h0 > 1e+15) {
-                t = 1e+99
-                warning("Hazard too big - terminating simulation!")
-            } else t = t + rexp(1, h0)
-            if (t >= termt) return(x)
-            j = sample(v, 1, prob = h)
-            x = x + S[, j]
-        }
-    })
-}
-
-
+## Convert model from shorthand to full SBML
 system("mod2sbml.py lambda.mod > lambda.xml")
 
+## Read SBML model and convert to an SPN
 mod = sbml2spn("lambda.xml")
 
+## Create a simulation transition kernel
 step = StepGillespie(mod)
 
+## Create and plot a single realisation of the process
 out = simTs(mod$M, 0, 100, 0.1, step)
-plot.ts(out, plot.type="single", col=1:ncol(out))
+colours = rainbow(ncol(out))
+plot.ts(out, plot.type="single", lwd=2, col=colours,
+        main="A lambda phage expression realisation",
+        ylab="Gene expression levels (molecules)",
+        xlab="Time (minutes)")
+legend(0, max(out), colnames(out), lwd=2, lty=1,
+       col=colours, bg="white")
 
-out = simSample(500, mod$M, 0, 60, step)
-hist(out[,6])
+## Look at the levels of CII at time 60
+out = simSample(750, mod$M, 0, 60, step)
+cii = out[,5]
+hist(cii, 30, main="CII at time 60 minutes")
 
 
 ## eof

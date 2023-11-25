@@ -19,24 +19,25 @@
   Cell:mCII=0 s
   Cell:mCro=0 s
 @parameters
+  nA = 6.023e23
   sigma = 0.5
-  deg = 0.05 # guess - missing from the paper (gamma_m in paper)
+  deg = 0.1
 @reactions
 @r=CIdimer
   2CI -> CI2
-  cidim*CI*(CI-1)/2 : cidim=1e6
+  cidim*CI*(CI-1)/(nA*Cell) : cidim=1e6
 @r=CIdiss
   CI2 -> 2CI
   cidis*CI2 : cidis=0.1
 @r=CroDimer
   2Cro -> Cro2
-  crodim*Cro*(Cro-1)/2 : crodim=1e6
+  crodim*Cro*(Cro-1)/(nA*Cell) : crodim=1e6
 @r=CroDiss
   Cro2 -> 2Cro
   crodiss*Cro2 : crodiss=0.1
 @r=CIIdimer
   2CII -> CII2
-  ciidim*CII*(CII-1)/2 : ciidim=1e6
+  ciidim*CII*(CII-1)/(nA*Cell) : ciidim=1e6
 @r=CIIdiss
   CII2 -> 2CII
   ciidiss*CII2 : ciidiss=0.1
@@ -51,19 +52,19 @@
   ciideg*CII : ciideg=0.12
 @r=CI2bind
   Prmr + CI2 -> PrmrCI2
-  ccib*Prmr*CI2 : ccib=1e6
+  ccib*Prmr*CI2/(nA*Cell) : ccib=1e6
 @r=CI2diss
   PrmrCI2 -> Prmr + CI2
   ccid*PrmrCI2 : ccid=0.1
 @r=Cro2bind
   Prmr + Cro2 -> PrmrCro2
-  ccrob*Prmr*Cro2 : ccrob=1e6
+  ccrob*Prmr*Cro2/(nA*Cell) : ccrob=1e6
 @r=Cro2diss
   PrmrCro2 -> Prmr + Cro2
   ccrod*PrmrCro2 : ccrod=0.1
 @r=CII2bind
   Pre + CII2 -> PreCII2
-  cciib*Pre*CII2 : cciib=1e6
+  cciib*Pre*CII2/(nA*Cell) : cciib=1e6
 @r=CII2diss
   PreCII2 -> Pre + CII2
   cciid*PreCII2 : cciid=0.1

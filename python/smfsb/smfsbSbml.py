@@ -7,12 +7,15 @@ import smfsb
 import sys
 import numpy as np
 
-def sbml2spn(filename, verb=False):
+def file2Spn(filename, verb=False):
     d = libsbml.readSBML(filename)
     m = d.getModel()
     if (m == None):
         print("Can't parse SBML file: "+filename)
         sys.exit(1)
+    return(model2Spn(m, verb))
+
+def model2Spn(m, verb=False):
     # Species and initial amounts
     ns = m.getNumSpecies()
     if (verb):
@@ -101,7 +104,7 @@ def sbml2spn(filename, verb=False):
 # Test code
 
 if (__name__ == '__main__'):
-    spn = sbml2spn("lambda.xml", True)
+    spn = file2Spn("lambda.xml", True)
     print("\n\n\nModel created:\n\n")
     print(spn)
     print(spn.h(spn.m, 0))

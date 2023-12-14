@@ -10,15 +10,17 @@ import numpy as np
 
 class Spn:
     
-    def __init__(self, pre, post, h, m):
+    def __init__(self, n, t, pre, post, h, m):
+        self.n = n # species names
+        self.t = t # reaction names
         self.pre = np.matrix(pre)
         self.post = np.matrix(post)
-        self.h = h
-        self.m = np.array(m)
+        self.h = h # hazard function
+        self.m = np.array(m) # initial marking
         
     def __str__(self):
-        return "pre: {}\npost: {}\nh: {}\nm: {}".format(str(self.pre),
-                                str(self.post), str(self.h), str(self.m))
+        return "n: {}\n t: {}\npre: {}\npost: {}\nh: {}\nm: {}".format(str(self.n),
+                str(self.t), str(self.pre), str(self.post), str(self.h), str(self.m))
 
     def stepGillespie(self):
         S = (self.post - self.pre).T
@@ -86,11 +88,12 @@ def simSample(n, x0, t0, deltat, stepFun):
 
 # some example SPN models
     
-lv = Spn([[1,0],[1,1],[0,1]], [[2,0],[0,2],[0,0]],
+lv = Spn(["Prey", "Predator"], ["Prey rep", "Inter", "Pred death"],
+         [[1,0],[1,1],[0,1]], [[2,0],[0,2],[0,0]],
          lambda x, t: np.array([x[0], 0.005*x[0]*x[1], 0.6*x[1]]),
          [50,100])
 
-sir = Spn([[1,1,0],[0,1,0]], [[0,2,0],[0,0,1]],
+sir = Spn(["S", "I", "R"], ["S->I", "I->R"], [[1,1,0],[0,1,0]], [[0,2,0],[0,0,1]],
           lambda x, t: np.array([0.3*x[0]*x[1]/200, 0.1*x[1]]),
           [197, 3, 0])
 
@@ -114,7 +117,7 @@ if __name__ == '__main__':
     figure, axis = plt.subplots(2)
     for i in range(2):
         axis[i].plot(range(out.shape[0]), out[:,i])
-        axis[i].set_title(f'Time series for LV variable {i}')
+        axis[i].set_title(f'Time series for {lv.n[i]}')
     plt.savefig("lv-ts.png")
 
     print("Next look at a LV transition kernel (slow)")
@@ -122,7 +125,7 @@ if __name__ == '__main__':
     figure, axis = plt.subplots(2)
     for i in range(2):
         axis[i].hist(mat[:,i],30)
-        axis[i].set_title(f'Histogram for LV variable {i}')
+        axis[i].set_title(f'Histogram for {lv.n[i]}')
     plt.savefig("lv-hist.png")
 
     print("Generate a SIR time series")
@@ -132,7 +135,7 @@ if __name__ == '__main__':
     figure, axis = plt.subplots(3)
     for i in range(3):
         axis[i].plot(range(out.shape[0]), out[:,i])
-        axis[i].set_title(f'Time series for SIR variable {i}')
+        axis[i].set_title(f'Time series for {sir.n[i]}')
     plt.savefig("sir-ts.png")
 
 
@@ -144,7 +147,7 @@ if __name__ == '__main__':
     figure, axis = plt.subplots(2)
     for i in range(2):
         axis[i].plot(range(out.shape[0]), out[:,i])
-        axis[i].set_title(f'Time series for LV PTS variable {i}')
+        axis[i].set_title(f'Time series for PTS {lv.n[i]}')
     plt.savefig("lv-pts.png")
 
     

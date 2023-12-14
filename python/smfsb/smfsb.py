@@ -29,7 +29,7 @@ class Spn:
             while(True):
                 h = self.h(x, t)
                 h0 = h.sum()
-                if (h0 > 1e06):
+                if (h0 > 1e07):
                     print("WARNING: hazard too large - terminating!")
                     return(x)
                 if (h0 < 1e-10):

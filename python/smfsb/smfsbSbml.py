@@ -6,12 +6,27 @@ import libsbml
 import smfsb
 import sys
 import numpy as np
+import mod2sbml
+
+def mod2Spn(filename, verb=False):
+    try:
+        s = open(filename, "r")
+    except:
+        sys.stderr.write("Error: failed to open "+filename+"\n")
+        sys.exit(1)
+    p = mod2sbml.Parser()
+    d = p.parseStream(s)
+    m = d.getModel()
+    if (m == None):
+        sys.stderr.write("Error: can't extract SBML model\n")
+        sys.exit(1)
+    return(model2Spn(m, verb))
 
 def file2Spn(filename, verb=False):
     d = libsbml.readSBML(filename)
     m = d.getModel()
     if (m == None):
-        print("Can't parse SBML file: "+filename)
+        sys.stderr.write("Can't parse SBML file: "+filename+"\n")
         sys.exit(1)
     return(model2Spn(m, verb))
 
@@ -104,7 +119,8 @@ def model2Spn(m, verb=False):
 # Test code
 
 if (__name__ == '__main__'):
-    spn = file2Spn("lambda.xml", True)
+    #spn = file2Spn("lambda.xml", True)
+    spn = mod2Spn("lambda.mod", True)
     print("\n\n\nModel created:\n\n")
     print(spn)
     print(spn.h(spn.m, 0))

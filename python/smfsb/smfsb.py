@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # smfsb.py
 # Start to implement a few smfsb functions in python
 # Using numpy for now, but may switch to JAX at some point

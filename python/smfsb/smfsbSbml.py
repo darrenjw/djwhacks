@@ -98,7 +98,6 @@ def sbml2spn(filename, verb=False):
 
 
 
-
 # Test code
 
 if (__name__ == '__main__'):
@@ -106,8 +105,15 @@ if (__name__ == '__main__'):
     print("\n\n\nModel created:\n\n")
     print(spn)
     print(spn.h(spn.m, 0))
-
-
+    step = spn.stepGillespie()
+    print(step(spn.m, 0, 20.0))
+    out = smfsb.simTs(spn.m, 0, 100, 0.1, step)
+    import matplotlib.pyplot as plt
+    figure, axis = plt.subplots()
+    for i in range(len(spn.m)):
+        axis.plot(range(out.shape[0]), out[:,i])
+    axis.legend(spn.n)
+    plt.savefig("lambda.png")
     
 # eof
 

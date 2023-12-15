@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # lambda.py
-# Read and simulate the lambda phage model
+# Simulate the lambda phage model, embedding in script as SBML-shorthand
 
-# Serves as an illustration of the new "smfsb" python package
+# Serves as an illustration of the new "smfsb" python package (on PyPI)
 
 import smfsb
 import numpy as np

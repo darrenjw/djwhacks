@@ -20,66 +20,76 @@
   Cell:mCro=0 s
 @parameters
   nA = 6.023e23
-  sigma = 0.5
+  kdim = 1e6
+  kdis = 0.1
+  cideg=0.04
+  crodeg=0.05
+  ciideg=0.12
+  kon = 1e6
+  koff = 0.1
+  beta=1.6
+  delta=1.2
+  alpha=0.8
   deg = 0.1
+  sigma = 0.5
 @reactions
 @r=CIdimer
   2CI -> CI2
-  cidim*CI*(CI-1)/(nA*Cell) : cidim=1e6
+  kdim*CI*(CI-1)/(nA*Cell)
 @r=CIdiss
   CI2 -> 2CI
-  cidis*CI2 : cidis=0.1
+  kdis*CI2
 @r=CroDimer
   2Cro -> Cro2
-  crodim*Cro*(Cro-1)/(nA*Cell) : crodim=1e6
+  kdim*Cro*(Cro-1)/(nA*Cell)
 @r=CroDiss
   Cro2 -> 2Cro
-  crodiss*Cro2 : crodiss=0.1
+  kdis*Cro2
 @r=CIIdimer
   2CII -> CII2
-  ciidim*CII*(CII-1)/(nA*Cell) : ciidim=1e6
+  kdim*CII*(CII-1)/(nA*Cell)
 @r=CIIdiss
   CII2 -> 2CII
-  ciidiss*CII2 : ciidiss=0.1
+  kdis*CII2
 @r=CIdeg
   CI ->
-  cideg*CI : cideg=0.04
+  cideg*CI
 @r=CroDeg
   Cro ->
-  crodeg*Cro : crodeg=0.05
+  crodeg*Cro
 @r=CIIdeg
   CII ->
-  ciideg*CII : ciideg=0.12
+  ciideg*CII
 @r=CI2bind
   Prmr + CI2 -> PrmrCI2
-  ccib*Prmr*CI2/(nA*Cell) : ccib=1e6
+  kon*Prmr*CI2/(nA*Cell)
 @r=CI2diss
   PrmrCI2 -> Prmr + CI2
-  ccid*PrmrCI2 : ccid=0.1
+  koff*PrmrCI2
 @r=Cro2bind
   Prmr + Cro2 -> PrmrCro2
-  ccrob*Prmr*Cro2/(nA*Cell) : ccrob=1e6
+  kon*Prmr*Cro2/(nA*Cell)
 @r=Cro2diss
   PrmrCro2 -> Prmr + Cro2
-  ccrod*PrmrCro2 : ccrod=0.1
+  koff*PrmrCro2
 @r=CII2bind
   Pre + CII2 -> PreCII2
-  cciib*Pre*CII2/(nA*Cell) : cciib=1e6
+  kon*Pre*CII2/(nA*Cell)
 @r=CII2diss
   PreCII2 -> Pre + CII2
-  cciid*PreCII2 : cciid=0.1
+  koff*PreCII2
 @r=CIrtc
   PrmrCI2 -> PrmrCI2 + mCI
-  cCItc*PrmrCI2 : cCItc=1.6
-@r=CIrtc
-  PreCI2 -> PreCI2 + mCI
-  cCItc*PreCI2 : cCItc=1.2
+  beta*PrmrCI2
+@r=CIIrtc
+  PreCII2 -> PreCII2 + mCI
+  delta*PreCII2
 @r=Crotc
   Prmr -> Prmr + mCro
-  cCrotc*Prmr : cCrotc=0.8
+  alpha*Prmr
 @r=CIItc
   Prmr -> Prmr + mCII
-  cciitc*Prmr : cciitc=0.8
+  alpha*Prmr
 @r=mCIdeg
   mCI ->
   deg*mCI
@@ -98,7 +108,4 @@
 @r=mCIItl
   mCII -> mCII + CII
   sigma*mCII
-		   
-
-	
-				   
+				 

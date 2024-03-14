@@ -117,8 +117,8 @@ object BridgeApp extends IOApp.Simple:
   val b = Bridge(leftFP, rightFP, m)
   def mu(x: Double): Double = 1.1*x
   def dmu(x: Double): Double = 1.1
-  def sig(x: Double): Double = 0.1*x
-  def dsig(x: Double): Double = 0.1
+  def sig(x: Double): Double = 0.2*x
+  def dsig(x: Double): Double = 0.2
 
   val dt = 1.0/m
   val sdt = math.sqrt(dt)
@@ -135,11 +135,21 @@ object BridgeApp extends IOApp.Simple:
       val xp = if (i == m-2) rightFP else b.br(i+1)
       (xm + mu(xm)*dt - x)/(sig(xm)*sig(xm)*dt) -
         dsig(x)/sig(x) +
-        (xm - x - mu(x)*dt)*(1 + dmu(x)*dt)/(sig(x)*sig(x)*dt) +
-        math.pow(xm - x - mu(x)*dt, 2)*dsig(x)/(pow(sig(x), 3)*dt))
+        (xp - x - mu(x)*dt)*(1 + dmu(x)*dt)/(sig(x)*sig(x)*dt) +
+        math.pow(xp - x - mu(x)*dt, 2)*dsig(x)/(pow(sig(x), 3)*dt))
     Bridge(b.c, br)
   val kern = Kernels.hmcKernel(lpi, glpi, 0.0001, 20) // HMC tuning params
-  val mcmc = LazyList.iterate(b)(kern).drop(10000).thin(100).take(100) // MCMC params
+  val mcmc = LazyList.iterate(b)(kern).map(b => b.br).
+    drop(10000).thin(100).take(5000) // MCMC params
 
-  def run = IO{ mcmc.foreach(println) }
+  def run = IO {
+    val fs = new java.io.FileWriter("bridge.csv")
+    fs.write((1 until m).map(i => s"X[$i]").mkString(","))
+    fs.write("\n")
+    mcmc.foreach(b =>
+      fs.write(b.mkString(","))
+      fs.write("\n")
+    )
+    fs.close()
+  }
 

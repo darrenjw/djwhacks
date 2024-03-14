@@ -20,10 +20,6 @@ case class Bridge[A](c: Int, br: Vector[A]):
   def apply(i: Int): A = br(i)
   def extract: A = br(c)
   def map[B](f: A => B): Bridge[B] = Bridge(c, br map f)
-  //def coflatMap[B](f: Bridge[A] => B): Bridge[B] = Bridge(
-  //  c, (0 until (m-1)).toVector.map(i => f(Bridge(i, br))))
-  //def left: Bridge[A] = Bridge(c-1, br)
-  //def right: Bridge[A] = Bridge(c+1, br)
 
 case object Bridge:
   def apply(leftFP: Double, rightFP: Double, m: Int): Bridge[Double] =
@@ -115,10 +111,10 @@ object BridgeApp extends IOApp.Simple:
   val leftFP = 1.0
   val rightFP = 4.0
   val b = Bridge(leftFP, rightFP, m)
-  def mu(x: Double): Double = 1.1*x
-  def dmu(x: Double): Double = 1.1
-  def sig(x: Double): Double = 0.2*x
-  def dsig(x: Double): Double = 0.2
+  def mu(x: Double): Double = 1.2*x
+  def dmu(x: Double): Double = 1.2
+  def sig(x: Double): Double = 0.5*x
+  def dsig(x: Double): Double = 0.5
 
   val dt = 1.0/m
   val sdt = math.sqrt(dt)
@@ -136,11 +132,11 @@ object BridgeApp extends IOApp.Simple:
       (xm + mu(xm)*dt - x)/(sig(xm)*sig(xm)*dt) -
         dsig(x)/sig(x) +
         (xp - x - mu(x)*dt)*(1 + dmu(x)*dt)/(sig(x)*sig(x)*dt) +
-        math.pow(xp - x - mu(x)*dt, 2)*dsig(x)/(pow(sig(x), 3)*dt))
+        pow(xp - x - mu(x)*dt, 2)*dsig(x)/(pow(sig(x), 3)*dt))
     Bridge(b.c, br)
   val kern = Kernels.hmcKernel(lpi, glpi, 0.0001, 20) // HMC tuning params
   val mcmc = LazyList.iterate(b)(kern).map(b => b.br).
-    drop(10000).thin(100).take(5000) // MCMC params
+    drop(10000).thin(5000).take(5000) // MCMC params
 
   def run = IO {
     val fs = new java.io.FileWriter("bridge.csv")
@@ -152,4 +148,8 @@ object BridgeApp extends IOApp.Simple:
     )
     fs.close()
   }
+
+
+
+// eof
 

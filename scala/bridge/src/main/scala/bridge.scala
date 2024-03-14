@@ -15,29 +15,25 @@ import breeze.stats.distributions.{Gaussian, Uniform}
 import annotation.tailrec
 
 // case class to represent a bridge with fixed end points
-case class Bridge[A](c: Int, leftFP: A, rightFP: A, br: Vector[A]):
+case class Bridge[A](c: Int, br: Vector[A]):
   val m = br.length + 1
   def apply(i: Int): A = br(i)
-  def extract: A =
-    if (c == -1) leftFP else if (c == m-1) rightFP else br(c)
-  def map[B](f: A => B): Bridge[B] = Bridge(c, f(leftFP), f(rightFP), br map f)
-  def coflatMap(f: Bridge[A] => A): Bridge[A] = Bridge(
-    c, leftFP, rightFP,
-    (0 until (m-1)).toVector.map(i => f(Bridge(i, leftFP, rightFP, br)))
-  ) // not a "real" coflatMap, as can't change type
-  def left: Bridge[A] = Bridge(c-1, leftFP, rightFP, br)
-  def right: Bridge[A] = Bridge(c-1, leftFP, rightFP, br)
+  def extract: A = br(c)
+  def map[B](f: A => B): Bridge[B] = Bridge(c, br map f)
+  //def coflatMap[B](f: Bridge[A] => B): Bridge[B] = Bridge(
+  //  c, (0 until (m-1)).toVector.map(i => f(Bridge(i, br))))
+  //def left: Bridge[A] = Bridge(c-1, br)
+  //def right: Bridge[A] = Bridge(c+1, br)
 
 case object Bridge:
   def apply(leftFP: Double, rightFP: Double, m: Int): Bridge[Double] =
-    Bridge(0, leftFP, rightFP, linspace(leftFP, rightFP, m-1).data.toVector)
+    Bridge(0, linspace(leftFP, rightFP, m-1).data.toVector)
 
 // Provide evidence that Bridge is a Cats Apply
 given Apply[Bridge] with
   def map[A,B](ba: Bridge[A])(f: A => B): Bridge[B] = ba.map(f)
   def ap[A, B](ff: Bridge[A=>B])(fa: Bridge[A]): Bridge[B] =
-    Bridge(ff.c, ff.leftFP(fa.leftFP), ff.rightFP(fa.rightFP),
-      (ff.br zip fa.br).map((ffi, fai) => ffi(fai)))
+    Bridge(ff.c, (ff.br zip fa.br).map((ffi, fai) => ffi(fai)))
 
 // Provide evidence that Bridge is a Cats Reducible
 given Reducible[Bridge] with
@@ -115,8 +111,10 @@ object Kernels:
 
 object BridgeApp extends IOApp.Simple:
 
-  val m = 10
-  val b = Bridge(1, 4, m)
+  val m = 100
+  val leftFP = 1.0
+  val rightFP = 4.0
+  val b = Bridge(leftFP, rightFP, m)
   def mu(x: Double): Double = 1.1*x
   def dmu(x: Double): Double = 1.1
   def sig(x: Double): Double = 0.1*x
@@ -125,23 +123,23 @@ object BridgeApp extends IOApp.Simple:
   val dt = 1.0/m
   val sdt = math.sqrt(dt)
   def lpi(b: Bridge[Double]): Double =
-    b.coflatMap(bd =>
-      val xm = bd.left.extract
-      val x = bd.extract
-      Gaussian(xm + mu(xm)*dt, sig(xm)*sdt).logPdf(x)).reduce(_+_)
-      // TODO: add final term!
+    val x = leftFP +: b.br :+ rightFP
+    (1 until x.length).toVector.map(i =>
+      val xm = x(i-1)
+      val xi = x(i)
+      Gaussian(xm + mu(xm)*dt, sig(xm)*sdt).logPdf(xi)).reduce(_+_)
   def glpi(b: Bridge[Double]): Bridge[Double] =
-    b.coflatMap(bd =>
-      val xm = bd.left.extract
-      val x = bd.extract
-      val xp = bd.right.extract
+    val br = (0 until m-1).toVector.map(i =>
+      val xm = if (i == 0) leftFP else b.br(i-1)
+      val x = b.br(i)
+      val xp = if (i == m-2) rightFP else b.br(i+1)
       (xm + mu(xm)*dt - x)/(sig(xm)*sig(xm)*dt) -
         dsig(x)/sig(x) +
         (xm - x - mu(x)*dt)*(1 + dmu(x)*dt)/(sig(x)*sig(x)*dt) +
-        math.pow(xm - x - mu(x)*dt, 2)*dsig(x)/(pow(sig(x), 3)*dt)
-    )
-  val kern = Kernels.hmcKernel(lpi, glpi, 0.001, 10)
-  val mcmc = LazyList.iterate(b)(kern).drop(10).thin(10).take(100)
+        math.pow(xm - x - mu(x)*dt, 2)*dsig(x)/(pow(sig(x), 3)*dt))
+    Bridge(b.c, br)
+  val kern = Kernels.hmcKernel(lpi, glpi, 0.0001, 20) // HMC tuning params
+  val mcmc = LazyList.iterate(b)(kern).drop(10000).thin(100).take(100) // MCMC params
 
   def run = IO{ mcmc.foreach(println) }
 

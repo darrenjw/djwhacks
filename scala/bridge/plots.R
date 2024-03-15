@@ -21,6 +21,7 @@ lines(ts(means, start=0, freq=m), col=2, lwd=2)
 sub = br[, c(5, 25, 50, 75)]
 mcmcSummary(sub)
 
+print(paste("Acceptance rate:", dim(unique(sub))[1]/its))
 
 ## Unconditional simulation
 

@@ -134,9 +134,9 @@ object BridgeApp extends IOApp.Simple:
         (xp - x - mu(x)*dt)*(1 + dmu(x)*dt)/(sig(x)*sig(x)*dt) +
         pow(xp - x - mu(x)*dt, 2)*dsig(x)/(pow(sig(x), 3)*dt))
     Bridge(b.c, br)
-  val kern = Kernels.hmcKernel(lpi, glpi, 0.0001, 20) // HMC tuning params
+  val kern = Kernels.hmcKernel(lpi, glpi, 0.02, 50) // HMC tuning params
   val mcmc = LazyList.iterate(b)(kern).map(b => b.br).
-    drop(10000).thin(5000).take(5000) // MCMC params
+    drop(10000).thin(5).take(5000) // MCMC params
 
   def run = IO {
     val fs = new java.io.FileWriter("bridge.csv")

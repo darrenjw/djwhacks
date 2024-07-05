@@ -11,12 +11,15 @@ br = as.matrix(br)
 m = dim(br)[2]+1
 its = dim(br)[1]
 br = cbind(rep(leftFP, its), br, rep(rightFP, its))
+##pdf("bridge.pdf", 7, 5)
 plot(ts(br[1,], start=0, freq=m), ylim=c(0, 5),
-     col=rgb(0, 0, 1, 0.01))
+     col=rgb(0, 0, 1, 0.01), ylab="X(t)",
+     main="HMC on the path-space of a GBM bridge")
 for (i in 2:its)
     lines(ts(br[i,], start=0, freq=m), col=rgb(0, 0, 1, 0.01))
 means = colMeans(br)
 lines(ts(means, start=0, freq=m), col=2, lwd=2)
+##dev.off()
 
 sub = br[, c(5, 25, 50, 75)]
 mcmcSummary(sub)

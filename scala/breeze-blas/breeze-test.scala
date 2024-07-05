@@ -1,9 +1,7 @@
 //> using scala 3.3.0
 //> using dep org.scalanlp::breeze:2.1.0
 //> using dep org.scalanlp::breeze-viz:2.1.0
-
-
-// > using javaOpt -Ddev.ludovic.netlib.blas.nativeLibPath=/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.10.0
+//> using javaOpt -Ddev.ludovic.netlib.blas.nativeLibPath=/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.10.0
 // > using javaOpt -Ddev.ludovic.netlib.blas.nativeLib=libblas.so
 
 
@@ -35,8 +33,8 @@ object Main:
     println(BLAS.getInstance().getClass().getName())
     println("\n\n\n")
     BLAS.getInstance().getClass().getName() match
-      case "dev.ludovic.netlib.blas.Java8BLAS" => println("Fallen back to Java BLAS")
-      case "dev.ludovic.netlib.blas.JNIBLAS" => println("Using a native BLAS of some sort")
+      case "dev.ludovic.netlib.blas.JNIBLAS" => println("Using a native BLAS of some sort") 
+      case _ => println("Fallen back to Java BLAS")
     println("\n\n\n")
 
 

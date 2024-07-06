@@ -45,7 +45,7 @@ The (significant) disadvantage of this approach is that it makes the code less p
 
 ### sbt
 
-Many larger Scala project are build using [sbt](https://www.scala-sbt.org/). 
+Many larger Scala project are built using [sbt](https://www.scala-sbt.org/). 
 `sbt` checks the `JAVA_OPTS` environment variable, so this is often the preferred way to configure the libraries that you want to use.
 
 Alternatively, you can explicitly set them at the `sbt` command line by inserting them _before_ the required task:
@@ -64,8 +64,39 @@ Note that you will probably need to fork the project, as the options will be app
 
 ## Verifying netlib instances in Scala Breeze projects
 
+Since the linking to specific libraries happens at runtime, it is often desirable to be able to check whether native libraries are being used within a running Scala Breeze application. There are various ways to do this, but the basic idea can be illustrated with the following Scala code snippet.
+```scala
+import dev.ludovic.netlib.blas.BLAS
+print("BLAS: ")
+println(BLAS.getInstance().getClass().getName())
+import dev.ludovic.netlib.lapack.LAPACK
+print("LAPACK: ")
+println(LAPACK.getInstance().getClass().getName())
+import dev.ludovic.netlib.arpack.ARPACK
+print("ARPACK: ")
+println(ARPACK.getInstance().getClass().getName())
+```
+If the output from this snippet is something like:
+```
+BLAS: dev.ludovic.netlib.blas.JNIBLAS
+LAPACK: dev.ludovic.netlib.lapack.JNILAPACK
+ARPACK: dev.ludovic.netlib.arpack.JNIARPACK
+```
+then you are using native libraries. The letters `JNI` in the final word indicate the use of the "Java native interface". Any other output indicates that a relevant native library has not been found, and the precise output will give some indication of exactly what pure Java implementation has been fallen back to.
 
+If you wanted some more friendly output, you can do something like:
+```scala
+    val blas = BLAS.getInstance().getClass().getName()
+    println(s"Using BLAS: $blas")
+    blas match
+      case "dev.ludovic.netlib.blas.JNIBLAS" => println("This is a native BLAS of some sort")
+      case "dev.ludovic.netlib.blas.VectorBLAS" => println("This is the VectorBLAS for Java 16+")
+      case _ => println("Fallen back to a Java BLAS of some sort (probably slow)")
+```
+Note that this also detects the use of `VectorBLAS`, discussed below.
 
 ## Java 16+
 
-As explained in the netlib readme, there is an additional wrinkle if you are using a recent JVM (version 16 or higher).
+As explained in the netlib readme, there is an additional wrinkle if you are using a recent JVM (version 16 or higher). Since recent JVMs expose vector operations, it is possible to write pure Java BLAS libraries with similar performance to native libraries. Recent versions of netlib include such an implementation, called `VectorBLAS`. So, if you run your Scala Breeze application on a recent JVM, netlib will first check to see if it can detect a `VectorBLAS`, and if it finds it, it will use it in preference to a native library. However, if it can't (which is likely to be the case by default), then it will next look for a *native* BLAS, before eventually falling back to a less performant Java BLAS library. So if you have a good native BLAS installed and configured, then you are probably happy with this, and can safely ignore any errors or warnings about not being able to find a `VectorBLAS`.
+
+

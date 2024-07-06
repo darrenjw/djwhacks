@@ -1,7 +1,7 @@
 //> using scala 3.3.0
 //> using dep org.scalanlp::breeze:2.1.0
 //> using dep org.scalanlp::breeze-viz:2.1.0
-//> using javaOpt -Ddev.ludovic.netlib.blas.nativeLibPath=/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.10.0
+// > using javaOpt -Ddev.ludovic.netlib.blas.nativeLibPath=/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.10.0
 // > using javaOpt -Ddev.ludovic.netlib.blas.nativeLib=libblas.so
 
 

@@ -1,20 +1,48 @@
 # Using optimised BLAS and LAPACK libraries with Scala Breeze
 
-[Breeze](https://github.com/scalanlp/breeze) is the standard scientific and numerical library for Scala. For linear algebra operations, it builds on top of the Java library, [netlib](https://github.com/luhenry/netlib). This provides a nice interface to BLAS and related libraries which allows the use of native optimised libraries and will also gracefully fall back to using a Java implementations if an optimised native code library can't be found. This is great, but the Java implementations will typically be much slower than optimised native libraries, so if you care about speed it is important to install optimised libraries on your system and configure netlib to use them.
+[Breeze](https://github.com/scalanlp/breeze) is the standard scientific and numerical library for [Scala](https://www.scala-lang.org/). For linear algebra operations, it builds on top of the Java library, [netlib](https://github.com/luhenry/netlib). This provides a nice interface to BLAS and related libraries which allows the use of native optimised libraries and will also gracefully fall back to using a Java implementations if an optimised native code library can't be found. This is great, but the Java implementations will typically be slower than optimised native libraries for large matrices, so if you care about speed it is important to install optimised libraries on your system and configure netlib to use them.
 
-See the [netlib Readme](https://github.com/luhenry/netlib/blob/master/README.md) for details of installing blas libraries and setting the relevant system properties. Briefly, you can override default settings by setting the properties `blas`, `lapack` and `arpack`. Each of this can be set by using either `nativeLib`, to specify the name of a library in your system library search path or `nativeLibPath`, to set the full path to the library you require. Full examples of the two approaches are:
+See the [netlib Readme](https://github.com/luhenry/netlib/blob/master/README.md) for details of installing native libraries and setting the relevant system properties. In many cases netlib will automatically detect and use a native libraries, but it's not foolproof, especially if you are using nonstandard libraries, or if you have multiple libraries installed and you want to specify which one to use. Briefly, you can override default settings by setting the properties `blas`, `lapack` and `arpack`. Each of this can be set by using either `nativeLib`, to specify the name of a library in your system library search path or `nativeLibPath`, to set the full path to the library you require. Full examples of the two approaches are:
 ```
 -Ddev.ludovic.netlib.blas.nativeLib=libopenblas.so
 
 -Ddev.ludovic.netlib.blas.nativeLibPath=/usr/lib/x86_64-linux-gnu/libopenblas.so
 ```
-Obviously these need to be customised to your requirement. `lapack` and `arpack` properties are set similarly.
+Obviously these need to be customised to your requirements. `lapack` and `arpack` properties are set similarly.
 
 What the netlib readme doesn't discuss is how to set these properties in Scala projects, or how to check/verify the libraries being used in Scala Breeze projects. These are discussed below.
 
 ## Setting netlib properties in Scala projects
 
+Exactly how you set system properties depends on exactly how you are building and running your Scala code. However, many build tools will read the environment variable `JAVA_OPTS`, so setting this will very often work. For example, if you are using a bash-like shell, you could set a relevent property with something like:
+```bash
+export JAVA_OPTS="-Ddev.ludovic.netlib.blas.nativeLib=libblas.so"
+```
+Then this will most likely be picked up and used by your build tool. This is often the preferred approach.
+
+### scala-cli
+
+[scala-cli](https://scala-cli.virtuslab.org/) is a popular tool for compiling and running small Scala projects. It should check the `JAVA_OPTS` environment variable, so this is often the simplest way to configure netlib for `scala-cli` projects. If you prefer, you can pass in the propery directly at the _end_ of the `scala-cli` command-line:
+```bash
+scala-cli run breeze-test.scala '-Ddev.ludovic.netlib.blas.nativeLib=libblas.so' 
+```
+If you prefer, you can include the option in your `scala-cli` headers, which might then look similar to:
+```scala
+//> using scala 3.3.0
+//> using dep org.scalanlp::breeze:2.1.0
+//> using dep org.scalanlp::breeze-viz:2.1.0
+//> using javaOpt -Ddev.ludovic.netlib.blas.nativeLibPath=/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.10.0
+```
+The (significant) disadvantage of this approach is that it make the code less portable.
+
+### sbt
+
+
 
 ## Verifying netlib instances in Scala Breeze projects
 
 
+
+## Java 16+
+
+As explained in the netlib readme, there is an additional wrinkle if you are using a recent JVM (version 16 or higher).

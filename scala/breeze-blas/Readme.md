@@ -14,7 +14,7 @@ What the netlib readme doesn't discuss is how to set these properties in Scala p
 
 ## Setting netlib properties in Scala projects
 
-Exactly how you set system properties depends on exactly how you are building and running your Scala code. However, some build tools will read the environment variable `JAVA_OPTS`, so setting this will very often work. For example, if you are using a bash-like shell, you could set a relevent property with something like:
+Exactly how you set system properties depends on exactly how you are building and running your Scala code. However, some build tools will read the environment variable `JAVA_OPTS`, so setting this will very often work. For example, if you are using a bash-like shell, you could set a relevant property with something like:
 ```bash
 export JAVA_OPTS="-Ddev.ludovic.netlib.blas.nativeLib=libblas.so"
 ```
@@ -26,7 +26,7 @@ Then this might be picked up and used by your build tool. If so, this is often t
 
 ### scala-cli
 
-[scala-cli](https://scala-cli.virtuslab.org/) is a popular tool for compiling and running small Scala projects. You can pass in a propery directly at the _end_ of the `scala-cli` command-line:
+[scala-cli](https://scala-cli.virtuslab.org/) is a popular tool for compiling and running small Scala projects. You can pass in a property directly at the _end_ of the `scala-cli` command-line:
 ```bash
 scala-cli run breeze-test.scala '-Ddev.ludovic.netlib.blas.nativeLib=libblas.so' 
 ```
@@ -97,6 +97,6 @@ Note that this also detects the use of `VectorBLAS`, discussed below.
 
 ## Java 16+
 
-As explained in the netlib readme, there is an additional wrinkle if you are using a recent JVM (version 16 or higher). Since recent JVMs expose vector operations, it is possible to write pure Java BLAS libraries with similar performance to native libraries. Recent versions of netlib include such an implementation, called `VectorBLAS`. So, if you run your Scala Breeze application on a recent JVM, netlib will first check to see if it can detect a `VectorBLAS`, and if it finds it, it will use it in preference to a native library. However, if it can't (which is likely to be the case by default), then it will next look for a *native* BLAS, before eventually falling back to a less performant Java BLAS library. So if you have a good native BLAS installed and configured, then you are probably happy with this, and can safely ignore any errors or warnings about not being able to find a `VectorBLAS`.
+As explained in the netlib readme, there is an additional wrinkle if you are using a recent JVM (version 16 or higher). Since recent JVMs expose vector operations, it is now possible to write pure Java BLAS libraries with similar performance to native libraries. Recent versions of netlib include such an implementation, called `VectorBLAS`. So, if you run your Scala Breeze application on a recent JVM, netlib will first check to see if it can detect a `VectorBLAS`, and if it finds it, it will use it in preference to a native library. However, if it can't (which is likely to be the case by default), then it will next look for a *native* BLAS, before eventually falling back to a less performant Java BLAS library. So if you have a good native BLAS installed and configured, then you are probably happy with this, and can safely ignore any errors or warnings about not being able to find a `VectorBLAS`.
 
 

@@ -21,20 +21,34 @@
 // -Ddev.ludovic.netlib.blas.nativeLib=libblas.so
 
 
-import breeze.linalg.*
-import dev.ludovic.netlib.blas.BLAS
-
 object Main:
 
   @main
   def run() = 
-    println(BLAS.getInstance().getClass().getName())
-    println(DenseMatrix((1.0,0.0),(0.2,2.0)) * DenseVector(3.0, 4.0))
-    println(BLAS.getInstance().getClass().getName())
     println("\n\n\n")
-    BLAS.getInstance().getClass().getName() match
-      case "dev.ludovic.netlib.blas.JNIBLAS" => println("Using a native BLAS of some sort") 
-      case _ => println("Fallen back to Java BLAS")
+    import dev.ludovic.netlib.blas.BLAS
+    print("BLAS: ")
+    println(BLAS.getInstance().getClass().getName())
+    import dev.ludovic.netlib.lapack.LAPACK
+    print("LAPACK: ")
+    println(LAPACK.getInstance().getClass().getName())
+    import dev.ludovic.netlib.arpack.ARPACK
+    print("ARPACK: ")
+    println(ARPACK.getInstance().getClass().getName())
+    println("\n\n\n")
+
+    import breeze.linalg.*
+    val m = DenseMatrix((1.0,0.0),(0.2,2.0))
+    println(m * DenseVector(3.0, 4.0))
+    println(svd(m))
+
+    println("\n\n\n")
+    val blas = BLAS.getInstance().getClass().getName()
+    println(s"Using BLAS: $blas")
+    blas match
+      case "dev.ludovic.netlib.blas.JNIBLAS" => println("This is a native BLAS of some sort")
+      case "dev.ludovic.netlib.blas.VectorBLAS" => println("This is the VectorBLAS for Java 16+")
+      case _ => println("Fallen back to a Java BLAS of some sort (probably slow)")
     println("\n\n\n")
 
 

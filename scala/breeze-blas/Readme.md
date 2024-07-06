@@ -14,30 +14,53 @@ What the netlib readme doesn't discuss is how to set these properties in Scala p
 
 ## Setting netlib properties in Scala projects
 
-Exactly how you set system properties depends on exactly how you are building and running your Scala code. However, many build tools will read the environment variable `JAVA_OPTS`, so setting this will very often work. For example, if you are using a bash-like shell, you could set a relevent property with something like:
+Exactly how you set system properties depends on exactly how you are building and running your Scala code. However, some build tools will read the environment variable `JAVA_OPTS`, so setting this will very often work. For example, if you are using a bash-like shell, you could set a relevent property with something like:
 ```bash
 export JAVA_OPTS="-Ddev.ludovic.netlib.blas.nativeLib=libblas.so"
 ```
-Then this will most likely be picked up and used by your build tool. This is often the preferred approach.
+Multiple properties should be separated with a space.
+```bash
+export JAVA_OPTS="-Ddev.ludovic.netlib.blas.nativeLib=libblas.so -Ddev.ludovic.netlib.lapack.nativeLib=liblapack.so"
+```
+Then this might be picked up and used by your build tool. If so, this is often the preferred approach.
 
 ### scala-cli
 
-[scala-cli](https://scala-cli.virtuslab.org/) is a popular tool for compiling and running small Scala projects. It should check the `JAVA_OPTS` environment variable, so this is often the simplest way to configure netlib for `scala-cli` projects. If you prefer, you can pass in the propery directly at the _end_ of the `scala-cli` command-line:
+[scala-cli](https://scala-cli.virtuslab.org/) is a popular tool for compiling and running small Scala projects. You can pass in a propery directly at the _end_ of the `scala-cli` command-line:
 ```bash
 scala-cli run breeze-test.scala '-Ddev.ludovic.netlib.blas.nativeLib=libblas.so' 
 ```
-If you prefer, you can include the option in your `scala-cli` headers, which might then look similar to:
+Multiple properties should be included separately:
+```bash
+scala-cli run breeze-test.scala '-Ddev.ludovic.netlib.blas.nativeLib=libblas.so' '-Ddev.ludovic.netlib.lapack.nativeLib=liblapack.so'
+```
+If you prefer, you can include the option in your Scala source code in the `scala-cli` headers, which might then look similar to:
 ```scala
 //> using scala 3.3.0
 //> using dep org.scalanlp::breeze:2.1.0
 //> using dep org.scalanlp::breeze-viz:2.1.0
 //> using javaOpt -Ddev.ludovic.netlib.blas.nativeLibPath=/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.10.0
 ```
-The (significant) disadvantage of this approach is that it make the code less portable.
+The (significant) disadvantage of this approach is that it makes the code less portable.
 
 ### sbt
 
+Many larger Scala project are build using [sbt](https://www.scala-sbt.org/). 
+`sbt` checks the `JAVA_OPTS` environment variable, so this is often the preferred way to configure the libraries that you want to use.
 
+Alternatively, you can explicitly set them at the `sbt` command line by inserting them _before_ the required task:
+```bash
+sbt -Ddev.ludovic.netlib.blas.nativeLib=libblas.so run
+```
+If you prefer, you can include the options inside your `build.sbt` file with something like:
+```scala
+javaOptions ++= Seq(
+  "-Ddev.ludovic.netlib.blas.nativeLibPath=/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.10.0"
+)
+
+fork := true
+```
+Note that you will probably need to fork the project, as the options will be applied to the forked process. But in addition to the usual pros and cons of forking `sbt` projects, this approach has the disadvantage of making the code less portable.
 
 ## Verifying netlib instances in Scala Breeze projects
 

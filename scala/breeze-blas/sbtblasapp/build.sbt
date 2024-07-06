@@ -6,9 +6,9 @@ scalacOptions ++= Seq(
   "-unchecked", "-deprecation", "-feature"
 )
 
-javaOptions ++= Seq(
-  "-Ddev.ludovic.netlib.blas.nativeLibPath=/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.10.0"
-)
+//javaOptions ++= Seq(
+//  "-Ddev.ludovic.netlib.blas.nativeLibPath=/usr/lib/x86_64-linux-gnu/blas/libblas.so.3.10.0"
+//)
 
 libraryDependencies  ++= Seq(
   "org.scalatest" %% "scalatest" % "3.2.16" % "test",
@@ -25,5 +25,5 @@ resolvers ++= Seq(
 
 scalaVersion := "3.3.0"
 
-fork := true
+//fork := true
 

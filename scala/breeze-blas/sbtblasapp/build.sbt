@@ -13,6 +13,7 @@ scalacOptions ++= Seq(
 libraryDependencies  ++= Seq(
   "org.scalatest" %% "scalatest" % "3.2.16" % "test",
   "org.scalanlp" %% "breeze" % "2.1.0",
+  "dev.ludovic.netlib" % "blas" % "3.0.3" // Contains VectorBLAS ??
   // "org.scalanlp" %% "breeze-viz" % "2.1.0"
 )
 

@@ -27,8 +27,7 @@ print(paste(myLetters, collapse=""))
 print("Hit return to start search...")
 readline()
 
-df = data.frame(l=c(myLetters, letters), c=c(rep(1, numLetters), rep(0, 26)))
-counts = tapply(df$c, df$l, sum)
+counts = tapply(c(rep(1, numLetters), rep(0, 26)), c(myLetters, letters), sum)
 
 for (word in words$word) {
     lets = strsplit(word, "")[[1]]

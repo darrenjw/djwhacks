@@ -23,6 +23,13 @@ for (i in 1:numLetters) {
 print("Your letters are now chosen")
 print(myLetters)
 print(paste(myLetters, collapse=""))
+print("30 second timer starting now")
+for (i in 30:1) {
+    cat(i," ")
+    Sys.sleep(1)
+}
+cat("\n")
+print("Time is up!")
 
 print("Hit return to start search...")
 readline()

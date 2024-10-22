@@ -3,9 +3,12 @@
 library(words)
 numLetters = 9
 
+print("Countdown game")
+
 vowels = c("a", "e", "i", "o", "u")
 consts = setdiff(letters, vowels)
 myLetters = NULL
+print("Enter v for vowel and c for constanant")
 for (i in 1:numLetters) {
     print("v/c?")
     line = readline()
@@ -16,6 +19,10 @@ for (i in 1:numLetters) {
     myLetters = c(myLetters, let)
     print(myLetters)
     }
+
+print("Your letters are now chosen")
+print(myLetters)
+print(paste(myLetters, collapse=""))
 
 print("Hit return to start search...")
 readline()

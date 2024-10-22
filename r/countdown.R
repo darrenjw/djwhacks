@@ -1,10 +1,21 @@
 ## countdown.R
 
 library(words)
+numLetters = 9
 
-numLetters = 10
-myLetters = sample(letters, numLetters, replace=TRUE) # not enough vowels!!!
-print(myLetters)
+vowels = c("a", "e", "i", "o", "u")
+consts = setdiff(letters, vowels)
+myLetters = NULL
+for (i in 1:numLetters) {
+    print("v/c?")
+    line = readline()
+    if (line == "v")
+        let = sample(vowels, 1)
+    else
+        let = sample(consts, 1)
+    myLetters = c(myLetters, let)
+    print(myLetters)
+    }
 
 print("Hit return to start search...")
 readline()

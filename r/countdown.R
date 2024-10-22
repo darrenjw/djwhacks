@@ -8,7 +8,7 @@ print("Countdown game")
 vowels = c("a", "e", "i", "o", "u")
 consts = setdiff(letters, vowels)
 myLetters = NULL
-print("Enter v for vowel and c for constanant")
+print("Enter v for vowel and c for consonant")
 for (i in 1:numLetters) {
     print("v/c?")
     line = readline()

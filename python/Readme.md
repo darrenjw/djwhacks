@@ -5,6 +5,8 @@
 My python code directory
 
 
+reStructuredText markup: https://devguide.python.org/documentation/markup/
+
 ### virtualenv
 
 Reminders for `virtualenv`: https://pythonbasics.org/virtualenv/ 

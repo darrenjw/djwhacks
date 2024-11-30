@@ -4,6 +4,7 @@
 
 My python code directory
 
+### rst
 
 reStructuredText markup: https://devguide.python.org/documentation/markup/
 
@@ -19,4 +20,9 @@ source ./myEnv/bin/activate
 
 deactivate
 ```
+
+### uv
+
+Docs for `uv`: https://docs.astral.sh/uv/
+
 

@@ -23,7 +23,7 @@ Highlight block to indent (or unindent) then `C-x Tab`. Use left and right arrow
 * `M-x ibuffer`
 * `*M python-mode` (all buffers with a given mode)
 * `*M markdown-mode`
-* `I stepGillespie` (`I` for text replace or `Q` for a regexp)
+* `Q stepGillespie` (`Q` for text replace or `I` for a regexp)
 * `step_gillespie`
 * `!!!` (`!` to replace everything in a given buffer)
 * `S` (to save all buffers)

@@ -5,6 +5,7 @@
 * https://www.gnu.org/software/emacs/refcards/pdf/refcard.pdf
 * http://www.rgrjr.com/emacs/emacs_cheat.html
 * Cancel: `C-g`
+* Cursor to start/end of buffer: `M-<` / `M->`
 
 ### Adjust font size
 

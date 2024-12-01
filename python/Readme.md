@@ -25,4 +25,17 @@ deactivate
 
 Docs for `uv`: https://docs.astral.sh/uv/
 
+```bash
+# virtual environments
+uv venv # creates .venv
+uv venv myEnv
+source ./myEnv/bin/activate
+uv pip install black
+deactivate
 
+# create a new project
+uv init myproject
+cd myproject
+uv add black # adds to project dependencies (and the .venv)
+
+```

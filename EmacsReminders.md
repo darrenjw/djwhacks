@@ -6,6 +6,7 @@
 * http://www.rgrjr.com/emacs/emacs_cheat.html
 * Cancel: `C-g`
 * Cursor to start/end of buffer: `M-<` / `M->`
+* Search and replace a text string: `M-%`
 
 ### Adjust font size
 

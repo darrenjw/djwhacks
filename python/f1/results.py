@@ -18,12 +18,25 @@ def results(year, rnd):
     r, c = res.shape
     if (r == 0):
         print(f'ERROR: failed to download results for {year}, round {rnd}')
-        raise 'Yikes!'
+        raise
     sub = res[fields]
     return(sub)
 
+def results_retry(year, rnd):
+    tries = 5
+    for i in range(tries):
+        try:
+            return(results(year, rnd))
+        except KeyError as e:
+            if i < tries - 1: # i is zero indexed
+                continue
+            else:
+                print(f'ERROR: failed {tries} times - giving up!')
+                raise
+        break
+
 def full_results(year, rnd):
-    res = results(year, rnd)
+    res = results_retry(year, rnd)
     res['Year'] = year
     res['Round'] = rnd
     return(res)

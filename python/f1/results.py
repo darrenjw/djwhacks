@@ -46,7 +46,8 @@ for y in range(start_year, end_year+1):
     schedule = fastf1.get_event_schedule(y)
     r, c = schedule.shape
     print(f'{r-1} events in {y}')
-    rounds = schedule['RoundNumber'][1:]
+    rounds = schedule['RoundNumber']
+    rounds = rounds[rounds > 0] # drop phantom/test events
     for e in rounds:
         res = full_results(y, e)
         d, cc = res.shape

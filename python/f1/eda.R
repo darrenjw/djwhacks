@@ -25,10 +25,20 @@ teams = unique(sort(df[,'TeamId']))
 cat(paste(length(teams), "teams:\n"))
 print(teams)
 
+## Some very basic diagnostic plots
+hist(df$Points)
+hist(df$Position)
+plot(df$Position, df$Points, col=(df$Year-2013), pch=19)
 
 ## Some very basic linear models
 df$driver = factor(df$DriverId)
 df$team = factor(df$TeamId)
+
+## Start with boxplots
+boxplot(Points ~ driver, data=df)
+boxplot(-Position ~ driver, data=df)
+boxplot(Points ~ team, data=df)
+boxplot(-Position ~ team, data=df)
 
 ##options(contrasts = c("contr.sum", "contr.poly"))
 ##options(contrasts = c("contr.treatment", "contr.poly"))

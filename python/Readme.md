@@ -29,6 +29,7 @@ Docs for `uv`: https://docs.astral.sh/uv/
 # virtual environments
 uv venv # creates .venv
 uv venv myEnv
+uv venv --python 3.12 myEnv
 source ./myEnv/bin/activate
 uv pip install black
 deactivate

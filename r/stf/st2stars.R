@@ -23,10 +23,15 @@ stfdf_to_sf <- function(stfdf, crs = 4326) {
 }
 
 rural_sf = stfdf_to_sf(rural)
+print(head(rural_sf))
+print(dim(rural_sf))
 st_write(rural_sf, "air_rural.gpkg", append=FALSE)
+## best to write in "long" format as a "gpkg" file
 
+## can create a stars object for analysis
 rural_stars = st_as_stars(rural_sf, dims=c("geometry", "time")) # slow!
-
+print(dim(rural_stars))
+      
 plot(rural_stars)
 image(rural_stars$PM10)
 

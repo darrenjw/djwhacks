@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 
 m = 200 # number of rows
 n = 250 # number of columns
-t = 50 # number of time steps (not terminal time)
-dt = 0.1 # size of time step
+t = 100 # number of time steps (not terminal time)
+dt = 0.01 # size of time step
 
 rho = 1 # density of fluid
 mu = 0.01 # viscosity coefficient
@@ -67,7 +67,7 @@ def dx(sf):
     return (np.roll(sf, 1, 1) - np.roll(sf, -1, 1)) / (2*delta_x)
 
 def dy(sf):
-    return (np.roll(sf, -1, 0) - np.roll(sf, 1, 0)) / (2*delta_x)
+    return (np.roll(sf, 1, 0) - np.roll(sf, -1, 0)) / (2*delta_x)
 
 # discrete laplacian
 def lap(sf):
@@ -90,10 +90,12 @@ def solve_poisson(rhs):
 
 for i in range(t):
     print(i)
+    plt.imshow(vx)
+    plt.savefig(f"vx{i:03d}.png")
     b = -rho*(dx(vx)**2 + 2*dx(vy)*dy(vx) + dy(vy)**2)
     p = solve_poisson(b)
     plt.imshow(p)
-    plt.savefig(f"p{i}.png")
+    plt.savefig(f"p{i:03d}.png")
     rhs_x = (mu*lap(vx) - dx(p))/rho - dx(vx)*vx - dy(vx)*vy
     rhs_y = (mu*lap(vy) - dy(p))/rho - dx(vy)*vx - dy(vy)*vy
     vx = vx + rhs_x*dt

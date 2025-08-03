@@ -8,15 +8,16 @@ import scipy as sp
 import matplotlib.pyplot as plt
 
 
-m = 100 # number of rows
-n = 120 # number of columns
+m = 200 # number of rows
+n = 250 # number of columns
+t = 50 # number of time steps (not terminal time)
+dt = 0.1 # size of time step
 
 rho = 1 # density of fluid
-mu = 0.01 # viscosity
+mu = 0.01 # viscosity coefficient
 
 
 delta_x = 1.0 / m # true height of rectangular region is 1 (assume dx = dy)
-
 rows, cols = np.mgrid[0:m, 0:n]
 
 # first simulate a random but smooth initial velocity field via a squared-exp GP
@@ -50,7 +51,6 @@ def gp():
     return np.real(mat)
 
 vx = gp()
-#print(vx)
 vy = gp()
 
 plt.imshow(vx)
@@ -77,37 +77,29 @@ def lap(sf):
 # solve the poisson equation (in 2d, with periodic boundary conditions)
 def solve_poisson(rhs):
     fb = sp.fft.fft2(rhs)
-    #plt.imshow(np.abs(fb))
-    #plt.savefig("fb.pdf")
     fp = fb * (delta_x*delta_x) / (2*(np.cos(2*math.pi*rows/m) +
                                       np.cos(2*math.pi*cols/n) - 2))
     fp[0,0] = 0
-    #plt.imshow(np.abs(fp))
-    #plt.savefig("fp.pdf")
     p = sp.fft.ifft2(fp)
-    #print(p)
     return np.real(p)
 
 
-# solve for pressure field
-b = -rho*(dx(vx)**2 + 2*dx(vy)*dy(vx) + dy(vy)**2)
-#print(b)
-plt.imshow(b)
-plt.savefig("b.pdf")
 
-print("solve for p")
-p = solve_poisson(b)
-print("solved for p")
-#print(p)
-plt.imshow(p)
-plt.savefig("p.pdf")
+# now think about time-stepping the Navier-Stokes equations
+# start with a simple first-order explicit Euler scheme
 
-
-# now think about time-stepping the navier-stokes equations
-# start with a simple first-order explicit euler scheme
-
-
-
+for i in range(t):
+    print(i)
+    b = -rho*(dx(vx)**2 + 2*dx(vy)*dy(vx) + dy(vy)**2)
+    p = solve_poisson(b)
+    plt.imshow(p)
+    plt.savefig(f"p{i}.png")
+    rhs_x = (mu*lap(vx) - dx(p))/rho - dx(vx)*vx - dy(vx)*vy
+    rhs_y = (mu*lap(vy) - dy(p))/rho - dx(vy)*vx - dy(vy)*vy
+    vx = vx + rhs_x*dt
+    vy = vy + rhs_y*dt
+    
+    
 
 
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # poisson.py
 # code relating to the solving the 1d poisson equation in various ways
 

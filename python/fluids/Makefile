@@ -2,21 +2,21 @@
 
 
 FORCE:
-	make vx.mp4
+	make tracer.mp4
 
 
-vx001.png: fluid.py
-	time python fluid.py
+s001.png: fluid.py
+	time python fluid-jax.py
 
-vx.mp4: vx001.png
+tracer.mp4: s001.png
 	rm -f vx.mp4
-	ffmpeg -framerate 25 -i vx%03d.png vx.mp4
+	ffmpeg -framerate 25 -i s%03d.png tracer.mp4
 
 edit:
 	emacs Makefile *.md *.py &
 
 clean:
-	rm -f *~ *.pdf *.png
+	rm -f *~ *.pdf *.png *.mp4
 
 
 # eof

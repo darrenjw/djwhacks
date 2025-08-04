@@ -10,13 +10,13 @@ import matplotlib.pyplot as plt
 
 jax.config.update("jax_enable_x64", True)
 
-m = 200 # number of rows
-n = 240 # number of columns
-t = 500 # number of time steps (not terminal time)
-dt = 0.005 # size of time step
+m = 300 # number of rows
+n = 350 # number of columns
+t = 1500 # number of time steps (not terminal time)
+dt = 0.0025 # size of time step
 
 rho = 1 # density of fluid
-mu = 0.001 # viscosity coefficient
+mu = 0.0005 # viscosity coefficient
 
 diff = 0.0001 # tracer diffusion coefficient
 

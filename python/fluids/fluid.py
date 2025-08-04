@@ -10,11 +10,11 @@ import matplotlib.pyplot as plt
 
 m = 200 # number of rows
 n = 250 # number of columns
-t = 100 # number of time steps (not terminal time)
-dt = 0.01 # size of time step
+t = 200 # number of time steps (not terminal time)
+dt = 0.005 # size of time step
 
 rho = 1 # density of fluid
-mu = 0.01 # viscosity coefficient
+mu = 0.001 # viscosity coefficient
 
 
 delta_x = 1.0 / m # true height of rectangular region is 1 (assume dx = dy)
@@ -31,7 +31,7 @@ def gp():
             if ((j==0)&(k==0)):
                 sd = 0
             else:
-                sd = 100*np.exp(-0.1*(j*j + k*k))
+                sd = 1000*np.exp(-0.1*(j*j + k*k))
             mat[j, k] = complex(np.random.normal(0., sd), np.random.normal(0., sd))
             if (j == 0)&(k > 0):
                 mat[j, n-k] = mat[j, k].conjugate()
@@ -44,14 +44,23 @@ def gp():
     mat[m//2, n//2] = 0
     for j in range(1, m//2):
         for k in range(1, n//2):
-            sd = 100*np.exp(-0.1*(j*j + k*k))
+            sd = 1000*np.exp(-0.1*(j*j + k*k))
             mat[m-j, k] = complex(np.random.normal(0., sd), np.random.normal(0., sd))
             mat[j, n-k] = mat[m-j, k].conjugate()
     mat = np.fft.ifft2(mat)
     return np.real(mat)
 
+# print some stats
+def sf_stats(sf, label="Matrix"):
+    mean = np.mean(sf)
+    mx = np.max(sf)
+    mn = np.min(sf)
+    print(f"{label}: mean={mean:03f}, min={mn:03f}, max={mx:03f}")
+
 vx = gp()
+sf_stats(vx, "initial vx")
 vy = gp()
+sf_stats(vy, "initial vy")
 
 plt.imshow(vx)
 plt.savefig("vx.pdf")
@@ -64,10 +73,10 @@ print("Initial velocity field sampled")
 
 # use 2-sided central differences (applied to a scalar field, sf)
 def dx(sf):
-    return (np.roll(sf, 1, 1) - np.roll(sf, -1, 1)) / (2*delta_x)
+    return (np.roll(sf, -1, 1) - np.roll(sf, 1, 1)) / (2*delta_x)
 
 def dy(sf):
-    return (np.roll(sf, 1, 0) - np.roll(sf, -1, 0)) / (2*delta_x)
+    return (np.roll(sf, -1, 0) - np.roll(sf, 1, 0)) / (2*delta_x)
 
 # discrete laplacian
 def lap(sf):
@@ -84,7 +93,6 @@ def solve_poisson(rhs):
     return np.real(p)
 
 
-
 # now think about time-stepping the Navier-Stokes equations
 # start with a simple first-order explicit Euler scheme
 
@@ -92,8 +100,12 @@ for i in range(t):
     print(i)
     plt.imshow(vx)
     plt.savefig(f"vx{i:03d}.png")
+    sf_stats(vx, "vx")
+    sf_stats(vy, "vy")
     b = -rho*(dx(vx)**2 + 2*dx(vy)*dy(vx) + dy(vy)**2)
+    sf_stats(b, "b")
     p = solve_poisson(b)
+    sf_stats(p, "p")
     plt.imshow(p)
     plt.savefig(f"p{i:03d}.png")
     rhs_x = (mu*lap(vx) - dx(p))/rho - dx(vx)*vx - dy(vx)*vy

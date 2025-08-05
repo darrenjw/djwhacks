@@ -120,7 +120,7 @@ print("Initial velocity field sampled")
 
 # create a tracer species, s
 s = jnp.zeros((m, n))
-s = s.at[(m//2):(m//2 + 50), (n//2):(n//2 + 50)].set(1)
+s = s.at[(m//2):(m//2 + 80), (n//2):(n//2 + 80)].set(1)
 
 # some (periodic) helper functions
 

@@ -6,16 +6,17 @@ import math
 import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
+from PIL import Image
 
-
-m = 200 # number of rows
-n = 250 # number of columns
-t = 200 # number of time steps (not terminal time)
-dt = 0.005 # size of time step
+m = 480 # number of rows
+n = 640 # number of columns
+t = 3000 # number of time steps (not terminal time)
+dt = 0.001 # size of time step
 
 rho = 1 # density of fluid
-mu = 0.001 # viscosity coefficient
+mu = 0.0005 # viscosity coefficient
 
+diff = 0.0001 # tracer diffusion coefficient
 
 delta_x = 1.0 / m # true height of rectangular region is 1 (assume dx = dy)
 rows, cols = np.mgrid[0:m, 0:n]
@@ -57,6 +58,13 @@ def sf_stats(sf, label="Matrix"):
     mn = np.min(sf)
     print(f"{label}: mean={mean:03f}, min={mn:03f}, max={mx:03f}")
 
+def sf_to_img(sf):
+    mx = np.max(sf)
+    mn = np.min(sf)
+    imat = np.uint8((sf-mn)*255//(mx-mn))
+    return Image.fromarray(imat)
+
+    
 vx = gp()
 sf_stats(vx, "initial vx")
 vy = gp()
@@ -68,6 +76,10 @@ plt.imshow(vy)
 plt.savefig("vy.pdf")
 
 print("Initial velocity field sampled")
+
+# create a tracer species, s
+s = np.zeros((m, n))
+s[(m//2):(m//2 + 30), (n//2):(n//2 + 30)] = 1
 
 # some (periodic) helper functions
 
@@ -96,22 +108,35 @@ def solve_poisson(rhs):
 # now think about time-stepping the Navier-Stokes equations
 # start with a simple first-order explicit Euler scheme
 
-for i in range(t):
-    print(i)
-    plt.imshow(vx)
-    plt.savefig(f"vx{i:03d}.png")
-    sf_stats(vx, "vx")
-    sf_stats(vy, "vy")
+# Navier-Stokes (for incompressible flow)
+def advance(vx, vy):
     b = -rho*(dx(vx)**2 + 2*dx(vy)*dy(vx) + dy(vy)**2)
-    sf_stats(b, "b")
     p = solve_poisson(b)
-    sf_stats(p, "p")
-    plt.imshow(p)
-    plt.savefig(f"p{i:03d}.png")
     rhs_x = (mu*lap(vx) - dx(p))/rho - dx(vx)*vx - dy(vx)*vy
     rhs_y = (mu*lap(vy) - dy(p))/rho - dx(vy)*vx - dy(vy)*vy
     vx = vx + rhs_x*dt
     vy = vy + rhs_y*dt
+    return vx, vy
+
+# advection-diffusion for tracer
+def advance_tracer(s, vx, vy):
+    rhs = diff*lap(s) - vx*dx(s) - vy*dy(s)
+    s = s + rhs*dt
+    return s
+
+
+for i in range(t):
+    print(i)
+    si = sf_to_img(s)
+    vxi = sf_to_img(vx)
+    vyi = sf_to_img(vy)
+    Image.merge("RGB", (si, vxi, vyi)).save(f"mnp{i:05d}.png")
+    #print(sf_stats(vx, "vx"))
+    #print(sf_stats(vy, "vy"))
+    vx, vy = advance(vx, vy)
+    s = advance_tracer(s, vx, vy)
+    
+
     
     
 

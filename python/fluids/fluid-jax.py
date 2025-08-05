@@ -61,6 +61,33 @@ def gp(key0):
     mat = jnp.fft.ifft2(mat)
     return jnp.real(mat)
 
+# just use numpy version for now...
+def gp_np():
+    mat = np.zeros([m, n], dtype=complex)
+    for j in range(m//2):
+        for k in range(n//2):
+            if ((j==0)&(k==0)):
+                sd = 0
+            else:
+                sd = 10000*np.exp(-0.1*(j*j + k*k))
+            mat[j, k] = complex(np.random.normal(0., sd), np.random.normal(0., sd))
+            if (j == 0)&(k > 0):
+                mat[j, n-k] = mat[j, k].conjugate()
+            elif (k == 0)&(j > 0):
+                mat[m-j, k] = mat[j, k].conjugate()
+            elif (j > 0)&(k > 0):
+                mat[m-j, n-k] = mat[j, k].conjugate()
+    mat[m//2, 0] = 0 # really, just need these to be real...
+    mat[0, n//2] = 0
+    mat[m//2, n//2] = 0
+    for j in range(1, m//2):
+        for k in range(1, n//2):
+            sd = 10000*np.exp(-0.1*(j*j + k*k))
+            mat[m-j, k] = complex(np.random.normal(0., sd), np.random.normal(0., sd))
+            mat[j, n-k] = mat[m-j, k].conjugate()
+    mat = np.fft.ifft2(mat)
+    return np.real(mat)
+
 # compute some stats (for a scalar field, sf)
 def sf_stats(sf, label="Matrix"):
     mean = jnp.mean(sf)
@@ -74,11 +101,13 @@ def sf_to_img(sf):
     imat = np.uint8((sf-mn)*255//(mx-mn))
     return Image.fromarray(imat)
 
-k0 = jax.random.key(42)
-k1, k2 = jax.random.split(k0)
-vx = gp(k1)
+#k0 = jax.random.key(42)
+#k1, k2 = jax.random.split(k0)
+#vx = gp(k1)
+vx = jnp.array(gp_np()) # use numpy version
 print(sf_stats(vx, "initial vx"))
-vy = gp(k2)
+#vy = gp(k2)
+vy = jnp.array(gp_np()) # use numpy version
 print(sf_stats(vy, "initial vy"))
 
 plt.imshow(vx)
@@ -146,7 +175,7 @@ for i in range(t):
     si = sf_to_img(s)
     vxi = sf_to_img(vx)
     vyi = sf_to_img(vy)
-    Image.merge("RGB", (si, vxi, vyi)).save(f"m{i:03d}.png")
+    Image.merge("RGB", (si, vxi, vyi)).save(f"m{i:05d}.png")
     #print(sf_stats(vx, "vx"))
     #print(sf_stats(vy, "vy"))
     vx, vy = advance(vx, vy)

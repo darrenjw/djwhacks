@@ -12,10 +12,11 @@ from PIL import Image
 
 jax.config.update("jax_enable_x64", True)
 
-m = 480 # number of rows
-n = 640 # number of columns
-t = 3000 # number of time steps (not terminal time)
-dt = 0.001 # size of time step
+m = 720 # number of rows
+n = 1280 # number of columns
+t = 2000 # number of frames required (not terminal time)
+dt = 0.0005 # size of time step
+num_steps = 10 # number of time steps per frame (written to disk)
 
 rho = 1 # density of fluid
 mu = 0.0005 # viscosity coefficient
@@ -119,7 +120,7 @@ print("Initial velocity field sampled")
 
 # create a tracer species, s
 s = jnp.zeros((m, n))
-s = s.at[(m//2):(m//2 + 30), (n//2):(n//2 + 30)].set(1)
+s = s.at[(m//2):(m//2 + 50), (n//2):(n//2 + 50)].set(1)
 
 # some (periodic) helper functions
 
@@ -172,14 +173,15 @@ def advance_tracer(s, vx, vy):
     
 for i in range(t):
     print(i)
+    for j in range(num_steps):
+        vx, vy = advance(vx, vy)
+        s = advance_tracer(s, vx, vy)
     si = sf_to_img(s)
     vxi = sf_to_img(vx)
     vyi = sf_to_img(vy)
     Image.merge("RGB", (si, vxi, vyi)).save(f"m{i:05d}.png")
     #print(sf_stats(vx, "vx"))
     #print(sf_stats(vy, "vy"))
-    vx, vy = advance(vx, vy)
-    s = advance_tracer(s, vx, vy)
     
 
 

@@ -10,8 +10,9 @@ from PIL import Image
 
 m = 480 # number of rows
 n = 640 # number of columns
-t = 3000 # number of time steps (not terminal time)
+t = 3000 # number of frames (not terminal time)
 dt = 0.001 # size of time step
+num_steps = 5 # number of time steps per frame (written to disk)
 
 rho = 1 # density of fluid
 mu = 0.0005 # viscosity coefficient
@@ -127,14 +128,15 @@ def advance_tracer(s, vx, vy):
 
 for i in range(t):
     print(i)
+    for j in range(num_steps):
+        vx, vy = advance(vx, vy)
+        s = advance_tracer(s, vx, vy)
     si = sf_to_img(s)
     vxi = sf_to_img(vx)
     vyi = sf_to_img(vy)
     Image.merge("RGB", (si, vxi, vyi)).save(f"mnp{i:05d}.png")
     #print(sf_stats(vx, "vx"))
     #print(sf_stats(vy, "vy"))
-    vx, vy = advance(vx, vy)
-    s = advance_tracer(s, vx, vy)
     
 
     

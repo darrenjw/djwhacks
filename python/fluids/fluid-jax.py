@@ -16,7 +16,7 @@ m = 720 # number of rows
 n = 1280 # number of columns
 t = 2000 # number of frames required (not terminal time)
 dt = 0.0005 # size of time step
-num_steps = 10 # number of time steps per frame (written to disk)
+num_steps = 15 # number of time steps per frame (written to disk)
 
 rho = 1 # density of fluid
 mu = 0.0005 # viscosity coefficient

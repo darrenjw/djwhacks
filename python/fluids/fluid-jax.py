@@ -12,10 +12,10 @@ from PIL import Image
 
 jax.config.update("jax_enable_x64", True)
 
-m = 300 # number of rows
-n = 350 # number of columns
-t = 2000 # number of time steps (not terminal time)
-dt = 0.0025 # size of time step
+m = 480 # number of rows
+n = 640 # number of columns
+t = 3000 # number of time steps (not terminal time)
+dt = 0.001 # size of time step
 
 rho = 1 # density of fluid
 mu = 0.0005 # viscosity coefficient
@@ -38,7 +38,7 @@ def gp(key0):
             if ((j==0)&(k==0)):
                 sd = 0
             else:
-                sd = 1000*jnp.exp(-0.1*(j*j + k*k))
+                sd = 10000*jnp.exp(-0.1*(j*j + k*k))
             key0, key1 = jax.random.split(key0)
             mat=mat.at[j, k].set(complex(jax.random.normal(key0)*sd,
                                          jax.random.normal(key1)*sd))
@@ -53,7 +53,7 @@ def gp(key0):
     mat=mat.at[m//2, n//2].set(0)
     for j in range(1, m//2):
         for k in range(1, n//2):
-            sd = 1000*jnp.exp(-0.1*(j*j + k*k))
+            sd = 10000*jnp.exp(-0.1*(j*j + k*k))
             key0, key1 = jax.random.split(key0)
             mat=mat.at[m-j, k].set(complex(jax.random.normal(key0)*sd,
                                            jax.random.normal(key1)*sd))
@@ -90,7 +90,7 @@ print("Initial velocity field sampled")
 
 # create a tracer species, s
 s = jnp.zeros((m, n))
-s = s.at[(m//2):(m//2 + 20), (n//2):(n//2 + 20)].set(1)
+s = s.at[(m//2):(m//2 + 30), (n//2):(n//2 + 30)].set(1)
 
 # some (periodic) helper functions
 

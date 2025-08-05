@@ -6,13 +6,15 @@ import math
 import jax
 import jax.numpy as jnp
 import jax.scipy as jsp
+import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image
 
 jax.config.update("jax_enable_x64", True)
 
 m = 300 # number of rows
 n = 350 # number of columns
-t = 1500 # number of time steps (not terminal time)
+t = 2000 # number of time steps (not terminal time)
 dt = 0.0025 # size of time step
 
 rho = 1 # density of fluid
@@ -59,12 +61,18 @@ def gp(key0):
     mat = jnp.fft.ifft2(mat)
     return jnp.real(mat)
 
-# compute some stats
+# compute some stats (for a scalar field, sf)
 def sf_stats(sf, label="Matrix"):
     mean = jnp.mean(sf)
     mx = jnp.max(sf)
     mn = jnp.min(sf)
     return f"{label}: mean={mean:03f}, min={mn:03f}, max={mx:03f}"
+
+def sf_to_img(sf):
+    mx = np.max(sf)
+    mn = np.min(sf)
+    imat = np.uint8((sf-mn)*255//(mx-mn))
+    return Image.fromarray(imat)
 
 k0 = jax.random.key(42)
 k1, k2 = jax.random.split(k0)
@@ -135,10 +143,10 @@ def advance_tracer(s, vx, vy):
     
 for i in range(t):
     print(i)
-    plt.imshow(vx)
-    plt.savefig(f"vx{i:03d}.png")
-    plt.imshow(s)
-    plt.savefig(f"s{i:03d}.png")
+    si = sf_to_img(s)
+    vxi = sf_to_img(vx)
+    vyi = sf_to_img(vy)
+    Image.merge("RGB", (si, vxi, vyi)).save(f"m{i:03d}.png")
     #print(sf_stats(vx, "vx"))
     #print(sf_stats(vy, "vy"))
     vx, vy = advance(vx, vy)

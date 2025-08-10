@@ -17,8 +17,8 @@ v_truth = jax.vmap(truth) # vectorised version
 # accepts a matrix with 2 columns - returns a vector of results
 
 N = 100
-x = jnp.arange(-1, 1, 2/N)
-xm, ym = jnp.meshgrid(x, x)
+xg = jnp.arange(-1, 1, 2/N)
+xm, ym = jnp.meshgrid(xg, xg)
 xv = xm.reshape((N*N, 1))
 yv = ym.reshape((N*N, 1))
 xx = jnp.concatenate([xv, yv], 1)
@@ -29,7 +29,6 @@ ym = yv.reshape((N, N))
 x = xx
 y = yv
 
-
 plt.imshow(ym)
 plt.imsave("truth.pdf", ym)
 
@@ -39,12 +38,13 @@ class NeuralNetwork(eqx.Module):
     extra_bias: jax.Array
 
     def __init__(self, key):
-        keys = jax.random.split(key, 5)
-        self.layers = [eqx.nn.Linear(2, 8, key=keys[0]),
-                       eqx.nn.Linear(8, 12, key=keys[1]),
-                       eqx.nn.Linear(12, 12, key=keys[2]),
-                       eqx.nn.Linear(12, 8, key=keys[3]),
-                       eqx.nn.Linear(8, 1, key=keys[4])]
+        keys = jax.random.split(key, 6)
+        self.layers = [eqx.nn.Linear(2, 24, key=keys[0]),
+                       eqx.nn.Linear(24, 48, key=keys[1]),
+                       eqx.nn.Linear(48, 48, key=keys[2]),
+                       eqx.nn.Linear(48, 48, key=keys[3]),
+                       eqx.nn.Linear(48, 12, key=keys[4]),
+                       eqx.nn.Linear(12, 1, key=keys[5])]
         self.extra_bias = jax.numpy.ones(1)
 
     def __call__(self, x):
@@ -52,27 +52,86 @@ class NeuralNetwork(eqx.Module):
             x = jax.nn.relu(layer(x))
         return self.layers[-1](x) + self.extra_bias
 
-# @jax.grad  # differentiate all floating-point arrays in `model`.
-@jax.jit  # compile this function to make it run fast.
+@jax.jit
 def loss(model, x, y):
     pred_y = jax.vmap(model)(x)  # vectorise the model over a batch of data
-    return jax.numpy.mean((y - pred_y) ** 2)  # L2 loss
+    return jax.numpy.mean((y - pred_y) ** 2)  # L2/MSE loss
 
 g_loss = jax.grad(loss)
-
-model_key = jax.random.PRNGKey(42)
-
+model_key = jax.random.PRNGKey(2) # master RNG seed
 model = NeuralNetwork(model_key)
 
-learning_rate = 0.01
-# plain old steepest gradient descent
-while True:
-    print(loss(model, x, y))
+from PIL import Image
+def write_frame(file_name, model):
+    mat = jax.vmap(model)(x).reshape((N, N))
+    mx = np.max(mat)
+    mn = np.min(mat)
+    imat = np.uint8((mat-mn)*255//(mx-mn))
+    img = Image.fromarray(imat)
+    img.save(file_name)
+
+print("Plain old steepest gradient descent...")
+learning_rate = 0.1
+steps = 10
+for i in range(steps):
+    print(i, loss(model, x, y))
+    write_frame(f"gd{i:05d}.png", model)
     grads = g_loss(model, x, y)
     model = jax.tree_util.tree_map(lambda m, g: m - learning_rate * g, model, grads)
 
+# how good is the fitted model?
+pred = jax.vmap(model)(x)
+pred_m = pred.reshape((N,N))
+plt.imshow(pred_m)
+plt.imsave("pred-gd.pdf", pred_m)
+# not very!
 
+print("Try a better optimiser (adam), from optax...")
+learning_rate = 1e-3
+batch_size = 128
+steps = 100000
+passes = int(steps*batch_size/x.shape[0])
+print(f"{steps} steps with a bs of {batch_size} represents {passes} passes through the dataset (epochs)")
+import optax
+optim = optax.adam(learning_rate)
+opt_state = optim.init(model)
 
+def dataloader(bs):
+    dataset_size = x.shape[0]
+    indices = np.arange(dataset_size)
+    while True:
+        perm = np.random.permutation(indices)
+        start = 0
+        end = bs
+        while end <= dataset_size:
+            batch_perm = perm[start:end]
+            yield (x[batch_perm], y[batch_perm])
+            start = end
+            end = start + bs
+
+@jax.jit
+def advance(model, x, y, opt_state):
+    grads = g_loss(model, x, y)
+    updates, opt_state = optim.update(grads, opt_state)
+    model = eqx.apply_updates(model, updates)
+    return model, opt_state
+
+# main training loop
+iter_data = dataloader(batch_size)
+for i, (xb, yb) in zip(range(steps), iter_data):
+    if (i % 100 == 0):
+        print(i, steps-i, loss(model, x, y)) # check progress
+        write_frame(f"adam{i:05d}.png", model)
+    model, opt_state = advance(model, xb, yb, opt_state)
+        
+# how good is the fitted model?
+pred = jax.vmap(model)(x)
+pred_m = pred.reshape((N,N))
+plt.imshow(pred_m)
+plt.imsave("pred-adam.pdf", pred_m)
+# not very!
+
+    
 # eof
 
 

@@ -93,7 +93,7 @@ print("Try a better optimiser (adam), from optax...")
 #########################################
 learning_rate = 1e-4
 batch_size = 256
-epochs = 100000
+epochs = 1000
 #########################################
 steps = epochs*x.shape[0]//batch_size
 print(f"{epochs} epochs requires {steps} steps with a bs of {batch_size}")
@@ -122,13 +122,18 @@ def advance(model, x, y, opt_state):
 
 # main training loop
 iter_data = dataloader(batch_size)
+fs = open('loss.csv', 'w')
+fs.write("it,loss\n")
 for i, (xb, yb) in zip(range(steps), iter_data):
     if (i % 1000 == 0):
-        print(i, steps-i, loss(model, x, y)) # check progress
+        l = loss(model, x, y)
+        print(i, steps-i, l) # check progress
+        fs.write(f"{i},{l}\n")
         f = i//1000
         write_frame(f"adam{f:05d}.png", model)
     model, opt_state = advance(model, xb, yb, opt_state)
-        
+fs.close()
+    
 # how good is the fitted model?
 pred = jax.vmap(model)(x)
 pred_m = pred.reshape((N,N))

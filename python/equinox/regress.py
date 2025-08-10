@@ -93,7 +93,7 @@ print("Try a better optimiser (adam), from optax...")
 #########################################
 learning_rate = 1e-4
 batch_size = 256
-epochs = 10000
+epochs = 100000
 #########################################
 steps = epochs*x.shape[0]//batch_size
 print(f"{epochs} epochs requires {steps} steps with a bs of {batch_size}")

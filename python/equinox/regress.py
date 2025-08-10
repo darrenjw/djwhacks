@@ -7,6 +7,8 @@ import jax
 import jax.numpy as jnp
 import numpy as np
 import matplotlib.pyplot as plt
+import optax
+from PIL import Image
 
 # "unknown" 2d functional (to try and learn) - not vectorised
 # expects a vector of length 2 - returns a scalar
@@ -32,7 +34,7 @@ y = yv
 plt.imshow(ym)
 plt.imsave("truth.pdf", ym)
 
-
+# Specify the architecture of the required neural network here
 class NeuralNetwork(eqx.Module):
     layers: list
     extra_bias: jax.Array
@@ -61,7 +63,6 @@ g_loss = jax.grad(loss)
 model_key = jax.random.PRNGKey(2) # master RNG seed
 model = NeuralNetwork(model_key)
 
-from PIL import Image
 def write_frame(file_name, model):
     mat = jax.vmap(model)(x).reshape((N, N))
     mx = np.max(mat)
@@ -71,8 +72,10 @@ def write_frame(file_name, model):
     img.save(file_name)
 
 print("Plain old steepest gradient descent...")
+#########################################
 learning_rate = 0.1
-steps = 10
+steps = 2
+#########################################
 for i in range(steps):
     print(i, loss(model, x, y))
     write_frame(f"gd{i:05d}.png", model)
@@ -87,12 +90,13 @@ plt.imsave("pred-gd.pdf", pred_m)
 # not very!
 
 print("Try a better optimiser (adam), from optax...")
-learning_rate = 1e-3
-batch_size = 128
-steps = 100000
-passes = int(steps*batch_size/x.shape[0])
-print(f"{steps} steps with a bs of {batch_size} represents {passes} passes through the dataset (epochs)")
-import optax
+#########################################
+learning_rate = 1e-4
+batch_size = 256
+epochs = 100000
+#########################################
+steps = epochs*x.shape[0]//batch_size
+print(f"{epochs} epochs requires {steps} steps with a bs of {batch_size}")
 optim = optax.adam(learning_rate)
 opt_state = optim.init(model)
 
@@ -119,9 +123,10 @@ def advance(model, x, y, opt_state):
 # main training loop
 iter_data = dataloader(batch_size)
 for i, (xb, yb) in zip(range(steps), iter_data):
-    if (i % 100 == 0):
+    if (i % 1000 == 0):
         print(i, steps-i, loss(model, x, y)) # check progress
-        write_frame(f"adam{i:05d}.png", model)
+        f = i//1000
+        write_frame(f"adam{f:05d}.png", model)
     model, opt_state = advance(model, xb, yb, opt_state)
         
 # how good is the fitted model?

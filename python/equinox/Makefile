@@ -1,6 +1,7 @@
 # Makefile
 
 FORCE:
+	make clean
 	make movie.mp4
 
 movie.mp4: loss.csv

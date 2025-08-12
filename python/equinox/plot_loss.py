@@ -15,7 +15,14 @@ def read_data(file_name):
 
 def mpl_plot(it, loss, file_name):
     lloss = np.log(loss)
+    plt.figure()
+    plt.subplot(211)
     plt.plot(it, lloss)
+    plt.title("Loss for full run")
+    plt.subplot(212)
+    l = len(it)
+    plt.plot(it[l//2:l], lloss[l//2:l])
+    plt.title("Loss for second half of run")
     plt.savefig(file_name)
 
 

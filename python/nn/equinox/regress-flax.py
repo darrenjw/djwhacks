@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-# regress.py
-# simple (nonlinear) regression example
+# regress-flax.py
+# simple (nonlinear) regression example using FLAX
 
-import equinox as eqx
+from flax import nnx
 import jax
 import jax.numpy as jnp
 import numpy as np
@@ -22,7 +22,7 @@ def truth(x):
 v_truth = jax.vmap(truth) # vectorised version
 # accepts a matrix with 2 columns - returns a vector of results
 
-N = 100
+N = 100 # grid resolution for training data
 
 def make_data(N):
     xg = jnp.arange(-1, 1, 2/N)
@@ -39,38 +39,32 @@ def make_data(N):
 x_all, y_all = make_data(N)
 
 # Specify the architecture of the required neural network here
-class NeuralNetwork(eqx.Module):
-    layers: list
-    #extra_bias: jax.Array
+class NeuralNetwork(nnx.Module):
 
-    def __init__(self, key):
-        keys = jax.random.split(key, 5)
-        self.layers = [eqx.nn.Linear(2, 8, key=keys[0]),
-                       eqx.nn.Linear(8, 16, key=keys[1]),
-                       eqx.nn.Linear(16, 16, key=keys[2]),
-                       eqx.nn.Linear(16, 8, key=keys[3]),
-                       eqx.nn.Linear(8, 1, key=keys[4])]
-        #self.extra_bias = jax.numpy.ones(1)
+    def __init__(self, din, d2, d3, dout, rngs: nnx.Rngs):
+        self.norm1 = nnx.BatchNorm(din, rngs=rngs)
+        self.layer1 = nnx.Linear(din, d2, rngs=rngs)
+        self.norm2 = nnx.BatchNorm(d2, rngs=rngs)
+        self.layer2 = nnx.Linear(d2, d3, rngs=rngs)
+        self.norm3 = nnx.BatchNorm(d3, rngs=rngs)
+        self.layer3 = nnx.Linear(d3, dout, rngs=rngs)
 
     def __call__(self, x):
-        for layer in self.layers[:-1]:
-            x = jax.nn.relu(layer(x))
-            #x = jax.nn.tanh(layer(x))
-        return self.layers[-1](x) #+ self.extra_bias
+        x = nnx.relu(self.layer1(self.norm1(x)))
+        x = nnx.relu(self.layer2(self.norm2(x)))
+        return self.layer3(self.norm3(x))
 
-@jax.jit
+@nnx.jit
 def loss(model, x, y):
-    pred_y = jax.vmap(model)(x)  # vectorise the model over a batch of data
+    pred_y = model(x) 
     return jnp.mean((y - pred_y) ** 2)  # L2/MSE loss
 
-g_loss = jax.jit(jax.grad(loss))
-model_key = jax.random.PRNGKey(2) # master RNG seed
-model = NeuralNetwork(model_key)
+model = NeuralNetwork(2, 12, 24, 1, rngs=nnx.Rngs(0))
 
 # some utils before starting main loop
 
 def write_frame(file_name, model):
-    mat = jax.vmap(model)(x_all).reshape((N, N))
+    mat = model(x_all).reshape((N, N))
     mx = np.max(mat)
     mn = np.min(mat)
     imat = np.uint8((mat-mn)*255//(mx-mn))
@@ -87,39 +81,24 @@ def vec_stats(vec, label):
 
 def compare(model, x, y):
     vec_stats(y, "true")
-    pred_y = jax.vmap(model)(x)
+    pred_y = model(x)
+    grads = nnx.grad(loss)(model, x, y)
+    grads = grads.layer2.kernel.reshape(-1)
     vec_stats(pred_y, "pred")
     vec_stats(y - pred_y, "error")
     vec_stats((y - pred_y)**2, "squared error")
-    
-print("Plain old steepest gradient descent...")
-#########################################
-learning_rate = 0.05
-steps = 2
-#########################################
-for i in range(steps):
-    print(i, loss(model, x_all, y_all))
-    write_frame(f"gd{i:05d}.png", model)
-    grads = g_loss(model, x_all, y_all)
-    model = jax.tree_util.tree_map(lambda m, g: m - learning_rate * g, model, grads)
+    vec_stats(grads, "l2 grads")
 
-# how good is the fitted model?
-pred = jax.vmap(model)(x_all)
-pred_m = pred.reshape((N,N))
-plt.imshow(pred_m)
-plt.savefig("pred-gd.pdf")
-# not very!
 
-print("Try a better optimiser (adam), from optax...")
+print("Try adam from optax...")
 #########################################
-learning_rate = 1e-4
-batch_size = 512
-epochs = 100000
+learning_rate = 1e-3
+batch_size = 128
+epochs = 10000
 #########################################
 steps = epochs*x_all.shape[0]//batch_size
 print(f"{epochs} epochs requires {steps} steps with a bs of {batch_size}")
-optim = optax.adam(learning_rate)
-opt_state = optim.init(model)
+optim = nnx.Optimizer(model, optax.adam(learning_rate), wrt=nnx.Param)
 
 def dataloader(bs):
     dataset_size = x_all.shape[0]
@@ -134,12 +113,20 @@ def dataloader(bs):
             start = end
             end = start + bs
 
-@jax.jit
-def advance(model, x, y, opt_state):
-    grads = g_loss(model, x, y)
-    updates, opt_state = optim.update(grads, opt_state)
-    model = eqx.apply_updates(model, updates)
-    return model, opt_state
+@nnx.jit
+def advance(model, optimiser, x, y):
+    grads = nnx.grad(loss)(model, x, y)
+    optimiser.update(model, grads) # in-place updates?!
+
+print("quick test before main training loop")
+print(loss(model, x_all, y_all))
+advance(model, optim, x_all, y_all)
+print(loss(model, x_all, y_all))
+grads = nnx.grad(loss)(model, x_all, y_all)
+optim.update(model, grads)
+print(loss(model, x_all, y_all))
+#print(grads.layer2.kernel.reshape(-1))
+print("end of quick test")
 
 # main training loop
 iter_data = dataloader(batch_size)
@@ -150,14 +137,17 @@ for i, (xb, yb) in zip(range(steps), iter_data):
         l = loss(model, x_all, y_all)
         print(i, steps-i, l) # check progress
         compare(model, x_all, y_all)
+        grads = nnx.grad(loss)(model, xb, yb)
+        grads = grads.layer2.kernel.reshape(-1)
+        vec_stats(grads, "batch grads")
         fs.write(f"{i},{l}\n")
         f = i//10000
         write_frame(f"adam{f:05d}.png", model)
-    model, opt_state = advance(model, xb, yb, opt_state)
+    advance(model, optim, xb, yb)
 fs.close()
     
 # how good is the fitted model?
-pred = jax.vmap(model)(x_all)
+pred = model(x_all)
 pred_m = pred.reshape((N,N))
 plt.imshow(pred_m)
 plt.savefig("pred-adam.pdf")

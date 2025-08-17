@@ -118,7 +118,7 @@ plt.savefig("pred-gd.pdf")
 
 print("Try a better optimiser, (currently sgd - not adam) from optax...")
 #########################################
-learning_rate = 3e-2
+learning_rate = 3e-3
 batch_size = 128
 epochs = 100000
 #########################################

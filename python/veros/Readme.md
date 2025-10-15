@@ -11,7 +11,8 @@ veros copy-setup acc
 cd acc
 veros run acc.py
 ```
-This may take a few minutes to run, but will output lots of progress along the way.
+This may take a few minutes to run, but will output lots of progress along the way. You can edit the settings in `acc.py` to change aspects of the simulation.
+
 To look at the output, `uv pip install xarray matplotlib` and then paste the following in to a python terminal:
 ```python
 import xarray as xr

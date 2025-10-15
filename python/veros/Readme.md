@@ -4,8 +4,7 @@
 
 Full documentation: <https://veros.readthedocs.io/en/latest/introduction/get-started.html> 
 
-First `uv pip install veros` in a new virtual environment, and activate it. Then, from an appropriate directory:
-
+First create and activate a new virtual environment for veros in the usual way. Then, in the activated environment, do `uv pip install veros`. Then, from an appropriate directory:
 ```bash
 veros copy-setup acc
 cd acc
@@ -25,6 +24,5 @@ u_surface = ds.u.isel(Time=-1, zt=-1)
 u_surface.plot.contourf()
 plt.savefig("myplot.pdf")
 ```
-
 
 

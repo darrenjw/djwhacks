@@ -44,5 +44,17 @@ Once you have installed JAX, install the JAX version of Veros:
 ```bash
 uv pip install veros[jax]
 ```
-You can then use the JAX-enabled Veros in the same way as the regular numpy version.
+You can then use the JAX-enabled Veros in the same way as the regular numpy version. You can select backend and device at runtime. eg.
+```bash
+veros run acc.py -b jax
+```
+or
+```bash
+veros run acc.py -b jax --device cpu
+```
+for JAX on CPU and
+```bash
+veros run acc.py -b jax --device gpu
+```
+for JAX on GPU.
 

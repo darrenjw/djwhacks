@@ -39,4 +39,7 @@ uv init myproject
 cd myproject
 uv add black # adds to project dependencies (and the .venv)
 
+# update (if installed with the standalone installer)
+uv self update
+
 ```

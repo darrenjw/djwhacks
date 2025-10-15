@@ -26,3 +26,19 @@ plt.savefig("myplot.pdf")
 ```
 
 
+## Using JAX
+
+To use Veros with JAX, create a different virtual environment, and activate it. Then, in the activated environment, first [install JAX](https://docs.jax.dev/en/latest/installation.html). This is hardware-dependent, but if you don't have a usable GPU (ie. you want to run on CPU) it is likely to be
+```bash
+uv pip install jax
+```
+and if you do, it is likely to be
+```bash
+uv pip install jax[cuda13]
+```
+Once you have installed JAX, install the JAX version of Veros:
+```bash
+uv pip install veros[jax]
+```
+You can then use the JAX-enabled Veros in the same way as the regular numpy version.
+

@@ -1,0 +1,29 @@
+# Readme
+
+## Getting started with veros
+
+Full documentation: <https://veros.readthedocs.io/en/latest/introduction/get-started.html> 
+
+First `uv pip install veros` in a new virtual environment, and activate it. Then, from an appropriate directory:
+
+```bash
+veros copy-setup acc
+cd acc
+veros run acc.py
+```
+This may take a few minutes to run, but will output lots of progress along the way.
+To look at the output, `uv pip install xarray matplotlib` and then paste the following in to a python terminal:
+```python
+import xarray as xr
+import matplotlib.pyplot as plt
+
+ds = xr.open_dataset("acc.snapshot.nc", engine="h5netcdf")
+
+# plot surface velocity at the last time step included in the file
+u_surface = ds.u.isel(Time=-1, zt=-1)
+u_surface.plot.contourf()
+plt.savefig("myplot.pdf")
+```
+
+
+

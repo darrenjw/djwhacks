@@ -25,6 +25,10 @@ u_surface.plot.contourf()
 plt.savefig("myplot.pdf")
 ```
 
+### Other setups
+
+Note that there are other [example setups](https://veros.readthedocs.io/en/latest/reference/setup-gallery.html), in addition to `acc`, including `north_atlantic`.
+
 
 ## Using JAX
 

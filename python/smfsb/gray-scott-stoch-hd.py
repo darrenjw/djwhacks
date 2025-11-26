@@ -55,7 +55,7 @@ for i in range(ts.shape[3]):
     print(f"U mean: {jnp.mean(ts[0,:,:,i]):0.03f}, V mean: {jnp.mean(ts[1,:,:,i]):0.03f}")
     plt.imsave(f"gssh-U-{i:05d}.png", ts[0,:,:,i])
     plt.imsave(f"gssh-V-{i:05d}.png", ts[1,:,:,i])
-    u_stack.append(io.v2.imread(f"gssh-U-{i:05d}.png"))
+    u_stack.append(io.v3.imread(f"gssh-U-{i:05d}.png"))
 print("Creating animated gifs")
 io.mimsave("gssh-U.gif", u_stack)
 

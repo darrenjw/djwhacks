@@ -37,16 +37,16 @@ gs = jsmfsb.shorthand_to_spn(gs_sh)
 
 M = 1080 # 1920x1080 is full HD res
 N = 1920
-T = 5000 # Run for 5k time steps (slow!)
+T = 15000 # Run for 10k time steps (slow!)
 D = 2
 diff_base_rate = 0.1
 
 x0 = jnp.zeros((2, M, N)) # init U to 0
 x0 = x0.at[1,:,:].set(1000) # init V to 1000
 x0 = x0.at[:, int(M / 2), int(N / 2)].set(gs.m)
-step_gs_2d = gs.step_cle_2d(jnp.array([diff_base_rate, D*diff_base_rate]), 0.05)
+step_gs_2d = gs.step_cle_2d(jnp.array([diff_base_rate, D*diff_base_rate]), 0.1)
 k0 = jax.random.key(42)
-ts = jsmfsb.sim_time_series_2d(k0, x0, 0, T, 50, step_gs_2d, True)
+ts = jsmfsb.sim_time_series_2d(k0, x0, 0, T, 100, step_gs_2d, True)
 print(ts.shape)
 u_stack = []
 v_stack = []

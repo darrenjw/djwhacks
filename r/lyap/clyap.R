@@ -13,7 +13,8 @@ Q = Q %*% t(Q) # PSD Q
 test_clyap = function(A, Q, X, verb=TRUE, tol=1.0e-8) {
     Z = (A %*% X) + (X %*% t(A)) + Q
     n = sum(Z*Z)
-    print(n)
+    if (verb)
+        print(n)
     n < tol
 }
 

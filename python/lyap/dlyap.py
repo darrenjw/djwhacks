@@ -16,7 +16,7 @@ n = 10
 k0 = jax.random.key(24)
 k1, k2 = jax.random.split(k0)
 A = jax.random.normal(k1, (n, n))
-Q = jax.random.normal(k1, (n, n))
+Q = jax.random.normal(k2, (n, n))
 Q = Q * Q.T  # PSD Q
 
 

@@ -17,7 +17,8 @@ k0 = jax.random.key(24)
 k1, k2 = jax.random.split(k0)
 A = jax.random.normal(k1, (n, n))
 Q = jax.random.normal(k1, (n, n))
-Q = Q * Q.T # PSD Q
+Q = Q * Q.T  # PSD Q
+
 
 # function to test a solution
 def test_dlyap(A, Q, X, verb=True, tol=1.0e-8):
@@ -25,15 +26,17 @@ def test_dlyap(A, Q, X, verb=True, tol=1.0e-8):
     n = jnp.linalg.norm(Z)
     if verb:
         print(n)
-    return (n < tol)
+    return n < tol
+
 
 # simple kronecker based function to start with (scales badly)
 @jax.jit
 def dlyap_k(A, Q):
     n = A.shape[0]
-    kron = jnp.eye(n*n) - jnp.kron(A, A)
-    xv = jnp.linalg.solve(kron, Q.reshape(n*n))
+    kron = jnp.eye(n * n) - jnp.kron(A, A)
+    xv = jnp.linalg.solve(kron, Q.reshape(n * n))
     return xv.reshape(n, n)
+
 
 Xk = dlyap_k(A, Q)
 print(test_dlyap(A, Q, Xk))
@@ -48,10 +51,11 @@ def dlyap(A, Q):
     B = jnp.linalg.solve(A + jnp.eye(n), A - jnp.eye(n))
     R = 0.5 * (jnp.eye(n) - B) @ Q @ (jnp.eye(n) - B).T
     return jsp.linalg.solve_sylvester(B, B.T, -R)
+
+
 # *********************************************************
 
 Xs = dlyap(A, Q)
 print(test_dlyap(A, Q, Xs))
 
 # eof
-

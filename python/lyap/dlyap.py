@@ -49,7 +49,7 @@ print(test_dlyap(A, Q, Xk))
 def dlyap(a_mat, q_mat):
     n = a_mat.shape[0]
     b_mat = jnp.linalg.solve(a_mat + jnp.eye(n), a_mat - jnp.eye(n))
-    r_mat = 0.5 * (jnp.eye(n) - b_mat) @ Q @ (jnp.eye(n) - b_mat).T
+    r_mat = 0.5 * (jnp.eye(n) - b_mat) @ q_mat @ (jnp.eye(n) - b_mat).T
     return jsp.linalg.solve_sylvester(b_mat, b_mat.T, -r_mat)
 
 

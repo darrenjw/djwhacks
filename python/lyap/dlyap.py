@@ -21,9 +21,9 @@ Q = Q * Q.T  # PSD Q
 
 
 # function to test a solution
-def test_dlyap(A, Q, X, verb=True, tol=1.0e-8):
-    Z = (A @ X @ A.T) - X + Q
-    n = jnp.linalg.norm(Z)
+def test_dlyap(a_mat, q_mat, x_mat, verb=True, tol=1.0e-8):
+    z_mat = (a_mat @ x_mat @ a_mat.T) - x_mat + q_mat
+    n = jnp.linalg.norm(z_mat)
     if verb:
         print(n)
     return n < tol
@@ -31,10 +31,10 @@ def test_dlyap(A, Q, X, verb=True, tol=1.0e-8):
 
 # simple kronecker based function to start with (scales badly)
 @jax.jit
-def dlyap_k(A, Q):
+def dlyap_k(a_mat, q_mat):
     n = A.shape[0]
-    kron = jnp.eye(n * n) - jnp.kron(A, A)
-    xv = jnp.linalg.solve(kron, Q.reshape(n * n))
+    kron = jnp.eye(n * n) - jnp.kron(a_mat, a_mat)
+    xv = jnp.linalg.solve(kron, q_mat.reshape(n * n))
     return xv.reshape(n, n)
 
 
@@ -46,11 +46,11 @@ print(test_dlyap(A, Q, Xk))
 # JAX function to solve the discrete lyapunov equation
 # AXA' - X + Q = 0  for X  (efficiently)
 @jax.jit
-def dlyap(A, Q):
-    n = A.shape[0]
-    B = jnp.linalg.solve(A + jnp.eye(n), A - jnp.eye(n))
-    R = 0.5 * (jnp.eye(n) - B) @ Q @ (jnp.eye(n) - B).T
-    return jsp.linalg.solve_sylvester(B, B.T, -R)
+def dlyap(a_mat, q_mat):
+    n = a_mat.shape[0]
+    b_mat = jnp.linalg.solve(a_mat + jnp.eye(n), a_mat - jnp.eye(n))
+    r_mat = 0.5 * (jnp.eye(n) - b_mat) @ Q @ (jnp.eye(n) - b_mat).T
+    return jsp.linalg.solve_sylvester(b_mat, b_mat.T, -r_mat)
 
 
 # *********************************************************

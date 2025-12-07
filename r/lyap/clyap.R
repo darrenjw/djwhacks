@@ -18,6 +18,19 @@ test_clyap = function(A, Q, X, verb=TRUE, tol=1.0e-8) {
     n < tol
 }
 
+## start with a simple kronecker implementation
+clyap_k = function(A, Q) {
+    n = nrow(A)
+    mv = solve((diag(n) %x% A) + (A %x% diag(n)), -as.vector(Q))
+    matrix(mv, ncol=n)
+}
+
+## check that it works
+print("Testing clyap_k")
+Xk = clyap_k(A, Q)
+print(test_clyap(A, Q, Xk))
+
+## check that the maotai implementation works
 print("Try maotai::lyapunov")
 Xml = maotai::lyapunov(A, -Q) # -Q according to docs
 print(test_clyap(A, Q, Xml))

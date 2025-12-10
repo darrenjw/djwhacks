@@ -25,10 +25,8 @@ print(test_dlyap(A, Q, Xnc))
 
 print("Next try a direct kronecker solution")
 
-dlyap_kron = function(A, Q) {
-    n = nrow(A)
-    matrix(solve(diag(n*n) - (A %x% A), as.vector(Q)), ncol=n)
-}
+dlyap_kron = function(A, Q)
+    matrix(solve(diag(nrow(A)^2)-(A%x%A), as.vector(Q)), ncol=nrow(A))
 
 Xk = dlyap_kron(A, Q)
 print(test_dlyap(A, Q, Xk))

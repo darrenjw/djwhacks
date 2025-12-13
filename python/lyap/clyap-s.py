@@ -16,7 +16,7 @@ n = 10
 k0 = jax.random.key(7)
 k1, k2 = jax.random.split(k0)
 A = jax.random.normal(k1, (n, n))
-Q = jax.random.normal(k2, (n, n)) # or could be L
+Q = jax.random.normal(k2, (n, n))  # or could be L
 
 
 # function to test a solution
@@ -33,9 +33,10 @@ def test_clyap(a_mat, l_mat, x_mat, verb=True, tol=1.0e-8):
 def clyap(Lambda, Sigma):
     n = Lambda.shape[0]
     kron = jnp.kron(jnp.eye(n), Lambda) + jnp.kron(Lambda, jnp.eye(n))
-    VinfV = jnp.linalg.solve(kron, Sigma.reshape(n*n))
+    VinfV = jnp.linalg.solve(kron, Sigma.reshape(n * n))
     Vinf = VinfV.reshape(n, n)
     return Vinf
+
 
 Xk = clyap(A, Q @ Q.T)
 print(test_clyap(A, Q, Xk))
@@ -53,9 +54,9 @@ def clyap_sqrt(a_mat, l_mat):
     Y = F / W
     X = UA @ Y @ UA.T
     return X.real
+
+
 # *********************************************************
 
 Xe = clyap_sqrt(A, Q)
 print(test_clyap(A, Q, Xe))
-
-

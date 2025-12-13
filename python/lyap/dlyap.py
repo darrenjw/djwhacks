@@ -30,6 +30,7 @@ def test_dlyap(a_mat, q_mat, x_mat, verb=True, tol=1.0e-8):
 
 print("First try a kronecker solution")
 
+
 @jax.jit
 def dlyap_k(a_mat, q_mat):
     n = A.shape[0]
@@ -42,6 +43,7 @@ Xk = dlyap_k(A, Q)
 print(test_dlyap(A, Q, Xk))
 
 print("Next use the sylvester solver")
+
 
 @jax.jit
 def dlyap_s(a_mat, q_mat):
@@ -56,14 +58,16 @@ print(test_dlyap(A, Q, Xs))
 
 print("Next use an eigen-decomposition")
 
+
 @jax.jit
 def dlyap_e(a_mat, q_mat):
     n = a_mat.shape[0]
     e_vals, e_vecs = jnp.linalg.eig(a_mat)
     f_mat = jnp.linalg.solve(e_vecs, (jnp.linalg.solve(e_vecs, q_mat.T)).T)
-    w_mat = e_vals[:, None]*e_vals[None, :] - 1
+    w_mat = e_vals[:, None] * e_vals[None, :] - 1
     y_mat = -f_mat / w_mat
     return (e_vecs @ y_mat @ e_vecs.T).real
+
 
 Xe = dlyap_e(A, Q)
 print(test_dlyap(A, Q, Xe))

@@ -61,7 +61,6 @@ print("Next use an eigen-decomposition")
 
 @jax.jit
 def dlyap_e(a_mat, q_mat):
-    n = a_mat.shape[0]
     e_vals, e_vecs = jnp.linalg.eig(a_mat)
     f_mat = jnp.linalg.solve(e_vecs, (jnp.linalg.solve(e_vecs, q_mat.T)).T)
     w_mat = e_vals[:, None] * e_vals[None, :] - 1

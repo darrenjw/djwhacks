@@ -2,11 +2,10 @@
 # clyap.py
 # solve the continuous lyapunov equation in JAX
 
-# solve AX + XA' = LL'
+# solve AX + XA' = Q
 
 import jax
 import jax.numpy as jnp
-import jax.scipy as jsp
 
 # enable 64 bit for testing
 jax.config.update("jax_enable_x64", True)
@@ -16,47 +15,43 @@ n = 10
 k0 = jax.random.key(7)
 k1, k2 = jax.random.split(k0)
 A = jax.random.normal(k1, (n, n))
-Q = jax.random.normal(k2, (n, n))  # or could be L
+Q = jax.random.normal(k2, (n, n))
 
 
 # function to test a solution
-def test_clyap(a_mat, l_mat, x_mat, verb=True, tol=1.0e-8):
-    z_mat = a_mat @ x_mat + x_mat @ a_mat.T - l_mat @ l_mat.T
+def test_clyap(a_mat, q_mat, x_mat, verb=True, tol=1.0e-8):
+    z_mat = a_mat @ x_mat + x_mat @ a_mat.T - q_mat
     n = jnp.linalg.norm(z_mat)
     if verb:
         print(n)
     return n < tol
 
 
-# simple kronecker based function
+print("First a kronecker solution")
+
+
 @jax.jit
-def clyap(Lambda, Sigma):
-    n = Lambda.shape[0]
-    kron = jnp.kron(jnp.eye(n), Lambda) + jnp.kron(Lambda, jnp.eye(n))
-    VinfV = jnp.linalg.solve(kron, Sigma.reshape(n * n))
-    Vinf = VinfV.reshape(n, n)
-    return Vinf
+def clyap_k(a_mat, q_mat):
+    n = a_mat.shape[0]
+    kron = jnp.kron(jnp.eye(n), a_mat) + jnp.kron(a_mat, jnp.eye(n))
+    x_vec = jnp.linalg.solve(kron, q_mat.reshape(n * n))
+    return x_vec.reshape((n, n))
 
 
-Xk = clyap(A, Q @ Q.T)
+Xk = clyap_k(A, Q)
 print(test_clyap(A, Q, Xk))
 
+print("Next an eigen-decomposition solution")
 
-# *********************************************************
-# JAX function to solve the continuous lyapunov equation
-# AX + XA' = LL'  for X  (hopefully efficiently)
+
 @jax.jit
-def clyap_sqrt(a_mat, l_mat):
-    RA, UA = jnp.linalg.eig(a_mat)
-    FL = jsp.linalg.solve(UA, l_mat.astype(RA.dtype))
-    F = FL @ FL.T
-    W = RA[:, None] + RA[None, :]
-    Y = F / W
-    X = UA @ Y @ UA.T
-    return X.real
+def clyap_e(a_mat, q_mat):
+    e_vals, e_vecs = jnp.linalg.eig(a_mat)
+    f_mat = jnp.linalg.solve(e_vecs, (jnp.linalg.solve(e_vecs, q_mat.T)).T)
+    w_mat = e_vals[:, None] + e_vals[None, :]
+    y_mat = f_mat / w_mat
+    return (e_vecs @ y_mat @ e_vecs.T).real
 
 
-# *********************************************************
-
-Xe = clyap_sqrt(A, Q)
+Xe = clyap_e(A, Q)
 print(test_clyap(A, Q, Xe))

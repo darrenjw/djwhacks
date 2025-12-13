@@ -1,13 +1,12 @@
 ## dlyap.R
 ## Solving the discrete lyapunov equation in R
 
-## Solve AXA' - X + Q = 0  for X (symmetric Q)
+## Solve AXA' - X + Q = 0  for X
 
 ## simulate a test A and Q
 n = 10
 A = matrix(rnorm(n*n), ncol=n)
 Q = matrix(rnorm(n*n), ncol=n)
-Q = Q %*% t(Q) # PSD Q
 
 ## function to test a solution
 test_dlyap = function(A, Q, X, verb=TRUE, tol=1.0e-8) {
@@ -42,6 +41,20 @@ dlyap_con = function(A, Q) {
 
 Xc = dlyap_con(A, Q)
 print(test_dlyap(A, Q, Xc))
+
+print("Next solve by eigen-decomposition")
+
+dlyap_eig = function(A, Q) {
+    n = nrow(A)
+    eig = eigen(A)
+    F = solve(eig$vectors, t(solve(eig$vectors, t(Q))))
+    W = matrix(eig$values, nrow=n, ncol=n)
+    Y = -F / (W*t(W) - 1)
+    Re(eig$vectors %*% Y %*% t(eig$vectors))
+}
+
+Xe = dlyap_eig(A, Q)
+print(test_dlyap(A, Q, Xe))
 
 
 ## eof

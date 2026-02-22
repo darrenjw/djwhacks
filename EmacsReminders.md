@@ -14,9 +14,12 @@
 * Smaller: `C-x C--`
 * Reset to default: `C-x C-0`
 
-### Indenting code blocks
+### Indenting and commenting code blocks
 
 Highlight block to indent (or unindent) then `C-x Tab`. Use left and right arrows to indent as required, then `Esc` three times to exit.
+
+Highlight block to comment (or uncomment) then `M-x comment-region` (or `M-x uncomment-region`). Should use appropriate comment character for the language.
+
 
 ### Search and replace across multiple buffers
 

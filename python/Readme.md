@@ -4,6 +4,11 @@
 
 My python code directory
 
+```bash
+# pip cache cleanup
+pip cache purge
+```
+
 ### rst
 
 reStructuredText markup: https://devguide.python.org/documentation/markup/
@@ -42,5 +47,8 @@ uv add black # adds to project dependencies (and the .venv)
 # update (if installed with the standalone installer)
 uv self update
 uv --version
+
+# cache clean-up
+uv cache clean
 
 ```

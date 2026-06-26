@@ -620,6 +620,7 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
+\begin{comment}
 
 \begin{frame}
   \frametitle{DEX}
@@ -642,7 +643,6 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
-\begin{comment}
 
 \begin{frame}
   \frametitle{Log-likelihood in JAX and Scala}
@@ -854,6 +854,8 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
   \end{itemize}
 \end{frame}
 
+\end{comment}
+
 \begin{frame}[fragile]
   \frametitle{Typeclasses for Monoid, Functor, Monad and Comonad}
 %  \begin{itemize}
@@ -878,6 +880,8 @@ def ll(x: GenSeq[Obs])(th: Param): Double =
 \end{lstlisting}
 \end{frame}
 
+\begin{comment}
+
 \begin{frame}[fragile]
   \frametitle{A generic collection typeclass}
   \begin{itemize}
@@ -897,6 +901,8 @@ and then define instances for standard (serial) collections (eg. |Vector|), para
 \item We can then write code that is completely \alert{parallelisation--agnostic}
   \end{itemize}
 \end{frame}
+
+\end{comment}
 
 \begin{frame}[fragile]
 \frametitle{Scalable ABC}
@@ -918,6 +924,8 @@ pars.map(summ compose simModel).
 using map--fusion to avoid constructing a collection of synthetic datasets
 \end{itemize}
 \end{frame}
+
+\begin{comment}
 
 \begin{frame}[fragile]
 \frametitle{A scalable particle filter}
@@ -1059,12 +1067,10 @@ val poisson = Dglm.poisson(linear)
   \item Monads are good for sequencing operations that can be carried out on data points independently
     \item For computations requiring knowledge of some kind of local neighbourhood structure, \alert{Comonads} are a better fit
     \item |coflatMap| will take a function representing a \alert{local computation} producing one value for the new structure, and then extend this to generate all values associated with the comonad
-      \item Useful for defining linear filters, Gibbs samplers, convolutional neural networks, etc.
+      \item Useful for defining linear filters (including discrete Laplacians), Gibbs samplers, convolutional neural networks, etc.
 \item Concepts from category theory are often useful for providing abstractions which make convenient computations that might otherwise seem cumbersome within a pure functional programming language
   \end{itemize}
 \end{frame}
-
-\begin{comment}
 
 \begin{frame}[fragile]
 \frametitle{Linear filters for Streams and Images}  
@@ -1138,6 +1144,8 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
   Again, category theory provides the theory and FP languages provide frameworks and abstractions for implementation
 \end{frame}
 
+\begin{comment}
+
 
 \begin{frame}[fragile]
   \frametitle{Scalable statistical modelling}
@@ -1178,8 +1186,6 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
     \item For sophisticated probabilistic sampling algorithms (eg. SMC, MCMC, pMCMC, HMC, ...) and hybrid compositions, it is better to build models like this using a \alert{free monad} which can be \alert{interpreted} in different ways
   \end{itemize}
 \end{frame}
-
-\begin{comment}
 
 \begin{frame}[fragile]
 \frametitle{MCMC as a Stream}
@@ -1320,10 +1326,12 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
     \item Again, conditioning is easy (multiplication), so this forms a good basis for Bayesian PPLs
     \item Can use the joint posterior for simple MH algorithms (and Gibbs, if dependencies are tracked), but for Langevin and HMC algorithms, also need to keep track of gradients, using automatic differentiation (AD)
       \item OK, because (reverse-mode) AD on a compute graph is also monadic!
-    \item \alert{Rainier} is a Scala library for HMC sampling of monadic random variables (using a static compute graph, for efficiency)
+%    \item \alert{Rainier} is a Scala library for HMC sampling of monadic random variables (using a static compute graph, for efficiency)
     \end{itemize}
 \end{frame}
 
+\begin{comment}
+  
 \subsection{Probabilistic programming}
 
 \begin{frame}[fragile]
@@ -1387,7 +1395,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \begin{itemize}
   \item As well as building \alert{models} in scalable, compositional way, we would also like our \alert{inference algorithms} to be compositional, ideally reflecting the compositional structure of our models
   \item Some algorithms, such as component-wise samplers and message-passing algorithms, naturally reflect the compositional structure of the underlying model
-  \item Other algorithms, such as Langevin and HMC samplers, deliberately don't decompose with the model structure, but do have other structure that can be exploited, such as decomposing over observations
+  \item Even ``global'' algorithms, such as Langevin and HMC samplers, rely on gradient computations that often have a compositional structure
     \item Understanding and exploiting the \alert{compositional structure} of models and algorithms will be crucial for developing scalable inferential methods
   \end{itemize}
 \end{frame}

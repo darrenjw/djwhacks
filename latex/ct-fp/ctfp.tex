@@ -908,7 +908,7 @@ and then define instances for standard (serial) collections (eg. |Vector|), para
 \begin{frame}[fragile]
 \frametitle{Scalable ABC}
 \begin{itemize}
-\item Simulate a collection of parameters, |pars: C[Param]|, from a prior and store in a generic collection
+\item Simulate a collection of parameters, |pars: C[Param]|, from a prior and store in a generic (functor) collection
 \item Define essential features of the ABC model:
 \begin{lstlisting}[language=scala]
 realData: Data    
@@ -1059,94 +1059,6 @@ val sutse = List.fill(30)(linear).reduce(_ |*| _)
 val poisson = Dglm.poisson(linear)
 \end{lstlisting}
 \end{frame}
-
-\end{comment}
-
-\begin{frame}[fragile]
-  \frametitle{Comonads for statistical computation}
-  \begin{itemize}
-  \item Monads are good for sequencing operations that can be carried out on data points independently
-    \item For computations requiring knowledge of some kind of local neighbourhood structure, \alert{Comonads} are a better fit
-    \item |coflatMap| will take a function representing a \alert{local computation} producing one value for the new structure, and then extend this to generate all values associated with the comonad
-      \item Useful for defining linear filters (including discrete Laplacians), Gibbs samplers, convolutional neural networks, etc.
-\item Concepts from category theory are often useful for providing abstractions which make convenient computations that might otherwise seem cumbersome within a pure functional programming language
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Linear filters for Streams and Images}  
-Let's start with writing a function to compute the weighted average of values at the start of an infinite data |Stream|
-\begin{lstlisting}[language=scala]
-def linFilter(weights: Stream[Double])(
-  s: Stream[Double]): Double =
-  (weights, s).parMapN(_*_).sum    
-\end{lstlisting}
-We can extend this \alert{local computation} to the entire |Stream| using |coflatMap|
-\begin{lstlisting}[language=scala]
-s.coflatMap(linFilter(Stream(0.25,0.5,0.25)))
-\end{lstlisting}
-resulting in a new infinite |Stream| containing the filtered values
-\begin{itemize}
-\item  Note that the method |extract| will return the value at the head of the |Stream|
-  \end{itemize}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Filtering an Image}
-\begin{itemize}
-\item For a 2D Image, the relevant context for local computation is less clear, so to become comonadic, the Image class needs to be ``pointed'', by augmenting it with a ``cursor'' pointing to the current pixel of interest
-\item For the pointed image class, |extract| returns the value of the pixel at the cursor
-\item We filter using functions which compute a value on the basis of the ``neighbourhood'' of the cursor
-\item |map| and |coflatMap| operations will automatically parallelise if the image is backed with a parallel data structure
-\end{itemize}
-\begin{lstlisting}[language=scala]
-def fil(pi: PImage[Double]):Double = (2*pi.extract+
-  pi.up.extract+pi.down.extract+
-  pi.left.extract+pi.right.extract)/6.0
-val filteredImage = pim0.coflatMap(fil)  
-def pims = Stream.iterate(pim0)(_.coflatMap(fil))
-\end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-\frametitle{Gibbs sampling (an Ising model)}
-\begin{lstlisting}[language=scala]
-def gibbsKernel(pi: PImage[Int]): Int = {
-   val sum = pi.up.extract+pi.down.extract+
-     pi.left.extract+pi.right.extract
-   val p1 = math.exp(beta*sum)
-   val p2 = math.exp(-beta*sum)
-   val probplus = p1/(p1+p2)
-   if (new Bernoulli(probplus).draw) 1 else -1
-}
-def oddKernel(pi: PImage[Int]): Int =
-  if ((pi.x+pi.y) % 2 != 0) pi.extract else
-    gibbsKernel(pi)
-def evenKernel(pi: PImage[Int]): Int =
-  if ((pi.x+pi.y) % 2 == 0) pi.extract else
-    gibbsKernel(pi)
-def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
-  coflatMap(evenKernel))
-\end{lstlisting}
-\end{frame}
-
-
-
-\begin{frame}
-  \frametitle{Recursion schemes}
-  \begin{itemize}
-  \item A \alert{fold} over a sequential data structure is an example of a recursion scheme known more formally as a \alert{catamorphism} (eg. sums and AD)
-  \item The generation of a sequential stream of values from a seed and a generation function (eg. the generation of an MCMC chain) is an example of an \alert{unfold} operation, more formally known as an \alert{anamorphism}
-    \item Generating and then consuming a data structure (eg. simulating an MCMC chain and then computing summary statistics from the iterations) is an example of a \alert{refold}, known formally as a \alert{hylomorphism}
-  \end{itemize}
-  (glossing over \alert{F-algebras}, \alert{coalgebras}, \alert{ADTs} and \alert{fixed point types})
-  \medskip
-  
-  Again, category theory provides the theory and FP languages provide frameworks and abstractions for implementation
-\end{frame}
-
-\begin{comment}
-
 
 \begin{frame}[fragile]
   \frametitle{Scalable statistical modelling}
@@ -1391,6 +1303,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 \end{frame}
 
 
+
 \begin{frame}
   \frametitle{Compositionality of inference algorithms}
   \begin{itemize}
@@ -1400,6 +1313,125 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
     \item Understanding and exploiting the \alert{compositional structure} of models and algorithms will be crucial for developing scalable inferential methods
   \end{itemize}
 \end{frame}
+
+\section{Comonads, recursion schemes and optics}
+
+
+\begin{frame}[fragile]
+  \frametitle{Comonads for statistical computation}
+  \begin{itemize}
+  \item Monads are good for sequencing operations that can be carried out on data points independently
+    \item For computations requiring knowledge of some kind of local neighbourhood structure, \alert{Comonads} are a better fit
+    \item |coflatMap| will take a function representing a \alert{local computation} producing one value for the new structure, and then extend this to generate all values associated with the comonad
+      \item Useful for defining linear filters (including discrete Laplacians), Gibbs samplers, convolutional neural networks, etc.
+\item Concepts from category theory are often useful for providing abstractions which make convenient computations that might otherwise seem cumbersome within a pure functional programming language
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Linear filters for Streams and Images}  
+Let's start with writing a function to compute the weighted average of values at the start of an infinite data |Stream|
+\begin{lstlisting}[language=scala]
+def linFilter(weights: Stream[Double])(
+  s: Stream[Double]): Double =
+  (weights, s).parMapN(_*_).sum    
+\end{lstlisting}
+We can extend this \alert{local computation} to the entire |Stream| using |coflatMap|
+\begin{lstlisting}[language=scala]
+s.coflatMap(linFilter(Stream(0.25,0.5,0.25)))
+\end{lstlisting}
+resulting in a new infinite |Stream| containing the filtered values
+\begin{itemize}
+\item  Note that the method |extract| will return the value at the head of the |Stream|
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Filtering an Image}
+\begin{itemize}
+\item For a 2D Image, the relevant context for local computation is less clear, so to become comonadic, the Image class needs to be ``pointed'', by augmenting it with a ``cursor'' pointing to the current pixel of interest
+\item For the pointed image class, |extract| returns the value of the pixel at the cursor
+\item We filter using functions which compute a value on the basis of the ``neighbourhood'' of the cursor
+\item |map| and |coflatMap| operations will automatically parallelise if the image is backed with a parallel data structure
+\end{itemize}
+\begin{lstlisting}[language=scala]
+def fil(pi: PImage[Double]):Double = (2*pi.extract+
+  pi.up.extract+pi.down.extract+
+  pi.left.extract+pi.right.extract)/6.0
+val filteredImage = pim0.coflatMap(fil)  
+def pims = Stream.iterate(pim0)(_.coflatMap(fil))
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Gibbs sampling (an Ising model)}
+\begin{lstlisting}[language=scala]
+def gibbsKernel(pi: PImage[Int]): Int = {
+   val sum = pi.up.extract+pi.down.extract+
+     pi.left.extract+pi.right.extract
+   val p1 = math.exp(beta*sum)
+   val p2 = math.exp(-beta*sum)
+   val probplus = p1/(p1+p2)
+   if (new Bernoulli(probplus).draw) 1 else -1
+}
+def oddKernel(pi: PImage[Int]): Int =
+  if ((pi.x+pi.y) % 2 != 0) pi.extract else
+    gibbsKernel(pi)
+def evenKernel(pi: PImage[Int]): Int =
+  if ((pi.x+pi.y) % 2 == 0) pi.extract else
+    gibbsKernel(pi)
+def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
+  coflatMap(evenKernel))
+\end{lstlisting}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Recursion schemes}
+  \begin{itemize}
+  \item A \alert{fold} over a sequential data structure is an example of a recursion scheme known more formally as a \alert{catamorphism} (eg. sums and AD)
+  \item The generation of a sequential stream of values from a seed and a generation function (eg. the generation of an MCMC chain) is an example of an \alert{unfold} operation, more formally known as an \alert{anamorphism}
+    \item Generating and then consuming a data structure (eg. simulating an MCMC chain and then computing summary statistics from the iterations) is an example of a \alert{refold}, known formally as a \alert{hylomorphism}
+  \end{itemize}
+  (glossing over \alert{F-algebras}, \alert{coalgebras}, \alert{ADTs} and \alert{fixed point types})
+  \medskip
+  
+  Again, category theory provides the theory and FP languages provide frameworks and abstractions for implementation
+\end{frame}
+
+
+\begin{frame}[fragile]
+  \frametitle{Lenses (and other optics)}
+  \begin{itemize}
+  \item An instance of a simple \alert{lens} of type |Lens[S, A]| is just a pair of functions: |get: S => A| and |set: (S, A) => S|
+  \item In the context of functional programming, |S| is typically a product type, assumed to contain values of type |A|
+  \item Lenses and other related optics are typically used to query and update immutable algebraic data types (ADTs)
+    \item Crucially, lenses \alert{compose} (associatively): a |Lens[S, A]| and a |Lens[A, B]| can be composed to get a |Lens[S, B]|
+    \item The potential applications of optics in scientific and statistical computing extend far beyond simple ADT manipulation
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Reverse derivative categories}
+  \begin{itemize}
+  \item Lenses can be used to implement \alert{reverse-mode automatic differentiation}
+  \item For a differentiable function $f: S\rightarrow A$, create a |Lens[S, A]| with |get|$(\mathbf{s})=f(\mathbf{s})$ and |set|$(\mathbf{s}',\mathbf{a})=\left(\left.\frac{\partial f}{\partial \mathbf{s}}\right\vert_{\mathbf{s}=\mathbf{s}'}\right)^\top \mathbf{a}$
+    \item Then, for a composition of differentiable functions, lens composition implements the back-propagation chain rule
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Forwards-backwards algorithms}
+  \begin{itemize}
+  \item In the context of state space models, various kinds of forwards-backwards algorithms naturally arise
+  \item For HMMs and DLMs, Bayesian inference for the hidden state can be computed with a forward pass for filtering, followed by a backward pass for smoothing (using the results of the forward pass)
+  \item |get| can be used to compute a forward step, and |set| to implement a backward step
+  \item A full algorithm can be implemented by composing the lenses corresponding to each step
+    \item The associativity of lens composition leads to algorithms that can temporally parallelise
+    \end{itemize}
+\end{frame}
+
 
 \begin{comment}
 
@@ -1500,7 +1532,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
     
 \bibitem{} Elliott, C. (2017) \alert{Generic functional parallel algorithms: Scan and FFT}. \emph{ICFP 2017}, \textbf{1}:7.
 
-\bibitem{} Fong, B., Spivak, D., Tuy\'eras, R. (2019) \alert{Backprop as Functor: A compositional perspective on supervised learning}, \emph{arXiv}, 1711.10455.
+%\bibitem{} Fong, B., Spivak, D., Tuy\'eras, R. (2019) \alert{Backprop as Functor: A compositional perspective on supervised learning}, \emph{arXiv}, 1711.10455.
    
 %   \bibitem{} Fritz, T., Perrone, P. (2017) \alert{A probability monad as the colimit of finite powers}, \emph{arXiv:1712.05363}.
 
@@ -1514,7 +1546,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
         
 %    \bibitem{} Meijer, E., Fokkinga, M., Paterson, R. (1991) \alert{Functional programming with bananas, lenses, envelopes and barbed wire}. In: Hughes J. (eds) \emph{Functional Programming Languages and Computer Architecture}. FPCA 1991. Lecture Notes in Computer Science, vol 523. Springer.
 
-    \bibitem{} Park, S., Pfenning, F., Thrun, S. (2008) \alert{A probabilistic language based on sampling functions}, \emph{TOPLAS}, \textbf{31}(1):4.
+%    \bibitem{} Park, S., Pfenning, F., Thrun, S. (2008) \alert{A probabilistic language based on sampling functions}, \emph{TOPLAS}, \textbf{31}(1):4.
 
 %\bibitem{} Paszke, A. \emph{et al} (2021) \alert{Getting to the point. Index sets and parallelism-preserving autodiff for pointful array programming}, \emph{arXiv}, 2104.05372.
 
@@ -1523,7 +1555,9 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
 %\bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A., Ghahramani, Z. and Gordon, A. D. (2015) \alert{Practical probabilistic programming with monads}, \emph{Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell}, 165--176.
 
 \bibitem{} \'{S}cibior, A., Kammar, O., Gharamani, Z. (2018) \alert{Functional programming for modular Bayesian inference}, \emph{Proc.\ ACM Prog.\ Lang.}, \textbf{2}(ICFP): 83.
-      
+
+\bibitem{} Shiebler, D., Gavranovic, B., Wilson, P. (2021) \alert{Category theory in machine learning}, \emph{arXiv}, 2106.07032.
+  
 %  \bibitem[\protect\citeauthoryear{blah}{blah}{2011}]{blah} \'{S}cibior, A. et al (2018) \alert{Denotational validation of higher-order Bayesian inference}, \emph{Proc.\ ACM Prog.\ Lang.}, \textbf{2}(POPL): 60.
     
 %     \bibitem{} Wadler, P. (1995) \alert{Monads for functional programming}. In: Jeuring J., Meijer E. (eds) \emph{Advanced Functional Programming}. AFP 1995. Lecture Notes in Computer Science, vol 925. Springer.

@@ -1407,15 +1407,16 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
   \item An instance of a simple \alert{lens} of type |Lens[S, A]| is just a pair of functions: |get: S => A| and |set: (S, A) => S|
   \item In the context of functional programming, |S| is typically a product type, assumed to contain values of type |A|
   \item Lenses and other related optics are typically used to query and update immutable algebraic data types (ADTs)
-    \item Crucially, lenses \alert{compose} (associatively): a |Lens[S, A]| and a |Lens[A, B]| can be composed to get a |Lens[S, B]|
-    \item The potential applications of optics in scientific and statistical computing extend far beyond simple ADT manipulation
+  \item Crucially, lenses \alert{compose} (associatively): a |Lens[S, A]| and a |Lens[A, B]| can be composed to get a |Lens[S, B]|
+    \item Given |l1: Lens[S, A]| and |l2: Lens[A, B]| we can construct |l3: Lens[S, B]| with |l3.get(s) = l2.get(l1.get(s))| and |l3.set(s, a) = l1.set(s, l2.set(l1.get(s), b))|
     \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{Reverse derivative categories}
   \begin{itemize}
-  \item Lenses can be used to implement \alert{reverse-mode automatic differentiation}
+    \item The potential applications of optics in scientific and statistical computing extend far beyond simple ADT manipulation
+  \item eg. lenses can be used to implement \alert{reverse-mode automatic differentiation}
   \item For a differentiable function $f: S\rightarrow A$, create a |Lens[S, A]| with |get|$(\mathbf{s})=f(\mathbf{s})$ and |set|$(\mathbf{s}',\mathbf{a})=\left(\left.\frac{\partial f}{\partial \mathbf{s}}\right\vert_{\mathbf{s}=\mathbf{s}'}\right)^\top \mathbf{a}$
     \item Then, for a composition of differentiable functions, lens composition implements the back-propagation chain rule
     \end{itemize}

@@ -1100,6 +1100,8 @@ val poisson = Dglm.poisson(linear)
   \end{itemize}
 \end{frame}
 
+\begin{comment}
+
 \begin{frame}[fragile]
 \frametitle{MCMC as a Stream}
 \begin{itemize}
@@ -1120,6 +1122,8 @@ MarkovChain(initialState)(kernel).steps.
 \end{lstlisting}
 \end{itemize}
 \end{frame}
+
+\end{comment}
 
 \begin{frame}
   \frametitle{Probability monad foundations}
@@ -1238,7 +1242,7 @@ so that for an given fixed input $x\in X$, the output is a probability distribut
     \item |flatMap| just multiplies the (conditional) densities
     \item Again, conditioning is easy (multiplication), so this forms a good basis for Bayesian PPLs
     \item Can use the joint posterior for simple MH algorithms (and Gibbs, if dependencies are tracked), but for Langevin and HMC algorithms, also need to keep track of gradients, using automatic differentiation (AD)
-      \item OK, because (reverse-mode) AD on a compute graph is also monadic!
+      \item OK, because (reverse-mode) AD on a compute graph is also computationally tractable using categorical constructs
 %    \item \alert{Rainier} is a Scala library for HMC sampling of monadic random variables (using a static compute graph, for efficiency)
     \end{itemize}
 \end{frame}
@@ -1287,7 +1291,7 @@ val out = model.sample(HMC(5), 1000, 10000*10, 10)
   \item However you implement your probability monad, the semantics of your probabilistic program are (essentially) the same
   \item It would be nice to be able to define and compose probabilistic programs independently of concerns about implementation, and then to \alert{interpret} the program with a particular implementation later
   \item Building a probability monad on top of the \alert{free monad} allows this --- implementation of |pure| and |flatMap| is ``suspended'' in a way that allows subsequent interpretation with concrete implementations later
-    \item This allows \alert{layering} of multiple inference algorithms, and different interpretation of different parts of the model, enabling sophisticated \alert{composition} of different (hybrid) inference algorithms
+    \item This allows \alert{layering} of multiple inference algorithms, and different interpretation of different parts of the model, enabling various optimisations and sophisticated \alert{composition} of different (hybrid) inference algorithms
     \end{itemize}
 \end{frame}
 
@@ -1429,7 +1433,7 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
   \item For HMMs and DLMs, Bayesian inference for the hidden state can be computed with a forward pass for filtering, followed by a backward pass for smoothing (using the results of the forward pass)
   \item |get| can be used to compute a forward step, and |set| to implement a backward step
   \item A full algorithm can be implemented by composing the lenses corresponding to each step
-    \item The associativity of lens composition leads to algorithms that can temporally parallelise
+    \item The associativity of lens composition can sometimes lead to algorithms that temporally parallelise
     \end{itemize}
 \end{frame}
 
@@ -1507,7 +1511,7 @@ def pims=Stream.iterate(pim0)(_.coflatMap(oddKernel).
   
   \item
     Concepts from category theory, such as \alert{functors},
-    \alert{monads} and \alert{comonads} provide a useful framework for
+    \alert{monads}, \alert{comonads}, and \alert{lenses} provide a useful framework for
     organising computation
   \end{itemize}
 \item

@@ -4,7 +4,7 @@
 ## read a spatio-temporal gpkg file from disk and convert to stars
 
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load("sf", "stars")
+pacman::p_load("sf", "stars", "digest")
 
 rural_sf = st_read("air_rural.gpkg")
 ## read in data in "long" format

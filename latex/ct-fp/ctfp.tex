@@ -535,7 +535,7 @@ Durham University, UK\hfill\alert{\url{darrenjw.github.io}}\\
 \begin{frame}[fragile]
   \frametitle{Parallel immutable collections}
   \begin{itemize}
-  \item Using |map| to apply a \alert{pure} function to all of the elements in a collection can clearly be done in parallel
+  \item Using |map| to apply a \alert{pure} function to all of the elements in a functorial collection can clearly be done in parallel
   \item So if the collection contains $n$ elements, then the computation time can be reduced from $O(n)$ to $O(1)$ (on infinite parallel hardware)
     \begin{itemize}
     \item |Vector(3,5,7) map (_ * 2) = Vector(6,10,14)|

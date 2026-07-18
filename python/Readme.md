@@ -6,7 +6,10 @@ My python code directory
 
 ```bash
 # pip cache cleanup
-pip cache purge
+pip cache purge # clean out the pip cache
+
+pip install PyQt6 # if plt.show() doesn't work...
+
 ```
 
 ### rst

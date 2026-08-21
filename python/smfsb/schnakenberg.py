@@ -39,8 +39,7 @@ sch_sh = """
 sch = jsmfsb.shorthand_to_spn(sch_sh)
 
 M = 400; N = 500
-#M = 100; N = 150
-T = 50; D = 100
+T = 200; D = 100
 a = 0.05; b = 0.5
 diff_base_rate = 10.0
 dt = 0.0002

@@ -40,7 +40,7 @@ sch = jsmfsb.shorthand_to_spn(sch_sh)
 
 #M = 500; N = 600
 M = 100; N = 150
-T = 10000; D = 30
+T = 1000; D = 30
 a = 0.05; b = 0.5
 diff_base_rate = 0.001
 
@@ -49,9 +49,9 @@ x0 = x0.at[0,:,:].set(a+b) # init U
 x0 = x0.at[1,:,:].set(b/(a+b)**2) # init V
 #x0 = x0.at[0, int(M / 2):(int(M/2)+5), int(N / 2):(int(N/2)+5)].set(1) # increase U at centre
 x0 = x0.at[0, int(M / 2), int(N / 2)].set(1) # increase U at centre
-step_sch_2d = sch.step_euler_2d(jnp.array([diff_base_rate, D*diff_base_rate]), 0.05)
+step_sch_2d = sch.step_euler_2d(jnp.array([diff_base_rate, D*diff_base_rate]), 0.0001)
 k0 = jax.random.key(42)
-ts = jsmfsb.sim_time_series_2d(k0, x0, 0, T, 20, step_sch_2d, True)
+ts = jsmfsb.sim_time_series_2d(k0, x0, 0, T, 10, step_sch_2d, True)
 print(ts.shape)
 u_stack = []
 v_stack = []

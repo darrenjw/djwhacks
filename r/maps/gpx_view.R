@@ -3,7 +3,7 @@
 ## gpx_view.R
 ## view a GPX track as a line on a Stadia map tile
 
-library(gpx)
+# library(gpx)
 library(sf)
 library(ggplot2)
 library(ggmap)
@@ -16,11 +16,18 @@ if (length(opts) != 1)
 filename = opts[1]
 
 ## read GPX data
-walk = read_gpx(filename)
-tracks = walk$tracks[[1]]
+#walk = read_gpx(filename)
+#tracks = walk$tracks[[1]]
 ## convert to sf object
-track_sf = st_as_sf(tracks, coords=c("Longitude", "Latitude"), crs=4326) # WGS84 for GPS data
-lines_sf = st_combine(track_sf) %>% st_cast("LINESTRING") # points to line
+#track_sf = st_as_sf(tracks, coords=c("Longitude", "Latitude"), crs=4326) # WGS84 for GPS data
+
+#lines_sf = st_combine(track_sf) %>% st_cast("LINESTRING") # points to line
+
+
+## st_layers(filename)
+track_sf = st_read(filename, layer="track_points")
+lines_sf = st_read(filename, layer="tracks")
+
 ## map overlay plot
 bbox = st_bbox(track_sf)
 bbox = bb(bbox, ext=1.3) # grow bb

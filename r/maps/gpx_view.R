@@ -15,16 +15,7 @@ if (length(opts) != 1)
     stop("Usage: gpx_view.R <file.gpx>\n")
 filename = opts[1]
 
-## read GPX data
-#walk = read_gpx(filename)
-#tracks = walk$tracks[[1]]
-## convert to sf object
-#track_sf = st_as_sf(tracks, coords=c("Longitude", "Latitude"), crs=4326) # WGS84 for GPS data
-
-#lines_sf = st_combine(track_sf) %>% st_cast("LINESTRING") # points to line
-
-
-## st_layers(filename)
+print(st_layers(filename)) # shows layers in the file
 track_sf = st_read(filename, layer="track_points")
 lines_sf = st_read(filename, layer="tracks")
 

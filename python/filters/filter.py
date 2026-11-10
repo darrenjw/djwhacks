@@ -64,17 +64,34 @@ def fft_lowpass(x, period=120, width=0.5):
     yp = np.fft.irfft(np.fft.rfft(xp) * gain, n=len(xp))
     return yp[pad:pad + n]
 
+def hanning(x, window=241):
+    """Hanning (Hann, raised-cosine) weighted moving average over `window`
+    points (should be odd so that it is centred). The weights taper smoothly to
+    zero at the edges, which gives much smaller sidelobes than the boxcar moving
+    average. A Hann window has roughly twice the width of a boxcar with the same
+    main-lobe cutoff, so the default of 241 months gives decadal-ish smoothing.
+    Near the ends the window is truncated and the remaining weights are
+    renormalised to sum to one, so the output is the same length as x with no
+    NaNs (but correspondingly noisier and more one-sided at the ends)."""
+    x = np.asarray(x, dtype=float)
+    w = np.hanning(window + 2)[1:-1]  # drop the zero endpoints
+    num = np.convolve(x, w, mode="same")
+    den = np.convolve(np.ones_like(x), w, mode="same")
+    return num / den
+
 run = sst_ts[0, :]
 smoothed = moving_average(run, 120)
 sg = savgol(run, 121, 3)
 bw = butterworth(run, 120, 4)
 ff = fft_lowpass(run, 120)
+hn = hanning(run, 241)
 
 plt.plot(run, color="lightgrey", linewidth=0.8, label="raw (monthly)")
 plt.plot(smoothed, color="C0", linewidth=2, label="decadal moving average")
 plt.plot(sg, color="C1", linewidth=2, label="Savitzky-Golay (121, cubic)")
 plt.plot(bw, color="C2", linewidth=2, label="Butterworth low-pass (decadal, order 4)")
 plt.plot(ff, color="C3", linewidth=2, label="FFT low-pass (decadal, cosine taper)")
+plt.plot(hn, color="C4", linewidth=2, label="Hanning (241)")
 plt.xlabel("month")
 plt.ylabel("SST")
 plt.legend()

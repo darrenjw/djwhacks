@@ -79,7 +79,7 @@ def hanning(x, window=241):
     den = np.convolve(np.ones_like(x), w, mode="same")
     return num / den
 
-run = sst_ts[0, :]
+run = sst_ts[1, :]
 smoothed = moving_average(run, 120)
 sg = savgol(run, 121, 3)
 bw = butterworth(run, 120, 4)
